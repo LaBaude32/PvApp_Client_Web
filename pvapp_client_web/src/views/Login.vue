@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     submit() {
+      //FIXME: pourquoi l'appui sur la touche entrer ne fonctionne pas ?
       const dt = {
         email: this.email,
         password: this.password
@@ -66,6 +67,10 @@ export default {
             self.result = "success";
 
             //TODO: appeler une nouvelle vue avec les la liste des affaires en cours.
+            window.setTimeout(function redirect() {
+              self.$router.replace("board");
+            }, 5000);
+
             //TODO: ajouter un accès au compte dans la bar du haut
           } else if (response.data.login_result == "error") {
             self.result = "errorId";
