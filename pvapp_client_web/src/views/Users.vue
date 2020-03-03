@@ -22,7 +22,6 @@ const axios = require("axios"); //TODO : ne peut-on pas definir une instance de 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_ROOT_URL,
   timeout: 1000,
-  // headers: { "X-Custom-Header": "foobar" },
   withCredentials: false
 });
 
@@ -37,7 +36,7 @@ export default {
     let self = this;
 
     instance
-      .get("getAllUsers") //FIXME: Pourquoi j'ai des CORS errors (parfois) si j'utilise ma variable url
+      .get("getAllUsers")
       .then(function(response) {
         // handle success
         self.users = response.data;

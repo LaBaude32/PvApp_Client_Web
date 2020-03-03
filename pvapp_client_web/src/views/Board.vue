@@ -6,12 +6,12 @@
       <v-list-item three-line>
         <v-list-item-content>
           <v-list-item-title class="headline mb-1">Affaire : {{pv.affair_id}}</v-list-item-title>
-          <v-list-item-subtitle>Date de la réunion : {{pv.meeting_date}}</v-list-item-subtitle>
+          <v-list-item-subtitle>Date de la réunion : {{ pv.meeting_date | formatDate}}</v-list-item-subtitle>
           <v-card-text class="text--primary">
             <v-btn class="ma-2" color="green darken-1" dark>Terminé
               <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
             </v-btn>
-            <p> Prochaine réunion : {{pv.meeting_next_date}} </p>
+            <p> Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</p>
           </v-card-text>
         </v-list-item-content>
       </v-list-item>
@@ -39,7 +39,6 @@ const axios = require("axios");
 const instance = axios.create({
   baseURL: process.env.VUE_APP_ROOT_URL,
   timeout: 1000,
-  // headers: { "X-Custom-Header": "foobar" },
   withCredentials: false
 });
 
@@ -60,7 +59,7 @@ export default {
     };
     if (typeof localStorage.userId != undefined) {
       instance
-        .get("getLastPvsByUserId", dt) //FIXME: Pourquoi j'ai des CORS errors (parfois) si j'utilise ma variable url
+        .get("getLastPvsByUserId", dt)
         .then(function(response) {
           // handle success
           self.pvs = response.data;
@@ -72,8 +71,6 @@ export default {
 
       instance
         .get("getAffairsByUserId", dt)
-        //FIXME: Comment passer les paramètre en format JSON ?
-        //FIXME: Pourquoi j'ai des CORS errors (parfois) si j'utilise ma variable url
         .then(function(response) {
           // handle success
           self.affairs = response.data;

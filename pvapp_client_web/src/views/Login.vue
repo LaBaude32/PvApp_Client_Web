@@ -55,6 +55,9 @@ export default {
         email: this.email,
         password: this.password
       };
+      localStorage.userId = "";
+      localStorage.token = "";
+
       //TODO: verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
       let self = this;
       axios
@@ -66,7 +69,6 @@ export default {
             localStorage.token = response.data.token;
             self.result = "success";
 
-            //TODO: appeler une nouvelle vue avec les la liste des affaires en cours.
             window.setTimeout(function redirect() {
               self.$router.replace("board");
             }, 5000);
