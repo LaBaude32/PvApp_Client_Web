@@ -22,6 +22,7 @@
       <div id="app">
         <div id="nav">
           <router-link to="/">Acceuil</router-link> |
+          <router-link to="/Board">Board</router-link> |
           <router-link to="/Login">Connexion</router-link> |
           <router-link to="/Users">Utilisateurs</router-link> |
           <router-link to="/About">A propos</router-link>

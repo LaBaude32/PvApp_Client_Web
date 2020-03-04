@@ -22,7 +22,10 @@ const axios = require("axios"); //TODO : ne peut-on pas definir une instance de 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_ROOT_URL,
   timeout: 1000,
-  withCredentials: false
+  withCredentials: false,
+  auth: {
+    token: localStorage.token
+  } //TODO: JWT ?
 });
 
 export default {

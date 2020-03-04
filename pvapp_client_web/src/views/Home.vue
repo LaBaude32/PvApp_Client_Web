@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <p>{{ isLogged }}</p>
+
     <HelloWorld />
   </div>
 </template>
@@ -12,6 +14,12 @@ export default {
   name: "Home",
   components: {
     HelloWorld
+  },
+  computed: {
+    isLogged() {
+      console.log(this.$store.getter.count);
+      return this.$store.count;
+    }
   }
 };
 </script>
