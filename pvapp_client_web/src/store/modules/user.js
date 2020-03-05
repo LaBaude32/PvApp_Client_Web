@@ -1,24 +1,26 @@
-//intial state
 const state = {
-  count: 3
+  isLogged: false
 };
 
-//getters:
 const getters = {
-  count: state => {
-    return state.count;
+  logged: state => state.isLogged
+};
+
+const mutations = {
+  change(state) {
+    state.isLogged = !state.isLogged;
   }
 };
 
-//actions
-const actions = {};
-
-//mutations
-const mutations = {};
+const actions = {
+  invert(context) {
+    context.commit("change");
+  }
+};
 
 export default {
   state,
   getters,
   actions,
   mutations
-};
+}
