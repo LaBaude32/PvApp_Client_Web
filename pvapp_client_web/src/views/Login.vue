@@ -14,16 +14,16 @@
             <v-toolbar-title>Connexion</v-toolbar-title>
             <v-spacer />
           </v-toolbar>
-          <v-card-text>
-            <v-form>
+          <v-form>
+            <v-card-text>
               <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" />
               <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" />
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn color="primary" @click.prevent="submit">Connexion</v-btn>
-          </v-card-actions>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" @click.prevent="submit">Connexion</v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -46,7 +46,8 @@ export default {
   },
   methods: {
     submit() {
-      //FIXME: pourquoi l'appui sur la touche entrer ne fonctionne pas ?
+      //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
+      this.$store.dispatch('user/login');
       const dt = {
         email: this.email,
         password: this.password

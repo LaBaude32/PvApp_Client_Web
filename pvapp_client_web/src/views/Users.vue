@@ -29,7 +29,7 @@ const instance = axios.create({
   withCredentials: false,
   auth: {
     token: localStorage.token
-  } //TODO: JWT ?
+  } //TODO: JWT ? -> OUI
 });
 
 export default {

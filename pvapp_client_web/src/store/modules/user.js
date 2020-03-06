@@ -9,12 +9,18 @@ const getters = {
 const mutations = {
   change(state) {
     state.isLogged = !state.isLogged;
+  },
+  LOGIN(){
+    alert('test');
   }
 };
 
 const actions = {
   invert(context) {
     context.commit("change");
+  },
+  login({commit}) {
+    commit('LOGIN');
   }
 };
 

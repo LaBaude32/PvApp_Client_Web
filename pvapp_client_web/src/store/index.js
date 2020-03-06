@@ -10,7 +10,10 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
-    counter,
-    user
+    user: {
+      namespaced: true,
+      ...user
+    },
+    counter
   }
 });

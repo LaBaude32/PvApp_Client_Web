@@ -78,6 +78,7 @@ export default {
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
+        //TODO: comment avoir une classe active ?
         {
           path: "Home",
           title: "Pv App",
@@ -108,12 +109,9 @@ export default {
   },
   computed: {
     connected() {
-      if (localStorage.userId) {
-        toReturn = localStorage.userFullName;
-      } else {
-        toReturn = "Se connecter";
+      if (this.$store.getters.users.logged) {
+        this.$router.replace(path);
       }
-      return toReturn;
     } //FIXME : ne fonctionne que si on recharge la page
   },
   methods: {
@@ -128,6 +126,9 @@ export default {
         this.$router.replace(path);
       }
     }
+  },
+  mounted() {
+    console.log(this);
   }
 };
 </script>
