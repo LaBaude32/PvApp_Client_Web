@@ -9,7 +9,7 @@ import moment from "moment";
 Vue.config.productionTip = false;
 
 moment.locale("fr");
-Vue.filter("formatDate", function(value) {
+Vue.filter("formatDate", function (value) {
   if (value) {
     return moment(String(value)).format("LLLL");
   }
@@ -22,5 +22,3 @@ new Vue({
   axios,
   render: h => h(App)
 }).$mount("#app");
-
-console.log(Vue);

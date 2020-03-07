@@ -2,9 +2,9 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-alert type="success" v-if="result === 'success'">{{ loginResultMessage }}</v-alert>
-        <v-alert type="error" v-else-if="result === 'errorId'">{{ loginResultMessage }}</v-alert>
-        <v-alert type="error" v-else-if="result === 'errorConnection'">{{ loginResultMessage }}</v-alert>
+        <v-alert type="success" v-if="isLogged">Vous êtes connecté, vous allez être redirigé dans 5 secondes</v-alert>
+        <v-alert type="error" v-else-if="resultConnetion === 'errorId'">Erreur sur l'email ou le mot de passe</v-alert>
+        <v-alert type="error" v-else-if="resultConnetion === 'errorConnection'">Erreur de connexion au serveur, veuillez vérifier votre connexion internet</v-alert>
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
@@ -32,7 +32,9 @@
 </template>
 
 <script>
-const axios = require("axios");
+// const axios = require("axios");
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -40,53 +42,28 @@ export default {
       email: null,
       password: null,
       result: "",
-      loginResultMessage:
+      successLoginMessage:
         "Vous êtes connecté, vous allez être redirigé dans 5 secondes"
     };
   },
   methods: {
     submit() {
       //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
-      this.$store.dispatch('user/login');
+
+      //TODO: verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
       const dt = {
         email: this.email,
         password: this.password
       };
-      localStorage.userId = "";
-      localStorage.token = "";
-
-      //TODO: verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
-      let self = this;
-      axios
-        .post("http://localhost:8080/login", dt)
-        .then(function(response) {
-          console.log(response.data);
-          if (response.data.login_result == "success") {
-            localStorage.userId = response.data.user_id;
-            localStorage.userFullName =
-              response.data.user_data.firstName +
-              " " +
-              response.data.user_data.lastName;
-            localStorage.token = response.data.token;
-            self.result = "success";
-
-            window.setTimeout(function redirect() {
-              self.$router.replace("board");
-            }, 5000);
-
-            //TODO: ajouter un accès au compte dans la bar du haut
-          } else if (response.data.login_result == "error") {
-            self.result = "errorId";
-            self.loginResultMessage = "Erreur sur l'email ou le mot de passe";
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-          self.result = "errorConnection";
-          self.loginResultMessage =
-            "Erreur de connexion au serveur, veuillez vérifier votre connexion internet";
-        });
+      this.$store.dispatch("user/login", dt);
     }
+  },
+  computed: {
+    ...mapGetters("user", {
+      isLogged: "logged",
+      fullName: "fullName",
+      resultConnetion: "resultConnetion"
+    })
   }
 };
 </script>

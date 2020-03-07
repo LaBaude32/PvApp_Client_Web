@@ -23,27 +23,27 @@
       <v-spacer />
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark v-on="on">
+          <v-btn color="primary" dark v-on="on" v-if="isLogged">
             <v-icon class="mr-3">mdi-account</v-icon>
-            {{ connected }}
+            {{ fullName }}
+          </v-btn>
+          <v-btn color="primary" dark v-on="on" v-else @click="action('Login')">
+            <v-icon class="mr-3">mdi-account</v-icon>
+            Se connecter
           </v-btn>
         </template>
-        <v-list>
-          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
+        <v-list v-if="isLogged">
+          <v-list-item v-for="item in items" :key="item" @click="action(item.path)">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight" />
-      <!-- <router-link to="/Login" tag="button">
-        <span class="mr-2">{{connected}}</span>
-        <v-icon>mdi-account</v-icon>
-      </router-link> -->
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawerMain" app>
       <v-list nav>
-        <v-list-item v-for="item in mainMenuItems" :key="item" @click.prevent="actionMainMenu(item.path)" link>
+        <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
           <v-list-item-action>
             <v-icon medium :color="item.color">{{item.icon}}</v-icon>
           </v-list-item-action>
@@ -63,8 +63,7 @@
 </template>
 
 <script>
-let toReturn;
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -72,7 +71,6 @@ export default {
       drawerRight: false,
       stateConnection: "Se connecter", //TODO: Gérer ça de marnière globale, Store ?
       items: [
-        { path: "Login", title: "Se connecter" },
         { path: "MyAccount", title: "Mon Compte" },
         { path: "Board", title: "Board" },
         { path: "Logout", title: "Se deconnecter" }
@@ -93,12 +91,6 @@ export default {
           color: ""
         },
         {
-          path: "Counter",
-          title: "Compteur Store",
-          icon: "mdi-counter",
-          color: ""
-        },
-        {
           path: "About",
           title: "A propos",
           icon: "mdi-information",
@@ -108,27 +100,22 @@ export default {
     };
   },
   computed: {
-    connected() {
-      if (this.$store.getters.users.logged) {
-        this.$router.replace(path);
-      }
-    } //FIXME : ne fonctionne que si on recharge la page
+    ...mapGetters("user", {
+      isLogged: "logged",
+      fullName: "fullName"
+    })
   },
   methods: {
     actionMainMenu(path) {
-      this.$router.replace(path);
+      this.$router.push(path);
     },
     action(path) {
       if (path == "Logout") {
-        localStorage.clear();
-        this.$router.replace("Home");
+        this.$store.dispatch("user/logout");
       } else {
-        this.$router.replace(path);
+        this.$router.push(path);
       }
     }
-  },
-  mounted() {
-    console.log(this);
   }
 };
 </script>

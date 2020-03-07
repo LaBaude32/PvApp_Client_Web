@@ -42,6 +42,7 @@ const instance = axios.create({
   withCredentials: false
 });
 
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -49,15 +50,20 @@ export default {
       affairs: []
     };
   },
+  computed: {
+    ...mapState("user", {
+      userId: "userId"
+    })
+  },
   mounted() {
     let self = this;
     const dt = {
       params: {
-        user_id: localStorage.userId,
+        user_id: this.userId,
         number_of_pvs: 3
       }
     };
-    if (typeof localStorage.userId != undefined) {
+    if (typeof this.userId != undefined) {
       instance
         .get("getLastPvsByUserId", dt)
         .then(function(response) {
