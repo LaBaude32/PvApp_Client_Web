@@ -12,6 +12,10 @@ export default new Vuex.Store({
     user: {
       namespaced: true,
       ...user
+    },
+    auth: {
+      namespaced: true,
+      ...user
     }
   }
 });

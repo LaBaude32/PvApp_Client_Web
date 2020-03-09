@@ -15,6 +15,8 @@ Vue.filter("formatDate", function (value) {
   }
 });
 
+axios.defaults.baseURL = process.env.VUE_APP_ROOT_URL;
+
 new Vue({
   router,
   store,

@@ -2,12 +2,9 @@ import axios from "axios";
 import router from "./../../router";
 
 const instanceAxios = axios.create({
-  baseURL: process.env.VUE_APP_ROOT_URL,
   timeout: 1000,
   withCredentials: false,
-  auth: {
-    token: localStorage.token
-  }
+  // Authorization: rootGetters.token_type + " " + rootGetters.token
 });
 
 const state = {
@@ -17,8 +14,7 @@ const state = {
   email: "",
   fullName: "",
   resultCo: "",
-  userId: "",
-  token: ""
+  userId: ""
 };
 
 const getters = {
@@ -39,7 +35,6 @@ const mutations = {
     state.email = datas.email;
     state.fullName = datas.firstName + " " + datas.lastName;
     state.userId = datas.userId;
-    state.token = datas.token;
   },
   ERROR_CO(state) {
     state.result = "errorId";
@@ -55,14 +50,10 @@ const mutations = {
     state.email = "";
     state.fullName = "";
     state.userId = "";
-    state.token = "";
   }
 };
 
 const actions = {
-  invert(context) {
-    context.commit("change");
-  },
   login({ commit }, data) {
     instanceAxios
       .post("/login", data)
@@ -72,10 +63,10 @@ const actions = {
             userId: response.data.user_id,
             firstName: response.data.user_data.firstName,
             lastName: response.data.user_data.lastName,
-            email: response.data.user_data.email,
-            token: response.data.token
+            email: response.data.user_data.email
           };
           commit("LOGIN", datas);
+          localStorage.setItem("userId", response.data.user_id);
           window.setTimeout(function redirect() {
             router.push("board");
           }, 5000);

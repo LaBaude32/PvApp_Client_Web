@@ -22,14 +22,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 const axios = require("axios"); //TODO : ne peut-on pas definir une instance de axios une fois dans le main.js ou le app.vue ?
 const instance = axios.create({
-  baseURL: process.env.VUE_APP_ROOT_URL,
   timeout: 1000,
   withCredentials: false,
-  auth: {
-    token: localStorage.token
-  } //TODO: JWT ? -> OUI
+  Authorization:
+    this.$store.getters.token_type + " " + this.$store.getters.token
 });
 
 export default {
@@ -42,8 +42,12 @@ export default {
   mounted() {
     let self = this;
 
-    instance
-      .get("getAllUsers")
+    instance({
+      methode: "get",
+      url: "getAllUsers",
+      Authorization:
+        this.$store.getters.token_type + " " + this.$store.getters.token
+    })
       .then(function(response) {
         // handle success
         self.users = response.data;
@@ -52,6 +56,12 @@ export default {
         // handle error
         console.log(error);
       });
+  },
+  computed: {
+    ...mapGetters("auth", {
+      token: "token",
+      token_type: "token_type"
+    })
   }
 };
 </script>
