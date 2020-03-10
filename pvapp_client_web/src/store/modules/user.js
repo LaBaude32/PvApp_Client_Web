@@ -1,14 +1,14 @@
 import axios from "axios";
-import router from "./../../router";
+// import router from "./../../router";
 
 const state = {
-  isLogged: false,
+  isLogged: localStorage.getItem("isAuthenticated") || false,
   firstName: "",
   lastName: "",
   email: "",
-  fullName: "",
+  fullName: localStorage.getItem("fullName") || "",
   resultCo: "",
-  userId: ""
+  userId: localStorage.getItem("userId") || ""
 };
 
 const getters = {
@@ -61,6 +61,7 @@ const actions = {
           };
           commit("LOGIN", datas);
           localStorage.setItem("userId", response.data.user_id);
+          localStorage.setItem("fullName", datas.firstName + " " + datas.lastName);
         } else if (response.data.login_result == "error") {
           commit("ERROR_ID");
         }
@@ -71,9 +72,7 @@ const actions = {
       });
   },
   logout({ commit }) {
-    localStorage.clear();
     commit("LOGOUT");
-    router.push("Login");
   }
 };
 

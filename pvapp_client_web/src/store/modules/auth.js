@@ -25,7 +25,7 @@ const mutations = {
   ERROR_ID(state) {
     state.result = "errorConnection";
   },
-  LOGOUT(state) {
+  AUTH_LOGOUT(state) {
     state.token = "";
     state.token_type = "";
   },
@@ -82,7 +82,7 @@ const actions = {
           localStorage.setItem("user-token_type", token_type);
           axios.defaults.headers.common["Authorization"] =
             token_type + " " + token;
-
+          localStorage.setItem("isAuthenticated", true);
           commit("AUTH_SUCCESS", token, token_type);
           dispatch("user/login", data, { root: true });
           resolve(response);
@@ -94,10 +94,16 @@ const actions = {
         });
     });
   },
-  authLogout({ commit }) {
+  authLogout({ commit, dispatch }) {
     return new Promise(resolve => {
-      commit("AUTH_LOGOUT");
+
       localStorage.removeItem("user-token");
+      localStorage.removeItem("fullName");
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("user-token_typen");
+      localStorage.removeItem("userId");
+      commit("AUTH_LOGOUT");
+      dispatch("user/logout", null, { root: true });
       delete axios.defaults.headers.common["Authorization"];
       resolve();
     });

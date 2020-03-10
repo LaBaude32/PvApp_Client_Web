@@ -48,7 +48,7 @@ export default {
     login() {
       //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
 
-      //TODO: verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
+      //TODO: SESSION verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
       const dt = {
         email: this.email,
         password: this.password

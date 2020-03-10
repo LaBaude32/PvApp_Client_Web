@@ -35,7 +35,7 @@
           </v-btn>
         </template>
         <v-list v-if="isLogged">
-          <v-list-item v-for="item in items" :key="item" @click="action(item.path)">
+          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -78,7 +78,7 @@ export default {
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
-        //TODO: comment avoir une classe active ?
+        //TODO: SESSION comment avoir une classe active ?
         {
           path: "Home",
           title: "Pv App",
@@ -113,8 +113,8 @@ export default {
     },
     action(path) {
       if (path == "Logout") {
-        this.$store.dispatch("user/logout").then(() => {
-          this.$router.push("/login");
+        this.$store.dispatch("auth/authLogout").then(() => {
+          this.$router.push("Login");
         });
       } else {
         this.$router.push(path);
