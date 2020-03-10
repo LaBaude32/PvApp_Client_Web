@@ -1,12 +1,6 @@
 import axios from "axios";
 import router from "./../../router";
 
-const instanceAxios = axios.create({
-  timeout: 1000,
-  withCredentials: false,
-  // Authorization: rootGetters.token_type + " " + rootGetters.token
-});
-
 const state = {
   isLogged: false,
   firstName: "",
@@ -55,7 +49,7 @@ const mutations = {
 
 const actions = {
   login({ commit }, data) {
-    instanceAxios
+    axios
       .post("/login", data)
       .then(function (response) {
         if (response.data.login_result == "success") {
@@ -67,9 +61,6 @@ const actions = {
           };
           commit("LOGIN", datas);
           localStorage.setItem("userId", response.data.user_id);
-          window.setTimeout(function redirect() {
-            router.push("board");
-          }, 5000);
         } else if (response.data.login_result == "error") {
           commit("ERROR_ID");
         }

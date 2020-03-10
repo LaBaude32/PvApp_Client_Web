@@ -24,13 +24,7 @@
 <script>
 import { mapGetters } from "vuex";
 
-const axios = require("axios"); //TODO : ne peut-on pas definir une instance de axios une fois dans le main.js ou le app.vue ?
-const instance = axios.create({
-  timeout: 1000,
-  withCredentials: false,
-  Authorization:
-    this.$store.getters.token_type + " " + this.$store.getters.token
-});
+const axios = require("axios");
 
 export default {
   name: "Users",
@@ -42,7 +36,7 @@ export default {
   mounted() {
     let self = this;
 
-    instance({
+    axios({
       methode: "get",
       url: "getAllUsers",
       Authorization:

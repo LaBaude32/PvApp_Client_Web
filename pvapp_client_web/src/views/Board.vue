@@ -36,11 +36,6 @@
 
 <script>
 const axios = require("axios");
-const instance = axios.create({
-  baseURL: process.env.VUE_APP_ROOT_URL,
-  timeout: 1000,
-  withCredentials: false
-});
 
 import { mapState } from "vuex";
 export default {
@@ -57,15 +52,20 @@ export default {
   },
   mounted() {
     let self = this;
-    const dt = {
+    const dtPvs = {
       params: {
         user_id: this.userId,
         number_of_pvs: 3
       }
     };
+    const dtAffairs = {
+      params: {
+        user_id: this.userId
+      }
+    };
     if (typeof this.userId != undefined) {
-      instance
-        .get("getLastPvsByUserId", dt)
+      axios
+        .get("getLastPvsByUserId", dtPvs)
         .then(function(response) {
           // handle success
           self.pvs = response.data;
@@ -75,8 +75,8 @@ export default {
           console.log(error);
         });
 
-      instance
-        .get("getAffairsByUserId", dt)
+      axios
+        .get("getAffairsByUserId", dtAffairs)
         .then(function(response) {
           // handle success
           self.affairs = response.data;
@@ -85,6 +85,7 @@ export default {
           // handle error
           console.log(error);
         });
+      //TODO: faire une requette multiple
     } else {
       //TODO: Connectez vous, => page de connexion
     }

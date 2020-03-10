@@ -1,20 +1,17 @@
 import axios from "axios";
 import router from "./../../router";
 
-const instanceAxios = axios.create({
-  baseURL: process.env.VUE_APP_ROOT_URL,
-  timeout: 1000,
-  withCredentials: false
-});
-
 const state = {
   token_type: "",
-  token: ""
+  token: localStorage.getItem("user-token") || "",
+  status: ""
 };
 
 const getters = {
   token: state => state.token,
   token_type: state => state.token_type,
+  isAuthenticated: state => !!state.token,
+  authStatus: state => state.status
 };
 
 const mutations = {
@@ -31,12 +28,23 @@ const mutations = {
   LOGOUT(state) {
     state.token = "";
     state.token_type = "";
+  },
+  AUTH_REQUEST(state) {
+    state.status = "loading";
+  },
+  AUTH_SUCCESS(state, token, token_type) {
+    state.status = "success";
+    state.token = token;
+    state.token_type = token_type;
+  },
+  AUTH_ERROR(state) {
+    state.status = "error";
   }
 };
 
 const actions = {
   login({ commit, dispatch }, data) {
-    instanceAxios
+    axios
       .post("/token", data)
       .then(function (response) {
         if (response.status == 201) {
@@ -61,6 +69,38 @@ const actions = {
     localStorage.clear();
     commit("LOGOUT");
     router.push("Login");
+  },
+  authRequest({ commit, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      // The Promise used for router redirect in login
+      commit("AUTH_REQUEST");
+      axios({ url: "/tokens", data, method: "POST" })
+        .then(response => {
+          const token = response.data.access_token;
+          const token_type = response.data.token_type;
+          localStorage.setItem("user-token", token);
+          localStorage.setItem("user-token_type", token_type);
+          axios.defaults.headers.common["Authorization"] =
+            token_type + " " + token;
+
+          commit("AUTH_SUCCESS", token, token_type);
+          dispatch("user/login", data, { root: true });
+          resolve(response);
+        })
+        .catch(error => {
+          commit("AUTH_ERROR", error);
+          localStorage.removeItem("user-token");
+          reject(error);
+        });
+    });
+  },
+  authLogout({ commit }) {
+    return new Promise(resolve => {
+      commit("AUTH_LOGOUT");
+      localStorage.removeItem("user-token");
+      delete axios.defaults.headers.common["Authorization"];
+      resolve();
+    });
   }
 };
 

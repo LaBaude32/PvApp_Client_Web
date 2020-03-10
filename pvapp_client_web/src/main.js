@@ -15,6 +15,12 @@ Vue.filter("formatDate", function (value) {
   }
 });
 
+const token = localStorage.getItem("user-token");
+const token_type = localStorage.getItem("user-token_type");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = token_type + " " + token;
+}
+
 axios.defaults.baseURL = process.env.VUE_APP_ROOT_URL;
 
 new Vue({

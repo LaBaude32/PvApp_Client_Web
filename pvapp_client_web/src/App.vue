@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawerRight" app clipped right>
@@ -63,13 +65,13 @@
 </template>
 
 <script>
+import { axios } from "axios";
 import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       drawerMain: false,
       drawerRight: false,
-      stateConnection: "Se connecter", //TODO: Gérer ça de marnière globale, Store ?
       items: [
         { path: "MyAccount", title: "Mon Compte" },
         { path: "Board", title: "Board" },
@@ -111,11 +113,29 @@ export default {
     },
     action(path) {
       if (path == "Logout") {
-        this.$store.dispatch("user/logout");
+        this.$store.dispatch("user/logout").then(() => {
+          this.$router.push("/login");
+        });
       } else {
         this.$router.push(path);
       }
     }
+  },
+  created: function() {
+    axios.interceptors.response.use(undefined, function(error) {
+      return new Promise(function() {
+        if (
+          error.status === 401 &&
+          error.config &&
+          !error.config.__isRetryRequest
+        ) {
+          // if you ever get an unauthorized, logout the user
+          this.$store.dispatch("AUTH_LOGOUT");
+          // you can also redirect to /login if needed !
+        }
+        throw error;
+      });
+    });
   }
 };
 </script>

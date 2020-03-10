@@ -21,20 +21,18 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <v-btn color="primary" @click.prevent="submit">Connexion</v-btn>
+              <v-btn color="primary" @click.prevent="login">Connexion</v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
-  <!-- TODO: Faire une page Account avec soit un formulaire de connexion soit les infos du compte -->
 </template>
 
 <script>
 // const axios = require("axios");
 import { mapGetters } from "vuex";
-
 export default {
   data() {
     return {
@@ -47,7 +45,7 @@ export default {
     };
   },
   methods: {
-    submit() {
+    login() {
       //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
 
       //TODO: verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
@@ -55,7 +53,11 @@ export default {
         email: this.email,
         password: this.password
       };
-      this.$store.dispatch("user/login", dt);
+      this.$store.dispatch("auth/authRequest", dt).then(() => {
+        window.setTimeout(() => {
+          this.$router.push("/Board");
+        }, 5000);
+      });
     }
   },
   computed: {
