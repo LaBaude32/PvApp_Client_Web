@@ -122,20 +122,30 @@ export default {
     }
   },
   created: function() {
-    axios.interceptors.response.use(undefined, function(error) {
-      return new Promise(function() {
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          // if you ever get an unauthorized, logout the user
-          this.$store.dispatch("AUTH_LOGOUT");
-          // you can also redirect to /login if needed !
-        }
-        throw error;
-      });
-    });
+    //FIXME: SESSION pourquoi cet interceptors ce fonctionne pas ?
+    axios.interceptors.response.use(
+      function(resp) {
+        console.log(resp);
+        alert("test");
+      },
+      function(error) {
+        console.log(error);
+        alert("error");
+        return new Promise(function() {
+          if (
+            error.status === 401 &&
+            error.config &&
+            !error.config.__isRetryRequest
+          ) {
+            alert("test");
+            // if you ever get an unauthorized, logout the user
+            this.$store.dispatch("AUTH_LOGOUT");
+            // you can also redirect to /login if needed !
+          }
+          throw error;
+        });
+      }
+    );
   }
 };
 </script>

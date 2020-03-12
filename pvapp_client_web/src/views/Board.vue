@@ -1,6 +1,15 @@
 <template>
   <div>
     <h1>Votre board :</h1>
+    <v-spacer></v-spacer>
+    <v-toolbar max-width="70%" class="mx-auto ma-10" color="blue-grey lighten-5" flat>
+      <v-btn class="mx-auto ma-5">
+        Creer une affaire
+      </v-btn>
+      <v-btn class="mx-auto ma-5">
+        Ajouter un Pv
+      </v-btn>
+    </v-toolbar>
     <h2>Vos 3 derniers PV :</h2>
     <v-card class="mx-auto mb-5" max-width="344" outlined v-for="pv in pvs" v-bind:key="pv.id">
       <v-list-item three-line>
@@ -28,6 +37,9 @@
               <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{affair.progress}} %</v-progress-circular>
             </div>
           </v-card-text>
+          <v-card-actions>
+            <v-btn @click="openAffair(affair.id_affair)">Ouvrir</v-btn>
+          </v-card-actions>
         </v-list-item-content>
       </v-list-item>
     </v-card>
@@ -49,6 +61,14 @@ export default {
     ...mapState("user", {
       userId: "userId"
     })
+  },
+  methods: {
+    openAffair(affairId) {
+      this.$router.push({
+        name: "AffairId",
+        params: { id: affairId }
+      });
+    }
   },
   mounted() {
     let self = this;
