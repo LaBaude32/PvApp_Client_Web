@@ -53,7 +53,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      pvs: [], //TODO: SESSION ligne 8 : Comment récupérer le nom de l'affaire ?
+      pvs: [],
       affairs: []
     };
   },
@@ -111,7 +111,6 @@ export default {
           // handle error
           console.log(error);
         });
-      //TODO: SESSION faire une requette multiple ?
     } else {
       //TODO: Connectez vous, => page de connexion
     }

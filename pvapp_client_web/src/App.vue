@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */ /* eslint-disable prettier/prettier */
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawerRight" app clipped right>
@@ -35,7 +34,11 @@
           </v-btn>
         </template>
         <v-list v-if="isLogged">
-          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            @click="action(item.path)"
+          >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -45,13 +48,19 @@
 
     <v-navigation-drawer v-model="drawerMain" app>
       <v-list nav>
-        <!-- TODO: SESSION mettre ça dans un composant ? -->
-        <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
+        <v-list-item
+          v-for="item in mainMenuItems"
+          :key="item.title"
+          @click.prevent="actionMainMenu(item.path)"
+          link
+        >
           <v-list-item-action>
-            <v-icon medium :color="item.color">{{item.icon}}</v-icon>
+            <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title class="title">{{item.title}}</v-list-item-title>
+            <v-list-item-title class="title">{{
+              item.title
+            }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -66,8 +75,10 @@
 </template>
 
 <script>
-import { axios } from "axios";
+import Axios from "axios";
 import { mapGetters } from "vuex";
+import routesCONST from "../utilities/constantes";
+
 export default {
   data() {
     return {
@@ -86,7 +97,7 @@ export default {
           icon: "mdi-home",
           color: "blue darken-2"
         },
-        { path: "board", title: "Board", icon: "mdi-clipboard-pulse" },
+        { path: "", title: routesCONST.data, icon: "mdi-clipboard-pulse" },
         {
           path: "Users",
           title: "Personnes",
@@ -110,7 +121,7 @@ export default {
   },
   methods: {
     actionMainMenu(path) {
-      this.$router.push(path);
+      this.$router.push({ name: path });
     },
     action(path) {
       if (path == "Logout") {
@@ -123,30 +134,21 @@ export default {
     }
   },
   created: function() {
-    //FIXME: SESSION pourquoi cet interceptors ce fonctionne pas ?
-    axios.interceptors.response.use(
-      function(resp) {
-        console.log(resp);
-        alert("test");
-      },
-      function(error) {
-        console.log(error);
-        alert("error");
-        return new Promise(function() {
-          if (
-            error.status === 401 &&
-            error.config &&
-            !error.config.__isRetryRequest
-          ) {
-            alert("test");
-            // if you ever get an unauthorized, logout the user
-            this.$store.dispatch("AUTH_LOGOUT");
-            // you can also redirect to /login if needed !
-          }
-          throw error;
-        });
-      }
-    );
+    Axios.interceptors.response.use(undefined, function(error) {
+      console.log(error);
+      return new Promise(function() {
+        if (
+          error.status === 401 &&
+          error.config &&
+          !error.config.__isRetryRequest
+        ) {
+          // if you ever get an unauthorized, logout the user
+          this.$store.dispatch("AUTH_LOGOUT");
+          // you can also redirect to /login if needed !
+        }
+        throw error;
+      });
+    });
   }
 };
 </script>

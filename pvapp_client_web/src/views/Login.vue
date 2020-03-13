@@ -16,7 +16,7 @@
           </v-toolbar>
           <v-form>
             <v-card-text>
-              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" />
+              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" rules/>
               <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" />
             </v-card-text>
             <v-card-actions>
@@ -49,6 +49,7 @@ export default {
       //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
 
       //TODO: SESSION verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
+      //Mettre des rules
       const dt = {
         email: this.email,
         password: this.password

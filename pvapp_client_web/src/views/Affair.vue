@@ -7,9 +7,8 @@
 </template>
 
 <script>
-// FIXME: SESSION : quand on est sur cette page le router ne fonctionne pas
 
-import { axios } from "axios";
+import Axios from "axios";
 export default {
   data() {
     return {
@@ -25,7 +24,7 @@ export default {
     // recuperer les infos de l'affair
     let affairId = this.$route.params.id;
     //FIXME: SESSION: Pourquoi il ne se passe rien ?
-    axios
+    Axios
       .get("getAffairById", affairId)
       .then(response => {
         this.affair = response.data;
