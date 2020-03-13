@@ -75,6 +75,13 @@ const routes = [
     beforeEnter: ifAuthenticated
   },
   {
+    path: "/pvId/:id",
+    name: "PvId",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Pv.vue"),
+    beforeEnter: ifAuthenticated
+  },
+  {
     path: "*",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

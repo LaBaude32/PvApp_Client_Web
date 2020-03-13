@@ -17,7 +17,7 @@
           <v-list-item-title class="headline mb-1">Affaire : {{pv.affair_id}}</v-list-item-title>
           <v-list-item-subtitle>Date de la réunion : {{ pv.meeting_date | formatDate}}</v-list-item-subtitle>
           <v-card-text class="text--primary">
-            <v-btn class="ma-2" color="green darken-1" dark>Terminé
+            <v-btn class="ma-2" color="green darken-1" dark @click="openPv(pv.id_pv)">Terminé
               <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
             </v-btn>
             <p> Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</p>
@@ -26,7 +26,7 @@
       </v-list-item>
     </v-card>
     <h2>Vos affaires en cours :</h2>
-    <v-card class="mx-auto mb-5" max-width="344" outlined v-for="affair in affairs" v-bind:key="affair.id">
+    <v-card class="mx-auto mb-5" max-width="344" outlined v-for="affair in affairs" v-bind:key="affair.id_affair">
       <v-list-item three-line>
         <v-list-item-content>
           <v-list-item-title class="headline mb-1">{{affair.name}}</v-list-item-title>
@@ -67,6 +67,12 @@ export default {
       this.$router.push({
         name: "AffairId",
         params: { id: affairId }
+      });
+    },
+    openPv(pvId) {
+      this.$router.push({
+        name: "PvId",
+        params: { id: pvId }
       });
     }
   },

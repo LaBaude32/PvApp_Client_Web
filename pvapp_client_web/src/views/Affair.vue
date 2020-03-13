@@ -7,6 +7,8 @@
 </template>
 
 <script>
+// FIXME: SESSION : quand on est sur cette page le router ne fonctionne pas
+
 import { axios } from "axios";
 export default {
   data() {
@@ -22,10 +24,18 @@ export default {
   mounted() {
     // recuperer les infos de l'affair
     let affairId = this.$route.params.id;
-    axios.get("getAffairById", affairId).then(response => {
-      this.affair = response.data;
-      console.log(response.data);
-    });
+    //FIXME: SESSION: Pourquoi il ne se passe rien ?
+    axios
+      .get("getAffairById", affairId)
+      .then(response => {
+        this.affair = response.data;
+        alert("test");
+        console.log(response.data);
+      })
+      .catch(error => {
+        alert("test");
+        console.log(error);
+      });
     //recperer les pvs de l'affair
   }
 };

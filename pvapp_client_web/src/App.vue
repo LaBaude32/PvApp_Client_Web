@@ -45,6 +45,7 @@
 
     <v-navigation-drawer v-model="drawerMain" app>
       <v-list nav>
+        <!-- TODO: SESSION mettre ça dans un composant ? -->
         <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
           <v-list-item-action>
             <v-icon medium :color="item.color">{{item.icon}}</v-icon>
