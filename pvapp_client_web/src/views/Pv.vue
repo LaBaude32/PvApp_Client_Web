@@ -1,12 +1,12 @@
 <template>
   <div max-width="800px">
-    <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" sort-by="position" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Pv du {{ pv.pv_details.meeting_date | formatDate }} </v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="800px">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Nouvel Item</v-btn>
             </template>
@@ -18,23 +18,26 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.position" label="Position"></v-text-field>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field v-model="editedItem.position" label="Position" min="1" type="number"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-textarea v-model="editedItem.note" label="Note" counter auto-grow filled></v-textarea>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-textarea v-model="editedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.note" label="Note"></v-text-field>
+                      <v-text-field v-model="editedItem.ressources" label="Ressources"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.follow_up" label="Suite à donner"></v-text-field>
+                      <v-text-field v-model="editedItem.completion" label="Echéance"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.completion" label="Ressources"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.completion_date" label="Echéance"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.visible" label="Visible"></v-text-field>
+                      <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -66,7 +69,7 @@
     </v-data-table>
 
     <v-divider class="mt-10 mb-3"></v-divider>
-    {{ pv.items }}
+    {{ display }}
   </div>
 </template>
 
@@ -88,6 +91,7 @@ export default {
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
         { text: "Echeance", value: "completion", sortable: false },
+        { text: "Date d'echéance", value: "completion_date", sortable: false },
         { text: "Visible", value: "visible", sortable: false },
         { text: "Actions", value: "actions", sortable: false }
       ],
@@ -99,6 +103,7 @@ export default {
         follow_up: "",
         resources: "",
         completion: "",
+        completion_date: "",
         visible: ""
       },
       defaultItem: {
@@ -107,6 +112,7 @@ export default {
         follow_up: "",
         resources: "",
         completion: "",
+        completion_date: "",
         visible: true
       }
     };
@@ -114,6 +120,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+    },
+    display() {
+      return this.items;
     }
   },
   watch: {

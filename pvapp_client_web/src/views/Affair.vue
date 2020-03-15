@@ -14,15 +14,45 @@
         <p>{{ lot.id_lot }} - {{ lot.name }}</p>
       </v-list-item-content>
     </v-list-item>
+    <v-divider class="mt-5 mb-10"></v-divider>
+    <v-card max-width="80%" class="mx-auto">
+      <v-card-title>
+        Pvs
+        <v-spacer></v-spacer>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :items="pvs" :search="search">
+        <template v-slot:item.actions="{ item }">
+          <v-btn @click="seePv(item.id_pv)" color="success">
+            Voir
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
 <script>
 import Axios from "axios";
+import routesCONST from "../utilities/constantes";
 export default {
   data() {
     return {
-      affair: ""
+      affair: "",
+      search: "",
+      headers: [
+        {
+          text: "Date",
+          align: "start",
+          sortable: false,
+          value: "meeting_date"
+        },
+        { text: "Etat", value: "state" },
+        { text: "Lieu", value: "meeting_place" },
+        { text: "Prochaine date", value: "meeting_next_date" },
+        { text: "Prochain lieu", value: "meeting_next_place" },
+        { text: "Action", value: "actions" }
+      ]
     };
   },
   computed: {
@@ -31,9 +61,7 @@ export default {
     }
   },
   mounted() {
-    // recuperer les infos de l'affair
     let affairId = this.$route.params.id;
-    //FIXME: SESSION: Pourquoi il ne se passe rien ?
     Axios.get("getAffairById", {
       params: {
         id_affair: affairId
@@ -45,7 +73,27 @@ export default {
       .catch(error => {
         console.log(error);
       });
+    Axios.get("getPvByAffairId", {
+      params: {
+        id_affair: affairId
+      }
+    })
+      .then(response => {
+        this.pvs = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
     //recperer les pvs de l'affair
+  },
+  methods: {
+    seePv(id_pv) {
+      this.$rooter.push({
+        //FIXME: Pourquoi ça ne fonctionne pas ?
+        name: routesCONST.pv.name,
+        params: { id: id_pv }
+      });
+    }
   }
 };
 </script>

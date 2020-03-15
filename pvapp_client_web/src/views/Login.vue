@@ -16,7 +16,7 @@
           </v-toolbar>
           <v-form>
             <v-card-text>
-              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" rules />
+              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" :rules="[rules.required, rules.email]"/>
               <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" />
             </v-card-text>
             <v-card-actions>
