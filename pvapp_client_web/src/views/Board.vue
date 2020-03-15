@@ -48,6 +48,7 @@
 
 <script>
 const axios = require("axios");
+import routesCONST from "../utilities/constantes";
 
 import { mapState } from "vuex";
 export default {
@@ -65,13 +66,13 @@ export default {
   methods: {
     openAffair(affairId) {
       this.$router.push({
-        name: "AffairId",
+        name: routesCONST.affair.name,
         params: { id: affairId }
       });
     },
     openPv(pvId) {
       this.$router.push({
-        name: "PvId",
+        name: routesCONST.pv.name,
         params: { id: pvId }
       });
     }

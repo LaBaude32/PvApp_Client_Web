@@ -34,11 +34,7 @@
           </v-btn>
         </template>
         <v-list v-if="isLogged">
-          <v-list-item
-            v-for="item in items"
-            :key="item.title"
-            @click="action(item.path)"
-          >
+          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -48,12 +44,7 @@
 
     <v-navigation-drawer v-model="drawerMain" app>
       <v-list nav>
-        <v-list-item
-          v-for="item in mainMenuItems"
-          :key="item.title"
-          @click.prevent="actionMainMenu(item.path)"
-          link
-        >
+        <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
           <v-list-item-action>
             <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -77,7 +68,7 @@
 <script>
 import Axios from "axios";
 import { mapGetters } from "vuex";
-import routesCONST from "../utilities/constantes";
+import routesCONST from "./utilities/constantes";
 
 export default {
   data() {
@@ -92,20 +83,24 @@ export default {
       mainMenuItems: [
         //TODO: SESSION comment avoir une classe active ?
         {
-          path: "Home",
+          path: routesCONST.home.name,
           title: "Pv App",
           icon: "mdi-home",
           color: "blue darken-2"
         },
-        { path: "", title: routesCONST.data, icon: "mdi-clipboard-pulse" },
         {
-          path: "Users",
+          path: routesCONST.board.name,
+          title: routesCONST.board.name,
+          icon: "mdi-clipboard-pulse"
+        },
+        {
+          path: routesCONST.user.name,
           title: "Personnes",
           icon: "mdi-account",
           color: ""
         },
         {
-          path: "About",
+          path: routesCONST.about.name,
           title: "A propos",
           icon: "mdi-information",
           color: ""
@@ -134,8 +129,12 @@ export default {
     }
   },
   created: function() {
-    Axios.interceptors.response.use(undefined, function(error) {
+    Axios.interceptors.response.use(undefined, error => {
       console.log(error);
+      //FIXME: SESSION : en fait je n'ai pas accès à l'erreur parce que c'est webpack qui me la catch
+      // this.$store.dispatch("auth/authLogout");
+      // this.$router.push(routesCONST.login.name);
+      alert("erreur 401");
       return new Promise(function() {
         if (
           error.status === 401 &&
@@ -143,7 +142,8 @@ export default {
           !error.config.__isRetryRequest
         ) {
           // if you ever get an unauthorized, logout the user
-          this.$store.dispatch("AUTH_LOGOUT");
+          this.$store.dispatch("auth/authLogout");
+          this.$router.push(routesCONST.login.name);
           // you can also redirect to /login if needed !
         }
         throw error;

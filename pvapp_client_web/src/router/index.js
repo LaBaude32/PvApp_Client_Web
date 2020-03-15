@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import store from "../store/index";
+import routesCONST from "../utilities/constantes";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters["auth/isAuthenticated"]) {
@@ -23,13 +24,13 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
+    path: routesCONST.home.path,
+    name: routesCONST.home.name,
     component: Home
   },
   {
-    path: "/about",
-    name: "About",
+    path: routesCONST.about.path,
+    name: routesCONST.about.name,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -38,8 +39,8 @@ const routes = [
     beforeEnter: ifNotAuthenticated
   },
   {
-    path: "/login",
-    name: "Login",
+    path: routesCONST.login.path,
+    name: routesCONST.login.name,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -48,8 +49,8 @@ const routes = [
     beforeEnter: ifNotAuthenticated
   },
   {
-    path: "/users",
-    name: "Users",
+    path: routesCONST.user.path,
+    name: routesCONST.user.name,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -58,8 +59,8 @@ const routes = [
     beforeEnter: ifAuthenticated
   },
   {
-    path: "/board",
-    name: "Board",
+    path: routesCONST.board.path,
+    name: routesCONST.board.name,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -68,15 +69,15 @@ const routes = [
     beforeEnter: ifAuthenticated
   },
   {
-    path: "/affairId/:id",
-    name: "AffairId",
+    path: routesCONST.affair.path + "/:id",
+    name: routesCONST.affair.name,
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Affair.vue"),
     beforeEnter: ifAuthenticated
   },
   {
-    path: "/pvId/:id",
-    name: "PvId",
+    path: routesCONST.pv.path + "/:id",
+    name: routesCONST.pv.name,
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Pv.vue"),
     beforeEnter: ifAuthenticated
