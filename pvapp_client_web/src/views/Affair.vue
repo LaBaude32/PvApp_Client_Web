@@ -5,7 +5,7 @@
     <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
     <p>Progression :</p>
     <div class="text-center">
-      <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8">{{affair.affair_infos.progress}} %</v-progress-circular>
+      <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.affair_infos.progress }} %</v-progress-circular>
     </div>
     <v-divider class="mt-10"></v-divider>
     <h3 class="mt-5">Lots :</h3>
@@ -23,9 +23,23 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search">
         <template v-slot:item.actions="{ item }">
-          <v-btn @click="seePv(item.id_pv)" color="success">
+          <v-btn @click="openPv(item.id_pv)" color="primary">
             Voir
           </v-btn>
+        </template>
+        <template v-slot:item.meeting_date="{ item }">
+          <v-text>{{ item.meeting_date | formatDate }}</v-text>
+        </template>
+        <template v-slot:item.meeting_next_date="{ item }">
+          <v-text>{{ item.meeting_next_date | formatDate }}</v-text>
+        </template>
+        <template v-slot:item.state="{ item }">
+          <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
+            {{ item.state }}
+          </v-chip>
+          <v-chip class="ma-2" color="orange" text-color="white" v-else>
+            {{ item.state }}
+          </v-chip>
         </template>
       </v-data-table>
     </v-card>
@@ -40,6 +54,7 @@ export default {
     return {
       affair: "",
       search: "",
+      pvs: [],
       headers: [
         {
           text: "Date",
@@ -54,11 +69,6 @@ export default {
         { text: "Action", value: "actions" }
       ]
     };
-  },
-  computed: {
-    param() {
-      return this.$route.params;
-    }
   },
   mounted() {
     let affairId = this.$route.params.id;
@@ -84,14 +94,13 @@ export default {
       .catch(error => {
         console.log(error);
       });
-    //recperer les pvs de l'affair
+    //recuperer les pvs de l'affair
   },
   methods: {
-    seePv(id_pv) {
-      this.$rooter.push({
-        //FIXME: Pourquoi ça ne fonctionne pas ?
+    openPv(pvId) {
+      this.$router.push({
         name: routesCONST.pv.name,
-        params: { id: id_pv }
+        params: { id: pvId }
       });
     }
   }
