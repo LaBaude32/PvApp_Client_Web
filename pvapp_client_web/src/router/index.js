@@ -78,9 +78,20 @@ const routes = [
   {
     path: routesCONST.pv.path + "/:id",
     name: routesCONST.pv.name,
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Pv.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Pv.vue"),
     beforeEnter: ifAuthenticated
+  },
+  {
+    path: routesCONST.addAffair.path,
+    name: routesCONST.addAffair.name,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/AddAffair.vue"),
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: routesCONST.test.path,
+    name: routesCONST.test.name,
+    component: () => import(/* webpackChunkName: "about" */ "../views/Test.vue")
   },
   {
     path: "*",

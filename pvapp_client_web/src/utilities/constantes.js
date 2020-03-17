@@ -1,4 +1,5 @@
 const routesCONST = {
+  //TODO: SESSION : peut on mettre une valeur par défaut ? ici name pour que 
   home: {
     path: "/home",
     name: "Home"
@@ -26,6 +27,14 @@ const routesCONST = {
   pv: {
     path: "/pv",
     name: "Pv"
+  },
+  addAffair: {
+    path: "/addAffair",
+    name: "AddAffair"
+  },
+  test: {
+    path: "/test",
+    name: "Test"
   }
 };
 

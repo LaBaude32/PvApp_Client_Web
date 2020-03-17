@@ -3,10 +3,10 @@
     <h1>Votre board :</h1>
     <v-spacer></v-spacer>
     <v-toolbar max-width="70%" class="mx-auto ma-10" color="blue-grey lighten-5" flat>
-      <v-btn class="mx-auto ma-5">
+      <v-btn class="mx-auto ma-5" @click="createAffair">
         Creer une affaire
       </v-btn>
-      <v-btn class="mx-auto ma-5">
+      <v-btn class="mx-auto ma-5" @click="createPv">
         Ajouter un Pv
       </v-btn>
     </v-toolbar>
@@ -75,6 +75,12 @@ export default {
         name: routesCONST.pv.name,
         params: { id: pvId }
       });
+    },
+    createAffair() {
+      this.$router.push({ name: routesCONST.addAffair.name });
+    },
+    createPv() {
+      this.$router.push({ name: routesCONST.addPv.name });
     }
   },
   mounted() {

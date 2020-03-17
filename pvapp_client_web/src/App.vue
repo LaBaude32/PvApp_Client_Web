@@ -104,6 +104,12 @@ export default {
           title: "A propos",
           icon: "mdi-information",
           color: ""
+        },
+        {
+          path: routesCONST.test.name,
+          title: "page TEST",
+          icon: "mdi-alert",
+          color: "orange"
         }
       ]
     };
