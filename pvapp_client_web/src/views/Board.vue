@@ -11,7 +11,7 @@
       </v-btn>
     </v-toolbar>
     <h2>Vos 3 derniers PV :</h2>
-    <v-card class="mx-auto mb-5" max-width="344" outlined v-for="pv in pvs" v-bind:key="pv.id">
+    <v-card class="d-inline-block mx-auto ma-5 ml-5 mr-5" max-width="400" outlined v-for="pv in pvs" v-bind:key="pv.id">
       <v-list-item three-line>
         <v-list-item-content>
           <v-list-item-title class="headline mb-1">Affaire : {{pv.affair_id}}</v-list-item-title>
@@ -26,7 +26,7 @@
       </v-list-item>
     </v-card>
     <h2>Vos affaires en cours :</h2>
-    <v-card class="mx-auto mb-5" max-width="344" outlined v-for="affair in affairs" v-bind:key="affair.id_affair">
+    <v-card class="d-inline-block mx-auto ma-5 mr-5 ml-5" max-width="400" outlined v-for="affair in affairs" v-bind:key="affair.id_affair">
       <v-list-item three-line>
         <v-list-item-content>
           <v-list-item-title class="headline mb-1">{{affair.name}}</v-list-item-title>

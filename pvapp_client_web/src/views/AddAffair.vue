@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form v-model="valid">
+    <v-form v-model="valid" ref="form">
       <v-container>
         <v-row>
           <v-col cols="12">
@@ -25,6 +25,10 @@
 </template>
 
 <script>
+import Axios from "axios";
+import routesCONST from "../utilities/constantes";
+import moment from "moment";
+
 export default {
   data: () => ({
     valid: true,
@@ -32,6 +36,65 @@ export default {
     address: "",
     meeting_type: "",
     items: ["Chantier", "Etude"]
-  })
+  }),
+  computed: {
+    id() {
+      return this.$store.state.user.userId;
+    }
+  },
+  methods: {
+    validate() {
+      // this.$refs.form.validate();
+      let affairData = {
+        name: this.name,
+        address: this.address,
+        meeting_type: this.meeting_type
+      };
+      Axios.post("/addAffair", affairData)
+        .then(response => {
+          if (response.status == 201) {
+            let affairId = response.data.affair_id;
+            let pvData = {
+              state: "En cours",
+              meeting_date: moment().format("YYYY-MM-DD HH:mm:ss"),
+              meeting_place: "Indéfini",
+              affair_id: affairId
+            };
+            Axios.post("/addPv", pvData)
+              .then(response => {
+                if (response.status == 201) {
+                  let pvId = response.data.id_pv;
+                  let PvHasUserData = {
+                    pv_id: pvId,
+                    user_id: this.$store.state.user.userId,
+                    status: "Présent"
+                  };
+                  Axios.post("/addPvHasUser", PvHasUserData)
+                    .then(response => {
+                      if (response.status == 201) {
+                        this.$router.push({
+                          name: routesCONST.affair.name,
+                          params: { id: affairId }
+                        });
+                      }
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    reset() {
+      this.$refs.form.reset();
+    }
+  }
 };
 </script>
