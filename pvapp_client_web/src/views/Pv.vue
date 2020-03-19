@@ -4,7 +4,7 @@
       <v-data-table :headers="headers" :items="items" sort-by="position" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title>Pv du {{ pv.pv_details.meeting_date | formatDate }} </v-toolbar-title>
+            <v-toolbar-title v-if="pv.pv_details">Pv du {{ pv.pv_details.meeting_date | formatDate }} </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="800px">
@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       idPv: "",
-      pv: "",
+      pv: {},
       dialog: false,
       headers: [
         {
@@ -122,6 +122,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+    },
+    test(){
+      return this.items;
     }
   },
   watch: {
@@ -129,7 +132,7 @@ export default {
       val || this.close();
     }
   },
-  mounted() {
+  created() {
     this.initialize(); //TODO: SESSION pourquoi les données ne s'affichent pas au chargement?
   },
   methods: {
@@ -141,9 +144,9 @@ export default {
         }
       };
       Axios.get("getPvDetails", dt).then(response => {
-        this.pv = response.data;
+        this.items = response.data.items; 
+        //TODO: recuperer mon pv
       });
-      this.items = this.pv.items;
     },
 
     editItem(item) {

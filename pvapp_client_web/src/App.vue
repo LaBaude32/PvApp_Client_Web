@@ -69,6 +69,7 @@
 import Axios from "axios";
 import { mapGetters } from "vuex";
 import routesCONST from "./utilities/constantes";
+import { getpath } from "./utilities/constantes";
 
 export default {
   data() {
@@ -106,7 +107,7 @@ export default {
           color: ""
         },
         {
-          path: routesCONST.test.name,
+          path: getpath("test"),
           title: "page TEST",
           icon: "mdi-alert",
           color: "orange"
@@ -136,7 +137,10 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
-      console.log(error);
+      if(error.response.status == 401) {
+        console.log(error);
+        
+      }
       //FIXME: SESSION : en fait je n'ai pas accès à l'erreur parce que c'est webpack qui me la catch
       // this.$store.dispatch("auth/authLogout");
       // this.$router.push(routesCONST.login.name);
