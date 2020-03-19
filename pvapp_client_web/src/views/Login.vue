@@ -47,8 +47,6 @@ export default {
   },
   methods: {
     login() {
-      //FIXME: pourquoi l'appui sur la touche entrée ne fonctionne pas ?
-
       //TODO: SESSION verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
       // -> Mettre des rules
       const dt = {
