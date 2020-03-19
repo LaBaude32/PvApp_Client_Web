@@ -4,7 +4,7 @@
       <v-data-table :headers="headers" :items="items" sort-by="position" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title v-if="pv.pv_details">Pv du {{ pv.pv_details.meeting_date | formatDate }} </v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }} </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="800px">
@@ -71,6 +71,7 @@
     </v-card>
 
     <v-divider class="mt-10 mb-3"></v-divider>
+    <!-- TODO: mettre les users dans un tableau -->
     {{ items }}
   </div>
 </template>
@@ -81,7 +82,8 @@ export default {
   data() {
     return {
       idPv: "",
-      pv: {},
+      pvDetails: {},
+      pvUsers: [],
       dialog: false,
       headers: [
         {
@@ -144,7 +146,9 @@ export default {
         }
       };
       Axios.get("getPvDetails", dt).then(response => {
-        this.items = response.data.items; 
+        this.items = response.data.items;
+        this.pvDetails = response.data.pv_details;
+        this.pvUsers = response.data.users;
         //TODO: recuperer mon pv
       });
     },
