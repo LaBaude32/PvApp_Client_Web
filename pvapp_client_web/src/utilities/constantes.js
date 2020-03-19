@@ -35,12 +35,10 @@ const routesCONST = {
     path: "/test",
     name: "Test"
   }
-  
 };
 
-export const getpath = name => {
-  console.log(name);
-    return routesCONST[name].name;
-  }
+export const getRouteName = name => {
+  return routesCONST[name].name;
+};
 
 export default routesCONST;

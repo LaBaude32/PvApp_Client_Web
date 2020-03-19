@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */ /* eslint-disable prettier/prettier */
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawerRight" app clipped right>
@@ -68,8 +67,8 @@
 <script>
 import Axios from "axios";
 import { mapGetters } from "vuex";
-import routesCONST from "./utilities/constantes";
-import { getpath } from "./utilities/constantes";
+// import routesCONST from "./utilities/constantes";
+import { getRouteName } from "./utilities/constantes";
 
 export default {
   data() {
@@ -84,30 +83,30 @@ export default {
       mainMenuItems: [
         //TODO: SESSION comment avoir une classe active ?
         {
-          path: routesCONST.home.name,
+          path: getRouteName("home"),
           title: "Pv App",
           icon: "mdi-home",
           color: "blue darken-2"
         },
         {
-          path: routesCONST.board.name,
-          title: routesCONST.board.name,
+          path: getRouteName("board"),
+          title: getRouteName("board"),
           icon: "mdi-clipboard-pulse"
         },
         {
-          path: routesCONST.user.name,
+          path: getRouteName("user"),
           title: "Personnes",
           icon: "mdi-account",
           color: ""
         },
         {
-          path: routesCONST.about.name,
+          path: getRouteName("about"),
           title: "A propos",
           icon: "mdi-information",
           color: ""
         },
         {
-          path: getpath("test"),
+          path: getRouteName("test"),
           title: "page TEST",
           icon: "mdi-alert",
           color: "orange"
@@ -137,9 +136,8 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
-      if(error.response.status == 401) {
+      if (error.response.status == 401) {
         console.log(error);
-        
       }
       //FIXME: SESSION : en fait je n'ai pas accès à l'erreur parce que c'est webpack qui me la catch
       // this.$store.dispatch("auth/authLogout");
@@ -153,7 +151,7 @@ export default {
         ) {
           // if you ever get an unauthorized, logout the user
           this.$store.dispatch("auth/authLogout");
-          this.$router.push(routesCONST.login.name);
+          this.$router.push(getRouteName("login"));
           // you can also redirect to /login if needed !
         }
         throw error;
