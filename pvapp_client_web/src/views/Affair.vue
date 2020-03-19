@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="affair">
     <h3>Affaire : {{ affair.affair_infos.name }}</h3>
     <p>Adresse : {{ affair.affair_infos.address }}</p>
     <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
@@ -28,10 +28,10 @@
           </v-btn>
         </template>
         <template v-slot:item.meeting_date="{ item }">
-          <v-text>{{ item.meeting_date | formatDate }}</v-text>
+          <div>{{ item.meeting_date | formatDate }}</div>
         </template>
         <template v-slot:item.meeting_next_date="{ item }">
-          <v-text>{{ item.meeting_next_date | formatDate }}</v-text>
+          <div>{{ item.meeting_next_date | formatDate }}</div>
         </template>
         <template v-slot:item.state="{ item }">
           <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
