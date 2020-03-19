@@ -136,23 +136,15 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
-      if (error.response.status == 401) {
-        console.log(error);
-      }
-      //FIXME: SESSION : en fait je n'ai pas accès à l'erreur parce que c'est webpack qui me la catch
-      // this.$store.dispatch("auth/authLogout");
-      // this.$router.push(routesCONST.login.name);
-      alert("erreur 401");
       return new Promise(function() {
         if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
+          error.response.status === 401 &&
+          error.response.config &&
+          !error.response.config.__isRetryRequest
         ) {
           // if you ever get an unauthorized, logout the user
           this.$store.dispatch("auth/authLogout");
           this.$router.push(getRouteName("login"));
-          // you can also redirect to /login if needed !
         }
         throw error;
       });
