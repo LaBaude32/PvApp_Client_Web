@@ -136,6 +136,7 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
+      console.log(error.response);
       return new Promise(function() {
         if (
           error.response.status === 401 &&
