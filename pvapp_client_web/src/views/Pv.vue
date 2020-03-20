@@ -1,11 +1,13 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="items" sort-by="position" class="elevation-1">
+      <v-data-table :headers="headers" :items="items" sort-by="position" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }} </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="800px">
               <template v-slot:activator="{ on }">
@@ -19,10 +21,13 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field v-model="editedItem.position" label="Position" min="1" type="number"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
+                        <v-text-field v-model="editedItem.lot" label="Lot" min="1" type="number"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
                         <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
@@ -56,6 +61,9 @@
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch"></v-switch>
         </template>
+        <template v-slot:item.completion_date="{ item }">
+          {{ item.completion_date | formatDate }}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -69,18 +77,21 @@
         </template>
       </v-data-table>
     </v-card>
-
-    <v-divider class="mt-10 mb-3"></v-divider>
-    <!-- TODO: mettre les users dans un tableau -->
-    {{ items }}
+    <v-divider class="my-10"></v-divider>
+    <Users v-bind:users="pvUsers" />
   </div>
 </template>
 
 <script>
 import Axios from "axios";
+import Users from "@/components/Users.vue";
 export default {
+  components: {
+    Users
+  },
   data() {
     return {
+      search: "",
       idPv: "",
       pvDetails: {},
       pvUsers: [],
@@ -91,6 +102,7 @@ export default {
           align: "start",
           value: "position"
         },
+        { text: "Lot", value: "lot", sortable: false }, //TODO: Ajouter les lots
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
@@ -102,6 +114,8 @@ export default {
       items: [],
       editedIndex: -1,
       editedItem: {
+        position: "",
+        lot: "",
         name: "",
         note: "",
         follow_up: "",
@@ -111,6 +125,8 @@ export default {
         visible: ""
       },
       defaultItem: {
+        position: "",
+        lot: "",
         name: "",
         note: "",
         follow_up: "",
@@ -124,9 +140,6 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
-    },
-    test(){
-      return this.items;
     }
   },
   watch: {
@@ -135,7 +148,7 @@ export default {
     }
   },
   created() {
-    this.initialize(); //TODO: SESSION pourquoi les données ne s'affichent pas au chargement?
+    this.initialize();
   },
   methods: {
     initialize() {
@@ -149,7 +162,6 @@ export default {
         this.items = response.data.items;
         this.pvDetails = response.data.pv_details;
         this.pvUsers = response.data.users;
-        //TODO: recuperer mon pv
       });
     },
 
