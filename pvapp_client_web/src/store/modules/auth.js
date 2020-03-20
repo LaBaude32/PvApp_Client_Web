@@ -1,5 +1,6 @@
 import axios from "axios";
 import router from "./../../router";
+import { getRouteName } from "./../../utilities/constantes";
 
 const state = {
   token_type: "",
@@ -96,7 +97,6 @@ const actions = {
   },
   authLogout({ commit, dispatch }) {
     return new Promise(resolve => {
-
       localStorage.removeItem("user-token");
       localStorage.removeItem("fullName");
       localStorage.removeItem("isAuthenticated");
@@ -105,6 +105,7 @@ const actions = {
       commit("AUTH_LOGOUT");
       dispatch("user/logout", null, { root: true });
       delete axios.defaults.headers.common["Authorization"];
+      router.push(getRouteName("login"));
       resolve();
     });
   }

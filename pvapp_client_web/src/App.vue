@@ -77,7 +77,7 @@ export default {
       drawerRight: false,
       items: [
         { path: "MyAccount", title: "Mon Compte" },
-        { path: "Board", title: "Board" },
+        { path: getRouteName("board"), title: "Board" },
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
@@ -137,15 +137,10 @@ export default {
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
       console.log(error.response);
-      return new Promise(function() {
-        if (
-          error.response.status === 401 &&
-          error.response.config &&
-          !error.response.config.__isRetryRequest
-        ) {
+      return new Promise(() => {
+        if (error.response.status === 401) {
           // if you ever get an unauthorized, logout the user
           this.$store.dispatch("auth/authLogout");
-          this.$router.push(getRouteName("login"));
         }
         throw error;
       });
