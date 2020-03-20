@@ -14,13 +14,16 @@
     <v-card class="d-inline-block mx-auto ma-5 ml-5 mr-5" max-width="400" outlined v-for="pv in pvs" v-bind:key="pv.id">
       <v-list-item three-line>
         <v-list-item-content>
-          <v-list-item-title class="headline mb-1">Affaire : {{pv.affair_name}}</v-list-item-title>
+          <v-list-item-title class="headline mb-1">Affaire : {{ pv.affair_name }}</v-list-item-title>
           <v-list-item-subtitle>Date de la réunion : {{ pv.meeting_date | formatDate}}</v-list-item-subtitle>
           <v-card-text class="text--primary">
-            <v-btn class="ma-2" color="green darken-1" dark @click="openPv(pv.id_pv)">Terminé
-              <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
+            <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openPv(pv.id_pv)">{{ pv.state }}
+              <v-icon right>mdi-checkbox-marked-circle</v-icon>
             </v-btn>
-            <p> Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</p>
+            <v-btn v-else class="ma-2" color="orange darken-3" dark @click="openPv(pv.id_pv)">{{ pv.state }}
+              <v-icon right>mdi-autorenew</v-icon>
+            </v-btn>
+            <div v-if="pv.meeting_next_date">Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</div>
           </v-card-text>
         </v-list-item-content>
       </v-list-item>
