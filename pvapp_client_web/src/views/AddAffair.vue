@@ -4,13 +4,13 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="name" :counter="20" label="Nom de l'affaire" required></v-text-field>
+            <v-text-field v-model="name" :counter="50" label="Nom de l'affaire" :rules="nameRules"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="address" :counter="20" label="Adresse de l'affaire" required></v-text-field>
+            <v-text-field v-model="address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-combobox v-model="meeting_type" :items="items" label="Type de réunion" required></v-combobox>
+            <v-combobox v-model="meeting_type" :items="items" label="Type de réunion" :rules="meetingRules"></v-combobox>
           </v-col>
         </v-row>
       </v-container>
@@ -31,7 +31,20 @@ import moment from "moment";
 
 export default {
   data: () => ({
-    valid: true,
+    valid: false,
+    nameRules: [
+      v => !!v || "Requis",
+      v => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
+      v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
+    ],
+    addressRules: [
+      v => !!v || "Requis",
+      v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
+    ],
+    meetingRules: [
+      v => !!v || "Requis",
+      v => v == "Chantier" || v == "Etude" || "Choisir dans la liste"
+    ],
     name: "",
     address: "",
     meeting_type: "",
