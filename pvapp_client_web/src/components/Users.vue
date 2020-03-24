@@ -10,7 +10,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">Ajouter une personne</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-on="on">Créer une nouvelle personne</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -19,6 +19,7 @@
 
               <v-card-text>
                 <v-container>
+                  <!-- TODO: comment mettre des règles dans ce form ? faut-il transformer en form ? -->
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field v-model="editedItem.firstName" label="Prénom"></v-text-field>
@@ -56,6 +57,49 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="dialog2" max-width="500px">
+            <template v-slot:activator="{ on }">
+              <v-btn color="green" dark class="mb-2 ml-2" v-on="on">Ajouter une personne de votre répertoire</v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">Choisir dans votre répertoire</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-combobox v-model="connectedUser" :items="connectedUsers" item-text="fullName" item-value="user_id" label="Personne"></v-combobox>
+                    </v-col>
+                    <v-row v-if="connectedUser">
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="connectedUser.phone" label="Téléphone" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="connectedUser.function" label="Fonction" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="connectedUser.organism" label="Organisme" readonly></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close2">Annuler</v-btn>
+                <v-btn color="blue darken-1" text @click="save2">Enregistrer</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item.status="{ item }">
@@ -77,7 +121,8 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Mettre à jour</v-btn>
+        <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'utilisateurs pour ce PV</p>
+        <!-- <v-btn color="primary" class="mb-4" @click="initialize">Afficher</v-btn> -->
       </template>
     </v-data-table>
   </v-card>
@@ -91,7 +136,31 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    dialog2: false,
     users: [],
+    connectedUser: "",
+    connectedUsers: [
+      {
+        user_id: 1,
+        fullName: "Baud Coup",
+        firstName: "Baud",
+        lastName: "Coup",
+        email: "baud@baud.fr",
+        phone: "0675",
+        function: "dev",
+        organism: "SAS"
+      },
+      {
+        user_id: 2,
+        fullName: "Omb Bolo",
+        firstName: "Omb",
+        lastName: "Bolo"
+      },
+      {
+        user_id: 3,
+        fullName: "Sam Coup"
+      }
+    ],
     headers: [
       {
         text: "Prénom Nom",
@@ -100,10 +169,10 @@ export default {
       },
       { text: "Fonction", value: "function" },
       { text: "Organisme", value: "organism" },
-      { text: "Mail", value: "email" },
-      { text: "Téléphone", value: "phone" },
+      { text: "Mail", value: "email", sortable: false },
+      { text: "Téléphone", value: "phone", sortable: false },
       { text: "Statut", value: "status" },
-      { text: "Modifier", value: "actions" }
+      { text: "Modifier", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     editedItem: {
@@ -134,6 +203,9 @@ export default {
 
   watch: {
     dialog(val) {
+      val || this.close();
+    },
+    dialog2(val) {
       val || this.close();
     }
   },
@@ -183,6 +255,23 @@ export default {
         this.users.push(this.editedItem);
       }
       this.close();
+    },
+
+    close2() {
+      this.dialog2 = false;
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      }, 300);
+    },
+
+    save2() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.users[this.editedIndex], this.editedItem);
+      } else {
+        this.users.push(this.connectedUser);
+      }
+      this.close2();
     }
   }
 };
