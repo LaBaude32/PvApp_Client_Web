@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import store from "../store/index";
-import routesCONST from "../utilities/constantes";
+import routesCONST, { getRouteName, getRoutePath } from "../utilities/constantes";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters["auth/isAuthenticated"]) {
@@ -86,6 +86,13 @@ const routes = [
     name: routesCONST.addAffair.name,
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AddAffair.vue"),
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: getRoutePath("addPv"),
+    name: getRouteName("addPv"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/AddPv.vue"),
     beforeEnter: ifAuthenticated
   },
   {

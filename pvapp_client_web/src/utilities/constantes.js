@@ -31,6 +31,10 @@ const routesCONST = {
     path: "/addAffair",
     name: "AddAffair"
   },
+  addPv: {
+    path: "/addPv",
+    name: "AddPv"
+  },
   test: {
     path: "/test",
     name: "Test"
@@ -39,6 +43,10 @@ const routesCONST = {
 
 export const getRouteName = name => {
   return routesCONST[name].name;
+};
+
+export const getRoutePath = path => {
+  return routesCONST[path].path;
 };
 
 export default routesCONST;
