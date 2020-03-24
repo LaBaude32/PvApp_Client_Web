@@ -39,8 +39,8 @@
                       <v-text-field v-model="editedItem.phone" label="Téléphone"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-radio-group v-model="editedItem.status" label="Status" row>
-                        <v-radio value="Présent" label="Present"></v-radio>
+                      <v-radio-group v-model="editedItem.status" label="Statut" row>
+                        <v-radio value="Présent" label="Présent"></v-radio>
                         <v-radio value="Absent" label="Absent"></v-radio>
                         <v-radio value="Excusé" label="Excusé"></v-radio>
                       </v-radio-group>
@@ -60,7 +60,7 @@
       </template>
       <template v-slot:item.status="{ item }">
         <v-radio-group v-model="item.status" row>
-          <v-radio value="Présent" label="Present"></v-radio>
+          <v-radio value="Présent" label="Présent"></v-radio>
           <v-radio value="Absent" label="Absent"></v-radio>
           <v-radio value="Excusé" label="Excusé"></v-radio>
         </v-radio-group>
@@ -95,14 +95,14 @@ export default {
     headers: [
       {
         text: "Prénom Nom",
-        align: "start", //TODO: à quoi sert cette propriété ?
+        align: "start",
         value: "fullName"
       },
       { text: "Fonction", value: "function" },
       { text: "Organisme", value: "organism" },
       { text: "Mail", value: "email" },
       { text: "Téléphone", value: "phone" },
-      { text: "Status", value: "status" },
+      { text: "Statut", value: "status" },
       { text: "Modifier", value: "actions" }
     ],
     editedIndex: -1,
