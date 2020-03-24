@@ -51,7 +51,7 @@
 
 <script>
 const axios = require("axios");
-import routesCONST from "../utilities/constantes";
+import routesCONST, { getRouteName } from "../utilities/constantes";
 
 import { mapState } from "vuex";
 export default {
@@ -68,10 +68,7 @@ export default {
   },
   methods: {
     openAffair(affairId) {
-      this.$router.push({
-        name: routesCONST.affair.name,
-        params: { id: affairId }
-      });
+      this.$store.dispatch("affair/loadAffair", affairId);
     },
     openPv(pvId) {
       this.$router.push({
@@ -83,7 +80,7 @@ export default {
       this.$router.push({ name: routesCONST.addAffair.name });
     },
     createPv() {
-      this.$router.push({ name: routesCONST.addPv.name });
+      this.$router.push(getRouteName("addPv"));
     }
   },
   mounted() {
@@ -122,7 +119,7 @@ export default {
           console.log(error);
         });
     } else {
-      //TODO: Connectez vous, => page de connexion
+      this.$store.dispatch("auth/authLogout");
     }
   }
 };
