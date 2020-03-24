@@ -14,15 +14,14 @@
             <v-toolbar-title>Connexion</v-toolbar-title>
             <v-spacer />
           </v-toolbar>
-          <v-form>
+          <v-form v-model="valid">
             <v-card-text>
-              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email"/>
-              <!-- TODO: SESSION :rules="[rules.required, rules.email]" pourquoi ça ne fonctionne pas ? -->
-              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" />
+              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
+              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules"/>
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <v-btn color="primary" @click.prevent="login">Connexion</v-btn>
+              <v-btn :disabled="!valid" color="primary" @click.prevent="login">Connexion</v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -37,6 +36,18 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      valid: false,
+      emailRules: [
+        v => !!v || "Requis",
+        v => /.+@.+\..+/.test(v) || "Le mail doit être valide",
+      ],
+      pwdRules: [
+        v => !!v || "Requis"
+        // v => v.lenght >=8 || "Il doit y avoir plus de 8 caracères"
+        // v => /(?=.*[A-Z])/.test(v) || 'Must have one uppercase character',
+        // v => /(?=.*\d)/.test(v) || 'Must have one number',
+        // v => /([!@$%])/.test(v) || 'Must have one special character [!@#$%]'
+      ],
       showPassword: false,
       email: null,
       password: null,
@@ -47,8 +58,6 @@ export default {
   },
   methods: {
     login() {
-      //TODO: SESSION verifier que l'email est au bon format, et vérifier que le mot de passe est rempli
-      // -> Mettre des rules
       const dt = {
         email: this.email,
         password: this.password
