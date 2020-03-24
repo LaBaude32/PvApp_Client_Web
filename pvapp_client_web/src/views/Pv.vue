@@ -82,7 +82,6 @@
         </template>
       </v-data-table>
     </v-card>
-    {{ meeting_type }}
     <v-divider class="my-10"></v-divider>
     <Users v-bind:users="pvUsers" />
   </div>
@@ -109,14 +108,14 @@ export default {
           align: "start",
           value: "position"
         },
-        { text: "Lot", value: "lot", sortable: false },
+        { text: "Lot", value: "lot" },
         //TODO: Récuperer les lots via l'API
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
         { text: "Echeance", value: "completion", sortable: false },
-        { text: "Date d'echéance", value: "completion_date", sortable: false },
-        { text: "Visible", value: "visible", sortable: false },
+        { text: "Date d'echéance", value: "completion_date" },
+        { text: "Visible", value: "visible" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       items: [],
@@ -152,6 +151,10 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     }
+    // maxPosition() {
+    // return Math.max(...this.items.map(items => items.position)) +1;
+    // }
+    // TODO: SESSION Faire fonctionner ça
   },
   watch: {
     dialog(val) {
