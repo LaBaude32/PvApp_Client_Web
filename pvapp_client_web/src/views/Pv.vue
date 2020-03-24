@@ -24,7 +24,7 @@
                       <v-col cols="12" sm="4" md="4">
                         <v-text-field v-model="editedItem.position" label="Position" min="1" type="number"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="4" md="4">
+                      <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
                         <v-text-field v-model="editedItem.lot" label="Lot" min="1" type="number"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
@@ -58,6 +58,10 @@
             </v-dialog>
           </v-toolbar>
         </template>
+        <template v-slot:header.lot="{ header }" v-if="meeting_type == 'Chantier'">
+          {{ header.text.toUpperCase() }}
+          <!-- TODO: SESSION ne fonctionne pas -->
+        </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch"></v-switch>
         </template>
@@ -73,10 +77,12 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">Afficher</v-btn>
+          <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
+          <!-- <v-btn color="primary" class="mb-4" @click="initialize">Afficher</v-btn> -->
         </template>
       </v-data-table>
     </v-card>
+    {{ meeting_type }}
     <v-divider class="my-10"></v-divider>
     <Users v-bind:users="pvUsers" />
   </div>
@@ -85,6 +91,7 @@
 <script>
 import Axios from "axios";
 import Users from "@/components/Users.vue";
+import { mapGetters } from "vuex";
 export default {
   components: {
     Users
@@ -102,7 +109,8 @@ export default {
           align: "start",
           value: "position"
         },
-        { text: "Lot", value: "lot", sortable: false }, //TODO: Ajouter les lots
+        { text: "Lot", value: "lot", sortable: false },
+        //TODO: Récuperer les lots via l'API
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
@@ -138,6 +146,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("affair", {
+      meeting_type: "meeting_type"
+    }),
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     }
@@ -159,7 +170,9 @@ export default {
         }
       };
       Axios.get("getPvDetails", dt).then(response => {
-        this.items = response.data.items;
+        if (typeof response.data.items !== "string") {
+          this.items = response.data.items;
+        }
         this.pvDetails = response.data.pv_details;
         this.pvUsers = response.data.users;
       });
