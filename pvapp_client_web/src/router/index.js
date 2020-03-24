@@ -96,6 +96,12 @@ const routes = [
     beforeEnter: ifAuthenticated
   },
   {
+    path: getRoutePath("addUser"),
+    name: getRouteName("addUser"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/AddUser.vue")
+  },
+  {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
     component: () => import(/* webpackChunkName: "about" */ "../views/Test.vue")

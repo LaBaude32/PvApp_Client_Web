@@ -100,6 +100,12 @@ export default {
           color: ""
         },
         {
+          path: getRouteName("addUser"),
+          title: "Créer une nouvelle personne",
+          icon: "mdi-account",
+          color: ""
+        },
+        {
           path: getRouteName("about"),
           title: "A propos",
           icon: "mdi-information",
