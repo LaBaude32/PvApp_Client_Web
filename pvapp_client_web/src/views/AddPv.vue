@@ -60,6 +60,7 @@
 import Axios from "axios";
 import moment from "moment";
 import { mapState } from "vuex";
+import routesCONST from "../utilities/constantes";
 // import DateTimePicker from "@/components/DateTimePicker.vue";
 
 export default {
@@ -80,6 +81,7 @@ export default {
           .substr(0, 2) + ":00",
       meeting_next_date_date: "",
       meeting_next_date_time: "",
+      meeting_next_date: "",
       affairs: [],
       state: "En cours",
       meeting_place: "",
@@ -94,15 +96,36 @@ export default {
   },
   methods: {
     validate() {
+      if (this.meeting_next_date_date == "empty string") {
+        this.meeting_next_date =
+          this.meeting_next_date_date +
+          " " +
+          this.meeting_next_date_time +
+          ":00";
+      } else {
+        this.meeting_next_date = null;
+      }
       let pvData = {
-        meeting_date: this.meeting_date_date + " " + this.meeting_date_time,
+        meeting_date:
+          this.meeting_date_date + " " + this.meeting_date_time + ":00",
         meeting_place: this.meeting_place,
         meeting_next_date: this.meeting_next_date,
         meeting_next_place: this.meeting_next_place,
         state: this.state,
-        affair_id: this.affair_id
+        affair_id: this.affair_id.id_affair
       };
-      Axios.post("addPv", pvData);
+      console.log(pvData);
+      Axios.post("addPv", pvData)
+        .then(response => {
+          let pvId = response.data.id_pv;
+          this.$router.push({
+            name: routesCONST.pv.name,
+            params: { id: pvId }
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     allowedStep: m => m % 5 === 0
   },
