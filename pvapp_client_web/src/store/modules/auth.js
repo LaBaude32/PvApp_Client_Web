@@ -107,7 +107,6 @@ const actions = {
       dispatch("user/logout", null, { root: true });
       delete axios.defaults.headers.common["Authorization"];
       router.push(routesCONST.login.name);
-      alert("authLogout");
       resolve();
     });
   }
