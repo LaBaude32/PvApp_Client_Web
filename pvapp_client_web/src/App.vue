@@ -15,6 +15,7 @@
 
     <v-app-bar app color="primary darken-1" clipped-right dark>
       <v-app-bar-nav-icon @click.stop="drawerMain = !drawerMain" />
+      <!-- //TODO: creer une fonction qui inverse la variable -->
       <v-toolbar-title>Menu</v-toolbar-title>
       <v-spacer />
       <div class="d-flex align-center">

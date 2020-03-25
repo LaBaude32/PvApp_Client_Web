@@ -58,10 +58,6 @@
             </v-dialog>
           </v-toolbar>
         </template>
-        <template v-slot:header.lot="{ header }" v-if="meeting_type == 'Chantier'">
-          {{ header.text.toUpperCase() }}
-          <!-- TODO: SESSION ne fonctionne pas -->
-        </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch"></v-switch>
         </template>
@@ -83,6 +79,7 @@
       </v-data-table>
     </v-card>
     <v-divider class="my-10"></v-divider>
+
     <Users v-bind:users="pvUsers" />
   </div>
 </template>
@@ -151,13 +148,10 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     }
-    // maxPosition() {
-    // return Math.max(...this.items.map(items => items.position)) +1;
-    // }
-    // TODO: SESSION Faire fonctionner ça
   },
   watch: {
     dialog(val) {
+      this.editedItem.position = this.maxPosition();
       val || this.close();
     }
   },
@@ -179,6 +173,9 @@ export default {
         this.pvDetails = response.data.pv_details;
         this.pvUsers = response.data.users;
       });
+    },
+    maxPosition() {
+      return Math.max(...this.items.map(items => items.position)) + 1;
     },
 
     editItem(item) {

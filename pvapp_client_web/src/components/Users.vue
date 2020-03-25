@@ -19,7 +19,7 @@
 
               <v-card-text>
                 <v-container>
-                  <!-- TODO: comment mettre des règles dans ce form ? faut-il transformer en form ? -->
+                  <!-- TODO: mettre des règles -->
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field v-model="editedItem.firstName" label="Prénom"></v-text-field>
@@ -102,6 +102,7 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      <!-- TODO: peut on regrouper les utilisateurs par groupe ? -->
       <template v-slot:item.status="{ item }">
         <v-radio-group v-model="item.status" row>
           <v-radio value="Présent" label="Présent"></v-radio>
@@ -129,15 +130,14 @@
 </template>
 
 <script>
-import Axios from "axios";
+// import Axios from "axios";
 export default {
   name: "Users",
-  // props: { users: Array }, //FIXME: SESSION me renvoie une erreur
+  props: { users: Array },
   data: () => ({
     search: "",
     dialog: false,
     dialog2: false,
-    users: [],
     connectedUser: "",
     connectedUsers: [
       {
@@ -210,24 +210,7 @@ export default {
     }
   },
 
-  created() {
-    this.initialize();
-  },
-
   methods: {
-    initialize() {
-      //TODO: Pas top, préférable de récuperer les données avec des props
-      this.idPv = this.$route.params.id;
-      let dt = {
-        params: {
-          id_pv: this.$route.params.id
-        }
-      };
-      Axios.get("getPvDetails", dt).then(response => {
-        this.users = response.data.users;
-      });
-    },
-
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
