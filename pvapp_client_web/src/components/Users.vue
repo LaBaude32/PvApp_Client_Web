@@ -29,19 +29,22 @@
                         <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.user_group" label="Groupe" :rules="standardRules" counter="30"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.organism" label="Organisme" :rules="standardRules" counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" counter="10"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-radio-group v-model="editedItem.status" label="Statut" :rules="statusRules" row>
+                      <v-col cols="12" sm="8" md="8">
+                        <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
+                        <v-radio-group v-model="editedItem.status" label="Statut" :rules="statusRules">
                           <v-radio value="Présent" label="Présent"></v-radio>
                           <v-radio value="Absent" label="Absent"></v-radio>
                           <v-radio value="Excusé" label="Excusé"></v-radio>
@@ -79,6 +82,9 @@
                       <v-row v-if="connectedUser">
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.user_group" label="Groupe" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
@@ -196,6 +202,11 @@ export default {
         align: "start",
         value: "fullName"
       },
+      {
+        text: "Groupe",
+        value: "user_group",
+        sortable: false
+      },
       { text: "Fonction", value: "function" },
       { text: "Organisme", value: "organism" },
       { text: "Mail", value: "email", sortable: false },
@@ -206,6 +217,7 @@ export default {
     editedIndex: -1,
     editedItem: {
       fullName: "",
+      user_group: "",
       function: "",
       organism: "",
       email: "",
@@ -214,6 +226,7 @@ export default {
     },
     defaultItem: {
       fullName: "",
+      user_group: "",
       function: "",
       organism: "",
       email: "",
