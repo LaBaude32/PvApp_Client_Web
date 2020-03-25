@@ -108,7 +108,7 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <!-- TODO: peut on regrouper les utilisateurs par groupe ? -->
+      <!-- TODO: SESSION peut on regrouper les utilisateurs par groupe ? -->
       <template v-slot:item.status="{ item }">
         <v-radio-group v-model="item.status" row>
           <v-radio value="Présent" label="Présent"></v-radio>

@@ -14,46 +14,49 @@
                 <v-btn color="primary" dark class="mb-2" v-on="on">Nouvel Item</v-btn>
               </template>
               <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
+                <v-form v-model="valid">
+                  <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                  </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="4" md="4">
-                        <v-text-field v-model="editedItem.position" label="Position" min="1" type="number"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                        <v-text-field v-model="editedItem.lot" label="Lot" min="1" type="number"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="4" md="4">
-                        <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-textarea v-model="editedItem.note" label="Note" counter auto-grow filled></v-textarea>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-textarea v-model="editedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.ressources" label="Ressources"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.completion" label="Echéance"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="4" md="4">
+                          <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
+                          <v-text-field v-model="editedItem.lot" label="Lot" min="1" type="number" :rules="standardRequirement"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="4" md="4">
+                          <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-textarea v-model="editedItem.note" label="Note" counter auto-grow filled :rules="standardRequirement"></v-textarea>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-textarea v-model="editedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="editedItem.ressources" label="Ressources"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <!-- <v-combobox v-model="editedItem.completion" :items="editedItem.completion" label="Echéance"></v-combobox> -->
+                          <v-text-field v-model="editedItem.completion" label="Echéance"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                  <v-btn color="blue darken-1" text @click="save">Enregister</v-btn>
-                </v-card-actions>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                    <v-btn :disabled="!valid" color="blue darken-1" text @click="save">Enregister</v-btn>
+                  </v-card-actions>
+                </v-form>
               </v-card>
             </v-dialog>
           </v-toolbar>
@@ -94,6 +97,8 @@ export default {
   },
   data() {
     return {
+      valid: false,
+      standardRequirement: [v => !!v || "Requis"],
       search: "",
       idPv: "",
       pvDetails: {},
@@ -135,6 +140,8 @@ export default {
         note: "",
         follow_up: "",
         resources: "",
+        // completion: ["A faire", "Urgent", "Fait"],
+        // TODO: SESSION : faire fonctionner ça
         completion: "",
         completion_date: "",
         visible: true
