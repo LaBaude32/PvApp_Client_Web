@@ -12,49 +12,52 @@
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Créer une nouvelle personne</v-btn>
             </template>
+
             <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
+              <v-form v-model="valid1">
+                <v-card-title>
+                  <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <!-- TODO: mettre des règles -->
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.firstName" label="Prénom"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.lastName" label="Nom"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.function" label="Fonction"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.organism" label="Organisme"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.email" label="Mail"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.phone" label="Téléphone"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-radio-group v-model="editedItem.status" label="Statut" row>
-                        <v-radio value="Présent" label="Présent"></v-radio>
-                        <v-radio value="Absent" label="Absent"></v-radio>
-                        <v-radio value="Excusé" label="Excusé"></v-radio>
-                      </v-radio-group>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.firstName" label="Prénom" :rules="nameRules" counter="30"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" counter="30"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" counter="30"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.organism" label="Organisme" :rules="standardRules" counter="30"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" counter="10"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-radio-group v-model="editedItem.status" label="Statut" :rules="statusRules" row>
+                          <v-radio value="Présent" label="Présent"></v-radio>
+                          <v-radio value="Absent" label="Absent"></v-radio>
+                          <v-radio value="Excusé" label="Excusé"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Enregistrer</v-btn>
-              </v-card-actions>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                  <v-btn :disabled="!valid1" color="blue darken-1" text @click="save">Enregistrer</v-btn>
+                </v-card-actions>
+              </v-form>
+
             </v-card>
           </v-dialog>
           <v-dialog v-model="dialog2" max-width="500px">
@@ -62,42 +65,45 @@
               <v-btn color="green" dark class="mb-2 ml-2" v-on="on">Ajouter une personne de votre répertoire</v-btn>
             </template>
             <v-card>
-              <v-card-title>
-                <span class="headline">Choisir dans votre répertoire</span>
-              </v-card-title>
+              <v-form v-model="valid2">
+                <v-card-title>
+                  <span class="headline">Choisir dans votre répertoire</span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-combobox v-model="connectedUser" :items="connectedUsers" item-text="fullName" item-value="user_id" label="Personne"></v-combobox>
-                    </v-col>
-                    <v-row v-if="connectedUser">
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-combobox v-model="connectedUser" :items="connectedUsers" item-text="fullName" item-value="user_id" label="Personne" :rules="standardRequirement"></v-combobox>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="connectedUser.phone" label="Téléphone" readonly></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="connectedUser.function" label="Fonction" readonly></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="connectedUser.organism" label="Organisme" readonly></v-text-field>
-                      </v-col>
+                      <v-row v-if="connectedUser">
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.phone" label="Téléphone" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.function" label="Fonction" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedUser.organism" label="Organisme" readonly></v-text-field>
+                        </v-col>
+                      </v-row>
                     </v-row>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close2">Annuler</v-btn>
-                <v-btn color="blue darken-1" text @click="save2">Enregistrer</v-btn>
-              </v-card-actions>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close2">Annuler</v-btn>
+                  <v-btn :disabled="!valid2" color="blue darken-1" text @click="save2">Enregistrer</v-btn>
+                </v-card-actions>
+              </v-form>
+
             </v-card>
           </v-dialog>
         </v-toolbar>
@@ -135,6 +141,29 @@ export default {
   name: "Users",
   props: { users: Array },
   data: () => ({
+    valid1: false,
+    valid2: false,
+    nameRules: [
+      v => !!v || "Requis",
+      v => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
+      v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
+    ],
+    standardRules: [
+      v => !!v || "Requis",
+      v => (v && v.length >= 3) || "Doit être supérieur 2 charactère",
+      v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
+    ],
+    emailRules: [
+      v => !!v || "Requis",
+      v => /.+@.+\..+/.test(v) || "Le mail doit être valide"
+    ],
+    phoneRules: [
+      v => !!v || "Requis",
+      v => (v && v.length == 10) || "Doit être égal à 10 charactère",
+      v => /\d/.test(v) || "Doit être consituté de chiffres uniquement"
+    ],
+    statusRules: [v => !!v || "Requis"],
+    standardRequirement: [v => !!v || "Requis"],
     search: "",
     dialog: false,
     dialog2: false,
