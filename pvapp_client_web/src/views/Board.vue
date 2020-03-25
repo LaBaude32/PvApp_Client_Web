@@ -71,10 +71,7 @@ export default {
       this.$store.dispatch("affair/loadAffair", affairId);
     },
     openPv(pvId) {
-      this.$router.push({
-        name: routesCONST.pv.name,
-        params: { id: pvId }
-      });
+      this.$store.dispatch("affair/openPv", pvId);
     },
     createAffair() {
       this.$router.push({ name: routesCONST.addAffair.name });

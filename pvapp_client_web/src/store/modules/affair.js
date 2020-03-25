@@ -43,6 +43,27 @@ const actions = {
         params: { id: this.state.affair.affairId }
       });
     });
+  },
+  openPv({ commit }, pvId) {
+    Axios.get("getPvDetails", {
+      params: {
+        id_pv: pvId
+      }
+    }).then(response => {
+      let affairId = response.data.pv_details.affair_id;
+      Axios.get("getAffairById", {
+        params: {
+          id_affair: affairId
+        }
+      }).then(response => {
+        let datas = response.data.affair_infos;
+        commit("LOAD_AFFAIR", datas);
+        router.push({
+          name: routesCONST.pv.name,
+          params: { id: pvId }
+        });
+      });
+    });
   }
 };
 
