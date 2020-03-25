@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawerRight" app clipped right>
       <v-list dense>
-        <v-list-item @click.stop="right = !right">
+        <v-list-item @click.stop="invertRight">
           <v-list-item-action>
             <v-icon>mdi-exit-to-app</v-icon>
           </v-list-item-action>
@@ -14,8 +14,7 @@
     </v-navigation-drawer>
 
     <v-app-bar app color="primary darken-1" clipped-right dark>
-      <v-app-bar-nav-icon @click.stop="drawerMain = !drawerMain" />
-      <!-- //TODO: creer une fonction qui inverse la variable -->
+      <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-toolbar-title>Menu</v-toolbar-title>
       <v-spacer />
       <div class="d-flex align-center">
@@ -39,7 +38,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight" />
+      <v-app-bar-nav-icon @click.stop="invertDrawerRight" />
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawerMain" app>
@@ -74,6 +73,7 @@ import { getRouteName } from "./utilities/constantes";
 export default {
   data() {
     return {
+      right: false,
       drawerMain: false,
       drawerRight: false,
       items: [
@@ -139,6 +139,15 @@ export default {
       } else {
         this.$router.push(path);
       }
+    },
+    invertRight() {
+      this.right = !this.right;
+    },
+    invertDrawerMain() {
+      this.drawerMain = !this.drawerMain;
+    },
+    invertDrawerRight() {
+      this.drawerRight = !this.drawerRight;
     }
   },
   created: function() {
