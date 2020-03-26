@@ -82,7 +82,7 @@ export default {
                   let PvHasUserData = {
                     pv_id: pvId,
                     user_id: this.$store.state.user.userId,
-                    status: "Présent"
+                    status_PAE: "Présent"
                   };
                   Axios.post("/addPvHasUser", PvHasUserData)
                     .then(response => {
