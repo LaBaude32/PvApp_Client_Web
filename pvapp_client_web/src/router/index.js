@@ -102,6 +102,12 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AddUser.vue")
   },
   {
+    path: getRoutePath("addLot"),
+    name: getRouteName("addLot"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/AddLot.vue")
+  },
+  {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
     component: () => import(/* webpackChunkName: "about" */ "../views/Test.vue")

@@ -39,6 +39,10 @@ const routesCONST = {
     path: "/addUser",
     name: "AddUser"
   },
+  addLot: {
+    path: "/addLot",
+    name: "AddLot"
+  },
   test: {
     path: "/test",
     name: "Test"
