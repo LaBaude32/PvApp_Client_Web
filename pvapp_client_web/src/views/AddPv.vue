@@ -1,66 +1,82 @@
 <template>
-  <v-form v-model="valid" ref="form">
-    <v-container>
-      <v-row>
-        <v-col cols="6" lg="6">
-          <v-menu v-model="menu1" :close-on-content-click="false" max-width="290">
-            <template v-slot:activator="{ on }">
-              <v-text-field :value="computedDateFormattedMeetingDate" label="Jour de la réunion" readonly v-on="on" @click:clear="meeting_date_date = null" prepend-icon="mdi-calendar"></v-text-field>
-            </template>
-            <v-date-picker v-model="meeting_date_date" @change="menu1 = false" locale="fr-fr"></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="6" sm="6">
-          <v-menu ref="menu" v-model="menu2" :close-on-content-click="false" :nudge-right="40" :return-value.sync="meeting_date_time" transition="scale-transition" offset-y max-width="290px" min-width="290px">
-            <template v-slot:activator="{ on }">
-              <v-text-field v-model="meeting_date_time" label="Heure de la réunion" prepend-icon="mdi-clock-outline" readonly v-on="on"></v-text-field>
-            </template>
-            <v-time-picker v-if="menu2" v-model="meeting_date_time" format="24hr" full-width @click:minute="$refs.menu.save(meeting_date_time)" :allowed-minutes="allowedStep"></v-time-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12">
-          <v-text-field v-model="meeting_place" counter label="Lieu de la réunion" :rules="addressRules"></v-text-field>
-        </v-col>
+  <div>
+    <v-form v-model="valid" ref="form" v-if="affairs != ''">
+      <v-container>
+        <v-row>
+          <v-col cols="6" lg="6">
+            <v-menu v-model="menu1" :close-on-content-click="false" max-width="290">
+              <template v-slot:activator="{ on }">
+                <v-text-field :value="computedDateFormattedMeetingDate" label="Jour de la réunion" readonly v-on="on" @click:clear="meeting_date_date = null" prepend-icon="mdi-calendar"></v-text-field>
+              </template>
+              <v-date-picker v-model="meeting_date_date" @change="menu1 = false" locale="fr-fr"></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6" sm="6">
+            <v-menu ref="menu" v-model="menu2" :close-on-content-click="false" :nudge-right="40" :return-value.sync="meeting_date_time" transition="scale-transition" offset-y max-width="290px" min-width="290px">
+              <template v-slot:activator="{ on }">
+                <v-text-field v-model="meeting_date_time" label="Heure de la réunion" prepend-icon="mdi-clock-outline" readonly v-on="on"></v-text-field>
+              </template>
+              <v-time-picker v-if="menu2" v-model="meeting_date_time" format="24hr" full-width @click:minute="$refs.menu.save(meeting_date_time)" :allowed-minutes="allowedStep"></v-time-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="meeting_place" counter label="Lieu de la réunion" :rules="addressRules"></v-text-field>
+          </v-col>
 
-        <v-col cols="6" lg="6">
-          <v-menu v-model="menu3" :close-on-content-click="false" max-width="290">
-            <template v-slot:activator="{ on }">
-              <v-text-field :value="computedDateFormattedMMeetingNextDate" clearable label="Jour de la prochaine réunion" readonly v-on="on" @click:clear="meeting_next_date_date = null" prepend-icon="mdi-calendar"></v-text-field>
-            </template>
-            <v-date-picker v-model="meeting_next_date_date" @change="menu3 = false" locale="fr-fr"></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="6" sm="6">
-          <v-menu ref="menu" v-model="menu4" :close-on-content-click="false" :nudge-right="40" :return-value.sync="meeting_next_date_time" transition="scale-transition" offset-y max-width="290px" min-width="290px">
-            <template v-slot:activator="{ on }">
-              <v-text-field v-model="meeting_next_date_time" label="Heure de la prochaine réunion" prepend-icon="mdi-clock-outline" readonly v-on="on" clearable></v-text-field>
-            </template>
-            <v-time-picker v-if="menu4" v-model="meeting_next_date_time" format="24hr" full-width @click:minute="$refs.menu.save(meeting_next_date_time)" :allowed-minutes="allowedStep"></v-time-picker>
-          </v-menu>
-        </v-col>
+          <v-col cols="6" lg="6">
+            <v-menu v-model="menu3" :close-on-content-click="false" max-width="290">
+              <template v-slot:activator="{ on }">
+                <v-text-field :value="computedDateFormattedMMeetingNextDate" clearable label="Jour de la prochaine réunion" readonly v-on="on" @click:clear="meeting_next_date_date = null" prepend-icon="mdi-calendar"></v-text-field>
+              </template>
+              <v-date-picker v-model="meeting_next_date_date" @change="menu3 = false" locale="fr-fr"></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6" sm="6">
+            <v-menu ref="menu" v-model="menu4" :close-on-content-click="false" :nudge-right="40" :return-value.sync="meeting_next_date_time" transition="scale-transition" offset-y max-width="290px" min-width="290px">
+              <template v-slot:activator="{ on }">
+                <v-text-field v-model="meeting_next_date_time" label="Heure de la prochaine réunion" prepend-icon="mdi-clock-outline" readonly v-on="on" clearable></v-text-field>
+              </template>
+              <v-time-picker v-if="menu4" v-model="meeting_next_date_time" format="24hr" full-width @click:minute="$refs.menu.save(meeting_next_date_time)" :allowed-minutes="allowedStep"></v-time-picker>
+            </v-menu>
+          </v-col>
 
-        <v-col cols="12">
-          <v-text-field v-model="meeting_next_place" counter label="Lieu de la prochaine réunion"></v-text-field>
-        </v-col>
-        <v-col cols="12">
-          <v-switch v-model="state" :label="state" role="switch" false-value="En cours" true-value="Terminé"></v-switch>
-        </v-col>
-        <v-col cols="12">
-          <v-combobox v-model="affair_id" :items="affairs" item-text="name" item-value="id_affair" label="Affaire" :rules="affairRules"></v-combobox>
-        </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="meeting_next_place" counter label="Lieu de la prochaine réunion"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-switch v-model="state" :label="state" role="switch" false-value="En cours" true-value="Terminé"></v-switch>
+          </v-col>
+          <v-col cols="12">
+            <v-combobox v-model="affair_id" :items="affairs" item-text="name" item-value="id_affair" label="Affaire" :rules="affairRules"></v-combobox>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
+        Valider
+      </v-btn>
+    </v-form>
+    <div v-else>
+      <v-row justify="center">
+        <v-alert type="warning" border="top" prominent class="pa-10">
+          Vous n'avez pas encore d'affaire <br />
+          Veuillez commancer par en créer une
+        </v-alert>
+
       </v-row>
-    </v-container>
-    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-      Valider
-    </v-btn>
-  </v-form>
+      <v-row justify="center">
+        <v-btn color="success darken-1" dark @click="createAffair">
+          <v-icon left>mdi-pencil</v-icon>Créer une affaire
+        </v-btn>
+      </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
 import Axios from "axios";
 import moment from "moment";
 import { mapState } from "vuex";
-import routesCONST from "../utilities/constantes";
+import routesCONST, { getRouteName } from "../utilities/constantes";
 // import DateTimePicker from "@/components/DateTimePicker.vue";
 
 export default {
@@ -69,6 +85,7 @@ export default {
   // },
   data() {
     return {
+      dialog: false,
       valid: false,
       menu1: false,
       menu2: false,
@@ -95,6 +112,9 @@ export default {
     };
   },
   methods: {
+    createAffair() {
+      this.$router.push(getRouteName("addAffair"));
+    },
     validate() {
       if (this.meeting_next_date_date == "empty string") {
         this.meeting_next_date =
@@ -140,7 +160,6 @@ export default {
       Axios.get("getAffairsByUserId", dtAffairs)
         .then(function(response) {
           // handle success
-          console.log(response.data);
           self.affairs = response.data;
         })
         .catch(function(error) {

@@ -10,42 +10,50 @@
         Ajouter un Pv
       </v-btn>
     </v-toolbar>
-    <h2>Vos 3 derniers PV :</h2>
-    <v-card class="d-inline-block mx-auto ma-5 ml-5 mr-5" max-width="400" outlined v-for="pv in pvs" v-bind:key="pv.id">
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title class="headline mb-1">Affaire : {{ pv.affair_name }}</v-list-item-title>
-          <v-list-item-subtitle>Date de la réunion : {{ pv.meeting_date | formatDate}}</v-list-item-subtitle>
-          <v-card-text class="text--primary">
-            <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openPv(pv.id_pv)">{{ pv.state }}
-              <v-icon right>mdi-checkbox-marked-circle</v-icon>
-            </v-btn>
-            <v-btn v-else class="ma-2" color="orange darken-3" dark @click="openPv(pv.id_pv)">{{ pv.state }}
-              <v-icon right>mdi-autorenew</v-icon>
-            </v-btn>
-            <div v-if="pv.meeting_next_date">Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</div>
-          </v-card-text>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card>
-    <h2>Vos affaires en cours :</h2>
-    <v-card class="d-inline-block mx-auto ma-5 mr-5 ml-5" max-width="400" outlined v-for="affair in affairs" v-bind:key="affair.id_affair">
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title class="headline mb-1">{{affair.name}}</v-list-item-title>
-          <v-list-item-subtitle>{{affair.meeting_type}}</v-list-item-subtitle>
-          <v-list-item-subtitle>{{affair.address}}</v-list-item-subtitle>
-          <v-card-text class="text--primary">
-            <div class="text-center">
-              <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{affair.progress}} %</v-progress-circular>
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="openAffair(affair.id_affair)">Ouvrir</v-btn>
-          </v-card-actions>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card>
+    <div v-if="pvs != ''">
+      <h2>Vos 3 derniers PV :</h2>
+      <v-card class="d-inline-block mx-auto ma-5 ml-5 mr-5" max-width="400" outlined v-for="pv in pvs" v-bind:key="pv.id">
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title class="headline mb-1">Affaire : {{ pv.affair_name }}</v-list-item-title>
+            <v-list-item-subtitle>Date de la réunion : {{ pv.meeting_date | formatDate}}</v-list-item-subtitle>
+            <v-card-text class="text--primary">
+              <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openPv(pv.id_pv)">{{ pv.state }}
+                <v-icon right>mdi-checkbox-marked-circle</v-icon>
+              </v-btn>
+              <v-btn v-else class="ma-2" color="orange darken-3" dark @click="openPv(pv.id_pv)">{{ pv.state }}
+                <v-icon right>mdi-autorenew</v-icon>
+              </v-btn>
+              <div v-if="pv.meeting_next_date">Prochaine réunion : {{ pv.meeting_next_date | formatDate}}</div>
+            </v-card-text>
+          </v-list-item-content>
+        </v-list-item>
+      </v-card>
+    </div>
+    <div v-if="affairs != ''">
+      <h2>Vos affaires en cours :</h2>
+      <v-card class="d-inline-block mx-auto ma-5 mr-5 ml-5" max-width="400" outlined v-for="affair in affairs" v-bind:key="affair.id_affair">
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title class="headline mb-1">{{affair.name}}</v-list-item-title>
+            <v-list-item-subtitle>{{affair.meeting_type}}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{affair.address}}</v-list-item-subtitle>
+            <v-card-text class="text--primary">
+              <div class="text-center">
+                <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{affair.progress}} %</v-progress-circular>
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn @click="openAffair(affair.id_affair)">Ouvrir</v-btn>
+            </v-card-actions>
+          </v-list-item-content>
+        </v-list-item>
+      </v-card>
+    </div>
+    <div v-else>
+      <p class="title">Vous n'avez pas encore d'affaires ou de pvs.</p>
+      <p>Veuillez commencer par créer une <span class="font-weight-bold">affaire</span> en cliquant sur le bouton ci-dessus</p>
+    </div>
   </div>
 </template>
 
