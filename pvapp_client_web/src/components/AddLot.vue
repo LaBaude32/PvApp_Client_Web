@@ -25,6 +25,7 @@
 
 <script>
 import Axios from "axios";
+import { mapState } from "vuex";
 export default {
   name: "AddLot",
   data() {
@@ -63,6 +64,11 @@ export default {
       this.$store.dispatch("auth/authLogout");
     }
   },
+  computed: {
+    ...mapState("user", {
+      userId: "userId"
+    })
+  },
   methods: {
     addLot() {
       this.numberLots++;
@@ -72,7 +78,14 @@ export default {
       this.lots.pop();
     },
     validate() {
-      // Axios.post("addLot");
+      let dataToSend = {
+        affair_id: this.affair_id.id_affair,
+        lots_name: this.lots
+      };
+      console.log(dataToSend);
+      Axios.post("addLot", dataToSend).then(response => {
+        console.log(response);
+      });
     },
     reset() {
       this.$refs.form.reset();

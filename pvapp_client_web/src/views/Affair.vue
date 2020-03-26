@@ -9,9 +9,9 @@
     </div>
     <v-divider class="mt-10"></v-divider>
     <h3 class="mt-5">Lots :</h3>
-    <v-list-item v-for="lot in affair.lots" v-bind:key="lot.id">
+    <v-list-item v-for="(lot, index) in affair.lots" v-bind:key="lot.id">
       <v-list-item-content>
-        <p>{{ lot.id_lot }} - {{ lot.name }}</p>
+        <p>{{ index + 1 }} - {{ lot.name }}</p>
       </v-list-item-content>
     </v-list-item>
     <v-divider class="mt-5 mb-10"></v-divider>
