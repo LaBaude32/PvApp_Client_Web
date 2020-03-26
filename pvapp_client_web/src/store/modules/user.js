@@ -31,10 +31,10 @@ const mutations = {
     state.userId = datas.userId;
   },
   ERROR_CO(state) {
-    state.result = "errorId";
+    state.resultCo = "errorId";
   },
   ERROR_ID(state) {
-    state.result = "errorConnection";
+    state.resultCo = "errorConnection";
   },
   LOGOUT(state) {
     state.resultCo = "";
@@ -73,6 +73,9 @@ const actions = {
   },
   logout({ commit }) {
     commit("LOGOUT");
+  },
+  errorId({ commit }) {
+    commit("ERROR_CO");
   }
 };
 

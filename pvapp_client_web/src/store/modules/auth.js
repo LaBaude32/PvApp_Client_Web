@@ -109,6 +109,9 @@ const actions = {
       router.push(routesCONST.login.name);
       resolve();
     });
+  },
+  authError({ dispatch }) {
+    dispatch("user/errorId", null, { root: true });
   }
 };
 

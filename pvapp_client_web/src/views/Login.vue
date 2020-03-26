@@ -17,7 +17,7 @@
           <v-form v-model="valid">
             <v-card-text>
               <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
-              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules"/>
+              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules" />
             </v-card-text>
             <v-card-actions>
               <v-spacer />
@@ -39,7 +39,7 @@ export default {
       valid: false,
       emailRules: [
         v => !!v || "Requis",
-        v => /.+@.+\..+/.test(v) || "Le mail doit être valide",
+        v => /.+@.+\..+/.test(v) || "Le mail doit être valide"
       ],
       pwdRules: [
         v => !!v || "Requis"
