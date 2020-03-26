@@ -107,6 +107,12 @@ export default {
           color: ""
         },
         {
+          path: getRouteName("addLot"),
+          title: "Créer un lot",
+          icon: "mdi-account",
+          color: ""
+        },
+        {
           path: getRouteName("about"),
           title: "A propos",
           icon: "mdi-information",
@@ -155,8 +161,12 @@ export default {
       console.log(error.response);
       return new Promise(() => {
         if (error.response.status === 401) {
-          // if you ever get an unauthorized, logout the user
-          this.$store.dispatch("auth/authLogout");
+          if (error.response.config.url == "/tokens") {
+            this.$store.dispatch("auth/authError");
+          } else {
+            // if you ever get an unauthorized, logout the user
+            this.$store.dispatch("auth/authLogout");
+          }
         }
         throw error;
       });
