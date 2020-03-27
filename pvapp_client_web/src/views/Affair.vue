@@ -47,6 +47,7 @@
 </template>
 
 <script>
+//TODO: ajouter la modification des lots
 import Axios from "axios";
 import routesCONST from "../utilities/constantes";
 export default {

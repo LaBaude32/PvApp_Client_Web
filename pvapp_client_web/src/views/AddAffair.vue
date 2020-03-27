@@ -25,8 +25,6 @@
 </template>
 
 <script>
-//TODO: ajouter la création de lots --> mettre dans un composant et ajouter un fomulaire de création de lots
-
 import Axios from "axios";
 import routesCONST from "../utilities/constantes";
 import moment from "moment";
