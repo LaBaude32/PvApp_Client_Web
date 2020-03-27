@@ -33,6 +33,7 @@
 <script>
 // const axios = require("axios");
 import { mapGetters } from "vuex";
+const MD5 = require("md5.js");
 export default {
   data() {
     return {
@@ -60,7 +61,7 @@ export default {
     login() {
       const dt = {
         email: this.email,
-        password: this.password
+        password: new MD5().update(this.password).digest("hex")
       };
       this.$store.dispatch("auth/authRequest", dt).then(() => {
         window.setTimeout(() => {
