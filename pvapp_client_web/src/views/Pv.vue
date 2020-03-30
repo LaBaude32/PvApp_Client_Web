@@ -26,7 +26,8 @@
                           <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                          <v-text-field v-model="editedItem.lot" label="Lot" min="1" type="number" :rules="standardRequirement"></v-text-field>
+                          <v-text-field v-model="editedItem.lot" label="Lot" min="1" :rules="standardRequirement"></v-text-field>
+                          <!-- TODO: changer en combobox et récuperer les différents lots possibles, avec des etiquettes -->
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
                           <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
@@ -60,6 +61,11 @@
               </v-card>
             </v-dialog>
           </v-toolbar>
+        </template>
+        <template v-slot:item.lots="{ item }">
+          <div v-for="lot in item.lots" :key="lot.id">
+            {{ lot.name }}
+          </div>
         </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch"></v-switch>
@@ -110,8 +116,7 @@ export default {
           align: "start",
           value: "position"
         },
-        { text: "Lot", value: "lot" },
-        //TODO: Récuperer les lots via l'API
+        { text: "Lot", value: "lots" },
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
@@ -124,7 +129,7 @@ export default {
       editedIndex: -1,
       editedItem: {
         position: "",
-        lot: "",
+        lots: [],
         name: "",
         note: "",
         follow_up: "",
@@ -135,7 +140,7 @@ export default {
       },
       defaultItem: {
         position: "",
-        lot: "",
+        lots: [],
         name: "",
         note: "",
         follow_up: "",
