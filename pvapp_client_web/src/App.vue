@@ -44,9 +44,9 @@
     <v-navigation-drawer v-model="drawerMain" app>
       <v-list nav>
         <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
-          <v-list-item-action>
+          <v-list-item-icon>
             <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
-          </v-list-item-action>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title class="title">{{
               item.title
