@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     openAffair(affairId) {
-      this.$store.dispatch("affair/loadAffair", affairId);
+      this.$store.dispatch("affair/openAffair", affairId);
     },
     openPv(pvId) {
       this.$store.dispatch("affair/openPv", pvId);

@@ -30,7 +30,17 @@ const mutations = {
 };
 
 const actions = {
-  loadAffair({ commit }, affairId) {
+  loadAffairByPv({ commit }, affairId) {
+    Axios.get("getAffairById", {
+      params: {
+        id_affair: affairId
+      }
+    }).then(response => {
+      let datas = response.data.affair_infos;
+      commit("LOAD_AFFAIR", datas);
+    });
+  },
+  openAffair({ commit }, affairId) {
     Axios.get("getAffairById", {
       params: {
         id_affair: affairId

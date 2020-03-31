@@ -26,7 +26,7 @@
                           <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                          <v-text-field v-model="editedItem.lot" label="Lot" min="1" :rules="standardRequirement"></v-text-field>
+                          <v-combobox v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple></v-combobox>
                           <!-- TODO: changer en combobox et récuperer les différents lots possibles, avec des etiquettes -->
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
@@ -63,9 +63,9 @@
           </v-toolbar>
         </template>
         <template v-slot:item.lots="{ item }">
-          <div v-for="lot in item.lots" :key="lot.id">
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
             {{ lot.name }}
-          </div>
+          </v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch"></v-switch>
@@ -129,6 +129,7 @@ export default {
       editedIndex: -1,
       editedItem: {
         position: "",
+        lotsToReturn: [],
         lots: [],
         name: "",
         note: "",
@@ -159,6 +160,9 @@ export default {
     }),
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+    },
+    test() {
+      return this.$route.params.id;
     }
   },
   watch: {
@@ -167,25 +171,25 @@ export default {
       val || this.close();
     }
   },
+  beforeCreate() {},
   created() {
-    this.initialize();
+    this.idPv = this.$route.params.id;
+    let dt = {
+      params: {
+        id_pv: this.$route.params.id
+      }
+    };
+    Axios.get("getPvDetails", dt).then(response => {
+      if (typeof response.data.items !== "string") {
+        this.items = response.data.items;
+      }
+      this.pvDetails = response.data.pv_details;
+      this.pvUsers = response.data.users;
+      this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
+    });
   },
   methods: {
-    initialize() {
-      this.idPv = this.$route.params.id;
-      let dt = {
-        params: {
-          id_pv: this.$route.params.id
-        }
-      };
-      Axios.get("getPvDetails", dt).then(response => {
-        if (typeof response.data.items !== "string") {
-          this.items = response.data.items;
-        }
-        this.pvDetails = response.data.pv_details;
-        this.pvUsers = response.data.users;
-      });
-    },
+    initialize() {},
     maxPosition() {
       return Math.max(...this.items.map(items => items.position)) + 1;
     },
@@ -193,6 +197,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.editedItem.lotsToReturn = item.lots;
       this.dialog = true;
     },
 
@@ -211,6 +216,7 @@ export default {
     },
 
     save() {
+      this.editedItem.lots = this.editedItem.lotsToReturn;
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
