@@ -48,9 +48,9 @@
             <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title class="title">{{
-              item.title
-            }}</v-list-item-title>
+            <v-list-item-title class="title">
+              {{ item.title }}
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
