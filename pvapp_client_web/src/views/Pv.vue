@@ -67,7 +67,7 @@
           </v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
-          <v-switch v-model="item.visible" role="switch"></v-switch>
+          <v-switch v-model="item.visible" role="switch" @change="changeVisible(item.visible)"></v-switch>
         </template>
         <template v-slot:item.completion_date="{ item }">
           {{ item.completion_date | formatDate }}
@@ -165,8 +165,8 @@ export default {
     dialog(val) {
       if (this.editedIndex == -1) {
         this.editedItem.position = this.maxPosition();
+        this.editedItem = Object.assign({}, this.defaultItem);
       }
-
       val || this.close();
     }
   },
@@ -227,6 +227,10 @@ export default {
       }
       this.editedItem.completion = [];
       this.close();
+    },
+    changeVisible(val) {
+      console.log(val);
+      //TODO: faire une requette API pour changer la valeur
     }
   }
 };
