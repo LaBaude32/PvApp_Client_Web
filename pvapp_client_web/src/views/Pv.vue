@@ -41,11 +41,11 @@
                           <v-text-field v-model="editedItem.ressources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <!-- <v-combobox v-model="editedItem.completion" :items="editedItem.completion" label="Echéance"></v-combobox> -->
-                          <v-text-field v-model="editedItem.completion" label="Echéance"></v-text-field>
+                          <v-combobox v-model="editedItem.completionToReturn" :items="editedItem.completion" label="Echéance"></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
+                          <!-- TODO: Mettre en forme la date -->
                         </v-col>
                       </v-row>
                     </v-container>
@@ -82,7 +82,6 @@
         </template>
         <template v-slot:no-data>
           <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
-          <!-- <v-btn color="primary" class="mb-4" @click="initialize">Afficher</v-btn> -->
         </template>
       </v-data-table>
     </v-card>
@@ -134,7 +133,7 @@ export default {
         note: "",
         follow_up: "",
         resources: "",
-        completion: "",
+        completion: [],
         completion_date: "",
         visible: ""
       },
@@ -145,9 +144,7 @@ export default {
         note: "",
         follow_up: "",
         resources: "",
-        // completion: ["A faire", "Urgent", "Fait"],
-        // TODO: SESSION : faire fonctionner ça
-        completion: "",
+        completion: ["A faire", "Urgent", "Fait"],
         completion_date: "",
         visible: true
       }
@@ -200,6 +197,9 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.editedItem.lotsToReturn = item.lots;
       this.editedItem.lots = this.pvDetails.lots;
+      this.editedItem.completionToReturn = item.completion;
+      this.editedItem.completion = [item.completion];
+      this.editedItem.completion.push(...this.defaultItem.completion);
       this.dialog = true;
     },
 
@@ -219,11 +219,13 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
+      this.editedItem.completion = this.editedItem.completionToReturn;
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
         this.items.push(this.editedItem);
       }
+      this.editedItem.completion = [];
       this.close();
     }
   }
