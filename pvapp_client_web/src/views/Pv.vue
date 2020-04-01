@@ -27,7 +27,6 @@
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
                           <v-combobox v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple></v-combobox>
-                          <!-- TODO: changer en combobox et récuperer les différents lots possibles, avec des etiquettes -->
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
                           <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
@@ -167,11 +166,13 @@ export default {
   },
   watch: {
     dialog(val) {
-      this.editedItem.position = this.maxPosition();
+      if (this.editedIndex == -1) {
+        this.editedItem.position = this.maxPosition();
+      }
+
       val || this.close();
     }
   },
-  beforeCreate() {},
   created() {
     this.idPv = this.$route.params.id;
     let dt = {
@@ -198,6 +199,7 @@ export default {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.editedItem.lotsToReturn = item.lots;
+      this.editedItem.lots = this.pvDetails.lots;
       this.dialog = true;
     },
 
