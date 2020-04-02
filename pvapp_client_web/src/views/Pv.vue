@@ -111,10 +111,9 @@ export default {
       headers: [
         {
           text: "Position",
-          align: "start",
+          align: "center",
           value: "position"
         },
-        { text: "Lot", value: "lots" },
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "follow_up", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
@@ -169,6 +168,12 @@ export default {
       }
       val || this.close();
     }
+  },
+  mounted() {
+    if (this.meeting_type == "Chantier") {
+      this.headers.splice(1, 0, { text: "Lot", value: "lots" });
+    }
+    //Sinon passer le tableau en propriété si on le met dans un composant
   },
   created() {
     this.idPv = this.$route.params.id;
