@@ -9,11 +9,17 @@
     </div>
     <v-divider class="mt-10"></v-divider>
     <h3 class="mt-5">Lots :</h3>
-    <v-list-item v-for="(lot, index) in affair.lots" v-bind:key="lot.id">
+    <v-list-item v-for="(lot, index) in affair.lots" v-bind:key="lot.id" dense>
       <v-list-item-content>
-        <p>{{ index + 1 }} - {{ lot.name }}</p>
+        <div>{{ index + 1 }} - {{ lot.name }}</div>
       </v-list-item-content>
     </v-list-item>
+    <v-row>
+      <v-col>
+        <v-btn class="mx-2" color="success" @click.prevent="addLot">Ajouter un lot</v-btn>
+        <v-btn class="mx-2" color="warning" @click.prevent="modifyLot">Modifier un lot</v-btn>
+      </v-col>
+    </v-row>
     <v-divider class="mt-5 mb-10"></v-divider>
     <v-card max-width="80%" class="mx-auto">
       <v-card-title>
@@ -49,7 +55,7 @@
 <script>
 //TODO: ajouter la modification des lots
 import Axios from "axios";
-import routesCONST from "../utilities/constantes";
+import routesCONST, { getRouteName } from "../utilities/constantes";
 export default {
   data() {
     return {
@@ -103,6 +109,12 @@ export default {
         name: routesCONST.pv.name,
         params: { id: pvId }
       });
+    },
+    addLot() {
+      this.$router.push({ name: getRouteName("addLot") });
+    },
+    modifyLot() {
+      this.$router.push({ name: getRouteName("addLot") });
     }
   }
 };
