@@ -174,6 +174,8 @@ export default {
     dialog: false,
     dialog2: false,
     connectedUser: "",
+    //TODO: récuperer les connected User via l'API
+    //TODO: le tri par user_group ne semble pas dynamique
     connectedUsers: [
       {
         user_id: 1,
@@ -193,7 +195,9 @@ export default {
       },
       {
         user_id: 3,
-        fullName: "Sam Coup"
+        fullName: "Sam Coup",
+        firstName: "Sam",
+        lastName: "Coup"
       }
     ],
     headers: [
