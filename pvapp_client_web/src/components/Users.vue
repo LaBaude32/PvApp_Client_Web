@@ -29,7 +29,7 @@
                         <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.user_group" label="Groupe" :rules="standardRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.userGroup" label="Groupe" :rules="standardRules" counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" counter="30"></v-text-field>
@@ -84,7 +84,7 @@
                           <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.user_group" label="Groupe" readonly></v-text-field>
+                          <v-text-field v-model="connectedUser.userGroup" label="Groupe" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
@@ -142,7 +142,8 @@
 </template>
 
 <script>
-// import Axios from "axios";
+import Axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   name: "Users",
   props: { users: Array },
@@ -175,7 +176,7 @@ export default {
     dialogExistingUser: false,
     connectedUser: "",
     //TODO: récuperer les connected User via l'API
-    //TODO: le tri par user_group ne semble pas dynamique
+    //TODO: le tri par userGroup ne semble pas dynamique
     connectedUsers: [
       {
         user_id: 1,
@@ -208,7 +209,7 @@ export default {
       },
       {
         text: "Groupe",
-        value: "user_group",
+        value: "userGroup",
         sortable: false
       },
       { text: "Fonction", value: "function" },
@@ -221,25 +222,32 @@ export default {
     editedIndex: -1,
     editedItem: {
       fullName: "",
-      user_group: "",
+      userGroup: "",
       function: "",
       organism: "",
       email: "",
       phone: "",
-      status: ""
+      status: "",
+      firstName: "",
+      lastName: ""
     },
     defaultItem: {
       fullName: "",
-      user_group: "",
+      userGroup: "",
       function: "",
       organism: "",
       email: "",
       phone: "",
-      status: ""
+      status: "",
+      firstName: "",
+      lastName: ""
     }
   }),
 
   computed: {
+    ...mapGetters("affair", {
+      affair_name: "name"
+    }),
     formTitle() {
       return this.editedIndex === -1
         ? "Ajouter une personne"
@@ -279,9 +287,28 @@ export default {
 
     saveNewOrModifiedUser() {
       if (this.editedIndex > -1) {
+        //Exisiting User
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
-        this.users.push(this.editedItem);
+        //New User
+        let data = this.editedItem;
+        data.password = this.affair_name;
+        console.log(data);
+        Axios.post("/addUser", data)
+          .then(response => {
+            if (
+              response.status == 201 &&
+              typeof response.data.id_user === "number"
+            ) {
+              this.users.push(this.editedItem);
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_user);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
       this.closeNewOrModifiedUser();
     },
