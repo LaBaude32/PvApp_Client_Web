@@ -8,7 +8,7 @@
           <v-spacer></v-spacer>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialogNewOrModifiedUser" max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Créer une nouvelle personne</v-btn>
             </template>
@@ -56,14 +56,14 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                  <v-btn :disabled="!valid1" color="blue darken-1" text @click="save">Enregistrer</v-btn>
+                  <v-btn color="blue darken-1" text @click="closeNewOrModifiedUser">Annuler</v-btn>
+                  <v-btn :disabled="!valid1" color="blue darken-1" text @click="saveNewOrModifiedUser">Enregistrer</v-btn>
                 </v-card-actions>
               </v-form>
 
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialog2" max-width="500px">
+          <v-dialog v-model="dialogExistingUser" max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn color="green" dark class="mb-2 ml-2" v-on="on">Ajouter une personne de votre répertoire</v-btn>
             </template>
@@ -105,8 +105,8 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close2">Annuler</v-btn>
-                  <v-btn :disabled="!valid2" color="blue darken-1" text @click="save2">Enregistrer</v-btn>
+                  <v-btn color="blue darken-1" text @click="closeExistingUser">Annuler</v-btn>
+                  <v-btn :disabled="!valid2" color="blue darken-1" text @click="saveExistingUser">Enregistrer</v-btn>
                 </v-card-actions>
               </v-form>
 
@@ -171,8 +171,8 @@ export default {
     statusRules: [v => !!v || "Requis"],
     standardRequirement: [v => !!v || "Requis"],
     search: "",
-    dialog: false,
-    dialog2: false,
+    dialogNewOrModifiedUser: false,
+    dialogExistingUser: false,
     connectedUser: "",
     //TODO: récuperer les connected User via l'API
     //TODO: le tri par user_group ne semble pas dynamique
@@ -248,11 +248,11 @@ export default {
   },
 
   watch: {
-    dialog(val) {
-      val || this.close();
+    dialogNewOrModifiedUser(val) {
+      val || this.closeNewOrModifiedUser();
     },
-    dialog2(val) {
-      val || this.close();
+    dialogExistingUser(val) {
+      val || this.closeExistingUser();
     }
   },
 
@@ -260,7 +260,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+      this.dialogNewOrModifiedUser = true;
     },
 
     deleteItem(item) {
@@ -269,38 +269,39 @@ export default {
         this.users.splice(index, 1);
     },
 
-    close() {
-      this.dialog = false;
+    closeNewOrModifiedUser() {
+      this.dialogNewOrModifiedUser = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       }, 300);
     },
 
-    save() {
+    saveNewOrModifiedUser() {
       if (this.editedIndex > -1) {
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
         this.users.push(this.editedItem);
       }
-      this.close();
+      this.closeNewOrModifiedUser();
     },
 
-    close2() {
-      this.dialog2 = false;
+    closeExistingUser() {
+      this.dialogExistingUser = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
+        this.connectedUser = null;
         this.editedIndex = -1;
       }, 300);
     },
 
-    save2() {
+    saveExistingUser() {
       if (this.editedIndex > -1) {
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
         this.users.push(this.connectedUser);
       }
-      this.close2();
+      this.closeExistingUser();
     }
   }
 };
