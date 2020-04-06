@@ -275,6 +275,7 @@ export default {
       const index = this.users.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
         this.users.splice(index, 1);
+      //TODO: ajouter la suppression en API
     },
 
     closeNewOrModifiedUser() {
