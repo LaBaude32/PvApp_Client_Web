@@ -44,7 +44,7 @@
                         <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
-                        <v-radio-group v-model="editedItem.status" label="Statut" :rules="statusRules">
+                        <v-radio-group v-model="editedItem.status_PAE" label="Statut" :rules="statusRules">
                           <v-radio value="Présent" label="Présent"></v-radio>
                           <v-radio value="Absent" label="Absent"></v-radio>
                           <v-radio value="Excusé" label="Excusé"></v-radio>
@@ -115,8 +115,8 @@
         </v-toolbar>
       </template>
       <!-- TODO: SESSION peut on regrouper les utilisateurs par groupe ? -->
-      <template v-slot:item.status="{ item }">
-        <v-radio-group v-model="item.status" row>
+      <template v-slot:item.status_PAE="{ item }">
+        <v-radio-group v-model="item.status_PAE" row>
           <v-radio value="Présent" label="Présent"></v-radio>
           <v-radio value="Absent" label="Absent"></v-radio>
           <v-radio value="Excusé" label="Excusé"></v-radio>
@@ -216,7 +216,7 @@ export default {
       { text: "Organisme", value: "organism" },
       { text: "Mail", value: "email", sortable: false },
       { text: "Téléphone", value: "phone", sortable: false },
-      { text: "Statut", value: "status" },
+      { text: "Statut", value: "status_PAE" },
       { text: "Modifier", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -227,7 +227,7 @@ export default {
       organism: "",
       email: "",
       phone: "",
-      status: "",
+      status_PAE: "",
       firstName: "",
       lastName: ""
     },
@@ -238,7 +238,7 @@ export default {
       organism: "",
       email: "",
       phone: "",
-      status: "",
+      status_PAE: "",
       firstName: "",
       lastName: ""
     }
@@ -288,19 +288,37 @@ export default {
     saveNewOrModifiedUser() {
       if (this.editedIndex > -1) {
         //Exisiting User
+        let data = this.editedItem;
+        data.pvId = this.$route.params.id;
+        Axios.post("/updateParticipant", data)
+          .then(response => {
+            if (
+              response.status == 201 &&
+              typeof response.data.id_user === "number"
+            ) {
+              Object.assign(this.users[this.editedIndex], this.editedItem);
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_user);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
         //New User
         let data = this.editedItem;
         data.password = this.affair_name;
-        console.log(data);
+        data.pvId = this.$route.params.id;
         Axios.post("/addUser", data)
           .then(response => {
             if (
               response.status == 201 &&
               typeof response.data.id_user === "number"
             ) {
-              this.users.push(this.editedItem);
+              this.users.push(data);
             } else {
               console.log(response);
               console.log(typeof response.data.id_user);
