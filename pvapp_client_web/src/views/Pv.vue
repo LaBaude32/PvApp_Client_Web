@@ -26,7 +26,7 @@
                           <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                          <v-combobox v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple></v-combobox>
+                          <v-select v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple deletable-chips></v-select>
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
                           <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
@@ -45,7 +45,7 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
-                          <!-- TODO: Mettre en forme la date -->
+                          <!-- TODO: SESSION Mettre en forme la date -->
                         </v-col>
                       </v-row>
                     </v-container>
@@ -67,7 +67,7 @@
           </v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
-          <v-switch v-model="item.visible" role="switch" @change="changeVisible(item.visible)"></v-switch>
+          <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
         </template>
         <template v-slot:item.completion_date="{ item }">
           {{ item.completion_date | formatDate }}
@@ -95,6 +95,7 @@
 import Axios from "axios";
 import Users from "@/components/Users.vue";
 import { mapGetters } from "vuex";
+// import { getRouteName } from "../utilities/constantes";
 export default {
   components: {
     Users
@@ -132,12 +133,13 @@ export default {
         note: "",
         follow_up: "",
         resources: "",
-        completion: [],
+        completion: "",
         completion_date: "",
         visible: ""
       },
       defaultItem: {
         position: "",
+        lotsToReturn: [],
         lots: [],
         name: "",
         note: "",
@@ -163,13 +165,14 @@ export default {
   watch: {
     dialog(val) {
       if (this.editedIndex == -1) {
-        this.editedItem.position = this.maxPosition();
         this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem.position = this.maxPosition();
       }
       val || this.close();
     }
   },
   mounted() {
+    console.log(this.meeting_type); //FIXME: renvoi un empty string si on a ajouté un lot et qu'on recharge la page
     if (this.meeting_type == "Chantier") {
       this.headers.splice(1, 0, { text: "Lot", value: "lots" });
     }
@@ -224,18 +227,63 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
-      this.editedItem.completion = this.editedItem.completionToReturn;
+      let data;
+      data = this.editedItem;
+      data.completion = data.completionToReturn; //FIXME: SESSION : comment faire un getter et un setter ?
+      console.log(data);
+
       if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem);
+        //Existing item
+        Axios.post("/updateItem", data)
+          .then(response => {
+            if (
+              response.status == 201 &&
+              typeof response.data.id_item_updated === "number"
+            ) {
+              Object.assign(this.items[this.editedIndex], data);
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_item);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       } else {
-        this.items.push(this.editedItem);
+        //New item
+        Axios.post("/addItem", data)
+          .then(response => {
+            if (
+              response.status == 201 &&
+              typeof response.data.id_item === "number"
+            ) {
+              this.items.push(data);
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_item);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
       this.editedItem.completion = [];
       this.close();
     },
-    changeVisible(val) {
-      console.log(val);
-      //TODO: faire une requette API pour changer la valeur
+    changeVisible(item) {
+      console.log(item);
+      let data = {
+        id_item: item.id_item,
+        visible: item.visible == true ? 1 : 0
+      };
+      console.log(data);
+      Axios.post("/updateVisibleOfItem", data)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
