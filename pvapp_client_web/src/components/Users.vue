@@ -114,7 +114,6 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <!-- TODO: SESSION peut on regrouper les utilisateurs par groupe ? -->
       <template v-slot:item.status_PAE="{ item }">
         <v-radio-group v-model="item.status_PAE" row>
           <v-radio value="Présent" label="Présent"></v-radio>
@@ -176,7 +175,6 @@ export default {
     dialogExistingUser: false,
     connectedUser: "",
     //TODO: récuperer les connected User via l'API
-    //TODO: le tri par userGroup ne semble pas dynamique
     connectedUsers: [
       {
         user_id: 1,
