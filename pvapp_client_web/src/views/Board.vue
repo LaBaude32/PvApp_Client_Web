@@ -2,6 +2,21 @@
   <div>
     <h1>Votre board :</h1>
     <v-spacer></v-spacer>
+    <v-container>
+      <v-row class="grey d-inline-flex px-10">
+        <v-col cols="12" md="6">
+          <v-btn class="ma-5 mx-10" @click="createAffair">
+            Creer une affaire
+          </v-btn>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-btn class="ma-5 mx-10" @click="createPv">
+            Ajouter un Pv
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <v-toolbar max-width="70%" class="mx-auto ma-10" color="blue-grey lighten-5" flat>
       <v-btn class="mx-auto ma-5" @click="createAffair">
         Creer une affaire
