@@ -172,7 +172,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.meeting_type); //FIXME: renvoi un empty string si on a ajouté un lot et qu'on recharge la page
+    console.log(this.meeting_type); //FIXME: SESSION renvoi un empty string si on a ajouté un lot et qu'on recharge la page
     if (this.meeting_type == "Chantier") {
       this.headers.splice(1, 0, { text: "Lot", value: "lots" });
     }
