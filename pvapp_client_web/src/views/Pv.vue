@@ -134,6 +134,7 @@ export default {
         follow_up: "",
         resources: "",
         completion: "",
+        completionToReturn: "",
         completion_date: "",
         visible: ""
       },
@@ -176,7 +177,7 @@ export default {
     if (this.meeting_type == "Chantier") {
       this.headers.splice(1, 0, { text: "Lot", value: "lots" });
     }
-    //Sinon passer le tableau en propriété si on le met dans un composant
+    //TODO: Sinon passer le tableau en propriété si on le met dans un composant
   },
   created() {
     this.idPv = this.$route.params.id;
@@ -203,6 +204,9 @@ export default {
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.editedItem = {
+        ...item
+      };
       this.editedItem.lotsToReturn = item.lots;
       this.editedItem.lots = this.pvDetails.lots;
       this.editedItem.completionToReturn = item.completion;
@@ -232,15 +236,23 @@ export default {
       data.completion = data.completionToReturn; //FIXME: SESSION : comment faire un getter et un setter ?
       console.log(data);
 
+      // console.log(data);
+      // console.log(this.editedIndex);
+      // let test = this.editedIndex;
+
       if (this.editedIndex > -1) {
         //Existing item
+        //TODO: faire des promesses synchrone
         Axios.post("/updateItem", data)
           .then(response => {
             if (
               response.status == 201 &&
               typeof response.data.id_item_updated === "number"
             ) {
-              Object.assign(this.items[this.editedIndex], data);
+              // Object.assign(this.items[this.editedIndex], data);
+              this.items[this.editedIndex] = { ...data };
+              // this.editedItem.completion = [];
+              this.close();
             } else {
               console.log(response);
               console.log(typeof response.data.id_item);
@@ -258,6 +270,8 @@ export default {
               typeof response.data.id_item === "number"
             ) {
               this.items.push(data);
+              this.editedItem.completion = [];
+              this.close();
             } else {
               console.log(response);
               console.log(typeof response.data.id_item);
@@ -267,8 +281,6 @@ export default {
             console.log(error);
           });
       }
-      this.editedItem.completion = [];
-      this.close();
     },
     changeVisible(item) {
       console.log(item);
