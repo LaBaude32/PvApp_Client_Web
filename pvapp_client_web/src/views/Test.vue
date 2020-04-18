@@ -1,28 +1,21 @@
 <template>
-  <div>{{ test }} <br /></div>
+  <div>
+    <PvTest :meeting_type="meeting_type" />
+  </div>
 </template>
 
 <script>
-const MD5 = require("md5.js");
+import PvTest from "@/components/PvTest.vue";
+import { mapGetters } from "vuex";
 export default {
-  data() {
-    return {
-      hello: "1234",
-      hash: "098f6bcd4621d373cade4e832627b4f6"
-    };
+  components: {
+    PvTest
   },
   computed: {
-    test() {
-      return new MD5().update(this.hello).digest("hex");
-    },
-    test2() {
-      return new MD5().update("test").digest("hex");
-    },
-    result() {
-      let md5stream = new MD5();
-      md5stream.end("test");
-      return md5stream.read().toString("hex");
-    }
+    ...mapGetters("affair", {
+      meeting_type: "meeting_type"
+    })
   }
 };
 </script>
+

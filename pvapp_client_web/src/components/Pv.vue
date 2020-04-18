@@ -100,14 +100,18 @@ export default {
   components: {
     Users
   },
-  props: { meeting_type: String },
+  props: {
+    meeting_type: String,
+    pvDetails: Object,
+    pvUsers: Array,
+    items: Array
+  },
   data: () => ({
     valid: false,
     standardRequirement: [v => !!v || "Requis"],
     search: "",
     idPv: "",
-    pvDetails: {},
-    pvUsers: [],
+
     dialog: false,
     headers: [
       {
@@ -123,7 +127,7 @@ export default {
       { text: "Visible", value: "visible" },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    items: [],
+
     editedIndex: -1,
     editedItem: {
       position: "",
@@ -188,7 +192,6 @@ export default {
         }
       };
       let res = await Axios.get("getPvDetails", dt);
-      //FIXME: SESSION : la requette async ne change rien au problème
       if (typeof res.data.items !== "string") {
         this.items = res.data.items;
       }

@@ -6,7 +6,7 @@ import routesCONST from "./../../utilities/constantes";
 const state = {
   affairId: "",
   name: "",
-  meeting_type: "",
+  meeting_type: null,
   address: "",
   progress: ""
 };
