@@ -78,7 +78,7 @@ const routes = [
   {
     path: routesCONST.pv.path + "/:id",
     name: routesCONST.pv.name,
-    component: () => import(/* webpackChunkName: "about" */ "../views/Pv.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Pv_v2.vue"),
     beforeEnter: ifAuthenticated
   },
   {
