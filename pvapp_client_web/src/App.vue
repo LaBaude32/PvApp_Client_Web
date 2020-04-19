@@ -158,11 +158,10 @@ export default {
     }
   },
   created: function() {
-    console.log(this);
     Axios.interceptors.response.use(undefined, error => {
       console.log(error.response);
       return new Promise(() => {
-        if (error.response.status === 401) {
+        if (error.response.status === 401 || error.response === undefined) {
           if (error.response.config.url == "/tokens") {
             this.$store.dispatch("auth/authError");
           } else {
