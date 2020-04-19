@@ -82,14 +82,14 @@
         </v-col>
       </v-row>
     </v-container>
-    <div v-else>
+    <v-container v-else class="px-10">
       <p class="title">Vous n'avez pas encore d'affaires ou de pvs.</p>
       <p>
         Veuillez commencer par créer une
         <span class="font-weight-bold">affaire</span> en cliquant sur le bouton
         ci-dessus
       </p>
-    </div>
+    </v-container>
   </div>
 </template>
 

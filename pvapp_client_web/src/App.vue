@@ -15,19 +15,20 @@
 
     <v-app-bar app color="primary darken-1" clipped-right dark>
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
-      <v-toolbar-title>Menu</v-toolbar-title>
+      <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
       <v-spacer />
+      <!-- TODO: SESSION : Comment detecter qu'on est en mobile ou pas ? -->
       <div class="d-flex align-center">
         <h2>PvApp</h2>
       </div>
       <v-spacer />
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark v-on="on" v-if="isLogged">
+          <v-btn color="primary" dark v-on="on" v-if="isLogged" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn color="primary" dark v-on="on" v-else @click="action('Login')">
+          <v-btn color="primary" dark v-on="on" v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
@@ -157,6 +158,7 @@ export default {
     }
   },
   created: function() {
+    console.log(this);
     Axios.interceptors.response.use(undefined, error => {
       console.log(error.response);
       return new Promise(() => {
@@ -195,5 +197,12 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+@media screen and (max-device-width: 460px) {
+  .diableOnMobile {
+    display: none;
+    visibility: hidden;
+  }
 }
 </style>
