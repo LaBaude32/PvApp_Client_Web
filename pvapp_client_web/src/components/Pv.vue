@@ -4,7 +4,7 @@
       <v-data-table :headers="headers" :items="items" sort-by="position" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }} </v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }}</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
@@ -23,10 +23,25 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="4" md="4">
-                          <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.position"
+                            label="Position"
+                            min="1"
+                            type="number"
+                            :rules="standardRequirement"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                          <v-select v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple deletable-chips></v-select>
+                          <v-select
+                            v-model="editedItem.lotsToReturn"
+                            :items="editedItem.lots"
+                            item-text="name"
+                            item-value="id_lot"
+                            label="Lot"
+                            chips
+                            multiple
+                            deletable-chips
+                          ></v-select>
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
                           <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
@@ -62,9 +77,7 @@
           </v-toolbar>
         </template>
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
-            {{ lot.name }}
-          </v-chip>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>{{ lot.name }}</v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
@@ -73,12 +86,8 @@
           {{ item.completion_date | formatDate }}
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
+          <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
           <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
@@ -95,6 +104,7 @@
 import Axios from "axios";
 import Users from "@/components/Users.vue";
 // import { getRouteName } from "../utilities/constantes";
+import { mapGetters } from "vuex";
 export default {
   name: "Pv",
   components: {
@@ -161,7 +171,10 @@ export default {
     },
     test() {
       return this.$route.params.id;
-    }
+    },
+    ...mapGetters("user", {
+      userId: "userId"
+    })
   },
   watch: {
     dialog(val) {
@@ -188,7 +201,8 @@ export default {
       this.idPv = this.$route.params.id;
       let dt = {
         params: {
-          id_pv: this.$route.params.id
+          id_pv: this.$route.params.id,
+          id_user: this.userId
         }
       };
       let res = await Axios.get("getPvDetails", dt);
@@ -219,8 +233,7 @@ export default {
 
     deleteItem(item) {
       const index = this.items.indexOf(item);
-      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") &&
-        this.items.splice(index, 1);
+      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") && this.items.splice(index, 1);
     },
 
     close() {
@@ -248,10 +261,7 @@ export default {
         //TODO: faire des promesses synchrone
         Axios.post("/updateItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item_updated === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item_updated === "number") {
               // Object.assign(this.items[this.editedIndex], data);
               this.items[this.editedIndex] = { ...data };
               // this.editedItem.completion = [];
@@ -268,10 +278,7 @@ export default {
         //New item
         Axios.post("/addItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item === "number") {
               this.items.push(data);
               this.editedItem.completion = [];
               this.close();
