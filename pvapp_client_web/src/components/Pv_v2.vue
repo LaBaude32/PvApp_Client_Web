@@ -78,7 +78,6 @@ export default {
   },
   data() {
     return {
-      // MyDialog: this.dialog,
       MyHeaders: this.headers,
       MyDesserts: this.desserts,
       MyEditedIndex: this.editedIndex,
@@ -86,25 +85,17 @@ export default {
       MyDefaultItem: this.defaultItem
     };
   },
-  //TODO: SESSION : Avec cette archi il faut conserver les computed et les watch dans le composant enfant ?
   computed: {
     formTitle() {
       return this.MyEditedIndex === -1 ? "New Item" : "Edit Item";
     },
     MyDialog: {
-      get: function() {
+      get() {
         return this.dialog;
       },
-      set: function(val) {
-        console.log("watch " + val);
-        val || this.fermer();
+      set(val) {
+        this.$emit("update:dialog", val);
       }
-    }
-  },
-
-  watch: {
-    MyDialog(val) {
-      console.log(val);
     }
   }
 };

@@ -1,5 +1,17 @@
 <template>
-  <Pv-v2 test="hello" v-bind:dialog="test" :headers="headers" :desserts="desserts" :editedIndex="editedIndex" :editedItem="editedItem" :defaultItem="defaultItem" :editItem="editItem" :deleteItem="deleteItem" :fermer="fermer" :save="save" />
+  <Pv-v2
+    test="hello"
+    :dialog.sync="dialog"
+    :headers="headers"
+    :desserts="desserts"
+    :editedIndex="editedIndex"
+    :editedItem="editedItem"
+    :defaultItem="defaultItem"
+    :editItem="editItem"
+    :deleteItem="deleteItem"
+    :fermer="fermer"
+    :save="save"
+  />
 </template>
 
 <script>
@@ -49,11 +61,6 @@ export default {
 
   created() {
     this.initialize();
-  },
-  computed: {
-    test() {
-      return this.dialog;
-    }
   },
 
   methods: {
@@ -140,8 +147,7 @@ export default {
 
     deleteItem(item) {
       const index = this.desserts.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.desserts.splice(index, 1);
+      confirm("Are you sure you want to delete this item?") && this.desserts.splice(index, 1);
     },
 
     fermer() {
