@@ -18,7 +18,6 @@
     :deleteItem="deleteItem"
     :close="close"
     :save="save"
-    :checkMeetingType="checkMeetingType"
     :maxPosition="maxPosition"
     :changeVisible="changeVisible"
   />
@@ -27,7 +26,6 @@
 
 <script>
 import Pv_v2 from "@/components/Pv_v2.vue";
-import { mapGetters } from "vuex";
 import Axios from "axios";
 export default {
   components: {
@@ -37,6 +35,7 @@ export default {
     return {
       dialog: false,
       valid: false,
+      meeting_type: undefined,
       standardRequirement: [v => !!v || "Requis"],
       pvDetails: {},
       pvUsers: [],
@@ -85,9 +84,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters("affair", {
-      meeting_type: "meeting_type"
-    }),
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     }
@@ -111,9 +107,11 @@ export default {
       }
       this.pvDetails = res.data.pv_details;
       this.pvUsers = res.data.users;
+      this.meeting_type = res.data.pv_details.affair_meeting_type;
+      if (this.meeting_type == "Chantier") {
+        this.headers.splice(1, 0, { text: "Lot", value: "lots" });
+      }
       this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
-      //TODO: faire une autre requete AXIOS plutot pour passer le meeting_type
-      //TODO: Passer le tableau en propriété si on le met dans un composant
     },
 
     editItem(item) {
@@ -169,6 +167,8 @@ export default {
           });
       } else {
         //New item
+        //FIXME : Ne fonctionne pas
+        data.pv_id = this.$route.params.id;
         Axios.post("/addItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
@@ -186,12 +186,6 @@ export default {
       }
     },
 
-    checkMeetingType() {
-      if (this.meeting_type == "Chantier") {
-        this.headers.splice(1, 0, { text: "Lot", value: "lots" });
-      }
-    },
-
     maxPosition() {
       return Math.max(...this.items.map(items => items.position)) + 1;
     },
@@ -201,13 +195,10 @@ export default {
         id_item: item.id_item,
         visible: item.visible == true ? 1 : 0
       };
-      Axios.post("/updateVisibleOfItem", data)
-        .then(response => {
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      Axios.post("/updateVisibleOfItem", data).catch(error => {
+        console.log(error);
+        item.visible = !item.visible;
+      });
     }
   }
 };

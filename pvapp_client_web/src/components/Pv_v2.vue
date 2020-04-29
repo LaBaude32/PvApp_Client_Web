@@ -120,7 +120,6 @@ export default {
     deleteItem: Function,
     close: Function,
     save: Function,
-    checkMeetingType: Function,
     maxPosition: Function,
     changeVisible: Function
   },
@@ -133,13 +132,14 @@ export default {
       MyDefaultItem: this.defaultItem
     };
   },
-  mounted() {
-    this.checkMeetingType();
-  },
   watch: {
     MyDialog(val) {
       if (this.MyEditedIndex == -1) {
-        this.MyDefaultItem.position = this.maxPosition();
+        if (this.maxPosition() > 0) {
+          this.MyDefaultItem.position = this.maxPosition();
+        } else {
+          this.MyDefaultItem.position = 1;
+        }
         this.MyEditedItem = Object.assign({}, this.MyDefaultItem);
       }
       val || this.close();
