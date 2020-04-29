@@ -14,7 +14,7 @@
     </v-container>
 
     <v-container v-if="pvs != ''">
-      <h2>Vos 3 derniers PV :</h2>
+      <h2>Vos 3 derniers procès verbaux :</h2>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
           <v-card class="mx-auto" outlined>
@@ -26,13 +26,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>Affaire : {{ pv.affair_name }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
-                  <v-btn
-                    v-if="pv.state == 'Terminé'"
-                    class="ma-2"
-                    color="green darken-2"
-                    dark
-                    @click="openPv(pv.id_pv)"
-                  >
+                  <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openPv(pv.id_pv)">
                     {{ pv.state }}
                     <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
@@ -40,9 +34,7 @@
                     {{ pv.state }}
                     <v-icon right>mdi-autorenew</v-icon>
                   </v-btn>
-                  <div
-                    v-if="pv.meeting_next_date"
-                  >Prochaine réunion : {{ pv.meeting_next_date | formatDate }}</div>
+                  <div v-if="pv.meeting_next_date">Prochaine réunion : {{ pv.meeting_next_date | formatDate }}</div>
                 </v-card-text>
               </v-list-item-content>
             </v-list-item>
@@ -63,12 +55,9 @@
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
                   <div class="text-center">
-                    <v-progress-circular
-                      :value="affair.progress"
-                      color="deep-orange lighten-2"
-                      size="80"
-                      width="8"
-                    >{{ affair.progress }} %</v-progress-circular>
+                    <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8"
+                      >{{ affair.progress }} %</v-progress-circular
+                    >
                   </div>
                 </v-card-text>
                 <v-card-actions>
@@ -86,8 +75,7 @@
       <p class="title">Vous n'avez pas encore d'affaires ou de pvs.</p>
       <p>
         Veuillez commencer par créer une
-        <span class="font-weight-bold">affaire</span> en cliquant sur le bouton
-        ci-dessus
+        <span class="font-weight-bold">affaire</span> en cliquant sur le bouton ci-dessus
       </p>
     </v-container>
   </div>
