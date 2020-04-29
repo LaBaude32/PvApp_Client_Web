@@ -1,21 +1,34 @@
 <template>
   <Pv-v2
+    v-if="meeting_type"
     test="hello"
     :dialog.sync="dialog"
+    :pvDetails="pvDetails"
+    :pvUsers="pvUsers"
+    :items="items"
+    :meeting_type="meeting_type"
     :headers="headers"
-    :desserts="desserts"
-    :editedIndex="editedIndex"
-    :editedItem="editedItem"
+    :valid.sync="valid"
+    :standardRequirement="standardRequirement"
+    :editedIndex.sync="editedIndex"
+    :editedItem.sync="editedItem"
     :defaultItem="defaultItem"
+    :formTitle="formTitle"
     :editItem="editItem"
     :deleteItem="deleteItem"
-    :fermer="fermer"
+    :close="close"
     :save="save"
+    :checkMeetingType="checkMeetingType"
+    :maxPosition="maxPosition"
+    :changeVisible="changeVisible"
   />
+  <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
 </template>
 
 <script>
 import Pv_v2 from "@/components/Pv_v2.vue";
+import { mapGetters } from "vuex";
+import Axios from "axios";
 export default {
   components: {
     "Pv-v2": Pv_v2
@@ -23,151 +36,192 @@ export default {
   data() {
     return {
       dialog: false,
+      valid: false,
+      standardRequirement: [v => !!v || "Requis"],
+      pvDetails: {},
+      pvUsers: [],
+      items: [],
       headers: [
         {
-          text: "Dessert (100g serving)",
-          align: "start",
-          sortable: false,
-          value: "name"
+          text: "Position",
+          align: "center",
+          value: "position"
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        {
-          text: "Actions",
-          value: "actions",
-          sortable: false
-        }
+        { text: "Note", value: "note", sortable: false },
+        { text: "Suite à donner", value: "follow_up", sortable: false },
+        { text: "Ressource", value: "ressources", sortable: false },
+        { text: "Echeance", value: "completion", sortable: false },
+        { text: "Date d'echéance", value: "completion_date" },
+        { text: "Visible", value: "visible" },
+        { text: "Actions", value: "actions", sortable: false }
       ],
-      desserts: [],
       editedIndex: -1,
       editedItem: {
+        position: "",
+        lotsToReturn: [],
+        lots: [],
         name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        note: "",
+        follow_up: "",
+        resources: "",
+        completion: "",
+        completionToReturn: "",
+        completion_date: "",
+        visible: ""
       },
       defaultItem: {
+        position: "",
+        lotsToReturn: [],
+        lots: [],
         name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        note: "",
+        follow_up: "",
+        resources: "",
+        completion: ["A faire", "Urgent", "Fait"],
+        completion_date: "",
+        visible: true
       }
     };
   },
 
-  created() {
-    this.initialize();
+  computed: {
+    ...mapGetters("affair", {
+      meeting_type: "meeting_type"
+    }),
+    formTitle() {
+      //TODO: Retirer ça d'ici
+      return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+    }
+  },
+
+  mounted() {
+    this.getData();
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7
+    async getData() {
+      this.idPv = this.$route.params.id;
+      let dt = {
+        params: {
+          id_pv: this.$route.params.id
         }
-      ];
+      };
+      let res = await Axios.get("getPvDetails", dt);
+      if (typeof res.data.items !== "string") {
+        this.items = res.data.items;
+      }
+      this.pvDetails = res.data.pv_details;
+      this.pvUsers = res.data.users;
+      this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
+
+      //TODO: SESSION Sinon passer le tableau en propriété si on le met dans un composant
+      //SESSION peut on rendre le store sychrone ? Avec des promesses ?
     },
 
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      console.log(item);
+      console.log(this.editedItem.completion);
+
+      this.editedIndex = this.items.indexOf(item);
+      // this.editedItem = Object.assign({}, item);
+      this.editedItem = {
+        ...item
+      };
+      this.editedItem.lotsToReturn = item.lots;
+      this.editedItem.lots = this.pvDetails.lots;
+      this.editedItem.completionToReturn = item.completion;
+      this.editedItem.completion = [item.completion];
+      this.editedItem.completion.push(...this.defaultItem.completion);
+      console.log(this.editedItem);
+
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.desserts.indexOf(item);
-      confirm("Are you sure you want to delete this item?") && this.desserts.splice(index, 1);
+      const index = this.items.indexOf(item);
+      confirm("Etes vous sûr de vouloir supprimer cet item ?") && this.items.splice(index, 1);
     },
 
-    fermer() {
-      console.log("fermer " + this.dialog);
-
+    close() {
       this.dialog = false;
-
       setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        // this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = { ...this.defaultItem };
         this.editedIndex = -1;
       }, 300);
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      this.editedItem.lots = this.editedItem.lotsToReturn;
+      let data;
+      data = this.editedItem;
+      data.completion = data.completionToReturn;
+      console.log(data);
+      if (data.visible == true) {
+        data.visible = 1;
       } else {
-        this.desserts.push(this.editedItem);
+        data.visible = 0;
       }
-      this.close();
+
+      if (this.editedIndex > -1) {
+        //Existing item
+        //TODO: faire des promesses synchrone
+        Axios.post("/updateItem", data)
+          .then(response => {
+            if (response.status == 201 && typeof response.data.id_item_updated === "number") {
+              Object.assign(this.items[this.editedIndex], data);
+              // this.items[this.editedIndex] = { ...data };
+              this.editedItem.completion = [];
+              this.close();
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_item);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        //New item
+        Axios.post("/addItem", data)
+          .then(response => {
+            if (response.status == 201 && typeof response.data.id_item === "number") {
+              this.items.push(data);
+              this.editedItem.completion = [];
+              this.close();
+            } else {
+              console.log(response);
+              console.log(typeof response.data.id_item);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    },
+
+    checkMeetingType() {
+      if (this.meeting_type == "Chantier") {
+        this.headers.splice(1, 0, { text: "Lot", value: "lots" });
+      }
+    },
+
+    maxPosition() {
+      return Math.max(...this.items.map(items => items.position)) + 1;
+    },
+
+    changeVisible(item) {
+      let data = {
+        id_item: item.id_item,
+        visible: item.visible == true ? 1 : 0
+      };
+      Axios.post("/updateVisibleOfItem", data)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };

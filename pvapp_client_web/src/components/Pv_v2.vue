@@ -1,59 +1,98 @@
 <template>
   <div>
-    {{ test }}
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="MyHeaders" :items="MyDesserts" sort-by="calories" class="elevation-1">
+      <v-data-table :headers="MyHeaders" :items="MyItems" sort-by="position" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title>My CRUD</v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }} </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-dialog v-model="MyDialog" max-width="500px">
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="MyDialog" max-width="800px">
               <template v-slot:activator="{ on }">
-                <v-btn color="primary" dark class="mb-2" v-on="on">New item</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on="on">Nouvel item</v-btn>
               </template>
               <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
+                <v-form v-model="MyValid">
+                  <v-card-title>
+                    <span class="headline">{{ MyFormTitle }}</span>
+                  </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="MyEditedItem.name" label="Dessert name"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="MyEditedItem.calories" label="Calories"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="MyEditedItem.fat" label="Fat (g)"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="MyEditedItem.carbs" label="Carbs (g)"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="MyEditedItem.protein" label="Protein (g)"></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="4" md="4">
+                          <v-text-field
+                            v-model="MyEditedItem.position"
+                            label="Position"
+                            min="1"
+                            type="number"
+                            :rules="standardRequirement"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="4" md="4" v-if="MyMeetingType == 'Chantier'">
+                          <v-select
+                            v-model="MyEditedItem.lotsToReturn"
+                            :items="MyEditedItem.lots"
+                            item-text="name"
+                            item-value="id_lot"
+                            label="Lot"
+                            chips
+                            multiple
+                            deletable-chips
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="4" md="4">
+                          <v-switch v-model="MyEditedItem.visible" label="Visible"></v-switch>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled :rules="standardRequirement"></v-textarea>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-textarea v-model="MyEditedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="MyEditedItem.ressources" label="Ressources"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-combobox v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-combobox>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="MyEditedItem.completion_date" label="Date de l'echéance"></v-text-field>
+                          <!-- TODO:  Mettre en forme la date -->
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="fermer()">Cancel</v-btn>
-                  <v-btn color="blue darken-1" text @click="save">Save</v-btn>
-                </v-card-actions>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                    <v-btn :disabled="!MyValid" color="blue darken-1" text @click="save">Enregister</v-btn>
+                  </v-card-actions>
+                </v-form>
               </v-card>
             </v-dialog>
           </v-toolbar>
+        </template>
+        <template v-slot:item.lots="{ item }">
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
+            {{ lot.name }}
+          </v-chip>
+        </template>
+        <template v-slot:item.visible="{ item }">
+          <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
+        </template>
+        <template v-slot:item.completion_date="{ item }">
+          {{ item.completion_date | formatDate }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">Reset</v-btn>
+          <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
       </v-data-table>
     </v-card>
@@ -66,28 +105,54 @@ export default {
   props: {
     test: String,
     dialog: Boolean,
+    valid: Boolean,
+    standardRequirement: Array,
+    pvUsers: Array,
+    items: Array,
+    pvDetails: Object,
+    meeting_type: String,
     headers: Array,
-    desserts: Array,
     editedIndex: Number,
     editedItem: Object,
     defaultItem: Object,
+    formTitle: String,
     editItem: Function,
     deleteItem: Function,
-    fermer: Function,
-    save: Function
+    close: Function,
+    save: Function,
+    checkMeetingType: Function,
+    maxPosition: Function,
+    changeVisible: Function
   },
   data() {
     return {
+      search: "",
+      MyItems: this.items,
+      MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
-      MyDesserts: this.desserts,
-      MyEditedIndex: this.editedIndex,
-      MyEditedItem: this.editedItem,
+      MyMeetingType: this.meeting_type,
       MyDefaultItem: this.defaultItem
     };
   },
+  mounted() {
+    this.checkMeetingType();
+  },
+  watch: {
+    MyDialog(val) {
+      if (this.MyEditedIndex == -1) {
+        this.MyEditedItem = Object.assign({}, this.MyDefaultItem);
+        console.log(this.maxPosition());
+
+        this.MyEditedItem.position = this.maxPosition();
+        //TODO: SESSION : pourquoi ça ne fonctionne pas ?
+      }
+      val || this.close();
+    }
+  },
+
   computed: {
-    formTitle() {
-      return this.MyEditedIndex === -1 ? "New Item" : "Edit Item";
+    MyFormTitle() {
+      return this.formTitle;
     },
     MyDialog: {
       get() {
@@ -95,6 +160,30 @@ export default {
       },
       set(val) {
         this.$emit("update:dialog", val);
+      }
+    },
+    MyValid: {
+      get() {
+        return this.valid;
+      },
+      set(val) {
+        this.$emit("update:valid", val);
+      }
+    },
+    MyEditedItem: {
+      get() {
+        return this.editedItem;
+      },
+      set(val) {
+        this.$emit("update:editedItem", val);
+      }
+    },
+    MyEditedIndex: {
+      get() {
+        return this.editedIndex;
+      },
+      set(val) {
+        this.$emit("update:editedIndex", val);
       }
     }
   }
