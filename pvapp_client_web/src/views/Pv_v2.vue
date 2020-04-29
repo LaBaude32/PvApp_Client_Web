@@ -5,7 +5,7 @@
     :dialog.sync="dialog"
     :pvDetails="pvDetails"
     :pvUsers="pvUsers"
-    :items="items"
+    :items.sync="items"
     :meeting_type="meeting_type"
     :headers="headers"
     :valid.sync="valid"
@@ -64,7 +64,7 @@ export default {
         note: "",
         follow_up: "",
         resources: "",
-        completion: "",
+        completion: [],
         completionToReturn: "",
         completion_date: "",
         visible: ""
@@ -89,7 +89,6 @@ export default {
       meeting_type: "meeting_type"
     }),
     formTitle() {
-      //TODO: Retirer ça d'ici
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     }
   },
@@ -108,31 +107,23 @@ export default {
       };
       let res = await Axios.get("getPvDetails", dt);
       if (typeof res.data.items !== "string") {
-        this.items = res.data.items;
+        this.items = [...res.data.items];
       }
       this.pvDetails = res.data.pv_details;
       this.pvUsers = res.data.users;
       this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
-
-      //TODO: SESSION Sinon passer le tableau en propriété si on le met dans un composant
-      //SESSION peut on rendre le store sychrone ? Avec des promesses ?
+      //TODO: faire une autre requete AXIOS plutot pour passer le meeting_type
+      //TODO: Passer le tableau en propriété si on le met dans un composant
     },
 
     editItem(item) {
-      console.log(item);
-      console.log(this.editedItem.completion);
-
       this.editedIndex = this.items.indexOf(item);
-      // this.editedItem = Object.assign({}, item);
-      this.editedItem = {
-        ...item
-      };
+      this.editedItem = { ...item };
       this.editedItem.lotsToReturn = item.lots;
       this.editedItem.lots = this.pvDetails.lots;
       this.editedItem.completionToReturn = item.completion;
       this.editedItem.completion = [item.completion];
       this.editedItem.completion.push(...this.defaultItem.completion);
-      console.log(this.editedItem);
 
       this.dialog = true;
     },
@@ -144,19 +135,15 @@ export default {
 
     close() {
       this.dialog = false;
-      setTimeout(() => {
-        // this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedItem = { ...this.defaultItem };
-        this.editedIndex = -1;
-      }, 300);
+      this.editedItem = { ...this.defaultItem };
+      this.editedIndex = -1;
     },
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
       let data;
-      data = this.editedItem;
+      data = { ...this.editedItem };
       data.completion = data.completionToReturn;
-      console.log(data);
       if (data.visible == true) {
         data.visible = 1;
       } else {
@@ -165,7 +152,6 @@ export default {
 
       if (this.editedIndex > -1) {
         //Existing item
-        //TODO: faire des promesses synchrone
         Axios.post("/updateItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item_updated === "number") {

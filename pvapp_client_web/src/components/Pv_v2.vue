@@ -127,7 +127,6 @@ export default {
   data() {
     return {
       search: "",
-      MyItems: this.items,
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
       MyMeetingType: this.meeting_type,
@@ -140,11 +139,8 @@ export default {
   watch: {
     MyDialog(val) {
       if (this.MyEditedIndex == -1) {
+        this.MyDefaultItem.position = this.maxPosition();
         this.MyEditedItem = Object.assign({}, this.MyDefaultItem);
-        console.log(this.maxPosition());
-
-        this.MyEditedItem.position = this.maxPosition();
-        //TODO: SESSION : pourquoi ça ne fonctionne pas ?
       }
       val || this.close();
     }
@@ -168,6 +164,14 @@ export default {
       },
       set(val) {
         this.$emit("update:valid", val);
+      }
+    },
+    MyItems: {
+      get() {
+        return this.items;
+      },
+      set(val) {
+        this.$emit("update:items", val);
       }
     },
     MyEditedItem: {
