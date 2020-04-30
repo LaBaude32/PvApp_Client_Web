@@ -10,7 +10,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialogNewOrModifiedUser" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">Créer une nouvelle personne</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-on="on">Créer une personne</v-btn>
             </template>
 
             <v-card>
@@ -64,7 +64,7 @@
           </v-dialog>
           <v-dialog v-model="dialogExistingUser" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="green" dark class="mb-2 ml-2" v-on="on">Ajouter une personne de votre répertoire</v-btn>
+              <v-btn color="green" dark class="mb-2 ml-2" v-on="on">Ajouter de votre répertoire</v-btn>
             </template>
             <v-card>
               <v-form v-model="valid2">
@@ -148,6 +148,9 @@
 <script>
 import Axios from "axios";
 import { mapGetters } from "vuex";
+
+//TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
+
 export default {
   name: "Users",
   props: { users: Array },
