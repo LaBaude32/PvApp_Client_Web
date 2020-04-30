@@ -9,9 +9,15 @@ import moment from "moment";
 Vue.config.productionTip = false;
 
 moment.locale("fr");
-Vue.filter("formatDate", function (value) {
+Vue.filter("formatDate", function(value) {
   if (value) {
     return moment(String(value)).format("LLLL");
+  }
+});
+
+Vue.filter("formatDateShortDayOnly", function(value) {
+  if (value) {
+    return moment(String(value)).format("ddd Do MMM YYYY");
   }
 });
 
