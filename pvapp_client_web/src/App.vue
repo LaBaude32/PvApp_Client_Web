@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawerRight" app clipped right>
+    <!-- <v-navigation-drawer v-model="drawerRight" app clipped right>
       <v-list dense>
         <v-list-item @click.stop="invertRight">
           <v-list-item-action>
@@ -11,7 +11,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-app-bar app color="primary darken-1" clipped-right dark>
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
@@ -39,7 +39,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-app-bar-nav-icon @click.stop="invertDrawerRight" />
+      <!-- <v-app-bar-nav-icon @click.stop="invertDrawerRight" /> -->
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawerMain" app>
