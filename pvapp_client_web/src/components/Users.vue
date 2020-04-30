@@ -60,7 +60,6 @@
                   <v-btn :disabled="!valid1" color="blue darken-1" text @click="saveNewOrModifiedUser">Enregistrer</v-btn>
                 </v-card-actions>
               </v-form>
-
             </v-card>
           </v-dialog>
           <v-dialog v-model="dialogExistingUser" max-width="500px">
@@ -77,7 +76,14 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12">
-                        <v-combobox v-model="connectedUser" :items="connectedUsers" item-text="fullName" item-value="user_id" label="Personne" :rules="standardRequirement"></v-combobox>
+                        <v-combobox
+                          v-model="connectedUser"
+                          :items="connectedUsers"
+                          item-text="fullName"
+                          item-value="user_id"
+                          label="Personne"
+                          :rules="standardRequirement"
+                        ></v-combobox>
                       </v-col>
                       <v-row v-if="connectedUser">
                         <v-col cols="12" sm="6" md="4">
@@ -109,7 +115,6 @@
                   <v-btn :disabled="!valid2" color="blue darken-1" text @click="saveExistingUser">Enregistrer</v-btn>
                 </v-card-actions>
               </v-form>
-
             </v-card>
           </v-dialog>
         </v-toolbar>
@@ -159,10 +164,7 @@ export default {
       v => (v && v.length >= 3) || "Doit être supérieur 2 charactère",
       v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
     ],
-    emailRules: [
-      v => !!v || "Requis",
-      v => /.+@.+\..+/.test(v) || "Le mail doit être valide"
-    ],
+    emailRules: [v => !!v || "Requis", v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
     phoneRules: [
       v => !!v || "Requis",
       v => (v && v.length == 10) || "Doit être égal à 10 charactère",
@@ -247,9 +249,7 @@ export default {
       affair_name: "name"
     }),
     formTitle() {
-      return this.editedIndex === -1
-        ? "Ajouter une personne"
-        : "Modifier une personne";
+      return this.editedIndex === -1 ? "Ajouter une personne" : "Modifier une personne";
     }
   },
 
@@ -271,8 +271,7 @@ export default {
 
     deleteItem(item) {
       const index = this.users.indexOf(item);
-      confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
-        this.users.splice(index, 1);
+      confirm("Etes-vous sûr de vouloir supprimer cette personne?") && this.users.splice(index, 1);
       //TODO: ajouter la suppression en API
     },
 
@@ -291,10 +290,7 @@ export default {
         data.pvId = this.$route.params.id;
         Axios.post("/updateParticipant", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_user === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_user === "number") {
               Object.assign(this.users[this.editedIndex], this.editedItem);
             } else {
               console.log(response);
@@ -313,10 +309,7 @@ export default {
         data.pvId = this.$route.params.id;
         Axios.post("/addUser", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_user === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_user === "number") {
               this.users.push(data);
             } else {
               console.log(response);
