@@ -2,7 +2,6 @@
   <div>
     <Pv-v2
       v-if="meeting_type"
-      test="hello"
       :dialog.sync="dialog"
       :pvDetails="pvDetails"
       :pvUsers="pvUsers"
@@ -76,6 +75,8 @@ export default {
         completion: [],
         completionToReturn: "",
         completion_date: "",
+        completion_date_date: "",
+        completion_date_time: "",
         visible: ""
       },
       defaultItem: {
@@ -88,6 +89,8 @@ export default {
         resources: "",
         completion: ["A faire", "Urgent", "Fait"],
         completion_date: "",
+        completion_date_date: "",
+        completion_date_time: "",
         visible: true
       }
     };
