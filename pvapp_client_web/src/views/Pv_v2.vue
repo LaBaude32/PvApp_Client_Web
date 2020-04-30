@@ -1,35 +1,45 @@
 <template>
-  <Pv-v2
-    v-if="meeting_type"
-    test="hello"
-    :dialog.sync="dialog"
-    :pvDetails="pvDetails"
-    :pvUsers="pvUsers"
-    :items.sync="items"
-    :meeting_type="meeting_type"
-    :headers="headers"
-    :valid.sync="valid"
-    :standardRequirement="standardRequirement"
-    :editedIndex.sync="editedIndex"
-    :editedItem.sync="editedItem"
-    :defaultItem="defaultItem"
-    :formTitle="formTitle"
-    :editItem="editItem"
-    :deleteItem="deleteItem"
-    :close="close"
-    :save="save"
-    :maxPosition="maxPosition"
-    :changeVisible="changeVisible"
-  />
-  <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
+  <div>
+    <Pv-v2
+      v-if="meeting_type"
+      test="hello"
+      :dialog.sync="dialog"
+      :pvDetails="pvDetails"
+      :pvUsers="pvUsers"
+      :items.sync="items"
+      :meeting_type="meeting_type"
+      :headers="headers"
+      :valid.sync="valid"
+      :standardRequirement="standardRequirement"
+      :editedIndex.sync="editedIndex"
+      :editedItem.sync="editedItem"
+      :defaultItem="defaultItem"
+      :formTitle="formTitle"
+      :editItem="editItem"
+      :deleteItem="deleteItem"
+      :close="close"
+      :save="save"
+      :maxPosition="maxPosition"
+      :changeVisible="changeVisible"
+    />
+    <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
+
+    <v-divider class="my-10"></v-divider>
+
+    <Users v-if="pvUsers" :users="pvUsers" />
+
+    <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
+  </div>
 </template>
 
 <script>
 import Pv_v2 from "@/components/Pv_v2.vue";
+import Users from "@/components/Users.vue";
 import Axios from "axios";
 export default {
   components: {
-    "Pv-v2": Pv_v2
+    "Pv-v2": Pv_v2,
+    Users
   },
   data() {
     return {
