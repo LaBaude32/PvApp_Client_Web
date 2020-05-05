@@ -67,11 +67,16 @@
                                 readonly
                                 v-on="on"
                                 clearable
-                                @click:clear="test = null"
+                                @click:clear="MyCompletionDate = null"
                                 prepend-icon="mdi-calendar"
                               ></v-text-field>
                             </template>
-                            <v-date-picker v-model="test" @change="ItemModelDatePicker = false" locale="fr-fr" show-current></v-date-picker>
+                            <v-date-picker
+                              v-model="MyCompletionDate"
+                              @change="ItemModelDatePicker = false"
+                              locale="fr-fr"
+                              show-current
+                            ></v-date-picker>
                           </v-menu>
                         </v-col>
                       </v-row>
@@ -112,7 +117,6 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
   name: "Pv-V2",
   props: {
@@ -128,6 +132,8 @@ export default {
     editedItem: Object,
     defaultItem: Object,
     formTitle: String,
+    formatedCompletion_date: String,
+    computedDateFormattedCompletion: String,
     editItem: Function,
     deleteItem: Function,
     close: Function,
@@ -160,16 +166,13 @@ export default {
   },
 
   computed: {
-    test: {
+    MyCompletionDate: {
       get() {
-        return this.MyEditedItem.completion_date ? moment(this.MyEditedItem.completion_date).format("YYYY-MM-DD") : "";
+        return this.formatedCompletion_date;
       },
       set(val) {
-        this.MyEditedItem.completion_date = moment(val).format("YYYY-MM-DD");
+        this.$emit("update:formatedCompletion_date", val);
       }
-    },
-    computedDateFormattedCompletion() {
-      return this.MyEditedItem.completion_date ? moment(this.MyEditedItem.completion_date).format("ddd Do MMM YYYY") : "";
     },
     MyFormTitle() {
       return this.formTitle;

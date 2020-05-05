@@ -14,6 +14,8 @@
       :editedItem.sync="editedItem"
       :defaultItem="defaultItem"
       :formTitle="formTitle"
+      :formatedCompletion_date.sync="formatedCompletion_date"
+      :computedDateFormattedCompletion="computedDateFormattedCompletion"
       :editItem="editItem"
       :deleteItem="deleteItem"
       :close="close"
@@ -32,6 +34,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import Pv_v2 from "@/components/Pv_v2.vue";
 import Users from "@/components/Users.vue";
 import Axios from "axios";
@@ -99,6 +102,17 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+    },
+    formatedCompletion_date: {
+      get() {
+        return this.editedItem.completion_date ? moment(this.editedItem.completion_date).format("YYYY-MM-DD") : "";
+      },
+      set(val) {
+        this.editedItem.completion_date = moment(val).format("YYYY-MM-DD");
+      }
+    },
+    computedDateFormattedCompletion() {
+      return this.editedItem.completion_date ? moment(this.editedItem.completion_date).format("ddd Do MMM YYYY") : "";
     }
   },
 
