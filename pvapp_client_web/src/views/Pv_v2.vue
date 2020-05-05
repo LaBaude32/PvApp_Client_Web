@@ -152,9 +152,11 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
+      this.editedItem.completion_date += " 00:00:00";
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
+      // data.completion_date += " 00:00:00";
       if (data.visible == true) {
         data.visible = 1;
       } else {
