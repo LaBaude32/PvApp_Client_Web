@@ -58,10 +58,6 @@
                         <v-col cols="12" sm="6" md="4">
                           <v-combobox v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-combobox>
                         </v-col>
-                        <!-- <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="MyEditedItem.completion_date" label="Date de l'echéance"></v-text-field>
-                          TODO:  Mettre en forme la date
-                        </v-col> -->
                         <v-col cols="12" sm="6" md="4">
                           <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
                             <template v-slot:activator="{ on }">
@@ -117,7 +113,6 @@
 
 <script>
 import moment from "moment";
-// import { parseISO } from "date-fns";
 export default {
   name: "Pv-V2",
   props: {
@@ -143,7 +138,6 @@ export default {
   data() {
     return {
       ItemModelDatePicker: false,
-
       search: "",
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
@@ -168,7 +162,7 @@ export default {
   computed: {
     test: {
       get() {
-        return moment(this.MyEditedItem.completion_date).format("YYYY-MM-DD");
+        return this.MyEditedItem.completion_date ? moment(this.MyEditedItem.completion_date).format("YYYY-MM-DD") : "";
       },
       set(val) {
         this.MyEditedItem.completion_date = moment(val).format("YYYY-MM-DD");
