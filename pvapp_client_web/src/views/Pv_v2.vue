@@ -196,8 +196,8 @@ export default {
           });
       } else {
         //New item
-        //FIXME : Ne fonctionne pas
         data.pv_id = this.$route.params.id;
+        data.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
         Axios.post("/addItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
