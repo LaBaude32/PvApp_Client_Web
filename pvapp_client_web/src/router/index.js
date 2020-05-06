@@ -34,8 +34,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
     beforeEnter: ifNotAuthenticated
   },
   {
@@ -44,8 +43,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Login.vue"),
     beforeEnter: ifNotAuthenticated
   },
   {
@@ -54,8 +52,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Users.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Users.vue"),
     beforeEnter: ifAuthenticated
   },
   {
@@ -64,15 +61,13 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Board.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Board.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: routesCONST.affair.path + "/:id",
     name: routesCONST.affair.name,
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Affair.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/Affair.vue"),
     beforeEnter: ifAuthenticated
   },
   {
@@ -84,28 +79,29 @@ const routes = [
   {
     path: routesCONST.addAffair.path,
     name: routesCONST.addAffair.name,
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AddAffair.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/AddAffair.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: getRoutePath("addPv"),
     name: getRouteName("addPv"),
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AddPv.vue"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/AddPv.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: getRoutePath("addUser"),
     name: getRouteName("addUser"),
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AddUser.vue")
+    component: () => import(/* webpackChunkName: "about" */ "../views/AddUser.vue")
   },
   {
     path: getRoutePath("addLot"),
     name: getRouteName("addLot"),
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AddLot.vue")
+    component: () => import(/* webpackChunkName: "about" */ "../views/AddLot.vue")
+  },
+  {
+    path: getRoutePath("finishedPv") + "/:id",
+    name: getRouteName("finishedPv"),
+    component: () => import(/* webpackChunkName: "about" */ "../views/FinishedPv.vue")
   },
   {
     path: routesCONST.test.path,

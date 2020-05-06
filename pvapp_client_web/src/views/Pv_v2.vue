@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-container class="pt-0">
+      <v-row>
+        <v-col cols="12" class="d-flex flex-row-reverse">
+          <!-- <v-spacer /> -->
+          <v-btn color="primary" @click="pvValidation">Finaliser et diffuser le PV</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-divider class="mb-10"></v-divider>
     <Pv-v2
       v-if="meeting_type"
       :dialog.sync="dialog"
@@ -38,6 +48,8 @@ import moment from "moment";
 import Pv_v2 from "@/components/Pv_v2.vue";
 import Users from "@/components/Users.vue";
 import Axios from "axios";
+import { getRouteName } from "../utilities/constantes";
+
 export default {
   components: {
     "Pv-v2": Pv_v2,
@@ -228,6 +240,11 @@ export default {
         console.log(error);
         item.visible = !item.visible;
       });
+    },
+    pvValidation() {
+      //TODO: Faire un modal de validation
+      //TODO: Faire une requete API pour mettre le pv en terminé
+      this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.$route.params.id } });
     }
   }
 };

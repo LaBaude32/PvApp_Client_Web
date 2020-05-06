@@ -43,6 +43,10 @@ const routesCONST = {
     path: "/addLot",
     name: "AddLot"
   },
+  finishedPv: {
+    path: "/finishedPv",
+    name: "FinishedPv"
+  },
   test: {
     path: "/test",
     name: "Test"
