@@ -193,9 +193,9 @@ export default {
       },
       {
         user_id: 2,
-        fullName: "Omb Bolo",
+        fullName: "Omb Bollo",
         firstName: "Omb",
-        lastName: "Bolo"
+        lastName: "Bollo"
       },
       {
         user_id: 3,
