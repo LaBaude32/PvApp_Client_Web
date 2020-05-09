@@ -3,11 +3,11 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <p class="text-uppercase">Opération :</p>
+          <p class="text-uppercase display-1">Opération :</p>
           <v-divider />
-          <p class="mt-2">{{ affairInfos.name }}</p>
+          <p class="mt-2 headline">{{ affairInfos.name }}</p>
           <v-divider />
-          <p class="mt-2">{{ affairInfos.description }}</p>
+          <p class="mt-2 subtitle-1">{{ affairInfos.description }}</p>
           <v-row>
             <v-col cols="6">
               <p class="text-uppercase text-left">Maitre d'ouvrage :</p>
@@ -25,11 +25,11 @@
             </v-col>
           </v-row>
           <v-divider />
-          <p class="text-uppercase mt-2">
+          <p class="text-uppercase mt-2 title">
             PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
-            <span v-if="pvDetails.meeting_place != 'Indéfini'">, en {{ pvDetails.meeting_place }}</span>
+            <span v-if="pvDetails.meeting_place">, en {{ pvDetails.meeting_place }}</span>
           </p>
-          <p v-if="pvDetails.meeting_next_place">
+          <p v-if="pvDetails.meeting_next_place" class="red--text title">
             Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }} en {{ pvDetails.meeting_next_place }}
           </p>
         </v-col>
@@ -43,7 +43,7 @@
     <v-container>
       <v-divider class="my-10" />
       <div v-if="pvDetails.meeting_next_date">
-        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meeting_next_date }}</p>
+        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }}</p>
         <p class="font-italic body-2">Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.</p>
       </div>
       <p>Fait et diffusé le {{ pvDetails.release_date | formatDateWithA }}</p>
