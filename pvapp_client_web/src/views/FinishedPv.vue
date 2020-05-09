@@ -8,20 +8,20 @@
           <p class="mt-2 headline">{{ affairInfos.name }}</p>
           <v-divider />
           <p class="mt-2 subtitle-1">{{ affairInfos.description }}</p>
-          <v-row>
+          <v-row v-if="maitreDOuvrage">
             <v-col cols="6">
               <p class="text-uppercase text-left">Maîtrise d'ouvrage :</p>
             </v-col>
             <v-col cols="6">
-              <p class="text-uppercase text-right">{{}}</p>
+              <p class="text-right">{{ maitreDOuvrage }}</p>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row v-if="maitresDOeuvre">
             <v-col cols="6">
               <p class="text-uppercase text-left">Maîtrise d'oeuvre :</p>
             </v-col>
             <v-col cols="6">
-              <p class="text-uppercase text-right">{{ maitresDOeuvre }}</p>
+              <p class="text-right">{{ maitresDOeuvre }}</p>
             </v-col>
           </v-row>
           <v-divider />
@@ -72,6 +72,7 @@ export default {
       pvUsers: [],
       owner: {},
       maitresDOeuvre: "",
+      maitreDOuvrage: "",
       UserHeaders: [
         {
           text: "Prénom Nom",
@@ -134,6 +135,13 @@ export default {
             this.maitresDOeuvre = element.organism;
           } else {
             this.maitresDOeuvre += " - " + element.organism;
+          }
+        }
+        if (element.userGroup == "Maîtrise d'ouvrage") {
+          if (this.maitreDOuvrage == "") {
+            this.maitreDOuvrage = element.organism;
+          } else {
+            this.maitreDOuvrage += " - " + element.organism;
           }
         }
       });
