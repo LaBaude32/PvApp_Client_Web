@@ -10,7 +10,7 @@
           <p class="mt-2 subtitle-1">{{ affairInfos.description }}</p>
           <v-row>
             <v-col cols="6">
-              <p class="text-uppercase text-left">Maitre d'ouvrage :</p>
+              <p class="text-uppercase text-left">Maîtrise d'ouvrage :</p>
             </v-col>
             <v-col cols="6">
               <p class="text-uppercase text-right">{{}}</p>
@@ -18,10 +18,10 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <p class="text-uppercase text-left">Maitre d'oeuvre :</p>
+              <p class="text-uppercase text-left">Maîtrise d'oeuvre :</p>
             </v-col>
             <v-col cols="6">
-              <p class="text-uppercase text-right">{{}}</p>
+              <p class="text-uppercase text-right">{{ maitresDOeuvre }}</p>
             </v-col>
           </v-row>
           <v-divider />
@@ -71,6 +71,7 @@ export default {
       meeting_type: undefined,
       pvUsers: [],
       owner: {},
+      maitresDOeuvre: "",
       UserHeaders: [
         {
           text: "Prénom Nom",
@@ -126,6 +127,16 @@ export default {
         this.ItemHeaders.splice(1, 0, { text: "Lot", value: "lots" });
       }
       this.affairInfos = res.data.affair.affair_infos;
+
+      this.pvUsers.forEach(element => {
+        if (element.userGroup == "Maîtrise d'oeuvre") {
+          if (this.maitresDOeuvre == "") {
+            this.maitresDOeuvre = element.organism;
+          } else {
+            this.maitresDOeuvre += " - " + element.organism;
+          }
+        }
+      });
     }
   }
 };
