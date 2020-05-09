@@ -5,9 +5,9 @@
         <v-col cols="12">
           <p class="text-uppercase">Opération :</p>
           <v-divider />
-          <p>{{ affairInfos.name }}</p>
+          <p class="mt-2">{{ affairInfos.name }}</p>
           <v-divider />
-          <p>{{}}</p>
+          <p class="mt-2">{{ affairInfos.description }}</p>
           <v-row>
             <v-col cols="6">
               <p class="text-uppercase text-left">Maitre d'ouvrage :</p>
@@ -25,19 +25,30 @@
             </v-col>
           </v-row>
           <v-divider />
-          <p>
-            PV de la réunion de {{ meeting_type }} n°{{ test1 }} du {{ pvDetails.meeting_date | formatDate }}
+          <p class="text-uppercase mt-2">
+            PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
             <span v-if="pvDetails.meeting_place != 'Indéfini'">, en {{ pvDetails.meeting_place }}</span>
           </p>
           <p v-if="pvDetails.meeting_next_place">
-            Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDate }} en {{ pvDetails.meeting_next_place }}
+            Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }} en {{ pvDetails.meeting_next_place }}
           </p>
         </v-col>
       </v-row>
     </v-container>
     <finishedPvUsers v-if="meeting_type" :users="pvUsers" :headers="UserHeaders" groupBy="userGroup" />
-    <v-divider class="my-10" />
+    <v-container>
+      <v-divider class="my-10" />
+    </v-container>
     <finishedPvItems v-if="meeting_type" :items="items" :headers="ItemHeaders" sortBy="position" />
+    <v-container>
+      <v-divider class="my-10" />
+      <div v-if="pvDetails.meeting_next_date">
+        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meeting_next_date }}</p>
+        <p class="font-italic body-2">Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.</p>
+      </div>
+      <p>Fait et diffusé le {{ pvDetails.release_date | formatDateWithA }}</p>
+      <p>{{ owner.firstName }} {{ owner.lastName }}</p>
+    </v-container>
   </div>
 </template>
 
@@ -59,6 +70,7 @@ export default {
       pvDetails: {},
       meeting_type: undefined,
       pvUsers: [],
+      owner: {},
       UserHeaders: [
         {
           text: "Prénom Nom",
@@ -102,23 +114,18 @@ export default {
           id_pv: this.$route.params.id
         }
       };
-      let res = await Axios.get("getPvDetails", dt);
+      let res = await Axios.get("getPvReleasedDetails", dt);
       if (typeof res.data.items !== "string") {
         this.items = [...res.data.items];
       }
       this.pvDetails = res.data.pv_details;
       this.pvUsers = res.data.users;
       this.meeting_type = res.data.pv_details.affair_meeting_type;
+      this.owner = res.data.owner;
       if (this.meeting_type == "Chantier") {
         this.ItemHeaders.splice(1, 0, { text: "Lot", value: "lots" });
       }
-      Axios.get("getAffairById", { params: { id_affair: this.pvDetails.affair_id } })
-        .then(response => {
-          this.affairInfos = response.data.affair_infos;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      this.affairInfos = res.data.affair.affair_infos;
     }
   }
 };
