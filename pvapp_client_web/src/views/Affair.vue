@@ -1,11 +1,14 @@
 <template>
-  <div v-if="affair">
+  <div v-if="affair" class="mb-10">
     <h3>Affaire : {{ affair.affair_infos.name }}</h3>
     <p>Adresse : {{ affair.affair_infos.address }}</p>
     <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
+    <p v-if="affair.affair_infos.description" class="font-italic">{{ affair.affair_infos.description }}</p>
     <p>Progression :</p>
     <div class="text-center">
-      <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.affair_infos.progress }} %</v-progress-circular>
+      <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8"
+        >{{ affair.affair_infos.progress }} %</v-progress-circular
+      >
     </div>
     <v-divider class="mt-10"></v-divider>
     <h3 class="mt-5">Lots :</h3>
