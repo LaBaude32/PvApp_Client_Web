@@ -1,32 +1,23 @@
 <template>
   <div v-if="affair" class="mb-10">
-    <h3>Affaire : {{ affair.affair_infos.name }}</h3>
-    <p>Adresse : {{ affair.affair_infos.address }}</p>
-    <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
-    <p v-if="affair.affair_infos.description" class="font-italic">{{ affair.affair_infos.description }}</p>
-    <p>Progression :</p>
-    <div class="text-center">
-      <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8"
-        >{{ affair.affair_infos.progress }} %</v-progress-circular
-      >
-    </div>
-    <v-divider class="mt-10"></v-divider>
-    <h3 class="mt-5">Lots :</h3>
-    <v-list-item v-for="(lot, index) in affair.lots" v-bind:key="lot.id" dense>
-      <v-list-item-content>
-        <div>{{ index + 1 }} - {{ lot.name }}</div>
-      </v-list-item-content>
-    </v-list-item>
-    <v-row>
-      <v-col>
-        <v-btn class="mx-2" color="success" @click.prevent="addLot">Ajouter un lot</v-btn>
-        <v-btn class="mx-2" color="warning" @click.prevent="modifyLot">Modifier un lot</v-btn>
-      </v-col>
-    </v-row>
-    <v-divider class="mt-5 mb-10"></v-divider>
+    <v-container class="mb-5">
+      <h3>Affaire : {{ affair.affair_infos.name }}</h3>
+      <p>Adresse : {{ affair.affair_infos.address }}</p>
+      <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
+      <p v-if="affair.affair_infos.description" class="font-italic">{{ affair.affair_infos.description }}</p>
+      <p>Progression :</p>
+      <div class="text-center">
+        <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8"
+          >{{ affair.affair_infos.progress }} %</v-progress-circular
+        >
+      </div>
+      <h3 class="mt-5">Lots :</h3>
+      <v-chip v-for="lot in affair.lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
+    </v-container>
+
     <v-card max-width="80%" class="mx-auto">
       <v-card-title>
-        Pvs
+        Les procès verbaux :
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
       </v-card-title>
@@ -51,6 +42,27 @@
           </v-chip>
         </template>
       </v-data-table>
+    </v-card>
+    <v-card max-width="80%" class="mx-auto mt-10">
+      <v-app-bar dark color="warning">
+        <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+
+        <v-toolbar-title>Modifier l'affaire</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <!-- <v-btn icon>
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn> -->
+      </v-app-bar>
+      <v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn dark color="success">Modifier la progression</v-btn>
+          <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
+          <v-btn dark color="error">Modifier l'affaire</v-btn>
+        </v-card-actions>
+      </v-container>
     </v-card>
   </div>
 </template>
@@ -112,9 +124,6 @@ export default {
         name: routesCONST.pv.name,
         params: { id: pvId }
       });
-    },
-    addLot() {
-      this.$router.push({ name: getRouteName("addLot") });
     },
     modifyLot() {
       this.$router.push({ name: getRouteName("addLot") });
