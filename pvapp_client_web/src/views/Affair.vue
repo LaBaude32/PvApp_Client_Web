@@ -1,24 +1,34 @@
 <template>
   <div v-if="affair" class="mb-10">
-    <v-dialog v-model="progressDialog" persistent max-width="600px">
-      <ModifyProgress :progressValue.sync="affair.affair_infos.progress" :dialog.sync="progressDialog" :modifyProgressSave="modifyProgressSave" />
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <ModifyProgress
+        v-if="progressDialog"
+        :progressValue.sync="affair.progress"
+        :dialog.sync="progressDialog"
+        :modifyProgressSave="modifyProgressSave"
+      />
+      <ModifyAffair
+        v-if="affairDialog"
+        :dialog.sync="affairDialog"
+        :affairDatas.sync="affair"
+        :validate="ModifyAffairSave"
+        :enableVider="enableVider"
+      />
     </v-dialog>
     <v-container class="mb-5">
-      <h3>Affaire : {{ affair.affair_infos.name }}</h3>
-      <p>Adresse : {{ affair.affair_infos.address }}</p>
-      <p>Type de chantier : {{ affair.affair_infos.meeting_type }}</p>
-      <p v-if="affair.affair_infos.description" class="font-italic">{{ affair.affair_infos.description }}</p>
+      <h3>Affaire : {{ affair.name }}</h3>
+      <p>Adresse : {{ affair.address }}</p>
+      <p>Type de chantier : {{ affair.meeting_type }}</p>
+      <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
       <p>Progression :</p>
       <div class="text-center">
-        <v-progress-circular :value="affair.affair_infos.progress" color="deep-orange lighten-2" size="80" width="8"
-          >{{ affair.affair_infos.progress }} %</v-progress-circular
-        >
+        <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.progress }} %</v-progress-circular>
       </div>
       <v-row>
         <v-col cols="12">
           <h3 class="mt-5">Lots :</h3>
-          <div v-if="affair.lots">
-            <v-chip v-for="lot in affair.lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
+          <div v-if="lots">
+            <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
           </div>
           <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
         </v-col>
@@ -70,7 +80,7 @@
           <v-spacer></v-spacer>
           <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
           <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
-          <v-btn dark color="error">Modifier l'affaire</v-btn>
+          <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
         </v-card-actions>
       </v-container>
     </v-card>
@@ -82,15 +92,22 @@
 import Axios from "axios";
 import routesCONST, { getRouteName } from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
-
+import ModifyAffair from "@/components/ModifyAffair.vue";
+// import moment from "moment";
 export default {
   components: {
-    ModifyProgress
+    ModifyProgress,
+    ModifyAffair
   },
   data() {
     return {
       progressDialog: false,
+      affairDialog: false,
+      dialog: false,
+      dialogType: "",
+      enableVider: false,
       affair: {},
+      lots: [],
       search: "",
       pvs: [],
       headers: [
@@ -116,7 +133,8 @@ export default {
       }
     })
       .then(response => {
-        this.affair = response.data;
+        this.affair = response.data.affair_infos;
+        this.lots = response.data.lots;
       })
       .catch(error => {
         console.log(error);
@@ -145,22 +163,39 @@ export default {
       this.$router.push({ name: getRouteName("addLot") });
     },
     modifyProgress() {
+      this.dialog = true;
       this.progressDialog = true;
     },
     modifyProgressSave() {
       let data = {
-        ...this.affair.affair_infos
+        ...this.affair
       };
-      console.log(data);
-
       Axios.post("updateAffair", data)
+        .then(response => {
+          console.log(response);
+          //TODO: faire un retour
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.progressDialog = false;
+      this.dialog = false;
+    },
+    modifyAffair() {
+      this.dialog = true;
+      this.affairDialog = true;
+    },
+    ModifyAffairSave() {
+      console.log(this.affair);
+      Axios.post("/updateAffair", this.affair)
         .then(response => {
           console.log(response);
         })
         .catch(error => {
           console.log(error);
         });
-      this.progressDialog = false;
+      this.dialog = false;
+      this.affairDialog = false;
     }
   }
 };
