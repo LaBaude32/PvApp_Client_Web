@@ -1,5 +1,8 @@
 <template>
   <div v-if="affair" class="mb-10">
+    <v-dialog v-model="progressDialog" persistent max-width="600px">
+      <ModifyProgress :progressValue.sync="affair.affair_infos.progress" :dialog.sync="progressDialog" :modifyProgressSave="modifyProgressSave" />
+    </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.affair_infos.name }}</h3>
       <p>Adresse : {{ affair.affair_infos.address }}</p>
@@ -11,8 +14,15 @@
           >{{ affair.affair_infos.progress }} %</v-progress-circular
         >
       </div>
-      <h3 class="mt-5">Lots :</h3>
-      <v-chip v-for="lot in affair.lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
+      <v-row>
+        <v-col cols="12">
+          <h3 class="mt-5">Lots :</h3>
+          <div v-if="affair.lots">
+            <v-chip v-for="lot in affair.lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
+          </div>
+          <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-card max-width="80%" class="mx-auto">
@@ -58,7 +68,7 @@
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="success">Modifier la progression</v-btn>
+          <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
           <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error">Modifier l'affaire</v-btn>
         </v-card-actions>
@@ -71,10 +81,16 @@
 //TODO: ajouter la modification des lots
 import Axios from "axios";
 import routesCONST, { getRouteName } from "../utilities/constantes";
+import ModifyProgress from "@/components/ModifyProgress.vue";
+
 export default {
+  components: {
+    ModifyProgress
+  },
   data() {
     return {
-      affair: "",
+      progressDialog: false,
+      affair: {},
       search: "",
       pvs: [],
       headers: [
@@ -127,6 +143,24 @@ export default {
     },
     modifyLot() {
       this.$router.push({ name: getRouteName("addLot") });
+    },
+    modifyProgress() {
+      this.progressDialog = true;
+    },
+    modifyProgressSave() {
+      let data = {
+        ...this.affair.affair_infos
+      };
+      console.log(data);
+
+      Axios.post("updateAffair", data)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.progressDialog = false;
     }
   }
 };
