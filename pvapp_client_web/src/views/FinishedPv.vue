@@ -27,7 +27,7 @@
           <v-divider />
           <p class="text-uppercase mt-2 title">
             PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
-            <span v-if="pvDetails.meeting_place">, en {{ pvDetails.meeting_place }}</span>
+            <span v-if="pvDetails.meeting_place">, {{ pvDetails.meeting_place }}</span>
           </p>
           <p v-if="pvDetails.meeting_next_place" class="red--text title">
             Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }} en {{ pvDetails.meeting_next_place }}
