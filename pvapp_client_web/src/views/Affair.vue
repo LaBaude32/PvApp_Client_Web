@@ -14,7 +14,7 @@
         :validate="ModifyAffairSave"
         :enableVider="enableVider"
       />
-      <ModifyPv v-if="pvModifyDialog" :data="pvData" :affairs="affairsForPv" :modifyingType="pvModifyingType" :validate="pvModifySave" />
+      <ModifyPv v-if="pvModifyDialog" :data.sync="pvData" :affairs="affairsForPv" :modifyingType="pvModifyingType" :validate="pvModifySave" />
     </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
@@ -69,19 +69,13 @@
     </v-card>
     <v-card max-width="80%" class="mx-auto mt-10">
       <v-app-bar dark color="warning">
-        <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-
         <v-toolbar-title>Modifier l'affaire</v-toolbar-title>
-
         <v-spacer></v-spacer>
-
-        <!-- <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn> -->
       </v-app-bar>
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn dark color="primary">Ajouter un pv</v-btn>
           <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
           <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
@@ -92,13 +86,11 @@
 </template>
 
 <script>
-//TODO: ajouter la modification des lots
 import Axios from "axios";
 import routesCONST, { getRouteName } from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
-// import moment from "moment";
 export default {
   components: {
     ModifyProgress,
@@ -127,7 +119,7 @@ export default {
           sortable: false,
           value: "meeting_date"
         },
-        { text: "Etat", value: "state" },
+        { text: "Etat", align: "center", value: "state" },
         { text: "Lieu", value: "meeting_place" },
         { text: "Prochaine date", value: "meeting_next_date" },
         { text: "Prochain lieu", value: "meeting_next_place" },
@@ -209,17 +201,43 @@ export default {
     },
     modifyPv(pvDatas) {
       this.affairsForPv = [{ ...this.affair }];
-      console.log(this.affairsForPv);
-
-      this.pvData = { ...pvDatas };
-      console.log(this.pvData);
-
+      this.pvData = pvDatas;
       this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
+      this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
       this.dialog = true;
       this.pvModifyDialog = true;
     },
     pvModifySave() {
-      alert("test");
+      if (this.pvData.meeting_next_date_date == "empty string") {
+        this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + this.meeting_next_date_time + ":00";
+      } else {
+        this.pvData.meeting_next_date = null;
+      }
+      let meeting_next_date;
+
+      if (this.pvData.meeting_next_date_date != undefined) {
+        meeting_next_date = this.pvData.meeting_next_date_date + " " + this.pvData.meeting_next_date_time + ":00";
+      } else {
+        meeting_next_date = null;
+      }
+      let pvData = {
+        id_pv: this.pvData.id_pv,
+        meeting_date: this.pvData.meeting_date_date + " " + this.pvData.meeting_date_time + ":00",
+        meeting_place: this.pvData.meeting_place,
+        meeting_next_date: meeting_next_date,
+        meeting_next_place: this.pvData.meeting_next_place,
+        state: this.pvData.state,
+        affair_id: this.$route.params.id
+      };
+      Axios.post("updatePv", pvData)
+        .then(response => {
+          console.log(response);
+          this.dialog = false;
+          this.pvModifyDialog = false;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
