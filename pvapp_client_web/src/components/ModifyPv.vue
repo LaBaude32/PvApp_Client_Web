@@ -1,6 +1,7 @@
 <template>
   <v-card class="pa-2 pb-3">
-    <v-card-title>Modifier le PV du {{ myPvData.meeting_date | formatDateWithA }}</v-card-title>
+    <v-card-title v-if="modifyingType">Modifier le PV du {{ myPvData.meeting_date | formatDateWithA }}</v-card-title>
+    <v-card-title v-else>Nouveau procès verbal</v-card-title>
     <!-- {{ myPvData }} -->
     <v-form v-model="valid" ref="form">
       <v-card-text>
@@ -108,7 +109,7 @@
           <v-col cols="12">
             <v-switch v-model="myPvData.state" :label="myPvData.state" role="switch" false-value="En cours" true-value="Terminé"></v-switch>
           </v-col>
-          <v-col cols="12" v-if="!modifyingType">
+          <v-col cols="12" v-if="!myPvData.affair_id">
             <v-combobox
               v-model="myPvData.affair_id"
               :items="affairs"
@@ -122,7 +123,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
+        <v-btn v-if="!modifyingType" color="error" @click.prevent="cancel">Annuler</v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="validate">
           Enregistrer
         </v-btn>
       </v-card-actions>
@@ -138,7 +140,8 @@ export default {
     data: Object,
     affairs: Array,
     modifyingType: Boolean,
-    validate: Function
+    validate: Function,
+    cancel: Function
   },
   data() {
     return {

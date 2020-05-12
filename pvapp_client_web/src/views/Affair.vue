@@ -14,7 +14,14 @@
         :validate="ModifyAffairSave"
         :enableVider="enableVider"
       />
-      <ModifyPv v-if="pvModifyDialog" :data.sync="pvData" :affairs="affairsForPv" :modifyingType="pvModifyingType" :validate="pvModifySave" />
+      <ModifyPv
+        v-if="pvModifyDialog"
+        :data.sync="pvData"
+        :affairs="affairsForPv"
+        :modifyingType="pvModifyingType"
+        :validate="pvModifySave"
+        :cancel="cancelPvModify"
+      />
     </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
@@ -25,14 +32,15 @@
       <div class="text-center">
         <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.progress }} %</v-progress-circular>
       </div>
-      <v-row>
-        <v-col cols="12">
+      <v-row class="d-flex align-end">
+        <v-col cols="8">
           <h3 class="mt-5">Lots :</h3>
           <div v-if="lots">
             <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
           </div>
           <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
         </v-col>
+        <v-col cols="4"><v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn></v-col>
       </v-row>
     </v-container>
 
@@ -42,7 +50,7 @@
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="pvs" :search="search">
+      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="meeting_date" sort-desc>
         <template v-slot:item.actions="{ item }">
           <v-btn small class="ma-2" @click="openPv(item.id_pv)" color="primary">
             Voir
@@ -75,7 +83,7 @@
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="primary">Ajouter un pv</v-btn>
+          <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
           <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
           <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
@@ -91,6 +99,7 @@ import routesCONST, { getRouteName } from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
+import moment from "moment";
 export default {
   components: {
     ModifyProgress,
@@ -116,14 +125,14 @@ export default {
         {
           text: "Date",
           align: "start",
-          sortable: false,
+          sortable: true,
           value: "meeting_date"
         },
-        { text: "Etat", align: "center", value: "state" },
-        { text: "Lieu", value: "meeting_place" },
+        { text: "Etat", align: "center", value: "state", sortable: true },
+        { text: "Lieu", value: "meeting_place", sortable: false },
         { text: "Prochaine date", value: "meeting_next_date" },
-        { text: "Prochain lieu", value: "meeting_next_place" },
-        { text: "Action", value: "actions", align: "center" }
+        { text: "Prochain lieu", value: "meeting_next_place", sortable: false },
+        { text: "Action", value: "actions", align: "center", sortable: false }
       ]
     };
   },
@@ -200,12 +209,37 @@ export default {
       this.affairDialog = false;
     },
     modifyPv(pvDatas) {
+      this.pvModifyingType = true;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
       this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
       this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
       this.dialog = true;
       this.pvModifyDialog = true;
+    },
+    createPv() {
+      this.pvModifyingType = false;
+      this.affairsForPv = [{ ...this.affair }];
+      this.pvData = {
+        meeting_date_date: new Date().toISOString().substr(0, 10),
+        meeting_date_time:
+          moment()
+            .format("LT")
+            .substr(0, 2) + ":00",
+        meeting_next_date_date: undefined,
+        meeting_next_date_time: undefined,
+        meeting_date: "",
+        state: "En cours",
+        meeting_place: "",
+        meeting_next_place: "",
+        affair_id: this.$route.params.id
+      };
+      this.dialog = true;
+      this.pvModifyDialog = true;
+    },
+    cancelPvModify() {
+      this.dialog = false;
+      this.pvModifyDialog = false;
     },
     pvModifySave() {
       if (this.pvData.meeting_next_date_date == "empty string") {
@@ -214,7 +248,6 @@ export default {
         this.pvData.meeting_next_date = null;
       }
       let meeting_next_date;
-
       if (this.pvData.meeting_next_date_date != undefined) {
         meeting_next_date = this.pvData.meeting_next_date_date + " " + this.pvData.meeting_next_date_time + ":00";
       } else {
@@ -229,11 +262,16 @@ export default {
         state: this.pvData.state,
         affair_id: this.$route.params.id
       };
-      Axios.post("updatePv", pvData)
+      let apiRoute;
+      this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
+      Axios.post(apiRoute, pvData)
         .then(response => {
           console.log(response);
           this.dialog = false;
           this.pvModifyDialog = false;
+          if (!this.pvModifyingType) {
+            this.pvs.push(pvData);
+          }
         })
         .catch(error => {
           console.log(error);
