@@ -2,7 +2,7 @@
   <v-card class="pa-2 pb-3">
     <v-card-title>Modifier le PV du {{ myPvData.meeting_date | formatDateWithA }}</v-card-title>
     <!-- {{ myPvData }} -->
-    <v-form>
+    <v-form v-model="valid" ref="form">
       <v-card-text>
         <v-row>
           <v-col cols="6">
@@ -148,7 +148,7 @@ export default {
       meetingNextDateTimeMenu: false,
       myPvData: this.data,
       valid: false,
-      addressRules: [v => !!v || "Requis", v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
+      addressRules: [v => !!v || "Requis", v => (v && v.length >= 3) || "Doit être supérieur à 3 caractères"],
       affairRules: [v => !!v || "Requis"]
     };
   },
@@ -159,6 +159,7 @@ export default {
     computedDateFormattedMMeetingNextDate() {
       return this.myPvData.meeting_next_date_date ? moment(this.myPvData.meeting_next_date_date).format("dddd LL") : "";
     }
+    //TODO: faut-il mettre une computed pour recuperer la l'heure ?
   },
   methods: {
     allowedStep: m => m % 5 === 0
