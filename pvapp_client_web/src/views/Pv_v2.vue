@@ -2,8 +2,8 @@
   <div>
     <v-container class="pt-0">
       <v-row>
-        <v-col cols="12" class="d-flex flex-row-reverse">
-          <!-- <v-spacer /> -->
+        <v-col cols="12" class="d-flex justify-space-between">
+          <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
           <v-btn color="primary" @click="pvValidation">Finaliser et diffuser le PV</v-btn>
         </v-col>
       </v-row>
@@ -245,6 +245,9 @@ export default {
       //TODO: Faire un modal de validation
       //TODO: Faire une requete API pour mettre le pv en terminé
       this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.$route.params.id } });
+    },
+    returnToAffair() {
+      this.$router.push({ name: getRouteName("affair"), params: { id: this.pvDetails.affair_id } });
     }
   }
 };
