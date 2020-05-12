@@ -72,7 +72,7 @@
           </v-col>
           <v-col cols="6">
             <v-menu
-              ref="menu"
+              ref="menuRef2"
               v-model="meetingNextDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
@@ -97,7 +97,7 @@
                 v-model="myPvData.meeting_next_date_time"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menu.save(myPvData.meeting_next_date_time)"
+                @click:minute="$refs.menuRef2.save(myPvData.meeting_next_date_time)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
