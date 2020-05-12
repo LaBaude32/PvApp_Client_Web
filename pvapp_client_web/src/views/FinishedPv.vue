@@ -29,8 +29,8 @@
             PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
             <span v-if="pvDetails.meeting_place">, {{ pvDetails.meeting_place }}</span>
           </p>
-          <p v-if="pvDetails.meeting_next_place" class="red--text title">
-            Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }} en {{ pvDetails.meeting_next_place }}
+          <p v-if="pvDetails.meeting_next_date" class="red--text title">
+            Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }}, {{ pvDetails.meeting_next_place }}
           </p>
         </v-col>
       </v-row>
