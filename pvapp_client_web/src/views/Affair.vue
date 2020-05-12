@@ -14,6 +14,7 @@
         :validate="ModifyAffairSave"
         :enableVider="enableVider"
       />
+      <ModifyPv v-if="pvModifyDialog" :data="pvData" :affairs="affairsForPv" :modifyingType="pvModifyingType" :validate="pvModifySave" />
     </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
@@ -43,8 +44,11 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search">
         <template v-slot:item.actions="{ item }">
-          <v-btn @click="openPv(item.id_pv)" color="primary">
+          <v-btn small class="ma-2" @click="openPv(item.id_pv)" color="primary">
             Voir
+          </v-btn>
+          <v-btn small class="ma-2" @click="modifyPv(item)" color="warning">
+            Modifier
           </v-btn>
         </template>
         <template v-slot:item.meeting_date="{ item }">
@@ -93,20 +97,26 @@ import Axios from "axios";
 import routesCONST, { getRouteName } from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
+import ModifyPv from "@/components/ModifyPv.vue";
 // import moment from "moment";
 export default {
   components: {
     ModifyProgress,
-    ModifyAffair
+    ModifyAffair,
+    ModifyPv
   },
   data() {
     return {
       progressDialog: false,
       affairDialog: false,
+      pvModifyDialog: false,
+      pvModifyingType: true,
+      pvData: {},
       dialog: false,
       dialogType: "",
       enableVider: false,
       affair: {},
+      affairsForPv: [],
       lots: [],
       search: "",
       pvs: [],
@@ -121,7 +131,7 @@ export default {
         { text: "Lieu", value: "meeting_place" },
         { text: "Prochaine date", value: "meeting_next_date" },
         { text: "Prochain lieu", value: "meeting_next_place" },
-        { text: "Action", value: "actions" }
+        { text: "Action", value: "actions", align: "center" }
       ]
     };
   },
@@ -196,6 +206,20 @@ export default {
         });
       this.dialog = false;
       this.affairDialog = false;
+    },
+    modifyPv(pvDatas) {
+      this.affairsForPv = [{ ...this.affair }];
+      console.log(this.affairsForPv);
+
+      this.pvData = { ...pvDatas };
+      console.log(this.pvData);
+
+      this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
+      this.dialog = true;
+      this.pvModifyDialog = true;
+    },
+    pvModifySave() {
+      alert("test");
     }
   }
 };
