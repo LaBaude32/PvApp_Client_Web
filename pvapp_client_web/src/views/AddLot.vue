@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <AddLot />
+    <ModifyLot />
   </v-container>
 </template>
 
 <script>
-import AddLot from "@/components/AddLot.vue";
+import ModifyLot from "@/components/ModifyLot.vue";
 export default {
   components: {
-    AddLot
+    ModifyLot
   }
 };
 </script>

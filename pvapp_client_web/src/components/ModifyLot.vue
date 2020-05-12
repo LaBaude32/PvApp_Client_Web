@@ -8,7 +8,7 @@
           <v-combobox v-model="affair_id" :items="affairs" item-text="name" item-value="id_affair" label="Affaire" :rules="affairRules"></v-combobox>
         </v-col>
         <v-col cols="12" :md="numberLots == 1 ? '12' : '6'" v-for="lot in numberLots" :key="lot.id">
-          <v-text-field v-model="lots[lot-1]" :label="'Lot ' + lot" clearable counter="45" :rules="standardRules"></v-text-field>
+          <v-text-field v-model="lots[lot - 1]" :label="'Lot ' + lot" clearable counter="45" :rules="standardRules"></v-text-field>
         </v-col>
       </v-row>
       <v-row justify="center" v-if="numberLots !== 0">
