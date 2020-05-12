@@ -18,9 +18,9 @@
               <v-date-picker v-model="meeting_date_date" @change="menu1 = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
-          <!-- <v-col cols="6" sm="6">
+          <v-col cols="6" sm="6">
             <v-menu
-              ref="menu"
+              ref="menuRef2"
               v-model="menu2"
               :close-on-content-click="false"
               :nudge-right="40"
@@ -44,33 +44,8 @@
                 v-model="meeting_date_time"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menu.save(meeting_date_time)"
+                @click:minute="$refs.menuRef2.save(meeting_date_time)"
                 :allowed-minutes="allowedStep"
-              ></v-time-picker>
-            </v-menu>
-          </v-col> -->
-          <v-col cols="12">
-            {{ meeting_date_time }}
-            <v-menu
-              ref="menu"
-              v-model="menu2"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="meeting_date_time"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field v-model="meeting_date_time" label="Picker in menu" prepend-icon="mdi-clock-outline" readonly v-on="on"></v-text-field>
-              </template>
-              <v-time-picker
-                v-if="menu2"
-                format="24hr"
-                v-model="meeting_date_time"
-                full-width
-                @click:minute="$refs.menu.save(meeting_date_time)"
               ></v-time-picker>
             </v-menu>
           </v-col>
@@ -79,7 +54,6 @@
           </v-col>
 
           <v-col cols="6" lg="6">
-            {{ meeting_next_date_time }}
             <v-menu v-model="menu3" :close-on-content-click="false" max-width="290">
               <template v-slot:activator="{ on }">
                 <v-text-field
@@ -184,11 +158,10 @@ export default {
       menu3: false,
       menu4: false,
       meeting_date_date: new Date().toISOString().substr(0, 10),
-      // meeting_date_time:
-      //   moment()
-      //     .format("LT")
-      //     .substr(0, 2) + ":00",
-      meeting_date_time: "",
+      meeting_date_time:
+        moment()
+          .format("LT")
+          .substr(0, 2) + ":00",
       meeting_next_date_date: "",
       meeting_next_date_time: "",
       meeting_next_date: "",
