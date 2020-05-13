@@ -22,6 +22,7 @@
         :validate="pvModifySave"
         :cancel="cancelPvModify"
       />
+      <ModifyLot :lotData.sync="lots" :addLot="modifyLotsAdd" :deleteLot="ModifyLotDelete" :numberLots="numberLots" :validate="modifyLotSave" />
     </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
@@ -95,22 +96,25 @@
 
 <script>
 import Axios from "axios";
-import routesCONST, { getRouteName } from "../utilities/constantes";
+import routesCONST from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
+import ModifyLot from "@/components/ModifyLot.vue";
 import moment from "moment";
 export default {
   components: {
     ModifyProgress,
     ModifyAffair,
-    ModifyPv
+    ModifyPv,
+    ModifyLot
   },
   data() {
     return {
       progressDialog: false,
       affairDialog: false,
       pvModifyDialog: false,
+      lotModifyDialog: false,
       pvModifyingType: true,
       pvData: {},
       dialog: false,
@@ -119,6 +123,9 @@ export default {
       affair: {},
       affairsForPv: [],
       lots: [],
+      numberLots: Number,
+      oldLots: [],
+      oldNumberLots: Number,
       search: "",
       pvs: [],
       headers: [
@@ -171,7 +178,33 @@ export default {
       });
     },
     modifyLot() {
-      this.$router.push({ name: getRouteName("addLot") });
+      this.oldLots = [...this.lots];
+      this.oldNumberLots = parseInt(this.lots.length);
+      this.numberLots = this.lots.length;
+      this.dialog = true;
+      this.lotModifyDialog = true;
+    },
+    modifyLotSave() {
+      // let dataToSend = {
+      //   affair_id: this.affair_id.id_affair,
+      //   lots_name: this.lots
+      // };
+      // console.log(dataToSend);
+      // Axios.post("addLot", dataToSend).then(response => {
+      //   console.log(response);
+      // });
+      //TODO: Gérer ça
+      this.dialog = false;
+      this.lotModifyDialog = false;
+    },
+    modifyLotsAdd() {
+      this.numberLots++;
+      this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
+    },
+    ModifyLotDelete(index) {
+      //TODO: ajouter la requete API de suppression ici
+      this.numberLots--;
+      this.lots.splice(index, 1);
     },
     modifyProgress() {
       this.dialog = true;
