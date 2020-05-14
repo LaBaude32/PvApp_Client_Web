@@ -21,7 +21,7 @@
               clearable
               counter="45"
               append-outer-icon="mdi-delete"
-              @click:append-outer="deleteLot(lot - 1)"
+              @click:append-outer="deleteLot(myLots[lot - 1], lot - 1)"
               :rules="standardRules"
             ></v-text-field>
           </v-col>
@@ -33,9 +33,7 @@
         <v-btn v-if="isCancelable" color="error" @click.prevent="cancel">
           Annuler
         </v-btn>
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-          Valider
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>

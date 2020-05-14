@@ -209,6 +209,7 @@ export default {
           };
           Axios.post("addLot", dataToSend).then(response => {
             console.log(response);
+            //TODO: injecter l'id dans l'element ici
           });
         } else {
           this.oldLots.forEach(oldEl => {
@@ -236,10 +237,19 @@ export default {
       this.numberLots++;
       this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
     },
-    ModifyLotDelete(index) {
-      //TODO: ajouter la requete API de suppression ici
-      this.numberLots--;
-      this.lots.splice(index, 1);
+    ModifyLotDelete(lot, index) {
+      console.log(lot);
+      Axios.delete("deleteLot", { params: { id_lot: lot.id_lot } })
+        .then(response => {
+          if (response.data == "success") {
+            this.numberLots--;
+            this.lots.splice(index, 1);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      console.log(this.lots);
     },
     ModifyLotCancel() {
       this.lotModifyCancelable = false;
