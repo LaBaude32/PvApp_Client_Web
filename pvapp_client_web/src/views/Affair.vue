@@ -205,11 +205,10 @@ export default {
         if (element.id_lot == undefined) {
           let dataToSend = {
             affair_id: this.$route.params.id,
-            lots_name: [element.name]
+            name: element.name
           };
           Axios.post("addLot", dataToSend).then(response => {
-            console.log(response);
-            //TODO: injecter l'id dans l'element ici
+            element.id_lot = response.data.id_lot;
           });
         } else {
           this.oldLots.forEach(oldEl => {
