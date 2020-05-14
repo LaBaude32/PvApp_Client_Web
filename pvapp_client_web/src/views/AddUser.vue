@@ -14,7 +14,17 @@
                   <v-text-field label="Email" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
                 </v-col>
                 <v-col cols="5">
-                  <v-text-field id="password" label="Mot de passe" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules" counter />
+                  <v-text-field
+                    id="password"
+                    label="Mot de passe"
+                    prepend-icon="mdi-lock"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPassword ? 'text' : 'password'"
+                    @click:append="showPassword = !showPassword"
+                    v-model="password"
+                    :rules="pwdRules"
+                    counter
+                  />
                 </v-col>
                 <v-col cols="6">
                   <v-text-field label="Prénom" type="text" v-model="firstName" :rules="standardRules" counter="35" />
@@ -56,10 +66,7 @@ export default {
     return {
       valid: false,
       showPassword: false,
-      emailRules: [
-        v => !!v || "Requis",
-        v => /.+@.+\..+/.test(v) || "Le mail doit être valide"
-      ],
+      emailRules: [v => !!v || "Requis", v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
       pwdRules: [
         v => !!v || "Requis",
         v => v.length >= 8 || "Il doit y avoir plus de 8 caracères",
@@ -92,10 +99,10 @@ export default {
       let datas = {
         email: this.email,
         password: new MD5().update(this.password).digest("hex"),
-        first_name: this.firstName,
-        last_name: this.lastName,
+        firstName: this.firstName,
+        lastName: this.lastName,
         phone: this.phone,
-        user_group: this.user_group,
+        userGroup: this.user_group,
         user_function: this.user_function,
         organism: this.organism
       };
