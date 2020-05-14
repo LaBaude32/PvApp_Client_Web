@@ -22,7 +22,16 @@
         :validate="pvModifySave"
         :cancel="cancelPvModify"
       />
-      <ModifyLot :lotData.sync="lots" :addLot="modifyLotsAdd" :deleteLot="ModifyLotDelete" :numberLots="numberLots" :validate="modifyLotSave" />
+      <ModifyLot
+        v-if="lotModifyDialog"
+        :lotData.sync="lots"
+        :addLot="modifyLotsAdd"
+        :deleteLot="ModifyLotDelete"
+        :numberLots="numberLots"
+        :validate="modifyLotSave"
+        :isCancelable="lotModifyCancelable"
+        :cancel="ModifyLotCancel"
+      />
     </v-dialog>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
@@ -116,6 +125,7 @@ export default {
       pvModifyDialog: false,
       lotModifyDialog: false,
       pvModifyingType: true,
+      lotModifyCancelable: false,
       pvData: {},
       dialog: false,
       dialogType: "",
@@ -168,7 +178,6 @@ export default {
       .catch(error => {
         console.log(error);
       });
-    //recuperer les pvs de l'affair
   },
   methods: {
     openPv(pvId) {
@@ -178,22 +187,48 @@ export default {
       });
     },
     modifyLot() {
-      this.oldLots = [...this.lots];
+      if (this.lots == undefined) {
+        this.lots = [];
+        this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
+        this.lotModifyCancelable = true;
+      }
+      this.lots.forEach(element => {
+        this.oldLots.push({ ...element });
+      });
       this.oldNumberLots = parseInt(this.lots.length);
       this.numberLots = this.lots.length;
       this.dialog = true;
       this.lotModifyDialog = true;
     },
     modifyLotSave() {
-      // let dataToSend = {
-      //   affair_id: this.affair_id.id_affair,
-      //   lots_name: this.lots
-      // };
-      // console.log(dataToSend);
-      // Axios.post("addLot", dataToSend).then(response => {
-      //   console.log(response);
-      // });
-      //TODO: Gérer ça
+      this.lots.forEach(element => {
+        if (element.id_lot == undefined) {
+          let dataToSend = {
+            affair_id: this.$route.params.id,
+            lots_name: [element.name]
+          };
+          Axios.post("addLot", dataToSend).then(response => {
+            console.log(response);
+          });
+        } else {
+          this.oldLots.forEach(oldEl => {
+            if (element.id_lot == oldEl.id_lot && element.name != oldEl.name) {
+              let dataToSend = {
+                name: element.name,
+                id_lot: element.id_lot
+              };
+              Axios.post("updateLot", dataToSend)
+                .then(response => {
+                  console.log(response);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }
+          });
+        }
+      });
+      this.lotModifyCancelable = false;
       this.dialog = false;
       this.lotModifyDialog = false;
     },
@@ -205,6 +240,16 @@ export default {
       //TODO: ajouter la requete API de suppression ici
       this.numberLots--;
       this.lots.splice(index, 1);
+    },
+    ModifyLotCancel() {
+      this.lotModifyCancelable = false;
+      this.dialog = false;
+      this.lotModifyDialog = false;
+      this.lots.forEach(element => {
+        if (element.name == "") {
+          this.lots = undefined;
+        }
+      });
     },
     modifyProgress() {
       this.dialog = true;

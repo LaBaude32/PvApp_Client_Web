@@ -30,6 +30,9 @@
       <v-card-actions v-if="numberLots !== 0">
         <v-btn @click="addLot" color="primary">Ajouter un lot</v-btn>
         <v-spacer />
+        <v-btn v-if="isCancelable" color="error" @click.prevent="cancel">
+          Annuler
+        </v-btn>
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
           Valider
         </v-btn>
@@ -46,7 +49,9 @@ export default {
     addLot: Function,
     deleteLot: Function,
     numberLots: Number,
-    validate: Function
+    validate: Function,
+    isCancelable: Boolean,
+    cancel: Function
   },
   data() {
     return {
