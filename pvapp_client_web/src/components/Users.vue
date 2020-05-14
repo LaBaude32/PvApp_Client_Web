@@ -273,9 +273,18 @@ export default {
     },
 
     deleteItem(item) {
+      //TODO:SESSION : problème de primary key / unique / foreight key
       const index = this.users.indexOf(item);
-      confirm("Etes-vous sûr de vouloir supprimer cette personne?") && this.users.splice(index, 1);
-      //TODO: ajouter la suppression en API
+      confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
+        Axios.delete("deleteUser", { params: { id_user: item.id_user } })
+          .then(response => {
+            if (response == "success") {
+              this.users.splice(index, 1);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
     },
 
     closeNewOrModifiedUser() {
