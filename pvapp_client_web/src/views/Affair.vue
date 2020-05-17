@@ -237,7 +237,6 @@ export default {
       this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
     },
     ModifyLotDelete(lot, index) {
-      console.log(lot);
       Axios.delete("deleteLot", { params: { id_lot: lot.id_lot } })
         .then(response => {
           if (response.data == "success") {
@@ -248,7 +247,6 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      console.log(this.lots);
     },
     ModifyLotCancel() {
       this.lotModifyCancelable = false;
