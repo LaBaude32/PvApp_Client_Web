@@ -43,14 +43,14 @@
         <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.progress }} %</v-progress-circular>
       </div>
       <v-row class="d-flex align-end">
-        <v-col cols="8">
+        <v-col cols="8" v-if="affair.meeting_type == 'Chantier'">
           <h3 class="mt-5">Lots :</h3>
           <div v-if="lots">
             <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
           </div>
           <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
         </v-col>
-        <v-col cols="4"><v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn></v-col>
+        <v-col><v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn></v-col>
       </v-row>
     </v-container>
 
@@ -95,7 +95,7 @@
           <v-spacer></v-spacer>
           <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
           <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
-          <v-btn color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
+          <v-btn v-if="affair.meeting_type == 'Chantier'" color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
         </v-card-actions>
       </v-container>
