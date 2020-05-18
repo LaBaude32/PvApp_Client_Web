@@ -149,6 +149,7 @@ export default {
       this.meeting_type = res.data.pv_details.affair_meeting_type;
       if (this.meeting_type == "Chantier") {
         this.headers.splice(1, 0, { text: "Lot", value: "lots" });
+        this.defaultItem.lots = this.pvDetails.lots;
       }
       this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
     },
@@ -178,11 +179,14 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
-      this.editedItem.completion_date += " 00:00:00";
+      if (this.editedItem.completion_date != "") {
+        this.editedItem.completion_date += " 00:00:00";
+      } else {
+        this.editedItem.completion_date = null;
+      }
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
-      // data.completion_date += " 00:00:00";
       if (data.visible == true) {
         data.visible = 1;
       } else {
@@ -213,6 +217,9 @@ export default {
         Axios.post("/addItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
+              console.log(data);
+              //TODO: récuperer les noms de lots associés à l'id et réinjecté le lot complet
+              //Voir si on pourrait pas plutôt récupéré le lot du formulaire et renvoyer seulement les ids
               this.items.push(data);
               this.editedItem.completion = [];
               this.close();
