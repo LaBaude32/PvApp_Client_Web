@@ -81,8 +81,7 @@ export default {
         },
         {
           text: "Groupe",
-          value: "userGroup",
-          sortable: false
+          value: "userGroup"
         },
         { text: "Fonction", value: "function" },
         { text: "Organisme", value: "organism" },
