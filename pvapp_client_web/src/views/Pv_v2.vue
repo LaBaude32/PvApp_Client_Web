@@ -187,6 +187,11 @@ export default {
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
+      let lotTransit = [];
+      data.lots.forEach(element => {
+        lotTransit.push(element.id_lot);
+      });
+      data.lots = lotTransit;
       if (data.visible == true) {
         data.visible = 1;
       } else {
@@ -217,9 +222,7 @@ export default {
         Axios.post("/addItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
-              console.log(data);
-              //TODO: récuperer les noms de lots associés à l'id et réinjecté le lot complet
-              //Voir si on pourrait pas plutôt récupéré le lot du formulaire et renvoyer seulement les ids
+              data.lots = this.editedItem.lots;
               this.items.push(data);
               this.editedItem.completion = [];
               this.close();

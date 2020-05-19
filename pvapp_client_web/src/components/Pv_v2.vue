@@ -36,7 +36,7 @@
                             v-model="MyEditedItem.lotsToReturn"
                             :items="MyEditedItem.lots"
                             item-text="name"
-                            item-value="id_lot"
+                            return-object
                             label="Lot"
                             chips
                             multiple
