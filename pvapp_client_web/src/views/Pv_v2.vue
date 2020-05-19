@@ -1,10 +1,11 @@
 <template>
   <div>
+    <ModalValidation :dialog.sync="ModalValidationDialog" :validate="pvValidation" />
     <v-container class="pt-0">
       <v-row>
         <v-col cols="12" class="d-flex justify-space-between">
           <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
-          <v-btn color="primary" @click="pvValidation">Finaliser et diffuser le PV</v-btn>
+          <v-btn color="primary" @click="ModalValidationDialog = true">Finaliser et diffuser le PV</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -47,17 +48,20 @@
 import moment from "moment";
 import Pv_v2 from "@/components/Pv_v2.vue";
 import Users from "@/components/Users.vue";
+import ModalValidation from "@/components/ModalValidation.vue";
 import Axios from "axios";
 import { getRouteName } from "../utilities/constantes";
 
 export default {
   components: {
     "Pv-v2": Pv_v2,
-    Users
+    Users,
+    ModalValidation
   },
   data() {
     return {
       dialog: false,
+      ModalValidationDialog: false,
       valid: false,
       meeting_type: undefined,
       standardRequirement: [v => !!v || "Requis"],
@@ -252,9 +256,16 @@ export default {
       });
     },
     pvValidation() {
-      //TODO: Faire un modal de validation
-      //TODO: Faire une requete API pour mettre le pv en terminé
-      this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.$route.params.id } });
+      Axios.post("validatePv", { id_pv: this.$route.params.id })
+        .then(response => {
+          if (response.data == "success") {
+            this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.$route.params.id } });
+            this.ModalValidationDialog = false;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     returnToAffair() {
       this.$router.push({ name: getRouteName("affair"), params: { id: this.pvDetails.affair_id } });
