@@ -62,10 +62,10 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="meeting_date" sort-desc>
         <template v-slot:item.actions="{ item }">
-          <v-btn small class="ma-2" @click="openPv(item.id_pv)" color="primary">
+          <v-btn small class="ma-2" @click="openPv(item)" :color="item.state == 'En cours' ? 'primary' : 'success'">
             Voir
           </v-btn>
-          <v-btn small class="ma-2" @click="modifyPv(item)" color="warning">
+          <v-btn small class="ma-2" @click="modifyPv(item)" :color="item.state == 'En cours' ? 'warning' : 'error'">
             Modifier
           </v-btn>
         </template>
@@ -105,7 +105,7 @@
 
 <script>
 import Axios from "axios";
-import routesCONST from "../utilities/constantes";
+import routesCONST, { getRouteName } from "../utilities/constantes";
 import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
@@ -180,11 +180,16 @@ export default {
       });
   },
   methods: {
-    openPv(pvId) {
-      this.$router.push({
-        name: routesCONST.pv.name,
-        params: { id: pvId }
-      });
+    openPv(pv) {
+      let pvId = pv.id_pv;
+      if (pv.state == "En cours") {
+        this.$router.push({
+          name: routesCONST.pv.name,
+          params: { id: pvId }
+        });
+      } else {
+        this.$router.push({ name: getRouteName("finishedPv"), params: { id: pvId } });
+      }
     },
     modifyLot() {
       if (this.lots == undefined) {

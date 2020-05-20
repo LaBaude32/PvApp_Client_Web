@@ -26,7 +26,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>Affaire : {{ pv.affair_name }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
-                  <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openPv(pv.id_pv)">
+                  <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openFinishedPv(pv.id_pv)">
                     {{ pv.state }}
                     <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
@@ -104,6 +104,10 @@ export default {
     },
     openPv(pvId) {
       this.$store.dispatch("affair/openPv", pvId);
+    },
+    openFinishedPv(pvId) {
+      // this.$store.dispatch("affair/openPv", pvId);
+      this.$router.push({ name: getRouteName("finishedPv"), params: { id: pvId } });
     },
     createAffair() {
       this.$router.push({ name: routesCONST.addAffair.name });
