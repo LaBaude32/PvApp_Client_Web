@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="users" item-key="name" :group-by="groupBy">
+      <v-data-table :headers="headers" :items="users" :group-by="groupBy" :items-per-page="-1" hide-default-footer>
         <template v-slot:item.fullName="{ item }">
           <div>{{ item.lastName }} {{ item.firstName }}</div>
         </template>
