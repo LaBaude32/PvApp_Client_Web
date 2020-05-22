@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar :value="state" top right :color="type" multi-line>
+  <v-snackbar :value="state" top right :color="type">
     {{ text }}
     <v-icon :color="btnColor" :dark="isDark" @click="close">mdi-close-circle</v-icon>
   </v-snackbar>
