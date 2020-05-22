@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Votre board :</h1>
-    <v-btn @click.prevent="openNotif">test notif</v-btn>
     <v-spacer></v-spacer>
     <v-container>
       <v-row class="grey lighten-3 mx-1">
@@ -100,10 +99,6 @@ export default {
     })
   },
   methods: {
-    openNotif() {
-      let text = "Test ici";
-      this.$store.dispatch("notification/success", text);
-    },
     openAffair(affairId) {
       this.$store.dispatch("affair/openAffair", affairId);
     },
