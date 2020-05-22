@@ -62,6 +62,7 @@
         <router-view />
       </div>
     </v-content>
+    <Notification />
   </v-app>
 </template>
 
@@ -70,8 +71,12 @@ import Axios from "axios";
 import { mapGetters } from "vuex";
 // import routesCONST from "./utilities/constantes";
 import { getRouteName } from "./utilities/constantes";
+import Notification from "@/components/Notification.vue";
 
 export default {
+  components: {
+    Notification
+  },
   data() {
     return {
       right: false,
@@ -159,7 +164,8 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
-      console.log(error.response);
+      console.log(error);
+      this.$store.dispatch("notification/error", "error.response.status");
       return new Promise(() => {
         if (error.response.status === 401 || error.response === undefined) {
           if (error.response.config.url == "/tokens") {
