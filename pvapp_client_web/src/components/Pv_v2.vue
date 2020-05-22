@@ -161,7 +161,6 @@ export default {
         }
         this.MyEditedItem = Object.assign({}, this.MyDefaultItem);
       }
-      //TODO: injecter les lots récupéré ici
       val || this.close();
     }
   },
