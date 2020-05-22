@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      pvId: Number,
       dialog: false,
       ModalValidationDialog: false,
       valid: false,
@@ -138,10 +139,10 @@ export default {
 
   methods: {
     async getData() {
-      this.idPv = this.$route.params.id;
+      this.pvId = this.$route.params.id;
       let dt = {
         params: {
-          id_pv: this.$route.params.id
+          id_pv: this.pvId
         }
       };
       let res = await Axios.get("getPvDetails", dt);
@@ -172,7 +173,17 @@ export default {
 
     deleteItem(item) {
       const index = this.items.indexOf(item);
-      confirm("Etes vous sûr de vouloir supprimer cet item ?") && this.items.splice(index, 1);
+      confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
+        Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, id_pv: this.pvId } })
+          .then(response => {
+            if (response.data == "success") {
+              this.$store.dispatch("notification/success", "L'item à bien été supprimé");
+              this.items.splice(index, 1);
+            }
+          })
+          .catch(error => {
+            this.$store.dispatch("notification/error", `Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`);
+          });
     },
 
     close() {
@@ -221,7 +232,7 @@ export default {
           });
       } else {
         //New item
-        data.pv_id = this.$route.params.id;
+        data.pv_id = this.pvId;
         data.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
         Axios.post("/addItem", data)
           .then(response => {
@@ -256,10 +267,10 @@ export default {
       });
     },
     pvValidation() {
-      Axios.post("validatePv", { id_pv: this.$route.params.id })
+      Axios.post("validatePv", { id_pv: this.pvId })
         .then(response => {
           if (response.data == "success") {
-            this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.$route.params.id } });
+            this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.pvId } });
             this.ModalValidationDialog = false;
           }
         })
