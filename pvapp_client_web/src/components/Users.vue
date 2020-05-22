@@ -277,7 +277,6 @@ export default {
     },
 
     deleteItem(item) {
-      //TODO: problème de primary key / unique / foreight key
       const index = this.users.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
         Axios.delete("deleteParticipant", { params: { id_user: item.id_user, id_pv: this.pvId } })
