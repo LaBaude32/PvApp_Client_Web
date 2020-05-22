@@ -155,6 +155,7 @@ export default {
   name: "Users",
   props: { users: Array },
   data: () => ({
+    pvId: Number,
     valid1: false,
     valid2: false,
     nameRules: [
@@ -255,6 +256,9 @@ export default {
       return this.editedIndex === -1 ? "Ajouter une personne" : "Modifier une personne";
     }
   },
+  mounted() {
+    this.pvId = this.$route.params.id;
+  },
 
   watch: {
     dialogNewOrModifiedUser(val) {
@@ -273,12 +277,13 @@ export default {
     },
 
     deleteItem(item) {
-      //TODO:SESSION : problème de primary key / unique / foreight key
+      //TODO: problème de primary key / unique / foreight key
       const index = this.users.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
-        Axios.delete("deleteUser", { params: { id_user: item.id_user } })
+        Axios.delete("deleteParticipant", { params: { id_user: item.id_user, id_pv: this.pvId } })
           .then(response => {
-            if (response == "success") {
+            if (response.data == "success") {
+              this.$store.dispatch("notification/success", "L'utilisateur à bien été supprimé");
               this.users.splice(index, 1);
             }
           })
@@ -299,7 +304,7 @@ export default {
       if (this.editedIndex > -1) {
         //Exisiting User
         let data = this.editedItem;
-        data.pvId = this.$route.params.id;
+        data.pvId = this.pvId;
         Axios.post("/updateParticipant", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
@@ -318,7 +323,7 @@ export default {
         //New User
         let data = this.editedItem;
         data.password = this.affair_name;
-        data.pvId = this.$route.params.id;
+        data.pvId = this.pvId;
         Axios.post("/addUser", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
