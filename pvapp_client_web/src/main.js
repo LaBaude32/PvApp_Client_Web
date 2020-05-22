@@ -21,6 +21,12 @@ Vue.filter("formatDateWithA", function(value) {
   }
 });
 
+Vue.filter("formatDateWithAShort", function(value) {
+  if (value) {
+    return moment(String(value)).format("ddd Do MMM YYYY à LT ");
+  }
+});
+
 Vue.filter("formatDateShortDayOnly", function(value) {
   if (value) {
     return moment(String(value)).format("ddd Do MMM YYYY");

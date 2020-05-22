@@ -62,15 +62,15 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="meeting_date" sort-desc>
         <template v-slot:item.actions="{ item }">
-          <v-btn small class="ma-2" @click="openPv(item)" :color="item.state == 'En cours' ? 'primary' : 'success'">
+          <v-btn small class="ma-2" @click="openPv(item)" color="primary">
             Voir
           </v-btn>
-          <v-btn small class="ma-2" @click="modifyPv(item)" :color="item.state == 'En cours' ? 'warning' : 'error'">
+          <v-btn small class="ma-2" @click="modifyPv(item)" color="error">
             Modifier
           </v-btn>
         </template>
         <template v-slot:item.meeting_date="{ item }">
-          <div>{{ item.meeting_date | formatDate }}</div>
+          <div>{{ item.meeting_date | formatDateWithAShort }}</div>
         </template>
         <template v-slot:item.meeting_next_date="{ item }">
           <div>{{ item.meeting_next_date | formatDate }}</div>
@@ -86,16 +86,15 @@
       </v-data-table>
     </v-card>
     <v-card max-width="80%" class="mx-auto mt-10">
-      <v-app-bar dark color="warning">
-        <v-toolbar-title>Modifier l'affaire</v-toolbar-title>
+      <v-app-bar dark color="primary">
+        <v-toolbar-title>Modifications</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
-          <v-btn dark color="success" @click.prevent="modifyProgress">Modifier la progression</v-btn>
-          <v-btn v-if="affair.meeting_type == 'Chantier'" color="warning" @click.prevent="modifyLot">Modifier les lots</v-btn>
+          <v-btn dark color="error" @click.prevent="modifyProgress">Modifier la progression</v-btn>
+          <v-btn v-if="affair.meeting_type == 'Chantier'" color="error" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
         </v-card-actions>
       </v-container>
@@ -206,6 +205,7 @@ export default {
       this.lotModifyDialog = true;
     },
     modifyLotSave() {
+      //FIXME: Erreur ici
       this.lots.forEach(element => {
         if (element.id_lot == undefined) {
           let dataToSend = {
@@ -225,6 +225,10 @@ export default {
               Axios.post("updateLot", dataToSend)
                 .then(response => {
                   console.log(response);
+
+                  if (response.data.affair_id != "") {
+                    this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
+                  }
                 })
                 .catch(error => {
                   console.log(error);
@@ -273,8 +277,10 @@ export default {
       };
       Axios.post("updateAffair", data)
         .then(response => {
-          console.log(response);
-          //TODO: faire un retour
+          console.log(response.data.affair_id);
+          if (response.data.affair_id != "") {
+            this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
+          }
         })
         .catch(error => {
           console.log(error);
@@ -290,7 +296,9 @@ export default {
       console.log(this.affair);
       Axios.post("/updateAffair", this.affair)
         .then(response => {
-          console.log(response);
+          if (response.data.affair_id != "") {
+            this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
+          }
         })
         .catch(error => {
           console.log(error);
@@ -299,6 +307,7 @@ export default {
       this.affairDialog = false;
     },
     modifyPv(pvDatas) {
+      //TODO: ajouter un modal si le pv est déjà terminé
       this.pvModifyingType = true;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
