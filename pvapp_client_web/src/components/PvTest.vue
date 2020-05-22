@@ -10,8 +10,13 @@
             <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
             <v-spacer></v-spacer>
 
-            <PvTestModal :meeting_type="meeting_type" :dialog="dialog" :maxPosition="maxPosition" :editedIndex=editedIndex :editedItem=editedItem />
-
+            <PvTestModal
+              :meeting_type="meeting_type"
+              :dialog="dialog"
+              :maxPosition="maxPosition"
+              :editedIndex="editedIndex"
+              :editedItem="editedItem"
+            />
           </v-toolbar>
         </template>
         <template v-slot:item.lots="{ item }">
@@ -117,7 +122,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.meeting_type); //FIXME: SESSION renvoi un empty string si on a ajouté un lot et qu'on recharge la page
+    console.log(this.meeting_type);
     if (this.meeting_type == "Chantier") {
       this.headers.splice(1, 0, { text: "Lot", value: "lots" });
     }
@@ -125,9 +130,7 @@ export default {
   },
   methods: {
     maxPosition() {
-      //FIXME: SESSION
-      let toReturn =
-        Math.max(...this.LocalItems.map(LocalItems => LocalItems.position)) + 1;
+      let toReturn = Math.max(...this.LocalItems.map(LocalItems => LocalItems.position)) + 1;
       console.log(toReturn);
       console.log(typeof toReturn);
 
@@ -154,8 +157,7 @@ export default {
 
     deleteItem(item) {
       const index = this.LocalItems.indexOf(item);
-      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") &&
-        this.LocalItems.splice(index, 1);
+      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") && this.LocalItems.splice(index, 1);
     },
 
     close() {
@@ -180,13 +182,9 @@ export default {
 
       if (this.editedIndex > -1) {
         //Existing item
-        //TODO: faire des promesses synchrone
         Axios.post("/updateItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item_updated === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item_updated === "number") {
               // Object.assign(this.LocalItems[this.editedIndex], data);
               this.LocalItems[this.editedIndex] = { ...data };
               // this.editedItem.completion = [];
@@ -203,10 +201,7 @@ export default {
         //New item
         Axios.post("/addItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item === "number") {
               this.LocalItems.push(data);
               this.editedItem.completion = [];
               this.close();

@@ -16,7 +16,16 @@
                 <v-text-field v-model="editedItem.position" label="Position" min="1" type="number" :rules="standardRequirement"></v-text-field>
               </v-col>
               <v-col cols="12" sm="4" md="4" v-if="meeting_type == 'Chantier'">
-                <v-select v-model="editedItem.lotsToReturn" :items="editedItem.lots" item-text="name" item-value="id_lot" label="Lot" chips multiple deletable-chips></v-select>
+                <v-select
+                  v-model="editedItem.lotsToReturn"
+                  :items="editedItem.lots"
+                  item-text="name"
+                  item-value="id_lot"
+                  label="Lot"
+                  chips
+                  multiple
+                  deletable-chips
+                ></v-select>
               </v-col>
               <v-col cols="12" sm="4" md="4">
                 <v-switch v-model="editedItem.visible" label="Visible"></v-switch>
@@ -35,7 +44,6 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
-                <!-- TODO: SESSION Mettre en forme la date -->
               </v-col>
             </v-row>
           </v-container>
@@ -136,8 +144,7 @@ export default {
 
     deleteItem(item) {
       const index = this.items.indexOf(item);
-      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") &&
-        this.items.splice(index, 1);
+      confirm("Etes vous sûr de vouloir supprimer cette ligne ?") && this.items.splice(index, 1);
     },
 
     close() {
@@ -164,10 +171,7 @@ export default {
         //Existing item
         Axios.post("/updateItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item_updated === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item_updated === "number") {
               // Object.assign(this.items[this.editedIndex], data);
               this.items[this.editedIndex] = { ...data };
               // this.editedItem.completion = [];
@@ -184,10 +188,7 @@ export default {
         //New item
         Axios.post("/addItem", data)
           .then(response => {
-            if (
-              response.status == 201 &&
-              typeof response.data.id_item === "number"
-            ) {
+            if (response.status == 201 && typeof response.data.id_item === "number") {
               this.items.push(data);
               this.editedItem.completion = [];
               this.close();

@@ -60,7 +60,6 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="editedItem.completion_date" label="Date de l'echéance"></v-text-field>
-                          <!-- TODO: SESSION Mettre en forme la date -->
                         </v-col>
                       </v-row>
                     </v-container>
@@ -186,7 +185,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.meeting_type); //FIXME: SESSION renvoi un empty string si on a ajouté un lot et qu'on recharge la page
+    console.log(this.meeting_type);
     if (this.meeting_type == "Chantier") {
       this.headers.splice(1, 0, { text: "Lot", value: "lots" });
     }
@@ -258,7 +257,6 @@ export default {
 
       if (this.editedIndex > -1) {
         //Existing item
-        //TODO: faire des promesses synchrone
         Axios.post("/updateItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item_updated === "number") {

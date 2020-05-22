@@ -162,7 +162,6 @@ export default {
     computedDateFormattedMMeetingNextDate() {
       return this.myPvData.meeting_next_date_date ? moment(this.myPvData.meeting_next_date_date).format("dddd LL") : "";
     }
-    //TODO: faut-il mettre une computed pour recuperer la l'heure ?
   },
   methods: {
     allowedStep: m => m % 5 === 0

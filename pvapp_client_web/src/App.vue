@@ -88,7 +88,6 @@ export default {
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
-        //TODO: SESSION comment avoir une classe active ?
         {
           path: getRouteName("home"),
           title: "Pv App",
