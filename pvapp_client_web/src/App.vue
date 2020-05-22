@@ -163,7 +163,7 @@ export default {
   },
   created: function() {
     Axios.interceptors.response.use(undefined, error => {
-      this.$store.dispatch("notification/error", error);
+      // this.$store.dispatch("notification/error", error);
       return new Promise(() => {
         if (error.response.status === 401 || error.response === undefined) {
           if (error.response.config.url == "/tokens") {
