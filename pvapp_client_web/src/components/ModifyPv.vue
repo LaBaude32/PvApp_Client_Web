@@ -14,16 +14,15 @@
                   label="Jour de la réunion"
                   readonly
                   v-on="on"
-                  @click:clear="myPvData.meeting_date_date = null"
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="myPvData.meeting_date_date" @change="meetingDateDateMenu = meetingDateDateMenu" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="myPvData.meeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6"
             ><v-menu
-              ref="menu"
+              ref="menuRef1"
               v-model="meetingDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
@@ -47,19 +46,19 @@
                 v-model="myPvData.meeting_date_time"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menu.save(myPvData.meeting_date_time)"
+                @click:minute="$refs.menuRef1.save(myPvData.meeting_date_time)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="myPvData.meeting_place" counter label="Lieu de la réunion" :rules="addressRules"></v-text-field>
+            <v-text-field v-model="myPvData.meeting_place" counter clearable label="Lieu de la réunion" :rules="addressRules"></v-text-field>
           </v-col>
           <v-col cols="6">
             <v-menu v-model="meetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  :value="computedDateFormattedMMeetingNextDate"
+                  :value="computedDateFormattedMeetingNextDate"
                   clearable
                   label="Jour de la prochaine réunion"
                   readonly
@@ -151,15 +150,18 @@ export default {
       meetingNextDateTimeMenu: false,
       myPvData: this.data,
       valid: false,
-      addressRules: [v => !!v || "Requis", v => (v && v.length >= 3) || "Doit être supérieur à 3 caractères"],
+      addressRules: [v => v.length >= 3 || "Doit être supérieur à 3 caractères"],
       affairRules: [v => !!v || "Requis"]
     };
+  },
+  mounted() {
+    console.log(this.myPvData);
   },
   computed: {
     computedDateFormattedMeetingDate() {
       return this.myPvData.meeting_date_date ? moment(this.myPvData.meeting_date_date).format("dddd LL") : "";
     },
-    computedDateFormattedMMeetingNextDate() {
+    computedDateFormattedMeetingNextDate() {
       return this.myPvData.meeting_next_date_date ? moment(this.myPvData.meeting_next_date_date).format("dddd LL") : "";
     }
   },

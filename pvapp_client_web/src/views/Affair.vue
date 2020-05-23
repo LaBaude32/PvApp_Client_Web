@@ -73,7 +73,7 @@
           <div>{{ item.meeting_date | formatDateWithAShort }}</div>
         </template>
         <template v-slot:item.meeting_next_date="{ item }">
-          <div>{{ item.meeting_next_date | formatDate }}</div>
+          <div>{{ item.meeting_next_date | formatDateWithAShort }}</div>
         </template>
         <template v-slot:item.state="{ item }">
           <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
@@ -313,6 +313,8 @@ export default {
       this.pvData = pvDatas;
       this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
       this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
+      this.pvData.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
+      this.pvData.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
       this.dialog = true;
       this.pvModifyDialog = true;
     },
@@ -341,17 +343,22 @@ export default {
       this.pvModifyDialog = false;
     },
     pvModifySave() {
-      if (this.pvData.meeting_next_date_date == "empty string") {
-        this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + this.meeting_next_date_time + ":00";
-      } else {
-        this.pvData.meeting_next_date = null;
-      }
+      // if (this.pvData.meeting_next_date_date == "empty string") {
+      //   this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + this.meeting_next_date_time + ":00";
+      // } else {
+      //   this.pvData.meeting_next_date = null;
+      // }
+
       let meeting_next_date;
       if (this.pvData.meeting_next_date_date != undefined) {
-        meeting_next_date = this.pvData.meeting_next_date_date + " " + this.pvData.meeting_next_date_time + ":00";
+        meeting_next_date = this.pvData.meeting_next_date_date;
+        if (this.pvData.meeting_next_date_time != undefined) {
+          meeting_next_date += " " + this.pvData.meeting_next_date_time;
+        }
       } else {
         meeting_next_date = null;
       }
+      this.pvData.meeting_next_date = meeting_next_date;
       let pvData = {
         id_pv: this.pvData.id_pv,
         meeting_date: this.pvData.meeting_date_date + " " + this.pvData.meeting_date_time + ":00",
@@ -365,11 +372,13 @@ export default {
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
       Axios.post(apiRoute, pvData)
         .then(response => {
-          console.log(response);
-          this.dialog = false;
-          this.pvModifyDialog = false;
-          if (!this.pvModifyingType) {
-            this.pvs.push(pvData);
+          if (response.data.pv_id) {
+            this.dialog = false;
+            this.pvModifyDialog = false;
+            if (!this.pvModifyingType) {
+              this.pvs.push(pvData);
+            }
+            this.$store.dispatch("notification/success", "Pv correctement enregistré");
           }
         })
         .catch(error => {
