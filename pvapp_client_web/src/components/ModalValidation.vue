@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="headline">Voulez-vous valider le PV ?</v-card-title>
       <v-card-text>
-        Si vous validez votre procès verbal, son status passera à "Terminé". Il pourra alors être imprimé, publié et partager. <br />
+        Si vous validez votre procès verbal, son status passera à "Terminé". Il pourra alors être imprimé, publié et partagé. <br />
         Vous ne pourrez plus le modifier directement.
       </v-card-text>
       <v-card-actions>
