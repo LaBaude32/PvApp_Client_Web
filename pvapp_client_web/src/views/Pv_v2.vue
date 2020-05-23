@@ -173,7 +173,7 @@ export default {
 
     deleteItem(item) {
       const index = this.items.indexOf(item);
-      confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
+      confirm("Etes-vous sûr de vouloir supprimer cet item?") &&
         Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, id_pv: this.pvId } })
           .then(response => {
             if (response.data == "success") {
@@ -194,24 +194,32 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
-      if (this.editedItem.completion_date != "") {
-        this.editedItem.completion_date += " 00:00:00";
-      } else {
+      // if (this.editedItem.completion_date != "" && this.editedItem.completion_date.lenght < 12) {
+      //   this.editedItem.completion_date += " 00:00:00";
+      // } else if (this.editedItem.completion_date == "" || this.editedItem.completion_date == "Invalid date") {
+      //   this.editedItem.completion_date = null;
+      // }
+      if (this.editedItem.completion_date == "" || this.editedItem.completion_date == "Invalid date") {
         this.editedItem.completion_date = null;
       }
+
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
-      let lotTransit = [];
-      data.lots.forEach(element => {
-        lotTransit.push(element.id_lot);
-      });
-      data.lots = lotTransit;
+      if (this.meeting_type == "Chantier") {
+        let lotTransit = [];
+        data.lots.forEach(element => {
+          lotTransit.push(element.id_lot);
+        });
+        data.lots = lotTransit;
+      }
       if (data.visible == true) {
         data.visible = 1;
       } else {
         data.visible = 0;
       }
+      console.log(this.editedItem);
+      console.log(data);
 
       if (this.editedIndex > -1) {
         //Existing item
