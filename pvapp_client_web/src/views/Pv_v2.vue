@@ -269,10 +269,15 @@ export default {
         id_item: item.id_item,
         visible: item.visible == true ? 1 : 0
       };
-      Axios.post("/updateVisibleOfItem", data).catch(error => {
-        console.log(error);
-        item.visible = !item.visible;
-      });
+      Axios.post("/updateVisibleOfItem", data)
+        .then(response => {
+          if (response.data.id_item_updated) {
+            this.$store.dispatch("notification/success", "L'item a été mis à jour");
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     pvValidation() {
       Axios.post("validatePv", { id_pv: this.pvId })
