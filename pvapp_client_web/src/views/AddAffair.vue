@@ -67,7 +67,8 @@ export default {
       let affairData = {
         name: this.name,
         address: this.address,
-        meeting_type: this.meeting_type
+        meeting_type: this.meeting_type,
+        progress: 0
       };
       Axios.post("/addAffair", affairData)
         .then(response => {
