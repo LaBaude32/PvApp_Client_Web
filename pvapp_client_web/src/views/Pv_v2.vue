@@ -230,6 +230,7 @@ export default {
               // this.items[this.editedIndex] = { ...data };
               this.editedItem.completion = [];
               this.close();
+              this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
             } else {
               console.log(response);
               console.log(typeof response.data.id_item);
@@ -249,6 +250,7 @@ export default {
               this.items.push(data);
               this.editedItem.completion = [];
               this.close();
+              this.$store.dispatch("notification/success", "Ajout de l'item effectué");
             } else {
               console.log(response);
               console.log(typeof response.data.id_item);
