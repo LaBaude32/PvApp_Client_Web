@@ -8,13 +8,13 @@
           <v-spacer></v-spacer>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialogNewOrModifiedUser" max-width="500px">
+          <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Créer une personne</v-btn>
             </template>
 
             <v-card>
-              <v-form v-model="valid1">
+              <v-form v-model="valid1" ref="form1">
                 <v-card-title>
                   <span class="headline">{{ formTitle }}</span>
                 </v-card-title>
@@ -29,13 +29,13 @@
                         <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.userGroup" label="Groupe" :rules="standardRules" clearable counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.userGroup" label="Groupe" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" clearable counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.function" label="Fonction" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.organism" label="Organisme" :rules="standardRules" clearable counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.organism" label="Organisme" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" clearable counter="10"></v-text-field>
@@ -163,9 +163,9 @@ export default {
       v => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
       v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
     ],
-    standardRules: [v => v.length <= 30 || "Doit être inférieur à 30 charactères"],
+    standardRules: [v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"],
     emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    phoneRules: [v => (v.length == 10 && /\d/.test(v)) || "Doit être un numéro de téléphone valide"],
+    phoneRules: [v => /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
     statusRules: [v => !!v || "Requis"],
     standardRequirement: [v => !!v || "Requis"],
     search: "",
@@ -252,16 +252,19 @@ export default {
     this.pvId = this.$route.params.id;
   },
 
-  watch: {
-    dialogNewOrModifiedUser(val) {
-      val || this.closeNewOrModifiedUser();
-    },
-    dialogExistingUser(val) {
-      val || this.closeExistingUser();
-    }
-  },
+  // watch: {
+  //   dialogNewOrModifiedUser(val) {
+  //     val || this.closeNewOrModifiedUser();
+  //   },
+  //   dialogExistingUser(val) {
+  //     val || this.closeExistingUser();
+  //   }
+  // },
 
   methods: {
+    formReset() {
+      this.$refs.form1.resetValidation();
+    },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -288,6 +291,7 @@ export default {
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.formReset();
       }, 300);
     },
 
