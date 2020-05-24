@@ -302,16 +302,11 @@ export default {
               Object.assign(this.users[this.editedIndex], this.editedItem);
               let message = "Le participant à bien été mis à jour";
               this.$store.dispatch("notification/success", message);
-            } else {
-              console.log(response);
-              console.log(typeof response.data.id_user);
             }
           })
           .catch(error => {
             console.log(error);
           });
-
-        Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
         //New User
         let data = { ...this.editedItem };
@@ -323,9 +318,6 @@ export default {
               this.users.push(data);
               let message = "Le participant à bien été ajouté";
               this.$store.dispatch("notification/success", message);
-            } else {
-              console.log(response);
-              console.log(typeof response.data.id_user);
             }
           })
           .catch(error => {
