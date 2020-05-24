@@ -47,7 +47,7 @@
                           <v-switch v-model="MyEditedItem.visible" label="Visible"></v-switch>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled :rules="standardRequirement"></v-textarea>
+                          <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-textarea v-model="MyEditedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
