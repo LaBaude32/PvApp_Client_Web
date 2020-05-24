@@ -202,31 +202,31 @@ export default {
       if (this.editedItem.completion_date == "" || this.editedItem.completion_date == "Invalid date") {
         this.editedItem.completion_date = null;
       }
-
+      // this.editedItem.completion = this.editedItem.completionToReturn;
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
-      if (this.meeting_type == "Chantier") {
+      if (this.meeting_type == "Chantier" && data.lots) {
         let lotTransit = [];
         data.lots.forEach(element => {
           lotTransit.push(element.id_lot);
         });
         data.lots = lotTransit;
+        console.log(data.lots);
       }
       if (data.visible == true) {
         data.visible = 1;
       } else {
         data.visible = 0;
       }
-      console.log(this.editedItem);
-      console.log(data);
 
       if (this.editedIndex > -1) {
         //Existing item
         Axios.post("/updateItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item_updated === "number") {
-              Object.assign(this.items[this.editedIndex], data);
+              this.editedItem.completion = this.editedItem.completionToReturn;
+              Object.assign(this.items[this.editedIndex], this.editedItem);
               // this.items[this.editedIndex] = { ...data };
               this.editedItem.completion = [];
               this.close();
