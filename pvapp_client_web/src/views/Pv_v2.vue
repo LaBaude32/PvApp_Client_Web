@@ -246,6 +246,7 @@ export default {
         Axios.post("/addItem", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
+              data.id_item = response.data.id_item;
               data.lots = this.editedItem.lots;
               this.items.push(data);
               this.editedItem.completion = [];
