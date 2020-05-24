@@ -23,25 +23,25 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.firstName" label="Prénom" :rules="nameRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.firstName" label="Prénom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.userGroup" label="Groupe" :rules="standardRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.userGroup" label="Groupe" :rules="standardRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.function" label="Fonction" :rules="standardRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.organism" label="Organisme" :rules="standardRules" counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.organism" label="Organisme" :rules="standardRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" counter="10"></v-text-field>
+                        <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" clearable counter="10"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
-                        <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules"></v-text-field>
+                        <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules" clearable></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
                         <v-radio-group v-model="editedItem.status_PAE" label="Statut" :rules="statusRules">
@@ -163,17 +163,9 @@ export default {
       v => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
       v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
     ],
-    standardRules: [
-      v => !!v || "Requis",
-      v => (v && v.length >= 3) || "Doit être supérieur 2 charactère",
-      v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
-    ],
-    emailRules: [v => !!v || "Requis", v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    phoneRules: [
-      v => !!v || "Requis",
-      v => (v && v.length == 10) || "Doit être égal à 10 charactère",
-      v => /\d/.test(v) || "Doit être consituté de chiffres uniquement"
-    ],
+    standardRules: [v => v.length <= 30 || "Doit être inférieur à 30 charactères"],
+    emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
+    phoneRules: [v => (v.length == 10 && /\d/.test(v)) || "Doit être un numéro de téléphone valide"],
     statusRules: [v => !!v || "Requis"],
     standardRequirement: [v => !!v || "Requis"],
     search: "",
@@ -302,12 +294,14 @@ export default {
     saveNewOrModifiedUser() {
       if (this.editedIndex > -1) {
         //Exisiting User
-        let data = this.editedItem;
+        let data = { ...this.editedItem };
         data.pvId = this.pvId;
         Axios.post("/updateParticipant", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
               Object.assign(this.users[this.editedIndex], this.editedItem);
+              let message = "Le participant à bien été mis à jour";
+              this.$store.dispatch("notification/success", message);
             } else {
               console.log(response);
               console.log(typeof response.data.id_user);
@@ -320,13 +314,15 @@ export default {
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
         //New User
-        let data = this.editedItem;
+        let data = { ...this.editedItem };
         data.password = this.affair_name;
         data.pvId = this.pvId;
         Axios.post("/addUser", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
               this.users.push(data);
+              let message = "Le participant à bien été ajouté";
+              this.$store.dispatch("notification/success", message);
             } else {
               console.log(response);
               console.log(typeof response.data.id_user);
