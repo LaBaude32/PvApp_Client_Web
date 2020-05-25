@@ -17,7 +17,7 @@
       <h2>Vos 2 derniers procès verbaux :</h2>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
-          <v-card class="mx-auto" outlined>
+          <v-card class="mx-auto" color="blue-grey lighten-5" min-height="185">
             <v-list-item three-line>
               <v-list-item-content>
                 <v-list-item-title class="title mb-1">
@@ -47,7 +47,7 @@
       <h2>Vos affaires en cours :</h2>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.id_affair">
-          <v-card class="mx-auto" outlined>
+          <v-card class="mx-auto" color="blue-grey lighten-5" outlined>
             <v-list-item three-line>
               <v-list-item-content>
                 <v-list-item-title class="title mb-1">{{ affair.name }}</v-list-item-title>
