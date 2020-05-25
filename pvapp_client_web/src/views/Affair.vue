@@ -188,7 +188,9 @@ export default {
         return this.pvData.meeting_next_date.substr(0, 10);
       },
       set(val) {
-        this.pvData.meeting_next_date = val + " " + this.pvData.meeting_next_date_time;
+        this.pvData.meeting_next_date_time
+          ? (this.pvData.meeting_next_date = val + " " + this.pvData.meeting_next_date_time)
+          : (this.pvData.meeting_next_date = val);
         this.pvData.meeting_next_date_date = val;
       }
     },
@@ -381,7 +383,8 @@ export default {
             .substr(0, 2) + ":00",
         meeting_next_date_date: undefined,
         meeting_next_date_time: undefined,
-        meeting_date: "",
+        meeting_date: moment().format("YYYY-MM-DD HH:mm"),
+        meeting_next_date: "",
         state: "En cours",
         meeting_place: "",
         meeting_next_place: "",
@@ -418,7 +421,7 @@ export default {
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
       Axios.post(apiRoute, pvData)
         .then(response => {
-          if (response.data.pv_id) {
+          if (response.data.id_pv) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
