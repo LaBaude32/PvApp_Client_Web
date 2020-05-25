@@ -9,15 +9,9 @@
           <v-col cols="6">
             <v-menu v-model="meetingDateDateMenu" max-width="290">
               <template v-slot:activator="{ on }">
-                <v-text-field
-                  :value="computedDateFormattedMeetingDate"
-                  label="Jour de la réunion"
-                  readonly
-                  v-on="on"
-                  prepend-icon="mdi-calendar"
-                ></v-text-field>
+                <v-text-field :value="meetingDate" label="Jour de la réunion" readonly v-on="on" prepend-icon="mdi-calendar"></v-text-field>
               </template>
-              <v-date-picker :value="myMeeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="myMeeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6"
@@ -63,7 +57,7 @@
                   label="Jour de la prochaine réunion"
                   readonly
                   v-on="on"
-                  @click:clear="meeting_next_date_date = null"
+                  @click:clear="myMeetingNextDate = null"
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
@@ -90,6 +84,7 @@
                   readonly
                   v-on="on"
                   clearable
+                  @click:clear="myMeeting_next_date_time = null"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -155,28 +150,42 @@ export default {
       meetingNextDateDateMenu: false,
       meetingNextDateTimeMenu: false,
       myPvData: this.data,
-      myMeeting_date_time: this.meeting_date_time,
-      myMeeting_next_date_date: this.meeting_next_date_date,
-      myMeeting_next_date_time: this.meeting_next_date_time,
       valid: false,
       addressRules: [v => v.length >= 3 || "Doit être supérieur à 3 caractères"],
       affairRules: [v => !!v || "Requis"]
     };
   },
-  mounted() {
-    console.log(this.myPvData);
-  },
   computed: {
     myMeeting_date_date: {
       get() {
-        console.log("get");
-
         return this.meeting_date_date;
       },
       set(val) {
-        console.log("set");
-
-        this.$emit("update:meeting_data_date", val);
+        this.$emit("update:meeting_date_date", val);
+      }
+    },
+    myMeeting_date_time: {
+      get() {
+        return this.meeting_date_time;
+      },
+      set(val) {
+        this.$emit("update:meeting_date_time", val);
+      }
+    },
+    myMeeting_next_date_date: {
+      get() {
+        return this.meeting_next_date_date;
+      },
+      set(val) {
+        this.$emit("update:meeting_next_date_date", val);
+      }
+    },
+    myMeeting_next_date_time: {
+      get() {
+        return this.meeting_next_date_time;
+      },
+      set(val) {
+        this.$emit("update:meeting_next_date_time", val);
       }
     },
 
@@ -185,8 +194,6 @@ export default {
         return this.meetingDate;
       },
       set(val) {
-        console.log("test enfant");
-
         this.$emit("update:meetingDate", val);
       }
     },
