@@ -319,6 +319,7 @@ export default {
         Axios.post("/addUser", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
+              data.id_user = response.data.id_user;
               this.users.push(data);
               let message = "Le participant à bien été ajouté";
               this.$store.dispatch("notification/success", message);

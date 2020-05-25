@@ -14,7 +14,7 @@
     </v-container>
 
     <v-container v-if="pvs != ''">
-      <h2>Vos 3 derniers procès verbaux :</h2>
+      <h2>Vos 2 derniers procès verbaux :</h2>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
           <v-card class="mx-auto" outlined>
@@ -121,7 +121,7 @@ export default {
     const dtPvs = {
       params: {
         user_id: this.userId,
-        number_of_pvs: 3
+        number_of_pvs: 2
       }
     };
     const dtAffairs = {
