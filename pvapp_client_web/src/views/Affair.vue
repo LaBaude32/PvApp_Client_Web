@@ -257,7 +257,6 @@ export default {
       this.lotModifyDialog = true;
     },
     modifyLotSave() {
-      //FIXME: Erreur ici
       this.lots.forEach(element => {
         if (element.id_lot == undefined) {
           let dataToSend = {
