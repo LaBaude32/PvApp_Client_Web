@@ -57,7 +57,7 @@
                   label="Jour de la prochaine réunion"
                   readonly
                   v-on="on"
-                  @click:clear="myMeetingNextDate = null"
+                  @click:clear="myMeeting_next_date_date = null"
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
