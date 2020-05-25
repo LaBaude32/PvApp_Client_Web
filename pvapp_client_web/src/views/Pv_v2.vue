@@ -224,7 +224,7 @@ export default {
         //Existing item
         Axios.post("/updateItem", data)
           .then(response => {
-            if (response.status == 201 && typeof response.data.id_item_updated === "number") {
+            if (response.status == 201 && typeof response.data.item_updated.id_item === "number") {
               this.editedItem.completion = this.editedItem.completionToReturn;
               Object.assign(this.items[this.editedIndex], this.editedItem);
               // this.items[this.editedIndex] = { ...data };
