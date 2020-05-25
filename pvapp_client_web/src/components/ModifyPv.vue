@@ -7,7 +7,7 @@
       <v-card-text>
         <v-row>
           <v-col cols="6">
-            <v-menu v-model="meetingDateDateMenu" :close-on-content-click="false" max-width="290">
+            <v-menu v-model="meetingDateDateMenu" max-width="290">
               <template v-slot:activator="{ on }">
                 <v-text-field
                   :value="computedDateFormattedMeetingDate"
@@ -17,7 +17,7 @@
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="myPvData.meeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker :value="myMeeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6"
@@ -26,7 +26,7 @@
               v-model="meetingDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value.sync="myPvData.meeting_date_time"
+              :return-value.sync="myMeeting_date_time"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -34,7 +34,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="myPvData.meeting_date_time"
+                  v-model="myMeeting_date_time"
                   label="Heure de la réunion"
                   prepend-icon="mdi-clock-outline"
                   readonly
@@ -43,10 +43,10 @@
               </template>
               <v-time-picker
                 v-if="meetingDateTimeMenu"
-                v-model="myPvData.meeting_date_time"
+                v-model="myMeeting_date_time"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menuRef1.save(myPvData.meeting_date_time)"
+                @click:minute="$refs.menuRef1.save(myMeeting_date_time)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
@@ -58,7 +58,7 @@
             <v-menu v-model="meetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  :value="computedDateFormattedMeetingNextDate"
+                  :value="myMeetingNextDate"
                   clearable
                   label="Jour de la prochaine réunion"
                   readonly
@@ -67,7 +67,7 @@
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="myPvData.meeting_next_date_date" @change="meetingNextDateDateMenu = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="myMeeting_next_date_date" @change="meetingNextDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6">
@@ -76,7 +76,7 @@
               v-model="meetingNextDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value.sync="myPvData.meeting_next_date_time"
+              :return-value.sync="myMeeting_next_date_time"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -84,7 +84,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="myPvData.meeting_next_date_time"
+                  v-model="myMeeting_next_date_time"
                   label="Heure de la prochaine réunion"
                   prepend-icon="mdi-clock-outline"
                   readonly
@@ -94,10 +94,10 @@
               </template>
               <v-time-picker
                 v-if="meetingNextDateTimeMenu"
-                v-model="myPvData.meeting_next_date_time"
+                v-model="myMeeting_next_date_time"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menuRef2.save(myPvData.meeting_next_date_time)"
+                @click:minute="$refs.menuRef2.save(myMeeting_next_date_time)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
@@ -137,6 +137,12 @@ export default {
   name: "ModifyPv",
   props: {
     data: Object,
+    meetingDate: String,
+    meetingNextDate: String,
+    meeting_date_date: String,
+    meeting_date_time: String,
+    meeting_next_date_date: String,
+    meeting_next_date_time: String,
     affairs: Array,
     modifyingType: Boolean,
     validate: Function,
@@ -149,6 +155,9 @@ export default {
       meetingNextDateDateMenu: false,
       meetingNextDateTimeMenu: false,
       myPvData: this.data,
+      myMeeting_date_time: this.meeting_date_time,
+      myMeeting_next_date_date: this.meeting_next_date_date,
+      myMeeting_next_date_time: this.meeting_next_date_time,
       valid: false,
       addressRules: [v => v.length >= 3 || "Doit être supérieur à 3 caractères"],
       affairRules: [v => !!v || "Requis"]
@@ -158,8 +167,39 @@ export default {
     console.log(this.myPvData);
   },
   computed: {
+    myMeeting_date_date: {
+      get() {
+        console.log("get");
+
+        return this.meeting_date_date;
+      },
+      set(val) {
+        console.log("set");
+
+        this.$emit("update:meeting_data_date", val);
+      }
+    },
+
+    myMeetingDate: {
+      get() {
+        return this.meetingDate;
+      },
+      set(val) {
+        console.log("test enfant");
+
+        this.$emit("update:meetingDate", val);
+      }
+    },
+    myMeetingNextDate: {
+      get() {
+        return this.meetingNextDate;
+      },
+      set(val) {
+        this.$emit("update:meetingNextDate", val);
+      }
+    },
     computedDateFormattedMeetingDate() {
-      return this.myPvData.meeting_date_date ? moment(this.myPvData.meeting_date_date).format("dddd LL") : "";
+      return this.myMeeting_date_date ? moment(this.myPvData.myMeeting_date_date).format("dddd LL") : "";
     },
     computedDateFormattedMeetingNextDate() {
       return this.myPvData.meeting_next_date_date ? moment(this.myPvData.meeting_next_date_date).format("dddd LL") : "";

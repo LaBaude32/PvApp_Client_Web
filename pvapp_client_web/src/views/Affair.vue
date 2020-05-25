@@ -17,6 +17,12 @@
       <ModifyPv
         v-if="pvModifyDialog"
         :data.sync="pvData"
+        :meetingDate.sync="computedDateFormattedMeetingDate"
+        :meetingNextDate.sync="computedDateFormattedMeetingNextDate"
+        :meeting_date_date.sync="meeting_date_date"
+        :meeting_date_time.sync="meeting_date_time"
+        :meeting_next_date_date.sync="meeting_next_date_date"
+        :meeting_next_date_time.sync="meeting_next_date_time"
         :affairs="affairsForPv"
         :modifyingType="pvModifyingType"
         :validate="pvModifySave"
@@ -126,6 +132,10 @@ export default {
       pvModifyingType: true,
       lotModifyCancelable: false,
       pvData: {},
+      meeting_date_date: String,
+      meeting_date_time: String,
+      meeting_next_date_date: String,
+      meeting_next_date_time: String,
       dialog: false,
       dialogType: "",
       enableVider: false,
@@ -151,6 +161,20 @@ export default {
         { text: "Action", value: "actions", align: "center", sortable: false }
       ]
     };
+  },
+  computed: {
+    computedDateFormattedMeetingDate: {
+      get() {
+        console.log("test meeting date");
+        return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
+      }
+    },
+    computedDateFormattedMeetingNextDate: {
+      get() {
+        console.log("test meeting next date");
+        return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
+      }
+    }
   },
   mounted() {
     let affairId = this.$route.params.id;
@@ -311,10 +335,16 @@ export default {
       this.pvModifyingType = true;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
-      this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
-      this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
-      this.pvData.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
-      this.pvData.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
+      // this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
+      // this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
+      // this.pvData.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
+      // this.pvData.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
+
+      this.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
+      this.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
+      this.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
+      this.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
+
       this.dialog = true;
       this.pvModifyDialog = true;
     },
