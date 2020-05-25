@@ -5,10 +5,10 @@
     <v-container>
       <v-row class="grey lighten-3 mx-1">
         <v-col cols="12" md="6">
-          <v-btn class="mx-auto my-3" @click="createAffair">Creer une affaire</v-btn>
+          <v-btn class="mx-auto my-3" color="primary" @click="createAffair">Creer une affaire</v-btn>
         </v-col>
         <v-col cols="12" md="6">
-          <v-btn class="mx-auto my-3" @click="createPv">Ajouter un Pv</v-btn>
+          <v-btn class="mx-auto my-3" color="primary" @click="createPv">Ajouter un Pv</v-btn>
         </v-col>
       </v-row>
     </v-container>
