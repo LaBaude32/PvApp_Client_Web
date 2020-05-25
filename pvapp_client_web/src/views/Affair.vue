@@ -17,6 +17,12 @@
       <ModifyPv
         v-if="pvModifyDialog"
         :data.sync="pvData"
+        :meetingDate="computedDateFormattedMeetingDate"
+        :meetingNextDate="computedDateFormattedMeetingNextDate"
+        :meeting_date_date.sync="meeting_date_date"
+        :meeting_date_time.sync="meeting_date_time"
+        :meeting_next_date_date.sync="meeting_next_date_date"
+        :meeting_next_date_time.sync="meeting_next_date_time"
         :affairs="affairsForPv"
         :modifyingType="pvModifyingType"
         :validate="pvModifySave"
@@ -151,6 +157,52 @@ export default {
         { text: "Action", value: "actions", align: "center", sortable: false }
       ]
     };
+  },
+  computed: {
+    computedDateFormattedMeetingDate() {
+      return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
+    },
+    computedDateFormattedMeetingNextDate() {
+      return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
+    },
+    meeting_date_date: {
+      get() {
+        return this.pvData.meeting_date.substr(0, 10);
+      },
+      set(val) {
+        this.pvData.meeting_date = val + " " + this.pvData.meeting_date_time;
+        this.pvData.meeting_date_date = val;
+      }
+    },
+    meeting_date_time: {
+      get() {
+        return this.pvData.meeting_date.substr(11, 5);
+      },
+      set(val) {
+        this.pvData.meeting_date = this.pvData.meeting_date_date + " " + val;
+        this.pvData.meeting_date_time = val;
+      }
+    },
+    meeting_next_date_date: {
+      get() {
+        return this.pvData.meeting_next_date.substr(0, 10);
+      },
+      set(val) {
+        this.pvData.meeting_next_date_time
+          ? (this.pvData.meeting_next_date = val + " " + this.pvData.meeting_next_date_time)
+          : (this.pvData.meeting_next_date = val);
+        this.pvData.meeting_next_date_date = val;
+      }
+    },
+    meeting_next_date_time: {
+      get() {
+        return this.pvData.meeting_next_date.substr(11, 5);
+      },
+      set(val) {
+        this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + val;
+        this.pvData.meeting_next_date_time = val;
+      }
+    }
   },
   mounted() {
     let affairId = this.$route.params.id;
@@ -311,10 +363,12 @@ export default {
       this.pvModifyingType = true;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
+
       this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
       this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
       this.pvData.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
       this.pvData.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
+
       this.dialog = true;
       this.pvModifyDialog = true;
     },
@@ -329,7 +383,8 @@ export default {
             .substr(0, 2) + ":00",
         meeting_next_date_date: undefined,
         meeting_next_date_time: undefined,
-        meeting_date: "",
+        meeting_date: moment().format("YYYY-MM-DD HH:mm"),
+        meeting_next_date: "",
         state: "En cours",
         meeting_place: "",
         meeting_next_place: "",
@@ -343,12 +398,6 @@ export default {
       this.pvModifyDialog = false;
     },
     pvModifySave() {
-      // if (this.pvData.meeting_next_date_date == "empty string") {
-      //   this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + this.meeting_next_date_time + ":00";
-      // } else {
-      //   this.pvData.meeting_next_date = null;
-      // }
-
       let meeting_next_date;
       if (this.pvData.meeting_next_date_date != undefined) {
         meeting_next_date = this.pvData.meeting_next_date_date;
@@ -372,7 +421,7 @@ export default {
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
       Axios.post(apiRoute, pvData)
         .then(response => {
-          if (response.data.pv_id) {
+          if (response.data.id_pv) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
