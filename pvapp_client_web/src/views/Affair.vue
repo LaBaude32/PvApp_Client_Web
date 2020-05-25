@@ -398,21 +398,11 @@ export default {
       this.pvModifyDialog = false;
     },
     pvModifySave() {
-      let meeting_next_date;
-      if (this.pvData.meeting_next_date_date != undefined) {
-        meeting_next_date = this.pvData.meeting_next_date_date;
-        if (this.pvData.meeting_next_date_time != undefined) {
-          meeting_next_date += " " + this.pvData.meeting_next_date_time;
-        }
-      } else {
-        meeting_next_date = null;
-      }
-      this.pvData.meeting_next_date = meeting_next_date;
       let pvData = {
         id_pv: this.pvData.id_pv,
         meeting_date: this.pvData.meeting_date_date + " " + this.pvData.meeting_date_time + ":00",
         meeting_place: this.pvData.meeting_place,
-        meeting_next_date: meeting_next_date,
+        meeting_next_date: this.pvData.meeting_next_date,
         meeting_next_place: this.pvData.meeting_next_place,
         state: this.pvData.state,
         affair_id: this.$route.params.id
