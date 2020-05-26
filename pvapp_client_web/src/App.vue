@@ -96,39 +96,39 @@ export default {
         },
         {
           path: getRouteName("board"),
-          title: getRouteName("board"),
+          title: "Dashboard",
           icon: "mdi-clipboard-pulse"
         },
-        {
-          path: getRouteName("user"),
-          title: "Personnes",
-          icon: "mdi-account",
-          color: ""
-        },
-        {
-          path: getRouteName("addUser"),
-          title: "Créer une nouvelle personne",
-          icon: "mdi-account",
-          color: ""
-        },
-        {
-          path: getRouteName("addLot"),
-          title: "Créer un lot",
-          icon: "mdi-account",
-          color: ""
-        },
+        // {
+        //   path: getRouteName("user"),
+        //   title: "Personnes",
+        //   icon: "mdi-account",
+        //   color: ""
+        // },
+        // {
+        //   path: getRouteName("addUser"),
+        //   title: "Créer une nouvelle personne",
+        //   icon: "mdi-account",
+        //   color: ""
+        // },
+        // {
+        //   path: getRouteName("addLot"),
+        //   title: "Créer un lot",
+        //   icon: "mdi-account",
+        //   color: ""
+        // },
         {
           path: getRouteName("about"),
           title: "A propos",
           icon: "mdi-information",
           color: ""
-        },
-        {
-          path: getRouteName("test"),
-          title: "page TEST",
-          icon: "mdi-alert",
-          color: "orange"
         }
+        // {
+        //   path: getRouteName("test"),
+        //   title: "page TEST",
+        //   icon: "mdi-alert",
+        //   color: "orange"
+        // }
       ]
     };
   },

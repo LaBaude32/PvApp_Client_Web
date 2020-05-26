@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Votre board :</h1>
+    <h1>Votre dashboard :</h1>
     <v-spacer></v-spacer>
     <v-container>
       <v-row class="grey lighten-3 mx-1">
