@@ -414,6 +414,7 @@ export default {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
+              pvData.id_pv = response.data.id_pv;
               this.pvs.push(pvData);
             }
             this.$store.dispatch("notification/success", "Pv correctement enregistré");
