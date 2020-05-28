@@ -116,6 +116,7 @@ import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
 import ModifyLot from "@/components/ModifyLot.vue";
 import moment from "moment";
+import { mapGetters } from "vuex";
 export default {
   components: {
     ModifyProgress,
@@ -159,6 +160,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("user", {
+      userId: "userId"
+    }),
     computedDateFormattedMeetingDate() {
       return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
     },
@@ -404,7 +408,8 @@ export default {
         meeting_next_date: this.pvData.meeting_next_date,
         meeting_next_place: this.pvData.meeting_next_place,
         state: this.pvData.state,
-        affair_id: this.$route.params.id
+        affair_id: this.$route.params.id,
+        user_id: this.userId
       };
       let apiRoute;
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
