@@ -66,7 +66,7 @@
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="meeting_date" sort-desc>
+      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pv_number" sort-desc>
         <template v-slot:item.actions="{ item }">
           <v-btn small class="ma-2" @click="openPv(item)" color="primary">
             Voir
@@ -145,15 +145,16 @@ export default {
       search: "",
       pvs: [],
       headers: [
+        { text: "Numéro", align: "center", value: "pv_number" },
         {
           text: "Date",
           align: "start",
-          sortable: true,
-          value: "meeting_date"
+          value: "meeting_date",
+          sortable: false
         },
         { text: "Etat", align: "center", value: "state", sortable: true },
         { text: "Lieu", value: "meeting_place", sortable: false },
-        { text: "Prochaine date", value: "meeting_next_date" },
+        { text: "Prochaine date", value: "meeting_next_date", sortable: false },
         { text: "Prochain lieu", value: "meeting_next_place", sortable: false },
         { text: "Action", value: "actions", align: "center", sortable: false }
       ]
