@@ -56,7 +56,6 @@
           </div>
           <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
         </v-col>
-        <v-col><v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn></v-col>
       </v-row>
     </v-container>
 
@@ -65,6 +64,8 @@
         Les procès verbaux :
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
+        <v-spacer></v-spacer>
+        <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pv_number" sort-desc>
         <template v-slot:item.actions="{ item }">
