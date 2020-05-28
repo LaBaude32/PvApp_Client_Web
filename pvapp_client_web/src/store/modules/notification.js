@@ -45,19 +45,19 @@ const actions = {
   },
   success({ commit }, text) {
     commit("SUCCESS", text);
-    setInterval(() => {
+    setTimeout(() => {
       commit("CLOSE", text);
     }, 6000);
   },
   standard({ commit }, text) {
     commit("STANDARD", text);
-    setInterval(() => {
+    setTimeout(() => {
       commit("CLOSE", text);
     }, 6000);
   },
   error({ commit }, text) {
     commit("ERROR", text);
-    setInterval(() => {
+    setTimeout(() => {
       commit("CLOSE", text);
     }, 6000);
   }
