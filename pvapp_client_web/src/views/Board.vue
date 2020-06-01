@@ -72,7 +72,9 @@
       </v-row>
     </v-container>
     <v-container v-else class="px-10">
-      <p class="title">Vous n'avez pas encore d'affaires ou de pvs.</p>
+      <v-alert type="info" outlined>
+        <span class="title">Vous n'avez pas encore d'affaires ou de pvs.</span>
+      </v-alert>
       <p>
         Veuillez commencer par créer une
         <span class="font-weight-bold">affaire</span> en cliquant sur le bouton ci-dessus
