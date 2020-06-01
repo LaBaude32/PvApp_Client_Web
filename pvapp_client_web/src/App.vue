@@ -105,12 +105,12 @@ export default {
         //   icon: "mdi-account",
         //   color: ""
         // },
-        // {
-        //   path: getRouteName("addUser"),
-        //   title: "Créer une nouvelle personne",
-        //   icon: "mdi-account",
-        //   color: ""
-        // },
+        {
+          path: getRouteName("addUser"),
+          title: "Créer un compte",
+          icon: "mdi-account",
+          color: ""
+        },
         // {
         //   path: getRouteName("addLot"),
         //   title: "Créer un lot",

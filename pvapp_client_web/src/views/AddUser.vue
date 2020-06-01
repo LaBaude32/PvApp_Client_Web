@@ -106,7 +106,7 @@ export default {
         user_function: this.user_function,
         organism: this.organism
       };
-      Axios.post("addUser", datas)
+      Axios.post("addNewUser", datas)
         .then(response => {
           console.log(response);
           this.$router.push(getRouteName("board"));
