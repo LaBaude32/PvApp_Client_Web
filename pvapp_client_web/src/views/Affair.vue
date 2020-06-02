@@ -417,11 +417,12 @@ export default {
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
       Axios.post(apiRoute, pvData)
         .then(response => {
-          if (response.data.id_pv) {
+          if (response.data.pv.id_pv) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
-              pvData.id_pv = response.data.id_pv;
+              pvData.id_pv = response.data.pv.id_pv;
+              pvData.pv_number = response.data.pv.pv_number;
               this.pvs.push(pvData);
             }
             this.$store.dispatch("notification/success", "Pv correctement enregistré");
