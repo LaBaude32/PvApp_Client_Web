@@ -78,29 +78,34 @@ export default {
               state: "En cours",
               meeting_date: moment().format("YYYY-MM-DD HH:mm:ss"),
               meeting_place: "Indéfini",
+              user_id: this.$store.state.user.userId,
               affair_id: affairId
             };
             Axios.post("/addPv", pvData)
               .then(response => {
                 if (response.status == 201) {
-                  let pvId = response.data.id_pv;
-                  let PvHasUserData = {
-                    pv_id: pvId,
-                    user_id: this.$store.state.user.userId,
-                    status_PAE: "Présent"
-                  };
-                  Axios.post("/addPvHasUser", PvHasUserData)
-                    .then(response => {
-                      if (response.status == 201) {
-                        this.$router.push({
-                          name: routesCONST.affair.name,
-                          params: { id: affairId }
-                        });
-                      }
-                    })
-                    .catch(error => {
-                      console.log(error);
-                    });
+                  // let pvId = response.data.id_pv;
+                  // let PvHasUserData = {
+                  //   pv_id: pvId,
+                  //   user_id: this.$store.state.user.userId,
+                  //   status_PAE: "Présent"
+                  // };
+                  // Axios.post("/addPvHasUser", PvHasUserData)
+                  //   .then(response => {
+                  //     if (response.status == 201) {
+                  //       this.$router.push({
+                  //         name: routesCONST.affair.name,
+                  //         params: { id: affairId }
+                  //       });
+                  //     }
+                  //   })
+                  //   .catch(error => {
+                  //     console.log(error);
+                  //   });
+                  this.$router.push({
+                    name: routesCONST.affair.name,
+                    params: { id: affairId }
+                  });
                 }
               })
               .catch(error => {
