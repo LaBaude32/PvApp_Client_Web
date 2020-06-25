@@ -2,9 +2,9 @@
   <div class="mb-10">
     <v-container>
       <v-row>
-        <v-col cols="12" class="d-flex">
+        <v-col v-if="!isPrinted" cols="12" class="d-flex">
           <v-spacer />
-          <v-btn class="mr-10" color="success" x-large @click.prevent="print">Imprimer</v-btn>
+          <v-btn class="mr-16" color="success" x-large @click.prevent="print">Imprimer</v-btn>
         </v-col>
         <v-col cols="12">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -67,6 +67,7 @@ export default {
   },
   data() {
     return {
+      isPrinted: false,
       test1: "hello1",
       test4: "hello4",
       affairInfos: {},
@@ -150,7 +151,10 @@ export default {
       });
     },
     print() {
-      window.print();
+      this.isPrinted = true;
+      setTimeout(function() {
+        window.print();
+      }, 200);
     }
   }
 };
