@@ -16,7 +16,7 @@
             <v-card>
               <v-form v-model="valid1" ref="form1">
                 <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
+                  <span class="text-h5">{{ formTitle }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -69,7 +69,7 @@
             <v-card>
               <v-form v-model="valid2">
                 <v-card-title>
-                  <span class="headline">Choisir dans votre répertoire</span>
+                  <span class="text-h5">Choisir dans votre répertoire</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -138,7 +138,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'utilisateurs pour ce PV</p>
+        <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'utilisateurs pour ce PV</p>
         <!-- <v-btn color="primary" class="mb-4" @click="initialize">Afficher</v-btn> -->
       </template>
     </v-data-table>

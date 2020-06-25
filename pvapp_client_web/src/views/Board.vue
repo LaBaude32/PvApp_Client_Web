@@ -20,7 +20,7 @@
           <v-card class="mx-auto" color="blue-grey lighten-5" min-height="185">
             <v-list-item three-line>
               <v-list-item-content>
-                <v-list-item-title class="title mb-1">
+                <v-list-item-title class="text-h6 mb-1">
                   Réunion du :
                   {{ pv.meeting_date | formatDate }}
                 </v-list-item-title>
@@ -50,7 +50,7 @@
           <v-card class="mx-auto" color="blue-grey lighten-5" outlined>
             <v-list-item three-line>
               <v-list-item-content>
-                <v-list-item-title class="title mb-1">{{ affair.name }}</v-list-item-title>
+                <v-list-item-title class="text-h6 mb-1">{{ affair.name }}</v-list-item-title>
                 <v-list-item-subtitle>{{ affair.meeting_type }}</v-list-item-subtitle>
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
@@ -73,7 +73,7 @@
     </v-container>
     <v-container v-else class="px-10">
       <v-alert type="info" outlined>
-        <span class="title">Vous n'avez pas encore d'affaires ou de pvs.</span>
+        <span class="text-h6">Vous n'avez pas encore d'affaires ou de pvs.</span>
       </v-alert>
       <p>
         Veuillez commencer par créer une

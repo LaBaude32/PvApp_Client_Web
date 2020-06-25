@@ -57,11 +57,11 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content>
+    <v-main>
       <div id="app" class="mt-10">
         <router-view />
       </div>
-    </v-content>
+    </v-main>
     <Notification />
   </v-app>
 </template>

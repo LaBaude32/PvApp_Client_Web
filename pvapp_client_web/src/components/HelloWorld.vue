@@ -18,7 +18,7 @@
       </v-col>
 
       <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">
+        <h2 class="text-h5 font-weight-bold mb-3">
           What's next?
         </h2>
 
@@ -30,7 +30,7 @@
       </v-col>
 
       <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">
+        <h2 class="text-h5 font-weight-bold mb-3">
           Important Links
         </h2>
 
@@ -42,7 +42,7 @@
       </v-col>
 
       <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">
+        <h2 class="text-h5 font-weight-bold mb-3">
           Ecosystem
         </h2>
 

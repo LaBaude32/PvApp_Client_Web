@@ -7,11 +7,11 @@
           <v-btn class="mr-10" color="success" x-large @click.prevent="print">Imprimer</v-btn>
         </v-col>
         <v-col cols="12">
-          <p class="text-uppercase display-1">Opération :</p>
+          <p class="text-uppercase text-h4">Opération :</p>
           <v-divider />
-          <p class="mt-2 headline">{{ affairInfos.name }}</p>
+          <p class="mt-2 text-h5">{{ affairInfos.name }}</p>
           <v-divider />
-          <p class="mt-2 subtitle-1">{{ affairInfos.description }}</p>
+          <p class="mt-2 text-subtitle-1-1">{{ affairInfos.description }}</p>
           <v-row v-if="maitreDOuvrage">
             <v-col cols="6">
               <p class="text-uppercase text-left">Maîtrise d'ouvrage :</p>
@@ -29,11 +29,11 @@
             </v-col>
           </v-row>
           <v-divider />
-          <p class="text-uppercase mt-2 title">
+          <p class="text-uppercase mt-2 text-h6">
             PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
             <span v-if="pvDetails.meeting_place">, {{ pvDetails.meeting_place }}</span>
           </p>
-          <p v-if="pvDetails.meeting_next_date" class="red--text title">
+          <p v-if="pvDetails.meeting_next_date" class="red--text text-h6">
             Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }}, {{ pvDetails.meeting_next_place }}
           </p>
         </v-col>
