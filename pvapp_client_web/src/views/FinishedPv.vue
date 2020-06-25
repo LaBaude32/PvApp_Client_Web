@@ -2,6 +2,10 @@
   <div class="mb-10">
     <v-container>
       <v-row>
+        <v-col cols="12" class="d-flex">
+          <v-spacer />
+          <v-btn class="mr-10" color="success" x-large @click.prevent="print">Imprimer</v-btn>
+        </v-col>
         <v-col cols="12">
           <p class="text-uppercase display-1">Opération :</p>
           <v-divider />
@@ -144,6 +148,9 @@ export default {
           }
         }
       });
+    },
+    print() {
+      window.print();
     }
   }
 };
