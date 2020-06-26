@@ -39,7 +39,7 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
+          <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
       </v-data-table>
     </v-card>

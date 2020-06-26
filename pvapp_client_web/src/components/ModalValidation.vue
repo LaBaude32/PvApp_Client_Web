@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="MyDialog" persistent max-width="350">
     <v-card>
-      <v-card-title class="headline">Voulez-vous valider le PV ?</v-card-title>
+      <v-card-title class="text-h5">Voulez-vous valider le PV ?</v-card-title>
       <v-card-text>
         Si vous validez votre procès verbal, son status passera à "Terminé". Il pourra alors être imprimé, publié et partagé. <br />
         Vous ne pourrez plus le modifier directement.

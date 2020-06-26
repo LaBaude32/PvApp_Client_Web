@@ -13,7 +13,7 @@
       </v-list>
     </v-navigation-drawer> -->
 
-    <v-app-bar app color="primary darken-1" clipped-right dark>
+    <v-app-bar app color="primary darken-1" clipped-right dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
       <v-spacer />
@@ -57,11 +57,11 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content>
+    <v-main>
       <div id="app" class="mt-10">
         <router-view />
       </div>
-    </v-content>
+    </v-main>
     <Notification />
   </v-app>
 </template>

@@ -16,7 +16,7 @@
               <v-card>
                 <v-form v-model="MyValid">
                   <v-card-title>
-                    <span class="headline">{{ MyFormTitle }}</span>
+                    <span class="text-h5">{{ MyFormTitle }}</span>
                   </v-card-title>
 
                   <v-card-text>
@@ -109,7 +109,7 @@
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
-          <p class="headline font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
+          <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
       </v-data-table>
     </v-card>
