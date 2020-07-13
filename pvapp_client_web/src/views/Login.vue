@@ -4,7 +4,9 @@
       <v-col cols="12" sm="8" md="4">
         <v-alert type="success" v-if="isLogged">Vous êtes connecté, vous allez être redirigé dans 5 secondes</v-alert>
         <v-alert type="error" v-else-if="resultConnetion === 'errorId'">Erreur sur l'email ou le mot de passe</v-alert>
-        <v-alert type="error" v-else-if="resultConnetion === 'errorConnection'">Erreur de connexion au serveur, veuillez vérifier votre connexion internet</v-alert>
+        <v-alert type="error" v-else-if="resultConnetion === 'errorConnection'"
+          >Erreur de connexion au serveur, veuillez vérifier votre connexion internet</v-alert
+        >
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
@@ -17,7 +19,17 @@
           <v-form v-model="valid">
             <v-card-text>
               <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
-              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules" />
+              <v-text-field
+                id="password"
+                label="Mot de passe"
+                name="password"
+                prepend-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                @click:append="showPassword = !showPassword"
+                v-model="password"
+                :rules="pwdRules"
+              />
             </v-card-text>
             <v-card-actions>
               <v-spacer />
@@ -38,10 +50,7 @@ export default {
   data() {
     return {
       valid: false,
-      emailRules: [
-        v => !!v || "Requis",
-        v => /.+@.+\..+/.test(v) || "Le mail doit être valide"
-      ],
+      emailRules: [v => !!v || "Requis", v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
       pwdRules: [
         v => !!v || "Requis"
         // v => v.lenght >=8 || "Il doit y avoir plus de 8 caracères"
@@ -53,8 +62,7 @@ export default {
       email: null,
       password: null,
       result: "",
-      successLoginMessage:
-        "Vous êtes connecté, vous allez être redirigé dans 5 secondes"
+      successLoginMessage: "Vous êtes connecté, vous allez être redirigé dans 5 secondes"
     };
   },
   methods: {

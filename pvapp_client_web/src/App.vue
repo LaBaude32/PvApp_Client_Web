@@ -8,7 +8,7 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Open Temporary Drawer</v-list-item-title>
-          </v-list-item-content>
+          </v-list-item-content> 
         </v-list-item>
       </v-list>
     </v-navigation-drawer> -->

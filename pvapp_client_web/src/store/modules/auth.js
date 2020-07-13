@@ -48,21 +48,21 @@ const actions = {
   login({ commit, dispatch }, data) {
     axios
       .post("/token", data)
-      .then(function (response) {
+      .then(function(response) {
         if (response.status == 201) {
           let datas = {
             token: response.data.token,
             token_type: response.data.token_type
           };
           commit("LOGIN", datas);
-          localStorage.setItem('user-token', response.data.token);
-          localStorage.setItem('user-token_type', response.data.token_type);
+          localStorage.setItem("user-token", response.data.token);
+          localStorage.setItem("user-token_type", response.data.token_type);
           dispatch("user/login", data);
         } else if (response.data.login_result == "error") {
           commit("ERROR_ID");
         }
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error);
         commit("ERROR_CO");
       });
@@ -82,8 +82,7 @@ const actions = {
           const token_type = response.data.token_type;
           localStorage.setItem("user-token", token);
           localStorage.setItem("user-token_type", token_type);
-          axios.defaults.headers.common["Authorization"] =
-            token_type + " " + token;
+          axios.defaults.headers.common["Authorization"] = token_type + " " + token;
           localStorage.setItem("isAuthenticated", true);
           commit("AUTH_SUCCESS", token, token_type);
           dispatch("user/login", data, { root: true });
