@@ -17,7 +17,7 @@
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
       <v-spacer />
-      <!-- TODO: SESSION : Comment detecter qu'on est en mobile ou pas ? -->
+      <!-- TODO: Comment detecter qu'on est en mobile ou pas ? -->
       <div class="d-flex align-center">
         <h2>PvApp</h2>
       </div>
