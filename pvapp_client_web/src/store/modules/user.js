@@ -52,7 +52,7 @@ const actions = {
   login({ commit }, data) {
     axios
       .post("/login", data)
-      .then(function (response) {
+      .then(function(response) {
         if (response.data.login_result == "success") {
           let datas = {
             userId: response.data.user_id,
@@ -67,7 +67,7 @@ const actions = {
           commit("ERROR_ID");
         }
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error);
         commit("ERROR_CO");
       });

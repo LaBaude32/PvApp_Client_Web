@@ -55,6 +55,7 @@ const actions = {
     });
   },
   openPv({ commit }, pvId) {
+    //FIXME: Corriger ça, ce call API n'a pas de sens puisqu'il est refait à l'ouverture de la page
     Axios.get("getPvDetails", {
       params: {
         id_pv: pvId

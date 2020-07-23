@@ -77,32 +77,37 @@
                     <v-row>
                       <v-col cols="12">
                         <v-combobox
-                          v-model="connectedUser"
-                          :items="connectedUsers"
-                          item-text="fullName"
+                          v-model="connectedParticipant"
+                          :items="connectedParticipants"
                           item-value="user_id"
                           label="Personne"
                           :rules="standardRequirement"
-                        ></v-combobox>
+                        >
+                          <template v-slot:selection="{ item }"> {{ item.firstName }} {{ item.lastName }} </template>
+                          <template v-slot:item="{ item }"> {{ item.firstName }} {{ item.lastName }} </template>
+                        </v-combobox>
                       </v-col>
-                      <v-row v-if="connectedUser">
+                      <v-row v-if="connectedParticipant">
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.fullName" label="Prénom NOM" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.firstName" label="Prénom" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.userGroup" label="Groupe" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.lastName" label="Nom" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.email" label="Mail" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.userGroup" label="Groupe" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.phone" label="Téléphone" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.email" label="Mail" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.function" label="Fonction" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.phone" label="Téléphone" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedUser.organism" label="Organisme" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.function" label="Fonction" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field v-model="connectedParticipant.organism" label="Organisme" readonly></v-text-field>
                         </v-col>
                       </v-row>
                     </v-row>
@@ -153,7 +158,7 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Users",
-  props: { users: Array },
+  props: { users: Array, connectedParticipants: Array },
   data: () => ({
     pvId: Number,
     valid1: false,
@@ -171,6 +176,7 @@ export default {
     search: "",
     dialogNewOrModifiedUser: false,
     dialogExistingUser: false,
+    connectedParticipant: "",
     connectedUser: "",
     //TODO: récuperer les connected User via l'API
     connectedUsers: [
@@ -262,6 +268,9 @@ export default {
   // },
 
   methods: {
+    test(item) {
+      alert(item);
+    },
     formReset() {
       this.$refs.form1.resetValidation();
     },
@@ -336,7 +345,7 @@ export default {
       this.dialogExistingUser = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.connectedUser = null;
+        this.connectedParticipant = null;
         this.editedIndex = -1;
       }, 300);
     },
@@ -345,7 +354,7 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
-        this.users.push(this.connectedUser);
+        this.users.push(this.connectedParticipant);
       }
       this.closeExistingUser();
     }

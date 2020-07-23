@@ -38,7 +38,7 @@
 
     <v-divider class="my-10"></v-divider>
 
-    <Users v-if="pvUsers" :users="pvUsers" />
+    <Users v-if="pvUsers" :users="pvUsers" :connectedParticipants="pvConnectedParticipants" />
 
     <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
   </div>
@@ -51,6 +51,7 @@ import Users from "@/components/Users.vue";
 import ModalValidation from "@/components/ModalValidation.vue";
 import Axios from "axios";
 import { getRouteName } from "../utilities/constantes";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -68,6 +69,7 @@ export default {
       standardRequirement: [v => !!v || "Requis"],
       pvDetails: {},
       pvUsers: [],
+      pvConnectedParticipants: [],
       items: [],
       headers: [
         {
@@ -117,6 +119,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters("user", {
+      userId: "userId"
+    }),
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     },
@@ -142,7 +147,8 @@ export default {
       this.pvId = this.$route.params.id;
       let dt = {
         params: {
-          id_pv: this.pvId
+          id_pv: this.pvId,
+          id_user: this.userId
         }
       };
       let res = await Axios.get("getPvDetails", dt);
@@ -151,6 +157,7 @@ export default {
       }
       this.pvDetails = res.data.pv_details;
       this.pvUsers = res.data.users;
+      this.pvConnectedParticipants = res.data.connectedParticipants;
       this.meeting_type = res.data.pv_details.affair_meeting_type;
       if (this.meeting_type == "Chantier") {
         this.headers.splice(1, 0, { text: "Lot", value: "lots" });
