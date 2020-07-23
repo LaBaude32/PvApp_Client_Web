@@ -71,6 +71,7 @@ export default {
         email: this.email,
         password: new MD5().update(this.password).digest("hex")
       };
+      //FIXME : si on a une erreur CORS, on est quand même envoyé sur l'interface .. pk ?
       this.$store.dispatch("auth/authRequest", dt).then(() => {
         window.setTimeout(() => {
           this.$router.push("/Board");
