@@ -119,16 +119,19 @@ export default {
     }
   },
   mounted() {
+    //FIXME: re mettre les user_id correctement
     let self = this;
     const dtPvs = {
       params: {
         user_id: this.userId,
+        // user_id: 2,
         number_of_pvs: 2
       }
     };
     const dtAffairs = {
       params: {
         user_id: this.userId
+        // user_id: 2
       }
     };
     if (typeof this.userId != undefined) {
