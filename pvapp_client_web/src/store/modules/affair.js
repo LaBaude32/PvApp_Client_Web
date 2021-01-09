@@ -58,7 +58,8 @@ const actions = {
     //FIXME: Corriger ça, ce call API n'a pas de sens puisqu'il est refait à l'ouverture de la page
     Axios.get("getPvDetails", {
       params: {
-        id_pv: pvId
+        id_pv: pvId,
+        id_user: this.state.user.userId
       }
     }).then(response => {
       let affairId = response.data.pv_details.affair_id;
