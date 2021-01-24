@@ -196,7 +196,7 @@ export default {
       console.log(pvData);
       Axios.post("addPv", pvData)
         .then(response => {
-          let pvId = response.data.id_pv;
+          let pvId = response.data.pv.id_pv;
           this.$router.push({
             name: routesCONST.pv.name,
             params: { id: pvId }
