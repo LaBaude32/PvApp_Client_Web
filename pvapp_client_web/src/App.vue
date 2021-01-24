@@ -122,12 +122,12 @@ export default {
           title: "A propos",
           icon: "mdi-information",
           color: ""
-        },
-        {
-          path: getRouteName("test"),
-          title: "page TEST",
-          icon: "mdi-alert",
-          color: "orange"
+          // },
+          // {
+          //   path: getRouteName("test"),
+          //   title: "page TEST",
+          //   icon: "mdi-alert",
+          //   color: "orange"
         }
       ]
     };
