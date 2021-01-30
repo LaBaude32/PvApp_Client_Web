@@ -32,7 +32,7 @@
                         <v-text-field v-model="editedItem.userGroup" label="Groupe" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.function" label="Fonction" clearable counter="30"></v-text-field>
+                        <v-text-field v-model="editedItem.userFunction" label="Fonction" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.organism" label="Organisme" clearable counter="30"></v-text-field>
@@ -104,7 +104,7 @@
                           <v-text-field v-model="connectedParticipant.phone" label="Téléphone" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.function" label="Fonction" readonly></v-text-field>
+                          <v-text-field v-model="connectedParticipant.userFunction" label="Fonction" readonly></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="connectedParticipant.organism" label="Organisme" readonly></v-text-field>
@@ -187,7 +187,7 @@ export default {
         lastName: "Coup",
         email: "baud@baud.fr",
         phone: "0675",
-        function: "dev",
+        userFunction: "dev",
         organism: "SAS"
       },
       {
@@ -214,7 +214,7 @@ export default {
         value: "userGroup",
         sortable: false
       },
-      { text: "Fonction", value: "function" },
+      { text: "Fonction", value: "userFunction" },
       { text: "Organisme", value: "organism" },
       { text: "Mail", value: "email", sortable: false },
       { text: "Téléphone", value: "phone", sortable: false },
@@ -225,7 +225,7 @@ export default {
     editedItem: {
       fullName: "",
       userGroup: "",
-      function: "",
+      userFunction: "",
       organism: "",
       email: "",
       phone: "",
@@ -236,7 +236,7 @@ export default {
     defaultItem: {
       fullName: "",
       userGroup: "",
-      function: "",
+      userFunction: "",
       organism: "",
       email: "",
       phone: "",
