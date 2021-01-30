@@ -70,7 +70,7 @@
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pv_number" sort-desc>
         <template v-slot:item.actions="{ item }">
           <v-btn small class="ma-2" @click="openPv(item)" color="primary">
-            Voir
+            Renseigner
           </v-btn>
           <v-btn small class="ma-2" @click="modifyPv(item)" color="error">
             Modifier
