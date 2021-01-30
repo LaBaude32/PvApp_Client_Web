@@ -1,6 +1,6 @@
 [package]
 name = "PvApp"
-version = "0.1.1"
+version = "0.1.2"
 description = "Une application de compte rendu"
 authors = [ "Baudouin Coupey" ]
 license = ""
