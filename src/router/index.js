@@ -22,6 +22,8 @@ const ifAuthenticated = (to, from, next) => {
 
 Vue.use(VueRouter);
 
+//TODO: verifier les droits des routes qui n'en on pas
+
 const routes = [
   {
     path: routesCONST.home.path,
@@ -34,8 +36,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
-    beforeEnter: ifNotAuthenticated
+    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
     path: routesCONST.login.path,
