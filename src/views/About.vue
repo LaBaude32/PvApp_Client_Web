@@ -5,7 +5,7 @@
       <v-avatar left>
         <v-icon>mdi-checkbox-marked-circle</v-icon>
       </v-avatar>
-      Version 0.1.1-beta
+      Version 0.1.2-beta
     </v-chip>
     <h3 class="mb-5">Nouveautés :</h3>
 
@@ -14,13 +14,13 @@
         <v-icon large left>
           mdi-rocket-launch
         </v-icon>
-        <span class="title font-weight-light">Caractéristiques</span>
+        <span class="title font-weight-light">Améliorations</span>
       </v-card-title>
 
       <v-card-text class="headline font-weight-bold">
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Page d'accueil : Refonte de la mise en page</v-list-item-title>
+            <v-list-item-subtitle>UX : Modification de la page Affaire</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-card-text>
@@ -36,9 +36,8 @@
       <v-card-text class="headline font-weight-bold">
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>App bug fixes</v-list-item-title>
-            <v-list-item-title>Update Vuetify to 2.4.3</v-list-item-title>
-            <v-list-item-title>Update Tauri</v-list-item-title>
+            <v-list-item-subtitle>Correction des problèmes de status des personnes</v-list-item-subtitle>
+            <v-list-item-subtitle>Correction des problèmes de fonction des personnes</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-card-text>
