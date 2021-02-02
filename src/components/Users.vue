@@ -138,7 +138,7 @@
         <v-icon small class="mr-2" @click="editItem(item)">
           mdi-pencil
         </v-icon>
-        <v-icon small @click="deleteItem(item)">
+        <v-icon small @click="deleteItem(item)" v-if="!(item.id_user == userId)">
           mdi-delete
         </v-icon>
       </template>
@@ -152,7 +152,7 @@
 
 <script>
 import Axios from "axios";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
 
@@ -249,6 +249,9 @@ export default {
   computed: {
     ...mapGetters("affair", {
       affair_name: "name"
+    }),
+    ...mapState("user", {
+      userId: "userId"
     }),
     formTitle() {
       return this.editedIndex === -1 ? "Ajouter une personne" : "Modifier une personne";
