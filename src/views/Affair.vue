@@ -42,7 +42,7 @@
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
-      <p>Type de chantier : {{ affair.meeting_type }}</p>
+      <p>Phase : {{ affair.meeting_type }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
       <p>Progression :</p>
       <div class="text-center">

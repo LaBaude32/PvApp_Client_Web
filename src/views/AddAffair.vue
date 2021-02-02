@@ -10,7 +10,7 @@
             <v-text-field v-model="address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-combobox v-model="meeting_type" :items="items" label="Type de réunion" :rules="meetingRules"></v-combobox>
+            <v-combobox v-model="meeting_type" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
           </v-col>
           <v-col cols="12">
             <v-textarea
