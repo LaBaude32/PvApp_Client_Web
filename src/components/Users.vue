@@ -22,22 +22,29 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.firstName" label="Prénom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.userGroup" label="Groupe" clearable counter="30"></v-text-field>
+                      <v-col cols="12" sm="6">
+                        <v-combobox
+                          v-model="editedItem.userGroupToReturn"
+                          :items="defaultItem.userGroup"
+                          solo
+                          label="Groupe"
+                          counter="30"
+                          clearable
+                        ></v-combobox>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.userFunction" label="Fonction" clearable counter="30"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.organism" label="Organisme" clearable counter="30"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" clearable counter="10"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
@@ -224,7 +231,8 @@ export default {
     editedIndex: -1,
     editedItem: {
       fullName: "",
-      userGroup: "",
+      userGroupToReturn: "",
+      userGroup: [],
       userFunction: "",
       organism: "",
       email: "",
@@ -235,7 +243,16 @@ export default {
     },
     defaultItem: {
       fullName: "",
-      userGroup: "",
+      userGroup: [
+        "Maitrise d'ouvrage",
+        "Assistance à la maitrise d'ouvrage",
+        "Maitrise d'oeuvre",
+        "Concessionnaire",
+        "Personne public associée",
+        "COPIL",
+        "COTEC",
+        "Divers"
+      ],
       userFunction: "",
       organism: "",
       email: "",
@@ -308,10 +325,11 @@ export default {
     },
 
     saveNewOrModifiedUser() {
+      let data = { ...this.editedItem };
+      data.pvId = this.pvId;
+      data.userGroup = data.userGroupToReturn;
       if (this.editedIndex > -1) {
         //Exisiting User
-        let data = { ...this.editedItem };
-        data.pvId = this.pvId;
         Axios.post("/updateParticipant", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
@@ -325,9 +343,7 @@ export default {
           });
       } else {
         //New User
-        let data = { ...this.editedItem };
         data.password = this.affair_name;
-        data.pvId = this.pvId;
         Axios.post("/addUser", data)
           .then(response => {
             if (response.status == 201 && typeof response.data.id_user === "number") {
