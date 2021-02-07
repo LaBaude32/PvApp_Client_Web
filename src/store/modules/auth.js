@@ -68,7 +68,11 @@ const actions = {
       });
   },
   logout({ commit }) {
-    localStorage.clear();
+    localStorage.removeItem("user-token");
+    localStorage.removeItem("fullName");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("user-token_typen");
+    localStorage.removeItem("userId");
     commit("LOGOUT");
     router.push("Login");
   },
