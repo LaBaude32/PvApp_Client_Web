@@ -176,8 +176,9 @@ export default {
       v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
     ],
     standardRules: [v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"],
-    emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    phoneRules: [v => /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
+    // emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
+    emailRules: [v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Le mail doit être valide"],
+    phoneRules: [v => !v || /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
     statusRules: [v => !!v || "Requis"],
     standardRequirement: [v => !!v || "Requis"],
     search: "",
