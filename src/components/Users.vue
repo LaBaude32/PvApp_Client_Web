@@ -297,6 +297,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.editedItem.userGroupToReturn = item.userGroup;
       this.dialogNewOrModifiedUser = true;
     },
 
