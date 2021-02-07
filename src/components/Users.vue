@@ -8,7 +8,7 @@
           <v-spacer></v-spacer>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="500px">
+          <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Créer une personne</v-btn>
             </template>
@@ -47,15 +47,11 @@
                       <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.phone" label="Téléphone" :rules="phoneRules" clearable counter="10"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="8" md="8">
+                      <v-col cols="12">
                         <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules" clearable></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="4" md="4">
-                        <v-radio-group v-model="editedItem.status_PAE" label="Statut" :rules="statusRules">
-                          <v-radio value="Présent" label="Présent"></v-radio>
-                          <v-radio value="Absent" label="Absent"></v-radio>
-                          <v-radio value="Excusé" label="Excusé"></v-radio>
-                        </v-radio-group>
+                      <v-col cols="12" sm="6">
+                        <v-select v-model="editedItem.status_PAE" :items="defaultItem.status_PAE" label="Status" clearable></v-select>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -132,11 +128,7 @@
         </v-toolbar>
       </template>
       <template v-slot:item.status_PAE="{ item }">
-        <v-radio-group v-model="item.status_PAE" row>
-          <v-radio value="Présent" label="Présent"></v-radio>
-          <v-radio value="Absent" label="Absent"></v-radio>
-          <v-radio value="Excusé" label="Excusé"></v-radio>
-        </v-radio-group>
+        <v-select v-model="item.status_PAE" :items="defaultItem.status_PAE" @change="statusChange(item)"></v-select>
       </template>
       <template v-slot:item.fullName="{ item }">
         <div>{{ item.firstName }} {{ item.lastName }}</div>
@@ -258,7 +250,7 @@ export default {
       organism: "",
       email: "",
       phone: "",
-      status_PAE: "",
+      status_PAE: ["Présent", "Absent", "Excusé"],
       firstName: "",
       lastName: ""
     }
@@ -289,9 +281,6 @@ export default {
   // },
 
   methods: {
-    test(item) {
-      alert(item);
-    },
     formReset() {
       this.$refs.form1.resetValidation();
     },
@@ -378,6 +367,20 @@ export default {
         this.users.push(this.connectedParticipant);
       }
       this.closeExistingUser();
+    },
+    statusChange(item) {
+      let data = { ...item };
+      data.pvId = this.pvId;
+      data.userGroup = data.userGroupToReturn;
+      Axios.post("/updateParticipant", data)
+        .then(response => {
+          if (response.status == 201 && typeof response.data.id_user === "number") {
+            this.$store.dispatch("notification/success", "Le status à bien été mis à jour");
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
