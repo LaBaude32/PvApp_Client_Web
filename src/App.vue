@@ -59,6 +59,32 @@
 
     <v-main>
       <div id="app" class="mt-10">
+        <v-alert
+          class="mx-auto"
+          max-width="800px"
+          v-model="versionNotif"
+          dismissible
+          color="green"
+          border="left"
+          elevation="2"
+          colored-border
+          icon="mdi-information"
+          prominent
+        >
+          <v-row align="center">
+            <v-col class="grow">
+              Une nouvelle version est disponnible.
+            </v-col>
+            <v-col class="shrink">
+              <v-chip class="ma-3" color="green" text-color="white">
+                {{ appVersion }}
+              </v-chip>
+            </v-col>
+            <v-col class="shrink">
+              <v-btn color="green" dark @click.prevent="action('/About')">Voir les nouveautés</v-btn>
+            </v-col>
+          </v-row>
+        </v-alert>
         <router-view />
       </div>
     </v-main>
@@ -72,6 +98,7 @@ import { mapGetters } from "vuex";
 // import routesCONST from "./utilities/constantes";
 import { getRouteName } from "./utilities/constantes";
 import Notification from "@/components/Notification.vue";
+import { version } from "../package";
 
 export default {
   components: {
@@ -79,7 +106,9 @@ export default {
   },
   data() {
     return {
+      appVersion: version,
       right: false,
+      versionNotif: false,
       drawerMain: false,
       drawerRight: false,
       items: [
@@ -176,6 +205,12 @@ export default {
         throw error;
       });
     });
+    //verification de nouvelle version
+    let oldVersion = localStorage.getItem("appVersion");
+    if (oldVersion != this.appVersion) {
+      this.versionNotif = true;
+      localStorage.setItem("appVersion", this.appVersion);
+    }
   }
 };
 </script>
