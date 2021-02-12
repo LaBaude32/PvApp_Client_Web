@@ -2,7 +2,7 @@
 # It is not intended for manual editing.
 [[package]]
 name = "PvApp"
-version = "0.1.2"
+version = "0.1.4"
 dependencies = [
  "serde",
  "serde_json",
