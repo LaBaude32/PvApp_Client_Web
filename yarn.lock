@@ -673,10 +673,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mdi/font@5.0.45":
-  version "5.0.45"
-  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-5.0.45.tgz#8eda40c41dc7ee9e7a51dbe9191c5c38b8482422"
-  integrity sha512-3sOO/UMyQqrmizW5zjvhKJP4FZFO7LblRw4G0alDxK1ekUwNxNXI7hYv8ACAv8H44riBuqlVJ7u39XDqv/Xwuw==
+"@mdi/font@^7.2.96":
+  version "7.2.96"
+  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-7.2.96.tgz#af800d9fe3b424f85ad45e9baa755bd003ab4986"
+  integrity sha512-e//lmkmpFUMZKhmCY9zdjRe4zNXfbOIJnn6xveHbaV2kSw5aJ5dLXUxcRt1Gxfi7ZYpFLUWlkG2MGSFAiqAu7w==
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
@@ -884,7 +884,7 @@
   dependencies:
     "@types/node" "*"
 
-"@vitejs/plugin-vue@^4":
+"@vitejs/plugin-vue@^4.3.4":
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-4.3.4.tgz#a289dff38e01949fe7be581d5542cabaeb961dec"
   integrity sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==
@@ -1012,12 +1012,13 @@
   optionalDependencies:
     prettier "^1.18.2 || ^2.0.0"
 
-"@vue/eslint-config-prettier@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@vue/eslint-config-prettier/-/eslint-config-prettier-6.0.0.tgz#ad5912b308f4ae468458e02a2b05db0b9d246700"
-  integrity sha512-wFQmv45c3ige5EA+ngijq40YpVcIkAy0Lihupnsnd1Dao5CBbPyfCzqtejFLZX1EwH/kCJdpz3t6s+5wd3+KxQ==
+"@vue/eslint-config-prettier@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@vue/eslint-config-prettier/-/eslint-config-prettier-8.0.0.tgz#de5cb77ed483b43683d17a788808a0fa4e7bd07e"
+  integrity sha512-55dPqtC4PM/yBjhAr+yEw6+7KzzdkBuLmnhBrDfp4I48+wy+Giqqj9yUr5T2uD/BkBROjjmqnLZmXRdOx/VtQg==
   dependencies:
-    eslint-config-prettier "^6.0.0"
+    eslint-config-prettier "^8.8.0"
+    eslint-plugin-prettier "^5.0.0"
 
 abab@^2.0.3:
   version "2.0.3"
@@ -2543,14 +2544,12 @@ escodegen@^1.14.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-prettier@^6.0.0:
-  version "6.10.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.10.1.tgz#129ef9ec575d5ddc0e269667bf09defcd898642a"
-  integrity sha512-svTy6zh1ecQojvpbJSgH3aei/Rt7C6i090l5f2WQ4aB05lYHeZIR1qL4wZyyILTbtmnbHP5Yn8MrsOJMGa8RkQ==
-  dependencies:
-    get-stdin "^6.0.0"
+eslint-config-prettier@^8.8.0:
+  version "8.10.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.10.0.tgz#3a06a662130807e2502fc3ff8b4143d8a0658e11"
+  integrity sha512-SM8AMJdeQqRYT9O9zguiruQZaN7+z+E4eAP9oiLNGKMtomwaB1E9dcgUD6ZAn/eQAb52USbvezbiljfZUhbJcg==
 
-eslint-plugin-prettier@^5:
+eslint-plugin-prettier@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.0.0.tgz#6887780ed95f7708340ec79acfdf60c35b9be57a"
   integrity sha512-AgaZCVuYDXHUGxj/ZGu1u8H8CYgDY3iG6w5kUFw4AzMVXzB7VvbKgYR4nATIN+OvUrghMbiDLeimVjVY5ilq3w==
@@ -2558,7 +2557,7 @@ eslint-plugin-prettier@^5:
     prettier-linter-helpers "^1.0.0"
     synckit "^0.8.5"
 
-eslint-plugin-vue@^9:
+eslint-plugin-vue@^9.17.0:
   version "9.17.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-9.17.0.tgz#4501547373f246547083482838b4c8f4b28e5932"
   integrity sha512-r7Bp79pxQk9I5XDP0k2dpUC7Ots3OSWgvGZNu3BxmKK6Zg7NgVtcOB6OCna5Kb9oQwJPl5hq183WD0SY5tZtIQ==
@@ -2584,7 +2583,7 @@ eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4.1, eslint-visitor-keys@^3.4
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz#0cd72fe8550e3c2eae156a96a4dddcd1c8ac5800"
   integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
-eslint@^8:
+eslint@^8.50.0:
   version "8.50.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.50.0.tgz#2ae6015fee0240fcd3f83e1e25df0287f487d6b2"
   integrity sha512-FOnOGSuFuFLv/Sa+FDVRZl4GGVAAFFi8LecRsI5a1tMO5HIE8nCm4ivAlzt4dT3ol/PaaGC0rJEEXQmHJBGoOg==
@@ -3127,11 +3126,6 @@ get-stdin@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-4.0.1.tgz#b968c6b0a04384324902e8bf1a5df32579a450fe"
   integrity sha1-uWjGsKBDhDJJAui/Gl3zJXmkUP4=
-
-get-stdin@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-6.0.0.tgz#9e09bf712b360ab9225e812048f71fde9c89657b"
-  integrity sha512-jp4tHawyV7+fkkSKyvjuLZswblUtz+SQKzSWnBbii16BuZksJlU1wuBYXY75r+duh/llF1ur6oNwi+2ZzjKZ7g==
 
 get-stream@3.0.0, get-stream@^3.0.0:
   version "3.0.0"
@@ -5264,7 +5258,7 @@ prettier-linter-helpers@^1.0.0:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
-prettier@^3:
+prettier@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.3.tgz#432a51f7ba422d1469096c0fdc28e235db8f9643"
   integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
@@ -6643,7 +6637,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite-plugin-vue2@^2:
+vite-plugin-vue2@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vite-plugin-vue2/-/vite-plugin-vue2-2.0.3.tgz#19aab2720e13a969b9d9272f85e899c671930ef2"
   integrity sha512-t3Tu93GWsMHbpeIv66MTO5e/rRAo8/+/eWoUtFYuAdKDMyEnn1dqsrXh+CfG+SJAlxJvcTP8U0eXkzhLjKNyMg==
@@ -6678,7 +6672,7 @@ vite-plugin-vue2@^2:
     source-map "^0.7.3"
     vue-template-babel-compiler "^1.2.0"
 
-vite@^4:
+vite@^4.4.9:
   version "4.4.9"
   resolved "https://registry.yarnpkg.com/vite/-/vite-4.4.9.tgz#1402423f1a2f8d66fd8d15e351127c7236d29d3d"
   integrity sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==
@@ -6734,7 +6728,7 @@ vue-template-babel-compiler@^1.2.0:
     "@babel/types" "^7.14.5"
     deepmerge "^4.2.2"
 
-vue-template-compiler@^2.6.11:
+vue-template-compiler@^2.7.14:
   version "2.7.14"
   resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.7.14.tgz#4545b7dfb88090744c1577ae5ac3f964e61634b1"
   integrity sha512-zyA5Y3ArvVG0NacJDkkzJuPQDF8RFeRlzV2vLeSnhSpieO6LK2OVbdLPi5MPPs09Ii+gMO8nY4S3iKQxBxDmWQ==
