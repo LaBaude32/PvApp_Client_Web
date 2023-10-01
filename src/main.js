@@ -39,7 +39,7 @@ if (token) {
   axios.defaults.headers.common["Authorization"] = token_type + " " + token;
 }
 
-axios.defaults.baseURL = process.env.VUE_APP_ROOT_URL;
+//axios.defaults.baseURL = process.env.VUE_APP_ROOT_URL;
 
 new Vue({
   router,

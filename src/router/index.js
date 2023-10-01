@@ -36,7 +36,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
+    component: () => import("../views/About.vue")
   },
   {
     path: routesCONST.login.path,
@@ -44,7 +44,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+    component: () => import("../views/Login.vue"),
     beforeEnter: ifNotAuthenticated
   },
   {
@@ -53,7 +53,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/Users.vue"),
+    component: () => import("../views/Users.vue"),
     beforeEnter: ifAuthenticated
   },
   {
@@ -62,59 +62,59 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/Board.vue"),
+    component: () => import("../views/Board.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: routesCONST.affair.path + "/:id",
     name: routesCONST.affair.name,
-    component: () => import(/* webpackChunkName: "about" */ "../views/Affair.vue"),
+    component: () => import("../views/Affair.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: routesCONST.pv.path + "/:id",
     name: routesCONST.pv.name,
-    component: () => import(/* webpackChunkName: "about" */ "../views/Pv_v2.vue"),
+    component: () => import("../views/Pv_v2.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: routesCONST.addAffair.path,
     name: routesCONST.addAffair.name,
-    component: () => import(/* webpackChunkName: "about" */ "../views/AddAffair.vue"),
+    component: () => import("../views/AddAffair.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: getRoutePath("addPv"),
     name: getRouteName("addPv"),
-    component: () => import(/* webpackChunkName: "about" */ "../views/AddPv.vue"),
+    component: () => import("../views/AddPv.vue"),
     beforeEnter: ifAuthenticated
   },
   {
     path: getRoutePath("addUser"),
     name: getRouteName("addUser"),
-    component: () => import(/* webpackChunkName: "about" */ "../views/AddUser.vue")
+    component: () => import("../views/AddUser.vue")
   },
   {
     path: getRoutePath("addLot"),
     name: getRouteName("addLot"),
-    component: () => import(/* webpackChunkName: "about" */ "../views/AddLot.vue")
+    component: () => import("../views/AddLot.vue")
   },
   {
     path: getRoutePath("finishedPv") + "/:id",
     name: getRouteName("finishedPv"),
-    component: () => import(/* webpackChunkName: "about" */ "../views/FinishedPv.vue")
+    component: () => import("../views/FinishedPv.vue")
   },
   {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
-    component: () => import(/* webpackChunkName: "about" */ "../views/Test.vue")
+    component: () => import("../views/Test.vue")
   },
   {
     path: "*",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "../views/Home.vue")
+    component: () => import("../views/Home.vue")
   }
 ];
 

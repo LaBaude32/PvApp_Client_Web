@@ -60,7 +60,7 @@
 <script>
 import Axios from "axios";
 import { getRouteName } from "../utilities/constantes";
-const MD5 = require("md5.js");
+import md5 from "md5";
 export default {
   data() {
     return {
@@ -98,7 +98,8 @@ export default {
     validate() {
       let datas = {
         email: this.email,
-        password: new MD5().update(this.password).digest("hex"),
+        // password: new MD5().update(this.password).digest("hex"),
+        password: md5(this.password),
         firstName: this.firstName,
         lastName: this.lastName,
         phone: this.phone,

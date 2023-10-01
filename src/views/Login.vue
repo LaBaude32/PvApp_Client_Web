@@ -45,7 +45,7 @@
 <script>
 // const axios = require("axios");
 import { mapGetters } from "vuex";
-const MD5 = require("md5.js");
+import md5 from "md5";
 export default {
   data() {
     return {
@@ -69,7 +69,8 @@ export default {
     login() {
       const dt = {
         email: this.email,
-        password: new MD5().update(this.password).digest("hex")
+        // password: new MD5().update(this.password).digest("hex")
+        password: md5(this.password)
       };
       //FIXME : si on a une erreur CORS, on est quand même envoyé sur l'interface .. pk ?
       this.$store.dispatch("auth/authRequest", dt).then(() => {
