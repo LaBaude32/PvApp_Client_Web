@@ -26,7 +26,8 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>Affaire : {{ pv.affair_name }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
-                  <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark @click="openFinishedPv(pv.id_pv)">
+                  <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark
+                    @click="openFinishedPv(pv.id_pv)">
                     {{ pv.state }}
                     <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
@@ -55,9 +56,8 @@
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
                   <div class="text-center">
-                    <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8"
-                      >{{ affair.progress }} %</v-progress-circular
-                    >
+                    <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{
+                      affair.progress }} %</v-progress-circular>
                   </div>
                 </v-card-text>
                 <v-card-actions>
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-const axios = require("axios");
+import axios from 'axios';
 import routesCONST, { getRouteName } from "../utilities/constantes";
 
 import { mapState } from "vuex";
@@ -137,22 +137,22 @@ export default {
     if (typeof this.userId != undefined) {
       axios
         .get("getLastPvsByUserId", dtPvs)
-        .then(function(response) {
+        .then(function (response) {
           // handle success
           self.pvs = response.data;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           // handle error
           console.log(error);
         });
 
       axios
         .get("getAffairsByUserId", dtAffairs)
-        .then(function(response) {
+        .then(function (response) {
           // handle success
           self.affairs = response.data;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           // handle error
           console.log(error);
         });
