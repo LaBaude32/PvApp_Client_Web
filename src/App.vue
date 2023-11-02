@@ -59,18 +59,8 @@
 
     <v-main>
       <div id="app" class="mt-10">
-        <v-alert
-          class="mx-auto"
-          max-width="800px"
-          v-model="versionNotif"
-          dismissible
-          color="green"
-          border="left"
-          elevation="2"
-          colored-border
-          icon="mdi-information"
-          prominent
-        >
+        <v-alert class="mx-auto" max-width="800px" v-model="versionNotif" dismissible color="green" border="left"
+          elevation="2" colored-border icon="mdi-information" prominent>
           <v-row align="center">
             <v-col class="grow">
               Une nouvelle version est disponnible.
@@ -190,21 +180,24 @@ export default {
       this.drawerRight = !this.drawerRight;
     }
   },
-  created: function() {
-    Axios.interceptors.response.use(undefined, error => {
-      this.$store.dispatch("notification/error", "error");
-      return new Promise(() => {
-        if (error.response.status === 401 || error.response === undefined) {
-          if (error.response.config.url == "/tokens") {
+  created: function () {
+    Axios.interceptors.response.use(
+      function (response) {
+        return response;
+      },
+      function (error) {
+        this.$store.dispatch("notification/error", "error");
+        if (error.status === 401) {
+          if (error.config.url == "/tokens") {
             this.$store.dispatch("auth/authError");
           } else {
             // if you ever get an unauthorized, logout the user
             this.$store.dispatch("auth/authLogout");
           }
         }
-        throw error;
-      });
-    });
+        return Promise.reject(error);
+      }
+    );
     //verification de nouvelle version
     let oldVersion = localStorage.getItem("appVersion");
     if (oldVersion != this.appVersion) {

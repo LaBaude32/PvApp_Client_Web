@@ -12,29 +12,29 @@ const state = {
 };
 
 const getters = {
-  logged: state => state.isLogged,
-  firstName: state => state.firstName,
-  lastName: state => state.lastName,
-  email: state => state.email,
-  fullName: state => state.fullName,
-  resultConnetion: state => state.resultCo,
-  userId: state => state.userId
+  logged: (state) => state.isLogged,
+  firstName: (state) => state.firstName,
+  lastName: (state) => state.lastName,
+  email: (state) => state.email,
+  fullName: (state) => state.fullName,
+  resultConnetion: (state) => state.resultCo,
+  userId: (state) => state.userId
 };
 
 const mutations = {
-  LOGIN(state, datas) {
+  LOGIN(state, user) {
     state.resultCo = "success";
     state.isLogged = true;
-    state.firstName = datas.firstName;
-    state.lastName = datas.lastName;
-    state.email = datas.email;
-    state.fullName = datas.firstName + " " + datas.lastName;
-    state.userId = datas.userId;
-  },
-  ERROR_CO(state) {
-    state.resultCo = "errorId";
+    state.firstName = user.firstName;
+    state.lastName = user.lastName;
+    state.email = user.email;
+    state.fullName = user.firstName + " " + user.lastName;
+    state.userId = user.userId;
   },
   ERROR_ID(state) {
+    state.resultCo = "errorId";
+  },
+  ERROR_CO(state) {
     state.resultCo = "errorConnection";
   },
   LOGOUT(state) {
@@ -50,33 +50,29 @@ const mutations = {
 
 const actions = {
   login({ commit }, data) {
-    axios
-      .post("/login", data)
-      .then(function(response) {
-        if (response.data.login_result == "success") {
-          let datas = {
-            userId: response.data.user_id,
-            firstName: response.data.user_data.firstName,
-            lastName: response.data.user_data.lastName,
-            email: response.data.user_data.email
-          };
-          commit("LOGIN", datas);
-          localStorage.setItem("userId", response.data.user_id);
-          localStorage.setItem("fullName", datas.firstName + " " + datas.lastName);
-        } else if (response.data.login_result == "error") {
-          commit("ERROR_ID");
-        }
-      })
-      .catch(function(error) {
-        console.log(error);
-        commit("ERROR_CO");
-      });
+    return new Promise((resolve) => {
+      axios({ url: "/login", params: data, method: "get" })
+        .then(function (response) {
+          if (response.status == 202) {
+            let user = {
+              userId: response.data.userId,
+              firstName: response.data.firstName,
+              lastName: response.data.lastName,
+              email: response.data.email
+            };
+            commit("LOGIN", user);
+            localStorage.setItem("userId", user.userId);
+            localStorage.setItem("fullName", user.firstName + " " + user.lastName);
+            resolve();
+          }
+        })
+    });
   },
   logout({ commit }) {
     commit("LOGOUT");
   },
   errorId({ commit }) {
-    commit("ERROR_CO");
+    commit("ERROR_ID");
   }
 };
 

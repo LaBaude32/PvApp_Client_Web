@@ -4,9 +4,8 @@
       <v-col cols="12" sm="8" md="4">
         <v-alert type="success" v-if="isLogged">Vous êtes connecté, vous allez être redirigé dans 5 secondes</v-alert>
         <v-alert type="error" v-else-if="resultConnetion === 'errorId'">Erreur sur l'email ou le mot de passe</v-alert>
-        <v-alert type="error" v-else-if="resultConnetion === 'errorConnection'"
-          >Erreur de connexion au serveur, veuillez vérifier votre connexion internet</v-alert
-        >
+        <v-alert type="error" v-else-if="resultConnetion === 'errorConnection'">Erreur de connexion au serveur, veuillez
+          vérifier votre connexion internet</v-alert>
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
@@ -18,18 +17,11 @@
           </v-toolbar>
           <v-form v-model="valid">
             <v-card-text>
-              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
-              <v-text-field
-                id="password"
-                label="Mot de passe"
-                name="password"
-                prepend-icon="mdi-lock"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPassword ? 'text' : 'password'"
-                @click:append="showPassword = !showPassword"
-                v-model="password"
-                :rules="pwdRules"
-              />
+              <v-text-field label="Email" name="login" prepend-icon="mdi-account" type="text" v-model="email"
+                :rules="emailRules" />
+              <v-text-field id="password" label="Mot de passe" name="password" prepend-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
+                @click:append="showPassword = !showPassword" v-model="password" :rules="pwdRules" />
             </v-card-text>
             <v-card-actions>
               <v-spacer />
@@ -43,7 +35,6 @@
 </template>
 
 <script>
-// const axios = require("axios");
 import { mapGetters } from "vuex";
 import md5 from "md5";
 export default {
@@ -69,23 +60,42 @@ export default {
     login() {
       const dt = {
         email: this.email,
-        // password: new MD5().update(this.password).digest("hex")
         password: md5(this.password)
       };
-      //FIXME : si on a une erreur CORS, on est quand même envoyé sur l'interface .. pk ?
-      this.$store.dispatch("auth/authRequest", dt).then(() => {
-        window.setTimeout(() => {
-          this.$router.push("/Board");
-        }, 5000);
-      });
+      //FIXME: si on a une erreur, on est quand même envoyé sur l'interface .. pk ?
+      if (localStorage.getItem("token") == undefined) {
+        this.$store.dispatch("auth/authRequest", dt)
+          .then(() => {
+            this.$store.dispatch("user/login", dt)
+              .then(() => {
+                window.setTimeout(() => {
+                  this.$router.push("/Board");
+                }, 5000);
+              })
+              .catch(() => {
+                this.$store.dispatch("auth/authError");
+              });
+          })
+          .catch(() => {
+            this.$store.dispatch("auth/authError");
+          });
+      }
     }
   },
   computed: {
-    ...mapGetters("user", {
-      isLogged: "logged",
-      fullName: "fullName",
-      resultConnetion: "resultConnetion"
-    })
+    ...mapGetters(
+      "user",
+      {
+        isLogged: "logged",
+        fullName: "fullName",
+        resultConnetion: "resultConnetion"
+      },
+      "auth",
+      {
+        token: "token",
+        tokenType: "tokenType"
+      }
+    )
   }
 };
 </script>

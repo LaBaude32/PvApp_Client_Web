@@ -119,24 +119,21 @@ export default {
     }
   },
   mounted() {
-    //FIXME: re mettre les user_id correctement
     let self = this;
     const dtPvs = {
       params: {
-        user_id: this.userId,
-        // user_id: 2,
-        number_of_pvs: 2
+        userId: this.userId,
+        numberOfPvs: 2
       }
     };
     const dtAffairs = {
       params: {
-        user_id: this.userId
-        // user_id: 2
+        userId: this.userId
       }
     };
     if (typeof this.userId != undefined) {
       axios
-        .get("getLastPvsByUserId", dtPvs)
+        .get("lastPvsByUserId", dtPvs)
         .then(function (response) {
           // handle success
           self.pvs = response.data;
@@ -147,7 +144,7 @@ export default {
         });
 
       axios
-        .get("getAffairsByUserId", dtAffairs)
+        .get("affairsByUserId", dtAffairs)
         .then(function (response) {
           // handle success
           self.affairs = response.data;

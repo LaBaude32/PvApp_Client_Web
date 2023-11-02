@@ -1,17 +1,16 @@
 import axios from "axios";
 import router from "./../../router";
-// import { getRouteName } from "./../../utilities/constantes";
 import routesCONST from "./../../utilities/constantes";
 
 const state = {
-  token_type: "",
-  token: localStorage.getItem("user-token") || "",
+  tokenType: "",
+  token: localStorage.getItem("token") || "",
   status: ""
 };
 
 const getters = {
   token: state => state.token,
-  token_type: state => state.token_type,
+  tokenType: state => state.tokenType,
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status
 };
@@ -34,10 +33,10 @@ const mutations = {
   AUTH_REQUEST(state) {
     state.status = "loading";
   },
-  AUTH_SUCCESS(state, token, token_type) {
+  AUTH_SUCCESS(state, token, tokenType) {
     state.status = "success";
     state.token = token;
-    state.token_type = token_type;
+    state.tokenType = tokenType;
   },
   AUTH_ERROR(state) {
     state.status = "error";
@@ -45,66 +44,34 @@ const mutations = {
 };
 
 const actions = {
-  login({ commit, dispatch }, data) {
-    axios
-      .post("/token", data)
-      .then(function(response) {
-        if (response.status == 201) {
-          let datas = {
-            token: response.data.token,
-            token_type: response.data.token_type
-          };
-          commit("LOGIN", datas);
-          localStorage.setItem("user-token", response.data.token);
-          localStorage.setItem("user-token_type", response.data.token_type);
-          dispatch("user/login", data);
-        } else if (response.data.login_result == "error") {
-          commit("ERROR_ID");
-        }
-      })
-      .catch(function(error) {
-        console.log(error);
-        commit("ERROR_CO");
-      });
-  },
-  logout({ commit }) {
-    localStorage.removeItem("user-token");
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("user-token_typen");
-    localStorage.removeItem("userId");
-    commit("LOGOUT");
-    router.push("Login");
-  },
-  authRequest({ commit, dispatch }, data) {
+  authRequest({ commit }, data) {
     return new Promise((resolve, reject) => {
       // The Promise used for router redirect in login
       commit("AUTH_REQUEST");
       axios({ url: "/tokens", data, method: "POST" })
         .then(response => {
           const token = response.data.access_token;
-          const token_type = response.data.token_type;
-          localStorage.setItem("user-token", token);
-          localStorage.setItem("user-token_type", token_type);
-          axios.defaults.headers.common["Authorization"] = token_type + " " + token;
+          const tokenType = response.data.token_type;
+          localStorage.setItem("token", token);
+          localStorage.setItem("tokenType", tokenType);
+          axios.defaults.headers.common["Authorization"] = tokenType + " " + token;
           localStorage.setItem("isAuthenticated", true);
-          commit("AUTH_SUCCESS", token, token_type);
-          dispatch("user/login", data, { root: true });
-          resolve(response);
+          commit("AUTH_SUCCESS", token, tokenType);
+          resolve();
         })
         .catch(error => {
           commit("AUTH_ERROR", error);
-          localStorage.removeItem("user-token");
-          reject(error);
+          localStorage.removeItem("token");
+          reject();
         });
     });
   },
   authLogout({ commit, dispatch }) {
     return new Promise(resolve => {
-      localStorage.removeItem("user-token");
+      localStorage.removeItem("token");
       localStorage.removeItem("fullName");
       localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("user-token_typen");
+      localStorage.removeItem("tokenType");
       localStorage.removeItem("userId");
       commit("AUTH_LOGOUT");
       dispatch("user/logout", null, { root: true });

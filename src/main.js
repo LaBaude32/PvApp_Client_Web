@@ -9,34 +9,34 @@ import moment from "moment";
 Vue.config.productionTip = false;
 
 moment.locale("fr");
-Vue.filter("formatDate", function(value) {
+Vue.filter("formatDate", function (value) {
   if (value) {
     return moment(String(value)).format("LLLL");
   }
 });
 
-Vue.filter("formatDateWithA", function(value) {
+Vue.filter("formatDateWithA", function (value) {
   if (value) {
     return moment(String(value)).format("dddd LL à LT");
   }
 });
 
-Vue.filter("formatDateWithAShort", function(value) {
+Vue.filter("formatDateWithAShort", function (value) {
   if (value) {
     return moment(String(value)).format("ddd Do MMM YYYY à LT ");
   }
 });
 
-Vue.filter("formatDateShortDayOnly", function(value) {
+Vue.filter("formatDateShortDayOnly", function (value) {
   if (value) {
     return moment(String(value)).format("ddd Do MMM YYYY");
   }
 });
 
-const token = localStorage.getItem("user-token");
-const token_type = localStorage.getItem("user-token_type");
+const token = localStorage.getItem("token");
+const tokenType = localStorage.getItem("tokenType");
 if (token) {
-  axios.defaults.headers.common["Authorization"] = token_type + " " + token;
+  axios.defaults.headers.common["Authorization"] = tokenType + " " + token;
 }
 
 axios.defaults.baseURL = import.meta.env.VITE_APP_ROOT_URL;

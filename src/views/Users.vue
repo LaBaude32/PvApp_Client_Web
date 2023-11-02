@@ -39,13 +39,13 @@ export default {
     axios({
       methode: "get",
       url: "getAllUsers",
-      Authorization: this.$store.getters.token_type + " " + this.$store.getters.token
+      Authorization: this.$store.getters.tokenType + " " + this.$store.getters.token
     })
-      .then(function(response) {
+      .then(function (response) {
         // handle success
         self.users = response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         console.log(error);
       });
@@ -53,7 +53,7 @@ export default {
   computed: {
     ...mapGetters("auth", {
       token: "token",
-      token_type: "token_type"
+      tokenType: "tokenType"
     })
   }
 };
