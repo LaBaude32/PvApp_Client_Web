@@ -22,20 +22,20 @@
               <v-list-item-content>
                 <v-list-item-title class="text-h6 mb-1">
                   Réunion du :
-                  {{ pv.meeting_date | formatDate }}
+                  {{ pv.meetingDate | formatDate }}
                 </v-list-item-title>
-                <v-list-item-subtitle>Affaire : {{ pv.affair_name }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Affaire : {{ pv.affairName }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
                   <v-btn v-if="pv.state == 'Terminé'" class="ma-2" color="green darken-2" dark
-                    @click="openFinishedPv(pv.id_pv)">
+                    @click="openFinishedPv(pv.pvId)">
                     {{ pv.state }}
                     <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
-                  <v-btn v-else class="ma-2" color="orange darken-3" dark @click="openPv(pv.id_pv)">
+                  <v-btn v-else class="ma-2" color="orange darken-3" dark @click="openPv(pv.pvId)">
                     {{ pv.state }}
                     <v-icon right>mdi-autorenew</v-icon>
                   </v-btn>
-                  <div v-if="pv.meeting_next_date">Prochaine réunion : {{ pv.meeting_next_date | formatDate }}</div>
+                  <div v-if="pv.meetingNextDate">Prochaine réunion : {{ pv.meetingNextDate | formatDate }}</div>
                 </v-card-text>
               </v-list-item-content>
             </v-list-item>
@@ -47,12 +47,12 @@
     <v-container v-if="affairs != ''">
       <h2>Vos affaires en cours :</h2>
       <v-row justify="center" class="mt-3">
-        <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.id_affair">
+        <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.affairId">
           <v-card class="mx-auto" color="blue-grey lighten-5" outlined>
             <v-list-item three-line>
               <v-list-item-content>
                 <v-list-item-title class="text-h6 mb-1">{{ affair.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ affair.meeting_type }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ affair.meetingType }}</v-list-item-subtitle>
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
                   <div class="text-center">
@@ -62,7 +62,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer>
-                    <v-btn color="success" @click="openAffair(affair.id_affair)">Ouvrir</v-btn>
+                    <v-btn color="success" @click="openAffair(affair.affairId)">Ouvrir</v-btn>
                   </v-spacer>
                 </v-card-actions>
               </v-list-item-content>

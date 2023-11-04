@@ -11,29 +11,12 @@
     </v-container>
 
     <v-divider class="mb-10"></v-divider>
-    <Pv-v2
-      v-if="meeting_type"
-      :dialog.sync="dialog"
-      :pvDetails="pvDetails"
-      :pvUsers="pvUsers"
-      :items.sync="items"
-      :meeting_type="meeting_type"
-      :headers="headers"
-      :valid.sync="valid"
-      :standardRequirement="standardRequirement"
-      :editedIndex.sync="editedIndex"
-      :editedItem.sync="editedItem"
-      :defaultItem="defaultItem"
-      :formTitle="formTitle"
+    <Pv-v2 v-if="meetingType" :dialog.sync="dialog" :pvDetails="pvDetails" :pvUsers="pvUsers" :items.sync="items"
+      :meetingType="meetingType" :headers="headers" :valid.sync="valid" :standardRequirement="standardRequirement"
+      :editedIndex.sync="editedIndex" :editedItem.sync="editedItem" :defaultItem="defaultItem" :formTitle="formTitle"
       :formatedCompletion_date.sync="formatedCompletion_date"
-      :computedDateFormattedCompletion="computedDateFormattedCompletion"
-      :editItem="editItem"
-      :deleteItem="deleteItem"
-      :close="close"
-      :save="save"
-      :maxPosition="maxPosition"
-      :changeVisible="changeVisible"
-    />
+      :computedDateFormattedCompletion="computedDateFormattedCompletion" :editItem="editItem" :deleteItem="deleteItem"
+      :close="close" :save="save" :maxPosition="maxPosition" :changeVisible="changeVisible" />
     <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
 
     <v-divider class="my-10"></v-divider>
@@ -65,7 +48,7 @@ export default {
       dialog: false,
       ModalValidationDialog: false,
       valid: false,
-      meeting_type: undefined,
+      meetingType: undefined,
       standardRequirement: [v => !!v || "Requis"],
       pvDetails: {},
       pvUsers: [],
@@ -147,23 +130,23 @@ export default {
       this.pvId = this.$route.params.id;
       let dt = {
         params: {
-          id_pv: this.pvId,
-          id_user: this.userId
+          pvId: this.pvId,
+          userId: this.userId
         }
       };
-      let res = await Axios.get("getPvDetails", dt);
+      let res = await Axios.get("pv", dt);
       if (typeof res.data.items !== "string") {
         this.items = [...res.data.items];
       }
-      this.pvDetails = res.data.pv_details;
+      this.pvDetails = res.data.pv;
       this.pvUsers = res.data.users;
       this.pvConnectedParticipants = res.data.connectedParticipants;
-      this.meeting_type = res.data.pv_details.affair_meeting_type;
-      if (this.meeting_type == "Chantier") {
+      this.meetingType = res.data.pv.affairMeetingType;
+      if (this.meetingType == "Chantier") {
         this.headers.splice(1, 0, { text: "Lot", value: "lots" });
         this.defaultItem.lots = this.pvDetails.lots;
       }
-      this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affair_id);
+      this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affairId);
     },
 
     editItem(item) {
@@ -181,7 +164,7 @@ export default {
     deleteItem(item) {
       const index = this.items.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cet item?") &&
-        Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, id_pv: this.pvId } })
+        Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, pvId: this.pvId } })
           .then(response => {
             if (response.data == "success") {
               this.$store.dispatch("notification/success", "L'item à bien été supprimé");
@@ -213,7 +196,7 @@ export default {
       let data;
       data = { ...this.editedItem };
       data.completion = data.completionToReturn;
-      if (this.meeting_type == "Chantier" && data.lots) {
+      if (this.meetingType == "Chantier" && data.lots) {
         let lotTransit = [];
         data.lots.forEach(element => {
           lotTransit.push(element.id_lot);
@@ -290,7 +273,7 @@ export default {
         });
     },
     pvValidation() {
-      Axios.post("validatePv", { id_pv: this.pvId })
+      Axios.post("validatePv", { pvId: this.pvId })
         .then(response => {
           if (response.data == "success") {
             this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.pvId } });
@@ -302,7 +285,7 @@ export default {
         });
     },
     returnToAffair() {
-      this.$router.push({ name: getRouteName("affair"), params: { id: this.pvDetails.affair_id } });
+      this.$router.push({ name: getRouteName("affair"), params: { id: this.pvDetails.affairId } });
     }
   }
 };

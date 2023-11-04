@@ -3,7 +3,7 @@ import router from "./../../router";
 import routesCONST from "./../../utilities/constantes";
 
 const state = {
-  tokenType: "",
+  tokenType: localStorage.getItem("tokenType") || "",
   token: localStorage.getItem("token") || "",
   status: ""
 };
@@ -18,7 +18,7 @@ const getters = {
 const mutations = {
   LOGIN(state, datas) {
     state.token = datas.token;
-    state.token_type = datas.token_type;
+    state.tokenType = datas.tokenType;
   },
   ERROR_CO(state) {
     state.result = "errorId";
@@ -28,7 +28,7 @@ const mutations = {
   },
   AUTH_LOGOUT(state) {
     state.token = "";
-    state.token_type = "";
+    state.tokenType = "";
   },
   AUTH_REQUEST(state) {
     state.status = "loading";
@@ -51,7 +51,7 @@ const actions = {
       axios({ url: "/tokens", data, method: "POST" })
         .then(response => {
           const token = response.data.access_token;
-          const tokenType = response.data.token_type;
+          const tokenType = response.data.tokenType;
           localStorage.setItem("token", token);
           localStorage.setItem("tokenType", tokenType);
           axios.defaults.headers.common["Authorization"] = tokenType + " " + token;

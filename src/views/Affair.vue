@@ -19,10 +19,10 @@
         :data.sync="pvData"
         :meetingDate="computedDateFormattedMeetingDate"
         :meetingNextDate="computedDateFormattedMeetingNextDate"
-        :meeting_date_date.sync="meeting_date_date"
-        :meeting_date_time.sync="meeting_date_time"
-        :meeting_next_date_date.sync="meeting_next_date_date"
-        :meeting_next_date_time.sync="meeting_next_date_time"
+        :meetingDate_date.sync="meetingDate_date"
+        :meetingDate_time.sync="meetingDate_time"
+        :meetingNextDate_date.sync="meetingNextDate_date"
+        :meetingNextDate_time.sync="meetingNextDate_time"
         :affairs="affairsForPv"
         :modifyingType="pvModifyingType"
         :validate="pvModifySave"
@@ -42,19 +42,20 @@
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
-      <p>Phase : {{ affair.meeting_type }}</p>
+      <p>Phase : {{ affair.meetingType }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
       <p>Progression :</p>
       <div class="text-center">
         <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.progress }} %</v-progress-circular>
       </div>
       <v-row class="d-flex align-end">
-        <v-col cols="8" v-if="affair.meeting_type == 'Chantier'">
+        <v-col cols="8" v-if="affair.meetingType == 'Chantier'">
           <h3 class="mt-5">Lots :</h3>
           <div v-if="lots">
             <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
           </div>
           <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
+          <!-- TODO:ajouter un bouton pour ajouter des lots ici -->
         </v-col>
       </v-row>
     </v-container>
@@ -69,18 +70,14 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pv_number" sort-desc>
         <template v-slot:item.actions="{ item }">
-          <v-btn small class="ma-2" @click="openPv(item)" color="primary">
-            Renseigner
-          </v-btn>
-          <v-btn small class="ma-2" @click="modifyPv(item)" color="error">
-            Modifier
-          </v-btn>
+          <v-btn small class="ma-2" @click="openPv(item)" color="primary"> Renseigner </v-btn>
+          <v-btn small class="ma-2" @click="modifyPv(item)" color="error"> Modifier </v-btn>
         </template>
-        <template v-slot:item.meeting_date="{ item }">
-          <div>{{ item.meeting_date | formatDateWithAShort }}</div>
+        <template v-slot:item.meetingDate="{ item }">
+          <div>{{ item.meetingDate | formatDateWithAShort }}</div>
         </template>
-        <template v-slot:item.meeting_next_date="{ item }">
-          <div>{{ item.meeting_next_date | formatDateWithAShort }}</div>
+        <template v-slot:item.meetingNextDate="{ item }">
+          <div>{{ item.meetingNextDate | formatDateWithAShort }}</div>
         </template>
         <template v-slot:item.state="{ item }">
           <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
@@ -101,7 +98,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn dark color="error" @click.prevent="modifyProgress">Modifier la progression</v-btn>
-          <v-btn v-if="affair.meeting_type == 'Chantier'" color="error" @click.prevent="modifyLot">Modifier les lots</v-btn>
+          <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">Modifier les lots</v-btn>
           <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
         </v-card-actions>
       </v-container>
@@ -150,13 +147,13 @@ export default {
         {
           text: "Date",
           align: "start",
-          value: "meeting_date",
+          value: "meetingDate",
           sortable: false
         },
         { text: "Etat", align: "center", value: "state", sortable: true },
-        { text: "Lieu", value: "meeting_place", sortable: false },
-        { text: "Prochaine date", value: "meeting_next_date", sortable: false },
-        { text: "Prochain lieu", value: "meeting_next_place", sortable: false },
+        { text: "Lieu", value: "meetingPlace", sortable: false },
+        { text: "Prochaine date", value: "meetingNextDate", sortable: false },
+        { text: "Prochain lieu", value: "meetingNextPlace", sortable: false },
         { text: "Action", value: "actions", align: "center", sortable: false }
       ]
     };
@@ -166,79 +163,79 @@ export default {
       userId: "userId"
     }),
     computedDateFormattedMeetingDate() {
-      return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
+      return this.meetingDate_date ? moment(this.meetingDate_date).format("dddd LL") : "";
     },
     computedDateFormattedMeetingNextDate() {
-      return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
+      return this.meetingNextDate_date ? moment(this.meetingNextDate_date).format("dddd LL") : "";
     },
-    meeting_date_date: {
+    meetingDate_date: {
       get() {
-        return this.pvData.meeting_date.substr(0, 10);
+        return this.pvData.meetingDate.substr(0, 10);
       },
       set(val) {
-        this.pvData.meeting_date = val + " " + this.pvData.meeting_date_time;
-        this.pvData.meeting_date_date = val;
+        this.pvData.meetingDate = val + " " + this.pvData.meetingDate_time;
+        this.pvData.meetingDate_date = val;
       }
     },
-    meeting_date_time: {
+    meetingDate_time: {
       get() {
-        return this.pvData.meeting_date.substr(11, 5);
+        return this.pvData.meetingDate.substr(11, 5);
       },
       set(val) {
-        this.pvData.meeting_date = this.pvData.meeting_date_date + " " + val;
-        this.pvData.meeting_date_time = val;
+        this.pvData.meetingDate = this.pvData.meetingDate_date + " " + val;
+        this.pvData.meetingDate_time = val;
       }
     },
-    meeting_next_date_date: {
+    meetingNextDate_date: {
       get() {
-        return this.pvData.meeting_next_date.substr(0, 10);
+        return this.pvData.meetingNextDate.substr(0, 10);
       },
       set(val) {
-        this.pvData.meeting_next_date_time
-          ? (this.pvData.meeting_next_date = val + " " + this.pvData.meeting_next_date_time)
-          : (this.pvData.meeting_next_date = val);
-        this.pvData.meeting_next_date_date = val;
+        this.pvData.meetingNextDate_time
+          ? (this.pvData.meetingNextDate = val + " " + this.pvData.meetingNextDate_time)
+          : (this.pvData.meetingNextDate = val);
+        this.pvData.meetingNextDate_date = val;
       }
     },
-    meeting_next_date_time: {
+    meetingNextDate_time: {
       get() {
-        return this.pvData.meeting_next_date.substr(11, 5);
+        return this.pvData.meetingNextDate.substr(11, 5);
       },
       set(val) {
-        this.pvData.meeting_next_date = this.pvData.meeting_next_date_date + " " + val;
-        this.pvData.meeting_next_date_time = val;
+        this.pvData.meetingNextDate = this.pvData.meetingNextDate_date + " " + val;
+        this.pvData.meetingNextDate_time = val;
       }
     }
   },
   mounted() {
     let affairId = this.$route.params.id;
-    Axios.get("getAffairById", {
+    Axios.get("affair", {
       params: {
-        id_affair: affairId
+        affairId: affairId
       }
     })
-      .then(response => {
-        this.affair = response.data.affair_infos;
+      .then((response) => {
+        this.affair = response.data.affairInfos;
         this.lots = response.data.lots;
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
-    Axios.get("getPvByAffairId", {
+    Axios.get("pvByAffairId", {
       params: {
-        id_affair: affairId
+        affairId: affairId
       }
     })
-      .then(response => {
+      .then((response) => {
         this.pvs = response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   },
   methods: {
     openPv(pv) {
-      let pvId = pv.id_pv;
+      let pvId = pv.pvId;
       if (pv.state == "En cours") {
         this.$router.push({
           name: routesCONST.pv.name,
@@ -251,10 +248,10 @@ export default {
     modifyLot() {
       if (this.lots == undefined) {
         this.lots = [];
-        this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
+        this.lots.push({ name: "", lotId: undefined, affairId: undefined });
         this.lotModifyCancelable = true;
       }
-      this.lots.forEach(element => {
+      this.lots.forEach((element) => {
         this.oldLots.push({ ...element });
       });
       this.oldNumberLots = parseInt(this.lots.length);
@@ -263,31 +260,31 @@ export default {
       this.lotModifyDialog = true;
     },
     modifyLotSave() {
-      this.lots.forEach(element => {
-        if (element.id_lot == undefined) {
+      this.lots.forEach((element) => {
+        if (element.lotId == undefined) {
           let dataToSend = {
-            affair_id: this.$route.params.id,
+            affairId: this.$route.params.id,
             name: element.name
           };
-          Axios.post("addLot", dataToSend).then(response => {
-            element.id_lot = response.data.id_lot;
+          Axios.post("lots", dataToSend).then((response) => {
+            element.lotId = response.data.lotId;
           });
         } else {
-          this.oldLots.forEach(oldEl => {
-            if (element.id_lot == oldEl.id_lot && element.name != oldEl.name) {
+          this.oldLots.forEach((oldEl) => {
+            if (element.lotId == oldEl.lotId && element.name != oldEl.name) {
               let dataToSend = {
                 name: element.name,
-                id_lot: element.id_lot
+                lotId: element.lotId
               };
-              Axios.post("updateLot", dataToSend)
-                .then(response => {
+              Axios.put("lots", dataToSend)
+                .then((response) => {
                   console.log(response);
 
-                  if (response.data.affair_id != "") {
+                  if (response.data.affairId != "") {
                     this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   console.log(error);
                 });
             }
@@ -300,17 +297,17 @@ export default {
     },
     modifyLotsAdd() {
       this.numberLots++;
-      this.lots.push({ name: "", id_lot: undefined, affair_id: undefined });
+      this.lots.push({ name: "", lotId: undefined, affairId: undefined });
     },
     ModifyLotDelete(lot, index) {
-      Axios.delete("deleteLot", { params: { id_lot: lot.id_lot } })
-        .then(response => {
+      Axios.delete("deleteLot", { params: { lotId: lot.lotId } })
+        .then((response) => {
           if (response.data == "success") {
             this.numberLots--;
             this.lots.splice(index, 1);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -318,7 +315,7 @@ export default {
       this.lotModifyCancelable = false;
       this.dialog = false;
       this.lotModifyDialog = false;
-      this.lots.forEach(element => {
+      this.lots.forEach((element) => {
         if (element.name == "") {
           this.lots = undefined;
         }
@@ -333,13 +330,13 @@ export default {
         ...this.affair
       };
       Axios.post("updateAffair", data)
-        .then(response => {
-          console.log(response.data.affair_id);
-          if (response.data.affair_id != "") {
+        .then((response) => {
+          console.log(response.data.affairId);
+          if (response.data.affairId != "") {
             this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
       this.progressDialog = false;
@@ -352,12 +349,12 @@ export default {
     ModifyAffairSave() {
       console.log(this.affair);
       Axios.post("/updateAffair", this.affair)
-        .then(response => {
-          if (response.data.affair_id != "") {
+        .then((response) => {
+          if (response.data.affairId != "") {
             this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
       this.dialog = false;
@@ -369,10 +366,10 @@ export default {
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
 
-      this.pvData.meeting_date_date = this.pvData.meeting_date.substr(0, 10);
-      this.pvData.meeting_date_time = this.pvData.meeting_date.substr(11, 5);
-      this.pvData.meeting_next_date_date = this.pvData.meeting_next_date.substr(0, 10);
-      this.pvData.meeting_next_date_time = this.pvData.meeting_next_date.substr(11, 5);
+      this.pvData.meetingDate_date = this.pvData.meetingDate.substr(0, 10);
+      this.pvData.meetingDate_time = this.pvData.meetingDate.substr(11, 5);
+      this.pvData.meetingNextDate_date = this.pvData.meetingNextDate.substr(0, 10);
+      this.pvData.meetingNextDate_time = this.pvData.meetingNextDate.substr(11, 5);
 
       this.dialog = true;
       this.pvModifyDialog = true;
@@ -381,19 +378,16 @@ export default {
       this.pvModifyingType = false;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = {
-        meeting_date_date: new Date().toISOString().substr(0, 10),
-        meeting_date_time:
-          moment()
-            .format("LT")
-            .substr(0, 2) + ":00",
-        meeting_next_date_date: undefined,
-        meeting_next_date_time: undefined,
-        meeting_date: moment().format("YYYY-MM-DD HH:mm"),
-        meeting_next_date: "",
+        meetingDate_date: new Date().toISOString().substr(0, 10),
+        meetingDate_time: moment().format("LT").substr(0, 2) + ":00",
+        meetingNextDate_date: undefined,
+        meetingNextDate_time: undefined,
+        meetingDate: moment().format("YYYY-MM-DD HH:mm"),
+        meetingNextDate: "",
         state: "En cours",
-        meeting_place: "",
-        meeting_next_place: "",
-        affair_id: this.$route.params.id
+        meetingPlace: "",
+        meetingNextPlace: "",
+        affairId: this.$route.params.id
       };
       this.dialog = true;
       this.pvModifyDialog = true;
@@ -404,31 +398,31 @@ export default {
     },
     pvModifySave() {
       let pvData = {
-        id_pv: this.pvData.id_pv,
-        meeting_date: this.pvData.meeting_date_date + " " + this.pvData.meeting_date_time + ":00",
-        meeting_place: this.pvData.meeting_place,
-        meeting_next_date: this.pvData.meeting_next_date,
-        meeting_next_place: this.pvData.meeting_next_place,
+        pvId: this.pvData.pvId,
+        meetingDate: this.pvData.meetingDate_date + " " + this.pvData.meetingDate_time + ":00",
+        meetingPlace: this.pvData.meetingPlace,
+        meetingNextDate: this.pvData.meetingNextDate,
+        meetingNextPlace: this.pvData.meetingNextPlace,
         state: this.pvData.state,
-        affair_id: this.$route.params.id,
-        user_id: this.userId
+        affairId: this.$route.params.id,
+        userId: this.userId
       };
       let apiRoute;
       this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
       Axios.post(apiRoute, pvData)
-        .then(response => {
-          if (response.data.pv.id_pv) {
+        .then((response) => {
+          if (response.data.pv.pvId) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
-              pvData.id_pv = response.data.pv.id_pv;
+              pvData.pvId = response.data.pv.pvId;
               pvData.pv_number = response.data.pv.pv_number;
               this.pvs.push(pvData);
             }
             this.$store.dispatch("notification/success", "Pv correctement enregistré");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }

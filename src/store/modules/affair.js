@@ -6,7 +6,7 @@ import routesCONST from "./../../utilities/constantes";
 const state = {
   affairId: "",
   name: "",
-  meeting_type: null,
+  meetingType: null,
   address: "",
   progress: ""
 };
@@ -14,16 +14,16 @@ const state = {
 const getters = {
   affairId: state => state.affairId,
   name: state => state.name,
-  meeting_type: state => state.meeting_type,
+  meetingType: state => state.meetingType,
   address: state => state.address,
   progress: state => state.progress
 };
 
 const mutations = {
   LOAD_AFFAIR(state, datas) {
-    state.affairId = datas.id_affair;
+    state.affairId = datas.affairId;
     state.name = datas.name;
-    state.meeting_type = datas.meeting_type;
+    state.meetingType = datas.meetingType;
     state.address = datas.address;
     state.progress = datas.progress;
   }
@@ -33,20 +33,20 @@ const actions = {
   loadAffairByPv({ commit }, affairId) {
     Axios.get("getAffairById", {
       params: {
-        id_affair: affairId
+        affairId: affairId
       }
     }).then(response => {
-      let datas = response.data.affair_infos;
+      let datas = response.data.affairInfos;
       commit("LOAD_AFFAIR", datas);
     });
   },
   openAffair({ commit }, affairId) {
-    Axios.get("getAffairById", {
+    Axios.get("affair", {
       params: {
-        id_affair: affairId
+        affairId: affairId
       }
     }).then(response => {
-      let datas = response.data.affair_infos;
+      let datas = response.data.affairInfos;
       commit("LOAD_AFFAIR", datas);
       router.push({
         name: routesCONST.affair.name,
@@ -56,19 +56,19 @@ const actions = {
   },
   openPv({ commit }, pvId) {
     //FIXME: Corriger ça, ce call API n'a pas de sens puisqu'il est refait à l'ouverture de la page
-    Axios.get("getPvDetails", {
+    Axios.get("pv", {
       params: {
-        id_pv: pvId,
-        id_user: this.state.user.userId
+        pvId: pvId,
+        userId: this.state.user.userId
       }
     }).then(response => {
-      let affairId = response.data.pv_details.affair_id;
-      Axios.get("getAffairById", {
+      let affairId = response.data.pv.affairId;
+      Axios.get("affair", {
         params: {
-          id_affair: affairId
+          affairId: affairId
         }
       }).then(response => {
-        let datas = response.data.affair_infos;
+        let datas = response.data.affairInfos;
         commit("LOAD_AFFAIR", datas);
         router.push({
           name: routesCONST.pv.name,

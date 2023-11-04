@@ -10,17 +10,11 @@
             <v-text-field v-model="address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-combobox v-model="meeting_type" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
+            <v-combobox v-model="meetingType" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
           </v-col>
           <v-col cols="12">
-            <v-textarea
-              v-model="description"
-              auto-grow
-              :counter="100"
-              rows="1"
-              label="Description de l'affaire"
-              :rules="descriptionRules"
-            ></v-textarea>
+            <v-textarea v-model="description" auto-grow :counter="100" rows="1" label="Description de l'affaire"
+              :rules="descriptionRules"></v-textarea>
           </v-col>
         </v-row>
       </v-container>
@@ -52,7 +46,7 @@ export default {
     meetingRules: [v => !!v || "Requis", v => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
     name: "",
     address: "",
-    meeting_type: "",
+    meetingType: "",
     description: "",
     items: ["Chantier", "Etude"]
   }),
@@ -67,21 +61,21 @@ export default {
       let affairData = {
         name: this.name,
         address: this.address,
-        meeting_type: this.meeting_type,
+        meetingType: this.meetingType,
         progress: 0
       };
-      Axios.post("/addAffair", affairData)
+      Axios.post("/affairs", affairData)
         .then(response => {
           if (response.status == 201) {
-            let affairId = response.data.affair_id;
+            let affairId = response.data.affairId;
             let pvData = {
               state: "En cours",
-              meeting_date: moment().format("YYYY-MM-DD HH:mm:ss"),
-              meeting_place: "Indéfini",
-              user_id: this.$store.state.user.userId,
-              affair_id: affairId
+              meetingDate: moment().format("YYYY-MM-DD HH:mm:ss"),
+              meetingPlace: "Indéfini",
+              userId: this.$store.state.user.userId,
+              affairId: affairId
             };
-            Axios.post("/addPv", pvData)
+            Axios.post("/pv", pvData)
               .then(response => {
                 if (response.status == 201) {
                   // let pvId = response.data.id_pv;
