@@ -59,12 +59,20 @@
 
     <v-main>
       <div id="app" class="mt-10">
-        <v-alert class="mx-auto" max-width="800px" v-model="versionNotif" dismissible color="green" border="left"
-          elevation="2" colored-border icon="mdi-information" prominent>
+        <v-alert
+          class="mx-auto"
+          max-width="800px"
+          v-model="versionNotif"
+          dismissible
+          color="green"
+          border="left"
+          elevation="2"
+          colored-border
+          icon="mdi-information"
+          prominent
+        >
           <v-row align="center">
-            <v-col class="grow">
-              Une nouvelle version est disponnible.
-            </v-col>
+            <v-col class="grow"> Une nouvelle version est disponnible. </v-col>
             <v-col class="shrink">
               <v-chip class="ma-3" color="green" text-color="white">
                 {{ appVersion }}
@@ -167,7 +175,7 @@ export default {
           this.$router.push("Login");
         });
       } else {
-        this.$router.push(path);
+        this.$router.push({ name: path });
       }
     },
     invertRight() {
