@@ -36,10 +36,10 @@
                   <v-text-field label="Téléphone" type="text" v-model="phone" :rules="phoneRules" counter="10" />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Groupe" type="text" v-model="user_group" counter="35" />
+                  <v-text-field label="Groupe" type="text" v-model="userGroup" counter="35" />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Fonction" type="text" v-model="user_function" counter="35" />
+                  <v-text-field label="Fonction" type="text" v-model="userFunction" counter="35" />
                 </v-col>
                 <v-col cols="6">
                   <v-text-field label="Organisme" type="text" v-model="organism" counter="35" />
@@ -89,8 +89,8 @@ export default {
       firstName: "",
       lastName: "",
       phone: "",
-      user_group: "",
-      user_function: "",
+      userGroup: "",
+      userFunction: "",
       organism: ""
     };
   },
@@ -98,16 +98,15 @@ export default {
     validate() {
       let datas = {
         email: this.email,
-        // password: new MD5().update(this.password).digest("hex"),
         password: md5(this.password),
         firstName: this.firstName,
         lastName: this.lastName,
         phone: this.phone,
-        userGroup: this.user_group,
-        user_function: this.user_function,
+        userGroup: this.userGroup,
+        userFunction: this.userFunction,
         organism: this.organism
       };
-      Axios.post("addNewUser", datas)
+      Axios.post("users", datas)
         .then(response => {
           console.log(response);
           this.$router.push(getRouteName("board"));
