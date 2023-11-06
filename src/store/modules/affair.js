@@ -31,7 +31,7 @@ const mutations = {
 
 const actions = {
   loadAffairByPv({ commit }, affairId) {
-    Axios.get("getAffairById", {
+    Axios.get("affair", {
       params: {
         affairId: affairId
       }
