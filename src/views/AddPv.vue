@@ -212,11 +212,11 @@ export default {
     let self = this;
     const dtAffairs = {
       params: {
-        user_id: this.userId
+        userId: this.userId
       }
     };
     if (typeof this.userId != undefined) {
-      Axios.get("getAffairsByUserId", dtAffairs)
+      Axios.get("affairs/userId", dtAffairs)
         .then(function(response) {
           // handle success
           self.affairs = response.data;

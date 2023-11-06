@@ -130,7 +130,7 @@ export default {
     };
     if (typeof this.userId != undefined) {
       axios
-        .get("lastPvsByUserId", dtPvs)
+        .get("pvs/userId", dtPvs)
         .then(function (response) {
           // handle success
           self.pvs = response.data;
@@ -141,7 +141,7 @@ export default {
         });
 
       axios
-        .get("affairsByUserId", dtAffairs)
+        .get("affairs/userId", dtAffairs)
         .then(function (response) {
           // handle success
           self.affairs = response.data;
