@@ -135,7 +135,7 @@ export default {
         }
       };
       let res = await Axios.get("pv", dt);
-      if (typeof res.data.items !== "string") {
+      if (res.data.items) {
         this.items = [...res.data.items];
       }
       this.pvDetails = res.data.pv;
