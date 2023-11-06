@@ -4,10 +4,10 @@
     <v-spacer></v-spacer>
     <v-container>
       <v-row class="grey lighten-3 mx-1">
-        <v-col cols="12" md="6">
+        <v-col>
           <v-btn class="mx-auto my-3" color="primary" @click="createAffair">Creer une affaire</v-btn>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col v-if="pvs != ''">
           <v-btn class="mx-auto my-3" color="primary" @click="createPv">Ajouter un Pv</v-btn>
         </v-col>
       </v-row>
@@ -73,12 +73,9 @@
     </v-container>
     <v-container v-else class="px-10">
       <v-alert type="info" outlined>
-        <span class="text-h6">Vous n'avez pas encore d'affaires ou de pvs.</span>
+        <p class="text-h6">Vous n'avez pas encore d'affaires.</p>
+        <p>Veuillez commencer par en créer une en cliquant sur le bouton ci-dessus</p>
       </v-alert>
-      <p>
-        Veuillez commencer par créer une
-        <span class="font-weight-bold">affaire</span> en cliquant sur le bouton ci-dessus
-      </p>
     </v-container>
   </div>
 </template>
