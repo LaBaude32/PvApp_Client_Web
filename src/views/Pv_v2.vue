@@ -134,7 +134,7 @@ export default {
           userId: this.userId
         }
       };
-      let res = await Axios.get("pv", dt);
+      let res = await Axios.get("pvs/pvId", dt);
       if (res.data.items) {
         this.items = [...res.data.items];
       }

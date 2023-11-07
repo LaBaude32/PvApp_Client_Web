@@ -209,7 +209,7 @@ export default {
   },
   mounted() {
     let affairId = this.$route.params.id;
-    Axios.get("affair", {
+    Axios.get("affairs/affairId", {
       params: {
         affairId: affairId
       }
@@ -221,7 +221,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-    Axios.get("pvByAffairId", {
+    Axios.get("pvs/affairId", {
       params: {
         affairId: affairId
       }

@@ -31,7 +31,7 @@ const mutations = {
 
 const actions = {
   loadAffairByPv({ commit }, affairId) {
-    Axios.get("affair", {
+    Axios.get("affairs/affairId", {
       params: {
         affairId: affairId
       }
@@ -56,14 +56,14 @@ const actions = {
   },
   openPv({ commit }, pvId) {
     //FIXME: Corriger ça, ce call API n'a pas de sens puisqu'il est refait à l'ouverture de la page
-    Axios.get("pv", {
+    Axios.get("pvs/pvId", {
       params: {
         pvId: pvId,
         userId: this.state.user.userId
       }
     }).then(response => {
       let affairId = response.data.pv.affairId;
-      Axios.get("affair", {
+      Axios.get("affairs/affairId", {
         params: {
           affairId: affairId
         }
