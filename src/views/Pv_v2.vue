@@ -11,12 +11,29 @@
     </v-container>
 
     <v-divider class="mb-10"></v-divider>
-    <Pv-v2 v-if="meetingType" :dialog.sync="dialog" :pvDetails="pvDetails" :pvUsers="pvUsers" :items.sync="items"
-      :meetingType="meetingType" :headers="headers" :valid.sync="valid" :standardRequirement="standardRequirement"
-      :editedIndex.sync="editedIndex" :editedItem.sync="editedItem" :defaultItem="defaultItem" :formTitle="formTitle"
+    <Pv-v2
+      v-if="meetingType"
+      :dialog.sync="dialog"
+      :pvDetails="pvDetails"
+      :pvUsers="pvUsers"
+      :items.sync="items"
+      :meetingType="meetingType"
+      :headers="headers"
+      :valid.sync="valid"
+      :standardRequirement="standardRequirement"
+      :editedIndex.sync="editedIndex"
+      :editedItem.sync="editedItem"
+      :defaultItem="defaultItem"
+      :formTitle="formTitle"
       :formatedCompletion_date.sync="formatedCompletion_date"
-      :computedDateFormattedCompletion="computedDateFormattedCompletion" :editItem="editItem" :deleteItem="deleteItem"
-      :close="close" :save="save" :maxPosition="maxPosition" :changeVisible="changeVisible" />
+      :computedDateFormattedCompletion="computedDateFormattedCompletion"
+      :editItem="editItem"
+      :deleteItem="deleteItem"
+      :close="close"
+      :save="save"
+      :maxPosition="maxPosition"
+      :changeVisible="changeVisible"
+    />
     <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
 
     <v-divider class="my-10"></v-divider>
@@ -49,7 +66,7 @@ export default {
       ModalValidationDialog: false,
       valid: false,
       meetingType: undefined,
-      standardRequirement: [v => !!v || "Requis"],
+      standardRequirement: [(v) => !!v || "Requis"],
       pvDetails: {},
       pvUsers: [],
       pvConnectedParticipants: [],
@@ -165,13 +182,13 @@ export default {
       const index = this.items.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cet item?") &&
         Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, pvId: this.pvId } })
-          .then(response => {
+          .then((response) => {
             if (response.data == "success") {
               this.$store.dispatch("notification/success", "L'item à bien été supprimé");
               this.items.splice(index, 1);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$store.dispatch("notification/error", `Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`);
           });
     },
@@ -198,7 +215,7 @@ export default {
       data.completion = data.completionToReturn;
       if (this.meetingType == "Chantier" && data.lots) {
         let lotTransit = [];
-        data.lots.forEach(element => {
+        data.lots.forEach((element) => {
           lotTransit.push(element.id_lot);
         });
         data.lots = lotTransit;
@@ -213,7 +230,7 @@ export default {
       if (this.editedIndex > -1) {
         //Existing item
         Axios.post("/updateItem", data)
-          .then(response => {
+          .then((response) => {
             if (response.status == 201 && typeof response.data.item_updated.id_item === "number") {
               this.editedItem.completion = this.editedItem.completionToReturn;
               Object.assign(this.items[this.editedIndex], this.editedItem);
@@ -226,7 +243,7 @@ export default {
               console.log(typeof response.data.id_item);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       } else {
@@ -234,7 +251,7 @@ export default {
         data.pv_id = this.pvId;
         data.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
         Axios.post("/addItem", data)
-          .then(response => {
+          .then((response) => {
             if (response.status == 201 && typeof response.data.id_item === "number") {
               data.id_item = response.data.id_item;
               data.lots = this.editedItem.lots;
@@ -247,14 +264,14 @@ export default {
               console.log(typeof response.data.id_item);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       }
     },
 
     maxPosition() {
-      return Math.max(...this.items.map(items => items.position)) + 1;
+      return Math.max(...this.items.map((items) => items.position)) + 1;
     },
 
     changeVisible(item) {
@@ -263,24 +280,24 @@ export default {
         visible: item.visible == true ? 1 : 0
       };
       Axios.post("/updateVisibleOfItem", data)
-        .then(response => {
+        .then((response) => {
           if (response.data.id_item_updated) {
             this.$store.dispatch("notification/success", "L'item a été mis à jour");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
     pvValidation() {
       Axios.post("validatePv", { pvId: this.pvId })
-        .then(response => {
+        .then((response) => {
           if (response.data == "success") {
             this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.pvId } });
             this.ModalValidationDialog = false;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
