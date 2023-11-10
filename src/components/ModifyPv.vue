@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-2 pb-3">
-    <v-card-title v-if="modifyingType">Modifier le PV du {{ myPvData.meeting_date | formatDateWithA }}</v-card-title>
+    <v-card-title v-if="modifyingType">Modifier le PV du {{ myPvData.meetingDate | formatDateWithA }}</v-card-title>
     <v-card-title v-else>Nouveau procès verbal</v-card-title>
     <!-- {{ myPvData }} -->
     <v-form v-model="valid" ref="form">
@@ -11,7 +11,7 @@
               <template v-slot:activator="{ on }">
                 <v-text-field :value="meetingDate" label="Jour de la réunion" readonly v-on="on" prepend-icon="mdi-calendar"></v-text-field>
               </template>
-              <v-date-picker v-model="myMeeting_date_date" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="myMeetingDateDate" @change="meetingDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6"
@@ -20,7 +20,7 @@
               v-model="meetingDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value.sync="myMeeting_date_time"
+              :return-value.sync="myMeetingDateTime"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -28,7 +28,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="myMeeting_date_time"
+                  v-model="myMeetingDateTime"
                   label="Heure de la réunion"
                   prepend-icon="mdi-clock-outline"
                   readonly
@@ -37,16 +37,16 @@
               </template>
               <v-time-picker
                 v-if="meetingDateTimeMenu"
-                v-model="myMeeting_date_time"
+                v-model="myMeetingDateTime"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menuRef1.save(myMeeting_date_time)"
+                @click:minute="$refs.menuRef1.save(myMeetingDateTime)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="myPvData.meeting_place" counter clearable label="Lieu de la réunion" :rules="addressRules"></v-text-field>
+            <v-text-field v-model="myPvData.meetingPlace" counter clearable label="Lieu de la réunion" :rules="addressRules"></v-text-field>
           </v-col>
           <v-col cols="6">
             <v-menu v-model="meetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
@@ -57,11 +57,11 @@
                   label="Jour de la prochaine réunion"
                   readonly
                   v-on="on"
-                  @click:clear="myMeeting_next_date_date = null"
+                  @click:clear="myMeetingNextDateDate = null"
                   prepend-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="myMeeting_next_date_date" @change="meetingNextDateDateMenu = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="myMeetingNextDateDate" @change="meetingNextDateDateMenu = false" locale="fr-fr"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6">
@@ -70,7 +70,7 @@
               v-model="meetingNextDateTimeMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value.sync="myMeeting_next_date_time"
+              :return-value.sync="myMeetingNextDateTime"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -78,34 +78,34 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="myMeeting_next_date_time"
+                  v-model="myMeetingNextDateTime"
                   label="Heure de la prochaine réunion"
                   prepend-icon="mdi-clock-outline"
                   readonly
                   v-on="on"
                   clearable
-                  @click:clear="myMeeting_next_date_time = null"
+                  @click:clear="myMeetingNextDateTime = null"
                 ></v-text-field>
               </template>
               <v-time-picker
                 v-if="meetingNextDateTimeMenu"
-                v-model="myMeeting_next_date_time"
+                v-model="myMeetingNextDateTime"
                 format="24hr"
                 full-width
-                @click:minute="$refs.menuRef2.save(myMeeting_next_date_time)"
+                @click:minute="$refs.menuRef2.save(myMeetingNextDateTime)"
                 :allowed-minutes="allowedStep"
               ></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="myPvData.meeting_next_place" counter label="Lieu de la prochaine réunion"></v-text-field>
+            <v-text-field v-model="myPvData.meetingNextPlace" counter label="Lieu de la prochaine réunion"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-switch v-model="myPvData.state" :label="myPvData.state" role="switch" false-value="En cours" true-value="Terminé"></v-switch>
           </v-col>
-          <v-col cols="12" v-if="!myPvData.affair_id">
+          <v-col cols="12" v-if="!myPvData.affairId">
             <v-combobox
-              v-model="myPvData.affair_id"
+              v-model="myPvData.affairId"
               :items="affairs"
               item-text="name"
               item-value="id_affair"
@@ -117,10 +117,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn v-if="!modifyingType" color="error" @click.prevent="cancel">Annuler</v-btn>
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="validate">
-          Enregistrer
-        </v-btn>
+        <!-- <v-btn v-if="!modifyingType" color="error" @click.prevent="cancel">Annuler</v-btn> -->
+        <v-btn color="error" @click.prevent="cancel">Annuler</v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="validate"> Enregistrer </v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -134,10 +133,10 @@ export default {
     data: Object,
     meetingDate: String,
     meetingNextDate: String,
-    meeting_date_date: String,
-    meeting_date_time: String,
-    meeting_next_date_date: String,
-    meeting_next_date_time: String,
+    meetingDateDate: String,
+    meetingDateTime: String,
+    meetingNextDateDate: String,
+    meetingNextDateTime: String,
     affairs: Array,
     modifyingType: Boolean,
     validate: Function,
@@ -151,41 +150,41 @@ export default {
       meetingNextDateTimeMenu: false,
       myPvData: this.data,
       valid: false,
-      addressRules: [v => v.length >= 3 || "Doit être supérieur à 3 caractères"],
-      affairRules: [v => !!v || "Requis"]
+      addressRules: [(v) => v.length >= 3 || "Doit être supérieur à 3 caractères"],
+      affairRules: [(v) => !!v || "Requis"]
     };
   },
   computed: {
-    myMeeting_date_date: {
+    myMeetingDateDate: {
       get() {
-        return this.meeting_date_date;
+        return this.meetingDateDate;
       },
       set(val) {
-        this.$emit("update:meeting_date_date", val);
+        this.$emit("update:meetingDateDate", val);
       }
     },
-    myMeeting_date_time: {
+    myMeetingDateTime: {
       get() {
-        return this.meeting_date_time;
+        return this.meetingDateTime;
       },
       set(val) {
-        this.$emit("update:meeting_date_time", val);
+        this.$emit("update:meetingDateTime", val);
       }
     },
-    myMeeting_next_date_date: {
+    myMeetingNextDateDate: {
       get() {
-        return this.meeting_next_date_date;
+        return this.meetingNextDateDate;
       },
       set(val) {
-        this.$emit("update:meeting_next_date_date", val);
+        this.$emit("update:meetingNextDateDate", val);
       }
     },
-    myMeeting_next_date_time: {
+    myMeetingNextDateTime: {
       get() {
-        return this.meeting_next_date_time;
+        return this.meetingNextDateTime;
       },
       set(val) {
-        this.$emit("update:meeting_next_date_time", val);
+        this.$emit("update:meetingNextDateTime", val);
       }
     },
 
@@ -206,14 +205,14 @@ export default {
       }
     },
     computedDateFormattedMeetingDate() {
-      return this.myMeeting_date_date ? moment(this.myPvData.myMeeting_date_date).format("dddd LL") : "";
+      return this.myMeetingDateDate ? moment(this.myPvData.myMeetingDateDate).format("dddd LL") : "";
     },
     computedDateFormattedMeetingNextDate() {
-      return this.myPvData.meeting_next_date_date ? moment(this.myPvData.meeting_next_date_date).format("dddd LL") : "";
+      return this.myPvData.meetingNextDateDate ? moment(this.myPvData.meetingNextDateDate).format("dddd LL") : "";
     }
   },
   methods: {
-    allowedStep: m => m % 5 === 0
+    allowedStep: (m) => m % 5 === 0
   }
 };
 </script>

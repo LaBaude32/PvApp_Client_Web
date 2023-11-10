@@ -19,10 +19,10 @@
         :data.sync="pvData"
         :meetingDate="computedDateFormattedMeetingDate"
         :meetingNextDate="computedDateFormattedMeetingNextDate"
-        :meetingDate_date.sync="meetingDate_date"
-        :meetingDate_time.sync="meetingDate_time"
-        :meetingNextDate_date.sync="meetingNextDate_date"
-        :meetingNextDate_time.sync="meetingNextDate_time"
+        :meetingDateDate.sync="meetingDateDate"
+        :meetingDateTime.sync="meetingDateTime"
+        :meetingNextDateDate.sync="meetingNextDateDate"
+        :meetingNextDateTime.sync="meetingNextDateTime"
         :affairs="affairsForPv"
         :modifyingType="pvModifyingType"
         :validate="pvModifySave"
@@ -163,47 +163,47 @@ export default {
       userId: "userId"
     }),
     computedDateFormattedMeetingDate() {
-      return this.meetingDate_date ? moment(this.meetingDate_date).format("dddd LL") : "";
+      return this.meetingDateDate ? moment(this.meetingDateDate).format("dddd LL") : "";
     },
     computedDateFormattedMeetingNextDate() {
-      return this.meetingNextDate_date ? moment(this.meetingNextDate_date).format("dddd LL") : "";
+      return this.meetingNextDateDate ? moment(this.meetingNextDateDate).format("dddd LL") : "";
     },
-    meetingDate_date: {
+    meetingDateDate: {
       get() {
         return this.pvData.meetingDate.substr(0, 10);
       },
       set(val) {
-        this.pvData.meetingDate = val + " " + this.pvData.meetingDate_time;
-        this.pvData.meetingDate_date = val;
+        this.pvData.meetingDate = val + " " + this.pvData.meetingDateTime;
+        this.pvData.meetingDateDate = val;
       }
     },
-    meetingDate_time: {
+    meetingDateTime: {
       get() {
         return this.pvData.meetingDate.substr(11, 5);
       },
       set(val) {
-        this.pvData.meetingDate = this.pvData.meetingDate_date + " " + val;
-        this.pvData.meetingDate_time = val;
+        this.pvData.meetingDate = this.pvData.meetingDateDate + " " + val;
+        this.pvData.meetingDateTime = val;
       }
     },
-    meetingNextDate_date: {
+    meetingNextDateDate: {
       get() {
         return this.pvData.meetingNextDate.substr(0, 10);
       },
       set(val) {
-        this.pvData.meetingNextDate_time
-          ? (this.pvData.meetingNextDate = val + " " + this.pvData.meetingNextDate_time)
+        this.pvData.meetingNextDateTime
+          ? (this.pvData.meetingNextDate = val + " " + this.pvData.meetingNextDateTime)
           : (this.pvData.meetingNextDate = val);
-        this.pvData.meetingNextDate_date = val;
+        this.pvData.meetingNextDateDate = val;
       }
     },
-    meetingNextDate_time: {
+    meetingNextDateTime: {
       get() {
         return this.pvData.meetingNextDate.substr(11, 5);
       },
       set(val) {
-        this.pvData.meetingNextDate = this.pvData.meetingNextDate_date + " " + val;
-        this.pvData.meetingNextDate_time = val;
+        this.pvData.meetingNextDate = this.pvData.meetingNextDateDate + " " + val;
+        this.pvData.meetingNextDateTime = val;
       }
     }
   },
@@ -347,10 +347,9 @@ export default {
       this.affairDialog = true;
     },
     ModifyAffairSave() {
-      console.log(this.affair);
-      Axios.post("/updateAffair", this.affair)
+      Axios.post("affairs/affairId", this.affair)
         .then((response) => {
-          if (response.data.affairId != "") {
+          if (response.status == 200) {
             this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
           }
         })
@@ -366,10 +365,10 @@ export default {
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = pvDatas;
 
-      this.pvData.meetingDate_date = this.pvData.meetingDate.substr(0, 10);
-      this.pvData.meetingDate_time = this.pvData.meetingDate.substr(11, 5);
-      this.pvData.meetingNextDate_date = this.pvData.meetingNextDate.substr(0, 10);
-      this.pvData.meetingNextDate_time = this.pvData.meetingNextDate.substr(11, 5);
+      this.pvData.meetingDateDate = this.pvData.meetingDate.substr(0, 10);
+      this.pvData.meetingDateTime = this.pvData.meetingDate.substr(11, 5);
+      this.pvData.meetingNextDateDate = this.pvData.meetingNextDate.substr(0, 10);
+      this.pvData.meetingNextDateTime = this.pvData.meetingNextDate.substr(11, 5);
 
       this.dialog = true;
       this.pvModifyDialog = true;
@@ -378,10 +377,10 @@ export default {
       this.pvModifyingType = false;
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = {
-        meetingDate_date: new Date().toISOString().substr(0, 10),
-        meetingDate_time: moment().format("LT").substr(0, 2) + ":00",
-        meetingNextDate_date: undefined,
-        meetingNextDate_time: undefined,
+        meetingDateDate: new Date().toISOString().substr(0, 10),
+        meetingDateTime: moment().format("LT").substr(0, 2) + ":00",
+        meetingNextDateDate: undefined,
+        meetingNextDateTime: undefined,
         meetingDate: moment().format("YYYY-MM-DD HH:mm"),
         meetingNextDate: "",
         state: "En cours",
@@ -399,7 +398,7 @@ export default {
     pvModifySave() {
       let pvData = {
         pvId: this.pvData.pvId,
-        meetingDate: this.pvData.meetingDate_date + " " + this.pvData.meetingDate_time + ":00",
+        meetingDate: this.pvData.meetingDateDate + " " + this.pvData.meetingDateTime + ":00",
         meetingPlace: this.pvData.meetingPlace,
         meetingNextDate: this.pvData.meetingNextDate,
         meetingNextPlace: this.pvData.meetingNextPlace,

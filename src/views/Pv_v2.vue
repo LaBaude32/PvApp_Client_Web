@@ -25,7 +25,7 @@
       :editedItem.sync="editedItem"
       :defaultItem="defaultItem"
       :formTitle="formTitle"
-      :formatedCompletion_date.sync="formatedCompletion_date"
+      :formatedCompletionDate.sync="formatedCompletionDate"
       :computedDateFormattedCompletion="computedDateFormattedCompletion"
       :editItem="editItem"
       :deleteItem="deleteItem"
@@ -78,10 +78,10 @@ export default {
           value: "position"
         },
         { text: "Note", value: "note", sortable: false },
-        { text: "Suite à donner", value: "follow_up", sortable: false },
+        { text: "Suite à donner", value: "followUp", sortable: false },
         { text: "Ressource", value: "ressources", sortable: false },
         { text: "Echeance", value: "completion", sortable: false },
-        { text: "Date d'echéance", value: "completion_date" },
+        { text: "Date d'echéance", value: "completionDate" },
         { text: "Visible", value: "visible" },
         { text: "Actions", value: "actions", sortable: false }
       ],
@@ -90,29 +90,27 @@ export default {
         position: "",
         lotsToReturn: [],
         lots: [],
-        name: "",
         note: "",
-        follow_up: "",
+        followUp: "",
         resources: "",
         completion: [],
         completionToReturn: "",
-        completion_date: "",
-        completion_date_date: "",
-        completion_date_time: "",
+        completionDate: "",
+        completionDateDate: "",
+        completionDateTime: "",
         visible: ""
       },
       defaultItem: {
         position: "",
         lotsToReturn: [],
         lots: [],
-        name: "",
         note: "",
-        follow_up: "",
+        followUp: "",
         resources: "",
         completion: ["A faire", "Urgent", "Fait"],
-        completion_date: "",
-        completion_date_date: "",
-        completion_date_time: "",
+        completionDate: "",
+        completionDateDate: "",
+        completionDateTime: "",
         visible: true
       }
     };
@@ -125,16 +123,16 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
     },
-    formatedCompletion_date: {
+    formatedCompletionDate: {
       get() {
-        return this.editedItem.completion_date ? moment(this.editedItem.completion_date).format("YYYY-MM-DD") : "";
+        return this.editedItem.completionDate ? moment(this.editedItem.completionDate).format("YYYY-MM-DD") : "";
       },
       set(val) {
-        this.editedItem.completion_date = moment(val).format("YYYY-MM-DD");
+        this.editedItem.completionDate = moment(val).format("YYYY-MM-DD");
       }
     },
     computedDateFormattedCompletion() {
-      return this.editedItem.completion_date ? moment(this.editedItem.completion_date).format("ddd Do MMM YYYY") : "";
+      return this.editedItem.completionDate ? moment(this.editedItem.completionDate).format("ddd Do MMM YYYY") : "";
     }
   },
 
@@ -181,9 +179,9 @@ export default {
     deleteItem(item) {
       const index = this.items.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cet item?") &&
-        Axios.delete("deleteItemHasPv", { params: { id_item: item.id_item, pvId: this.pvId } })
+        Axios.delete("items/itemId", { params: { itemId: item.itemId, pvId: this.pvId } })
           .then((response) => {
-            if (response.data == "success") {
+            if (response.status == 204) {
               this.$store.dispatch("notification/success", "L'item à bien été supprimé");
               this.items.splice(index, 1);
             }
@@ -201,37 +199,36 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
-      // if (this.editedItem.completion_date != "" && this.editedItem.completion_date.lenght < 12) {
-      //   this.editedItem.completion_date += " 00:00:00";
-      // } else if (this.editedItem.completion_date == "" || this.editedItem.completion_date == "Invalid date") {
-      //   this.editedItem.completion_date = null;
+      // if (this.editedItem.completionDate != "" && this.editedItem.completionDate.lenght < 12) {
+      //   this.editedItem.completionDate += " 00:00:00";
+      // } else if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
+      //   this.editedItem.completionDate = null;
       // }
-      if (this.editedItem.completion_date == "" || this.editedItem.completion_date == "Invalid date") {
-        this.editedItem.completion_date = null;
+      if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
+        this.editedItem.completionDate = null;
       }
       // this.editedItem.completion = this.editedItem.completionToReturn;
       let data;
       data = { ...this.editedItem };
-      data.completion = data.completionToReturn;
-      if (this.meetingType == "Chantier" && data.lots) {
+      // data.completion = data.completionToReturn;
+      if (this.meetingType == "Chantier" && data.lotsToReturn) {
         let lotTransit = [];
-        data.lots.forEach((element) => {
-          lotTransit.push(element.id_lot);
+        data.lotsToReturn.forEach((element) => {
+          lotTransit.push(element.lotId);
         });
         data.lots = lotTransit;
-        console.log(data.lots);
       }
-      if (data.visible == true) {
-        data.visible = 1;
-      } else {
-        data.visible = 0;
-      }
+      data.completion = data.completionToReturn;
+      delete data.completionDateDate;
+      delete data.completionDateTime;
+      delete data.completionToReturn;
+      delete data.lotsToReturn;
 
       if (this.editedIndex > -1) {
         //Existing item
-        Axios.post("/updateItem", data)
+        Axios.put("items/itemId", data)
           .then((response) => {
-            if (response.status == 201 && typeof response.data.item_updated.id_item === "number") {
+            if (response.status == 200) {
               this.editedItem.completion = this.editedItem.completionToReturn;
               Object.assign(this.items[this.editedIndex], this.editedItem);
               // this.items[this.editedIndex] = { ...data };
@@ -240,7 +237,7 @@ export default {
               this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
             } else {
               console.log(response);
-              console.log(typeof response.data.id_item);
+              console.log(typeof response.data.itemId);
             }
           })
           .catch((error) => {
@@ -248,12 +245,12 @@ export default {
           });
       } else {
         //New item
-        data.pv_id = this.pvId;
-        data.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
-        Axios.post("/addItem", data)
+        data.pvId = this.pvId;
+        // data.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+        Axios.post("/items", data)
           .then((response) => {
-            if (response.status == 201 && typeof response.data.id_item === "number") {
-              data.id_item = response.data.id_item;
+            if (response.status == 201) {
+              data.itemId = response.data.itemId;
               data.lots = this.editedItem.lots;
               this.items.push(data);
               this.editedItem.completion = [];
@@ -261,7 +258,7 @@ export default {
               this.$store.dispatch("notification/success", "Ajout de l'item effectué");
             } else {
               console.log(response);
-              console.log(typeof response.data.id_item);
+              console.log(typeof response.data.itemId);
             }
           })
           .catch((error) => {
@@ -276,12 +273,12 @@ export default {
 
     changeVisible(item) {
       let data = {
-        id_item: item.id_item,
-        visible: item.visible == true ? 1 : 0
+        itemId: item.itemId,
+        visible: item.visible
       };
-      Axios.post("/updateVisibleOfItem", data)
+      Axios.put("items/itemId/visibility", data)
         .then((response) => {
-          if (response.data.id_item_updated) {
+          if (response.status == 200) {
             this.$store.dispatch("notification/success", "L'item a été mis à jour");
           }
         })

@@ -4,7 +4,7 @@
       <v-data-table :headers="MyHeaders" :items="MyItems" sort-by="position" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meeting_date | formatDate }} </v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meetingDate | formatDate }} </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
@@ -50,10 +50,10 @@
                           <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-textarea v-model="MyEditedItem.follow_up" label="Suite à donner" counter auto-grow filled></v-textarea>
+                          <v-textarea v-model="MyEditedItem.followUp" label="Suite à donner" counter auto-grow filled></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="MyEditedItem.ressources" label="Ressources"></v-text-field>
+                          <v-text-field v-model="MyEditedItem.resources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-combobox v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-combobox>
@@ -101,8 +101,8 @@
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
         </template>
-        <template v-slot:item.completion_date="{ item }">
-          {{ item.completion_date | formatDateShortDayOnly }}
+        <template v-slot:item.completionDate="{ item }">
+          {{ item.completionDate | formatDateShortDayOnly }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
@@ -126,13 +126,13 @@ export default {
     pvUsers: Array,
     items: Array,
     pvDetails: Object,
-    meeting_type: String,
+    meetingType: String,
     headers: Array,
     editedIndex: Number,
     editedItem: Object,
     defaultItem: Object,
     formTitle: String,
-    formatedCompletion_date: String,
+    formatedCompletionDate: String,
     computedDateFormattedCompletion: String,
     editItem: Function,
     deleteItem: Function,
@@ -147,7 +147,7 @@ export default {
       search: "",
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
-      MyMeetingType: this.meeting_type,
+      MyMeetingType: this.meetingType,
       MyDefaultItem: this.defaultItem
     };
   },
@@ -168,10 +168,10 @@ export default {
   computed: {
     MyCompletionDate: {
       get() {
-        return this.formatedCompletion_date;
+        return this.formatedCompletionDate;
       },
       set(val) {
-        this.$emit("update:formatedCompletion_date", val);
+        this.$emit("update:formatedCompletionDate", val);
       }
     },
     MyFormTitle() {

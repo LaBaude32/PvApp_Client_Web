@@ -41,7 +41,7 @@ const actions = {
     });
   },
   openAffair({ commit }, affairId) {
-    Axios.get("affair", {
+    Axios.get("affairs/affairId", {
       params: {
         affairId: affairId
       }

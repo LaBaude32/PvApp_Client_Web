@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
-      Modifier l'affaire
-    </v-card-title>
+    <v-card-title>Modifier l'affaire</v-card-title>
     <v-form v-model="valid" ref="form">
       <v-card-text>
         <v-container>
@@ -14,7 +12,7 @@
               <v-text-field v-model="affairDatas.address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-combobox v-model="affairDatas.meeting_type" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
+              <v-combobox v-model="affairDatas.meetingType" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
             </v-col>
             <v-col cols="12">
               <v-textarea
@@ -32,12 +30,8 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-          Valider
-        </v-btn>
-        <v-btn v-if="enableVider" color="error" class="mr-4" @click="reset">
-          Vider
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
+        <v-btn v-if="enableVider" color="error" class="mr-4" @click="reset">Vider</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -55,13 +49,13 @@ export default {
   data: () => ({
     valid: false,
     nameRules: [
-      v => !!v || "Requis",
-      v => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
-      v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
+      (v) => !!v || "Requis",
+      (v) => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
+      (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
     ],
-    addressRules: [v => !!v || "Requis", v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
-    descriptionRules: [v => v.length <= 100 || "Doit être inferieur à 120 caractères"],
-    meetingRules: [v => !!v || "Requis", v => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
+    addressRules: [(v) => !!v || "Requis", (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
+    descriptionRules: [(v) => v.length <= 100 || "Doit être inferieur à 120 caractères"],
+    meetingRules: [(v) => !!v || "Requis", (v) => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
     items: ["Chantier", "Etude"]
   }),
   methods: {
