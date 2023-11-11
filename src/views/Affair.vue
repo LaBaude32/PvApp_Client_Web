@@ -339,10 +339,9 @@ export default {
       let data = {
         ...this.affair
       };
-      Axios.post("updateAffair", data)
+      Axios.put("affairs/affairId", data)
         .then((response) => {
-          console.log(response.data.affairId);
-          if (response.data.affairId != "") {
+          if (response.status == 200) {
             this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
           }
         })
@@ -357,7 +356,7 @@ export default {
       this.affairDialog = true;
     },
     ModifyAffairSave() {
-      Axios.post("affairs/affairId", this.affair)
+      Axios.put("affairs/affairId", this.affair)
         .then((response) => {
           if (response.status == 200) {
             this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
@@ -417,10 +416,11 @@ export default {
         userId: this.userId
       };
       let apiRoute;
-      this.pvModifyingType ? (apiRoute = "updatePv") : (apiRoute = "addPv");
-      Axios.post(apiRoute, pvData)
+      let apiMethode;
+      this.pvModifyingType ? ((apiRoute = "pvs/pvId"), (apiMethode = "put")) : (apiRoute = "/pvs"), apiMethode == "post";
+      Axios({ method: apiMethode, url: apiRoute, data: pvData })
         .then((response) => {
-          if (response.data.pv.pvId) {
+          if (response.status == 200 || response.status == 201) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
