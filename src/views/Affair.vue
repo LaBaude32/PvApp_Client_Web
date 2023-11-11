@@ -39,6 +39,13 @@
         :cancel="ModifyLotCancel"
       />
     </v-dialog>
+    <v-container>
+      <v-row>
+        <v-col class="d-flex mx-16">
+          <v-btn @click.prevent="goToDashboard"> Revenir au bashboard </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
@@ -234,6 +241,9 @@ export default {
       });
   },
   methods: {
+    goToDashboard() {
+      this.$router.push({ name: getRouteName("board") });
+    },
     openPv(pv) {
       let pvId = pv.pvId;
       if (pv.state == "En cours") {
