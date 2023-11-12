@@ -34,7 +34,7 @@
             <span v-if="pvDetails.meetingPlace">, {{ pvDetails.meetingPlace }}</span>
           </p>
           <p v-if="pvDetails.meetingNextDate" class="red--text text-h6">
-            Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}, {{ pvDetails.meeting_next_place }}
+            Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}, {{ pvDetails.meetingNextPlace }}
           </p>
         </v-col>
       </v-row>
