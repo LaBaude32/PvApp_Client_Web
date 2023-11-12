@@ -287,9 +287,9 @@ export default {
         });
     },
     pvValidation() {
-      Axios.post("validatePv", { pvId: this.pvId })
+      Axios.put("pvs/pvId/validation", { pvId: this.pvId })
         .then((response) => {
-          if (response.data == "success") {
+          if (response.status == 204) {
             this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.pvId } });
             this.ModalValidationDialog = false;
           }

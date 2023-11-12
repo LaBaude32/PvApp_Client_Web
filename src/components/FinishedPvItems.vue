@@ -7,8 +7,8 @@
             {{ lot.name }}
           </v-chip>
         </template>
-        <template v-slot:item.completion_date="{ item }">
-          {{ item.completion_date | formatDateShortDayOnly }}
+        <template v-slot:item.completionDate="{ item }">
+          {{ item.completionDate | formatDateShortDayOnly }}
         </template>
       </v-data-table>
     </v-card>

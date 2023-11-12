@@ -30,27 +30,27 @@
           </v-row>
           <v-divider />
           <p class="text-uppercase mt-2 text-h6">
-            PV de la réunion de {{ meeting_type }} n°{{ pvDetails.pv_number }} du {{ pvDetails.meeting_date | formatDateWithA }}
-            <span v-if="pvDetails.meeting_place">, {{ pvDetails.meeting_place }}</span>
+            PV de la réunion de {{ meetingType }} n°{{ pvDetails.pvNumber }} du {{ pvDetails.meetingDate | formatDateWithA }}
+            <span v-if="pvDetails.meetingPlace">, {{ pvDetails.meetingPlace }}</span>
           </p>
-          <p v-if="pvDetails.meeting_next_date" class="red--text text-h6">
-            Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }}, {{ pvDetails.meeting_next_place }}
+          <p v-if="pvDetails.meetingNextDate" class="red--text text-h6">
+            Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}, {{ pvDetails.meeting_next_place }}
           </p>
         </v-col>
       </v-row>
     </v-container>
-    <finishedPvUsers v-if="meeting_type" :users="pvUsers" :headers="UserHeaders" groupBy="userGroup" />
+    <finishedPvUsers v-if="meetingType" :users="pvUsers" :headers="UserHeaders" groupBy="userGroup" />
     <v-container>
       <v-divider class="my-10" />
     </v-container>
-    <finishedPvItems v-if="meeting_type" :items="items" :headers="ItemHeaders" sortBy="position" />
+    <finishedPvItems v-if="meetingType" :items="items" :headers="ItemHeaders" sortBy="position" />
     <v-container>
       <v-divider class="my-10" />
-      <div v-if="pvDetails.meeting_next_date">
-        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meeting_next_date | formatDateWithA }}</p>
+      <div v-if="pvDetails.meetingNextDate">
+        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}</p>
         <p class="font-italic body-2">Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.</p>
       </div>
-      <p>Fait et diffusé le {{ pvDetails.release_date | formatDateWithA }}</p>
+      <p>Fait et diffusé le {{ pvDetails.releaseDate | formatDateWithA }}</p>
       <p>{{ owner.firstName }} {{ owner.lastName }}</p>
     </v-container>
   </div>
@@ -73,7 +73,7 @@ export default {
       affairInfos: {},
       items: [],
       pvDetails: {},
-      meeting_type: undefined,
+      meetingType: undefined,
       pvUsers: [],
       owner: {},
       maitresDOeuvre: "",
@@ -92,7 +92,7 @@ export default {
         { text: "Organisme", value: "organism" },
         { text: "Mail", value: "email", sortable: false },
         { text: "Téléphone", value: "phone", sortable: false },
-        { text: "Statut", value: "status_PAE" }
+        { text: "Statut", value: "statusPAE" }
       ],
       ItemHeaders: [
         {
@@ -101,10 +101,10 @@ export default {
           value: "position"
         },
         { text: "Note", value: "note", sortable: false },
-        { text: "Suite à donner", value: "follow_up", sortable: false },
-        { text: "Ressource", value: "ressources", sortable: false },
+        { text: "Suite à donner", value: "followUp", sortable: false },
+        { text: "Ressource", value: "resources", sortable: false },
         { text: "Echeance", value: "completion", sortable: false },
-        { text: "Date d'echéance", value: "completion_date" }
+        { text: "Date d'echéance", value: "completionDate" }
       ]
     };
   },
@@ -117,23 +117,23 @@ export default {
       this.idPv = this.$route.params.id;
       let dt = {
         params: {
-          id_pv: this.$route.params.id
+          pvId: this.$route.params.id
         }
       };
-      let res = await Axios.get("getPvReleasedDetails", dt);
-      if (typeof res.data.items !== "string") {
+      let res = await Axios.get("pvs/pvId/released", dt);
+      if (res.status == 200) {
         this.items = [...res.data.items];
       }
-      this.pvDetails = res.data.pv_details;
+      this.pvDetails = res.data.pv;
       this.pvUsers = res.data.users;
-      this.meeting_type = res.data.pv_details.affair_meeting_type;
+      this.meetingType = res.data.pv.affairMeetingType;
       this.owner = res.data.owner;
-      if (this.meeting_type == "Chantier") {
+      if (this.meetingType == "Chantier") {
         this.ItemHeaders.splice(1, 0, { text: "Lot", value: "lots" });
       }
-      this.affairInfos = res.data.affair.affair_infos;
+      this.affairInfos = res.data.affair.affairInfos;
 
-      this.pvUsers.forEach(element => {
+      this.pvUsers.forEach((element) => {
         if (element.userGroup == "Maîtrise d'oeuvre") {
           if (this.maitresDOeuvre == "") {
             this.maitresDOeuvre = element.organism;
@@ -152,7 +152,7 @@ export default {
     },
     print() {
       this.isPrinted = true;
-      setTimeout(function() {
+      setTimeout(function () {
         window.print();
       }, 200);
     }
