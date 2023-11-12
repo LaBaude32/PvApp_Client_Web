@@ -5,10 +5,13 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import moment from "moment";
+import { DateTime, Settings } from "luxon";
 
 Vue.config.productionTip = false;
 
 moment.locale("fr");
+Settings.defaultLocale = "fr";
+
 Vue.filter("formatDate", function (value) {
   if (value) {
     return moment(String(value)).format("LLLL");
@@ -17,7 +20,9 @@ Vue.filter("formatDate", function (value) {
 
 Vue.filter("formatDateWithA", function (value) {
   if (value) {
-    return moment(String(value)).format("dddd LL à LT");
+    // return moment(String(value)).format("dddd LL à LT");
+    // return value.setLocale('fr').toLocaleString(DateTime.DATETIME_FULL);
+    return DateTime.fromSQL(value).toFormat("cccc d LLL à T");
   }
 });
 
@@ -29,7 +34,7 @@ Vue.filter("formatDateWithAShort", function (value) {
 
 Vue.filter("formatDateShortDayOnly", function (value) {
   if (value) {
-    return moment(String(value)).format("ddd Do MMM YYYY");
+    return DateTime.fromSQL(value).toFormat("ccc d LLL y");
   }
 });
 
