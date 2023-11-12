@@ -51,7 +51,7 @@
                         <v-text-field v-model="editedItem.email" label="Mail" :rules="emailRules" clearable></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-select v-model="editedItem.status_PAE" :items="defaultItem.status_PAE" label="Status" clearable></v-select>
+                        <v-select v-model="editedItem.statusPAE" :items="defaultItem.statusPAE" label="Status" clearable></v-select>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -127,19 +127,15 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.status_PAE="{ item }">
-        <v-select v-model="item.status_PAE" :items="defaultItem.status_PAE" @change="statusChange(item)"></v-select>
+      <template v-slot:item.statusPAE="{ item }">
+        <v-select v-model="item.statusPAE" :items="defaultItem.statusPAE" @change="statusChange(item)"></v-select>
       </template>
       <template v-slot:item.fullName="{ item }">
         <div>{{ item.firstName }} {{ item.lastName }}</div>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
-          mdi-pencil
-        </v-icon>
-        <v-icon small @click="deleteItem(item)" v-if="!(item.id_user == userId)">
-          mdi-delete
-        </v-icon>
+        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="deleteItem(item)" v-if="!(item.userId == userId)"> mdi-delete </v-icon>
       </template>
       <template v-slot:no-data>
         <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'utilisateurs pour ce PV</p>
@@ -163,16 +159,16 @@ export default {
     valid1: false,
     valid2: false,
     nameRules: [
-      v => !!v || "Requis",
-      v => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
-      v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
+      (v) => !!v || "Requis",
+      (v) => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
+      (v) => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
     ],
-    standardRules: [v => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"],
+    standardRules: [(v) => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"],
     // emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    emailRules: [v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Le mail doit être valide"],
-    phoneRules: [v => !v || /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
-    statusRules: [v => !!v || "Requis"],
-    standardRequirement: [v => !!v || "Requis"],
+    emailRules: [(v) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Le mail doit être valide"],
+    phoneRules: [(v) => !v || /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
+    statusRules: [(v) => !!v || "Requis"],
+    standardRequirement: [(v) => !!v || "Requis"],
     search: "",
     dialogNewOrModifiedUser: false,
     dialogExistingUser: false,
@@ -218,7 +214,7 @@ export default {
       { text: "Organisme", value: "organism" },
       { text: "Mail", value: "email", sortable: false },
       { text: "Téléphone", value: "phone", sortable: false },
-      { text: "Statut", value: "status_PAE" },
+      { text: "Statut", value: "statusPAE" },
       { text: "Modifier", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -230,7 +226,7 @@ export default {
       organism: "",
       email: "",
       phone: "",
-      status_PAE: "",
+      statusPAE: "",
       firstName: "",
       lastName: ""
     },
@@ -250,7 +246,7 @@ export default {
       organism: "",
       email: "",
       phone: "",
-      status_PAE: ["Présent", "Absent", "Excusé"],
+      statusPAE: ["Présent", "Absent", "Excusé"],
       firstName: "",
       lastName: ""
     }
@@ -294,14 +290,14 @@ export default {
     deleteItem(item) {
       const index = this.users.indexOf(item);
       confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
-        Axios.delete("deleteParticipant", { params: { id_user: item.id_user, id_pv: this.pvId } })
-          .then(response => {
-            if (response.data == "success") {
+        Axios.delete("participants/userId", { params: { userId: item.userId, pvId: this.pvId } })
+          .then((response) => {
+            if (response.status == 204) {
               this.$store.dispatch("notification/success", "L'utilisateur à bien été supprimé");
               this.users.splice(index, 1);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
     },
@@ -321,30 +317,30 @@ export default {
       data.userGroup = data.userGroupToReturn;
       if (this.editedIndex > -1) {
         //Exisiting User
-        Axios.post("/updateParticipant", data)
-          .then(response => {
-            if (response.status == 201 && typeof response.data.id_user === "number") {
+        Axios.post("participants/userId", data)
+          .then((response) => {
+            if (response.status == 200) {
               Object.assign(this.users[this.editedIndex], this.editedItem);
               let message = "Le participant à bien été mis à jour";
               this.$store.dispatch("notification/success", message);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       } else {
         //New User
         data.password = this.affair_name;
-        Axios.post("/addUser", data)
-          .then(response => {
-            if (response.status == 201 && typeof response.data.id_user === "number") {
-              data.id_user = response.data.id_user;
+        Axios.post("users", data)
+          .then((response) => {
+            if (response.status == 201) {
+              data.userId = response.data.userId;
               this.users.push(data);
               let message = "Le participant à bien été ajouté";
               this.$store.dispatch("notification/success", message);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       }
@@ -372,13 +368,13 @@ export default {
       let data = { ...item };
       data.pvId = this.pvId;
       data.userGroup = data.userGroupToReturn;
-      Axios.post("/updateParticipant", data)
-        .then(response => {
-          if (response.status == 201 && typeof response.data.id_user === "number") {
+      Axios.put("participants/userId", data)
+        .then((response) => {
+          if (response.status == 200) {
             this.$store.dispatch("notification/success", "Le status à bien été mis à jour");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
