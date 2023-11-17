@@ -75,16 +75,16 @@
         <v-spacer></v-spacer>
         <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
-      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pv_number" sort-desc>
+      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pvNumber" sort-desc>
         <template v-slot:item.actions="{ item }">
-          <v-btn small class="ma-2" @click="openPv(item)" color="primary"> Renseigner </v-btn>
-          <v-btn small class="ma-2" @click="modifyPv(item)" color="error"> Modifier </v-btn>
+          <v-btn small class="ma-2" @click="openPv(item)" color="primary"> {{ item.state == "Terminé" ? "Voir le Pv" : "Editer le contenu" }} </v-btn>
+          <v-btn v-if="item.state != 'Terminé'" small class="ma-2" @click="modifyPv(item)" color="error"> Editer les infos </v-btn>
         </template>
         <template v-slot:item.meetingDate="{ item }">
-          <div>{{ item.meetingDate | formatDateWithAShort }}</div>
+          <div>{{ item.meetingDate | formatDateWithA }}</div>
         </template>
         <template v-slot:item.meetingNextDate="{ item }">
-          <div>{{ item.meetingNextDate | formatDateWithAShort }}</div>
+          <div>{{ item.meetingNextDate | formatDateWithA }}</div>
         </template>
         <template v-slot:item.state="{ item }">
           <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
@@ -120,8 +120,9 @@ import ModifyProgress from "@/components/ModifyProgress.vue";
 import ModifyAffair from "@/components/ModifyAffair.vue";
 import ModifyPv from "@/components/ModifyPv.vue";
 import ModifyLot from "@/components/ModifyLot.vue";
-import moment from "moment";
 import { mapGetters } from "vuex";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
 export default {
   components: {
     ModifyProgress,
@@ -150,7 +151,7 @@ export default {
       search: "",
       pvs: [],
       headers: [
-        { text: "Numéro", align: "center", value: "pv_number" },
+        { text: "Numéro", align: "center", value: "pvNumber" },
         {
           text: "Date",
           align: "start",
@@ -170,10 +171,10 @@ export default {
       userId: "userId"
     }),
     computedDateFormattedMeetingDate() {
-      return this.meetingDateDate ? moment(this.meetingDateDate).format("dddd LL") : "";
+      return this.meetingDateDate ? DateTime.fromSQL(this.meetingDateDate).toFormat("DDDD") : "";
     },
     computedDateFormattedMeetingNextDate() {
-      return this.meetingNextDateDate ? moment(this.meetingNextDateDate).format("dddd LL") : "";
+      return this.meetingNextDateDate ? DateTime.fromSQL(this.meetingNextDateDate).toFormat("DDDD") : "";
     },
     meetingDateDate: {
       get() {
@@ -387,10 +388,10 @@ export default {
       this.affairsForPv = [{ ...this.affair }];
       this.pvData = {
         meetingDateDate: new Date().toISOString().substr(0, 10),
-        meetingDateTime: moment().format("LT").substr(0, 2) + ":00",
+        meetingDateTime: DateTime.now().toFormat("T").substr(0, 2) + ":00",
         meetingNextDateDate: undefined,
         meetingNextDateTime: undefined,
-        meetingDate: moment().format("YYYY-MM-DD HH:mm"),
+        meetingDate: DateTime.now().toFormat("yyyy-LL-dd HH:mm"),
         meetingNextDate: "",
         state: "En cours",
         meetingPlace: "",
@@ -405,28 +406,32 @@ export default {
       this.pvModifyDialog = false;
     },
     pvModifySave() {
-      let pvData = {
+      let data = {
         pvId: this.pvData.pvId,
         meetingDate: this.pvData.meetingDateDate + " " + this.pvData.meetingDateTime + ":00",
         meetingPlace: this.pvData.meetingPlace,
-        meetingNextDate: this.pvData.meetingNextDate,
         meetingNextPlace: this.pvData.meetingNextPlace,
         state: this.pvData.state,
         affairId: this.$route.params.id,
         userId: this.userId
       };
+      console.log(this.pvData.meetingNextDate != "");
+      if (this.pvData.meetingNextDate != "") {
+        data = { meetingNextDate: this.pvData.meetingNextDate + ":00", ...data };
+      }
+      console.log(data);
       let apiRoute;
       let apiMethode;
-      this.pvModifyingType ? ((apiRoute = "pvs/pvId"), (apiMethode = "put")) : (apiRoute = "/pvs"), apiMethode == "post";
-      Axios({ method: apiMethode, url: apiRoute, data: pvData })
+      this.pvModifyingType ? ((apiRoute = "pvs/pvId"), (apiMethode = "put")) : ((apiRoute = "/pvs"), (apiMethode = "post"));
+      Axios({ method: apiMethode, url: apiRoute, data: data })
         .then((response) => {
           if (response.status == 200 || response.status == 201) {
             this.dialog = false;
             this.pvModifyDialog = false;
             if (!this.pvModifyingType) {
-              pvData.pvId = response.data.pv.pvId;
-              pvData.pv_number = response.data.pv.pv_number;
-              this.pvs.push(pvData);
+              // pvData.pvId = response.data.pv.pvId;
+              // pvData.pvNumber = response.data.pv.pvNumber;
+              this.pvs.push(response.data);
             }
             this.$store.dispatch("notification/success", "Pv correctement enregistré");
           }

@@ -13,17 +13,19 @@
             <v-combobox v-model="meetingType" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
           </v-col>
           <v-col cols="12">
-            <v-textarea v-model="description" auto-grow :counter="100" rows="1" label="Description de l'affaire"
-              :rules="descriptionRules"></v-textarea>
+            <v-textarea
+              v-model="description"
+              auto-grow
+              :counter="100"
+              rows="1"
+              label="Description de l'affaire"
+              :rules="descriptionRules"
+            ></v-textarea>
           </v-col>
         </v-row>
       </v-container>
-      <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-        Valider
-      </v-btn>
-      <v-btn color="error" class="mr-4" @click="reset">
-        Vider
-      </v-btn>
+      <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate"> Valider </v-btn>
+      <v-btn color="error" class="mr-4" @click="reset"> Vider </v-btn>
     </v-form>
   </div>
 </template>
@@ -31,19 +33,18 @@
 <script>
 import Axios from "axios";
 import routesCONST from "../utilities/constantes";
-import moment from "moment";
 
 export default {
   data: () => ({
     valid: false,
     nameRules: [
-      v => !!v || "Requis",
-      v => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
-      v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
+      (v) => !!v || "Requis",
+      (v) => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
+      (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
     ],
-    addressRules: [v => !!v || "Requis", v => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
-    descriptionRules: [v => v.length <= 100 || "Doit être inferieur à 120 caractères"],
-    meetingRules: [v => !!v || "Requis", v => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
+    addressRules: [(v) => !!v || "Requis", (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
+    descriptionRules: [(v) => v.length <= 100 || "Doit être inferieur à 120 caractères"],
+    meetingRules: [(v) => !!v || "Requis", (v) => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
     name: "",
     address: "",
     meetingType: "",
@@ -65,18 +66,17 @@ export default {
         progress: 0
       };
       Axios.post("/affairs", affairData)
-        .then(response => {
+        .then((response) => {
           if (response.status == 201) {
             let affairId = response.data.affairId;
             let pvData = {
               state: "En cours",
-              meetingDate: moment().format("YYYY-MM-DD HH:mm:ss"),
               meetingPlace: "Indéfini",
               userId: this.$store.state.user.userId,
               affairId: affairId
             };
             Axios.post("/pv", pvData)
-              .then(response => {
+              .then((response) => {
                 if (response.status == 201) {
                   // let pvId = response.data.id_pv;
                   // let PvHasUserData = {
@@ -102,12 +102,12 @@ export default {
                   });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 console.log(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },

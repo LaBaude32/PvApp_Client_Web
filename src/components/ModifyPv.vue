@@ -126,7 +126,9 @@
 </template>
 
 <script>
-import moment from "moment";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
+
 export default {
   name: "ModifyPv",
   props: {
@@ -205,10 +207,10 @@ export default {
       }
     },
     computedDateFormattedMeetingDate() {
-      return this.myMeetingDateDate ? moment(this.myPvData.myMeetingDateDate).format("dddd LL") : "";
+      return this.myMeetingDateDate ? DateTime.fromSQL(this.myPvData.meetingDateDate).toFormat("DDDD") : "";
     },
     computedDateFormattedMeetingNextDate() {
-      return this.myPvData.meetingNextDateDate ? moment(this.myPvData.meetingNextDateDate).format("dddd LL") : "";
+      return this.myPvData.meetingNextDateDate ? DateTime.fromSQL(this.myPvData.meetingNextDateDate).toFormat("DDDD") : "";
     }
   },
   methods: {
