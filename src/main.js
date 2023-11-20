@@ -33,7 +33,7 @@ if (token) {
   axios.defaults.headers.common["Authorization"] = tokenType + " " + token;
 }
 
-axios.defaults.baseURL = import.meta.env.VITE_APP_ROOT_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_API_URL;
 
 new Vue({
   router,
