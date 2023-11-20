@@ -68,15 +68,12 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-      Valider
-    </v-btn>
+    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate"> Valider </v-btn>
   </v-form>
 </template>
 
 <script>
 import Axios from "axios";
-import moment from "moment";
 import { mapState } from "vuex";
 import routesCONST, { getRouteName } from "../utilities/constantes";
 
@@ -110,18 +107,18 @@ export default {
       };
       console.log(pvData);
       Axios.post("addPv", pvData)
-        .then(response => {
+        .then((response) => {
           let pvId = response.data.id_pv;
           this.$router.push({
             name: routesCONST.pv.name,
             params: { id: pvId }
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    allowedStep: m => m % 5 === 0
+    allowedStep: (m) => m % 5 === 0
   },
   mounted() {
     let self = this;
@@ -132,11 +129,11 @@ export default {
     };
     if (typeof this.userId != undefined) {
       Axios.get("getAffairsByUserId", dtAffairs)
-        .then(function(response) {
+        .then(function (response) {
           // handle success
           self.affairs = response.data;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           // handle error
           console.log(error);
         });
@@ -147,13 +144,13 @@ export default {
   computed: {
     ...mapState("user", {
       userId: "userId"
-    }),
-    computedDateFormattedMeetingDate() {
-      return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
-    },
-    computedDateFormattedMeetingNextDate() {
-      return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
-    }
+    })
+    // computedDateFormattedMeetingDate() {
+    //   return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
+    // },
+    // computedDateFormattedMeetingNextDate() {
+    //   return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
+    // }
   }
 };
 </script>

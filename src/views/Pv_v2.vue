@@ -45,13 +45,14 @@
 </template>
 
 <script>
-import moment from "moment";
 import Pv_v2 from "@/components/Pv_v2.vue";
 import Users from "@/components/Users.vue";
 import ModalValidation from "@/components/ModalValidation.vue";
 import Axios from "axios";
 import { getRouteName } from "../utilities/constantes";
 import { mapGetters } from "vuex";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
 
 export default {
   components: {
@@ -125,14 +126,14 @@ export default {
     },
     formatedCompletionDate: {
       get() {
-        return this.editedItem.completionDate ? moment(this.editedItem.completionDate).format("YYYY-MM-DD") : "";
+        return this.editedItem.completionDate ? DateTime.fromSQL(this.editedItem.completionDate).toFormat("yyyy-LL-dd") : "";
       },
       set(val) {
-        this.editedItem.completionDate = moment(val).format("YYYY-MM-DD");
+        this.editedItem.completionDate = DateTime.fromSQL(val).toFormat("yyyy-LL-dd");
       }
     },
     computedDateFormattedCompletion() {
-      return this.editedItem.completionDate ? moment(this.editedItem.completionDate).format("ddd Do MMM YYYY") : "";
+      return this.editedItem.completionDate ? DateTime.fromSQL(this.editedItem.completionDate).toFormat("ccc d LLL yyyy") : "";
     }
   },
 
@@ -246,7 +247,7 @@ export default {
       } else {
         //New item
         data.pvId = this.pvId;
-        // data.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+        // data.createdAt = DateTime.now();("YYYY-MM-DD HH:mm:ss");
         Axios.post("/items", data)
           .then((response) => {
             if (response.status == 201) {
