@@ -122,7 +122,9 @@ export default {
       };
       let res = await Axios.get("pvs/pvId/released", dt);
       if (res.status == 200) {
-        this.items = [...res.data.items];
+        if (res.data.items) {
+          this.items = [...res.data.items];
+        }
       }
       this.pvDetails = res.data.pv;
       this.pvUsers = res.data.users;
