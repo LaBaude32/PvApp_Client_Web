@@ -7548,7 +7548,7 @@ __metadata:
     md5: "npm:^2.3.0"
     prettier: "npm:^3.1.0"
     sass: "npm:~1.32.13"
-    tauri: "npm:^0.14.1"
+    tauri: "npm:^0.15.0"
     unplugin-vue-components: "npm:^0.25.2"
     vite: "npm:^4.5.0"
     vite-plugin-vue2: "npm:^2.0.3"
@@ -8921,9 +8921,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tauri@npm:^0.14.1":
-  version: 0.14.1
-  resolution: "tauri@npm:0.14.1"
+"tauri@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "tauri@npm:0.15.0"
   dependencies:
     "@tauri-apps/tauri-inliner": "npm:1.14.1"
     "@tauri-apps/toml": "npm:2.2.4"
@@ -8951,9 +8951,7 @@ __metadata:
     sharp: "npm:0.27.0"
     webpack-merge: "npm:5.7.3"
     webpack-shell-plugin: "npm:0.5.0"
-  bin:
-    tauri: bin/tauri.js
-  checksum: 70c534d7ba3674d86fdb491ebc006138332e793d58582f9bf7892dcb5e9c39b214740f876ba67843f03e7aa7c3436bd54d64851c26393c125287cc0977466d32
+  checksum: 5f652952268c6fcea52980c76f3d82b335e2ec43962bf4e238a6e8ffaa4fb3d6e6233620100bb98e2793174750f4bb0e86da24a1f7837b39ebd260d453a7d237
   languageName: node
   linkType: hard
 
