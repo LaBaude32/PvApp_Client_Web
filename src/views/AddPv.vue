@@ -115,7 +115,7 @@
       </v-container>
       <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate"> Valider </v-btn>
     </v-form>
-    <div v-else>
+    <!-- <div v-else>
       <v-row justify="center">
         <v-alert type="warning" border="top" prominent class="pa-10">
           Vous n'avez pas encore d'affaire <br />
@@ -125,7 +125,7 @@
       <v-row justify="center">
         <v-btn color="success darken-1" dark @click="createAffair"> <v-icon left>mdi-pencil</v-icon>Créer une affaire </v-btn>
       </v-row>
-    </div>
+    </div> -->
   </div>
 </template>
 

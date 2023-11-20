@@ -66,23 +66,23 @@ export default {
     return {
       valid: false,
       showPassword: false,
-      emailRules: [v => !!v || "Requis", v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
+      emailRules: [(v) => !!v || "Requis", (v) => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
       pwdRules: [
-        v => !!v || "Requis",
-        v => v.length >= 8 || "Il doit y avoir plus de 8 caracères",
-        v => /(?=.*[A-Z])/.test(v) || "Il faut une majuscule",
-        v => /(?=.*\d)/.test(v) || "Il faut un nombre",
-        v => /([!@#$%])/.test(v) || "Il faut un charactère spécial [!@#$%]"
+        (v) => !!v || "Requis",
+        (v) => v.length >= 8 || "Il doit y avoir plus de 8 caracères",
+        (v) => /(?=.*[A-Z])/.test(v) || "Il faut une majuscule",
+        (v) => /(?=.*\d)/.test(v) || "Il faut un nombre",
+        (v) => /([!@#$%])/.test(v) || "Il faut un charactère spécial [!@#$%]"
       ],
       standardRules: [
-        v => !!v || "Requis",
-        v => (v && v.length >= 3) || "Il doit y avoir plus de 3 caracères",
-        v => (v && v.length < 35) || "Il doit y avoir plus de 4 caracères"
+        (v) => !!v || "Requis",
+        (v) => (v && v.length >= 3) || "Il doit y avoir plus de 3 caracères",
+        (v) => (v && v.length < 35) || "Il doit y avoir plus de 4 caracères"
       ],
       phoneRules: [
-        v => !!v || "Requis",
-        v => (v && v.length == 10) || "Doit être égal à 10 charactère",
-        v => /\d/.test(v) || "Doit être consituté de chiffres uniquement"
+        (v) => !!v || "Requis",
+        (v) => (v && v.length == 10) || "Doit être égal à 10 charactère",
+        (v) => /\d/.test(v) || "Doit être consituté de chiffres uniquement"
       ],
       email: "",
       password: "",
@@ -107,11 +107,11 @@ export default {
         organism: this.organism
       };
       Axios.post("users", datas)
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.$router.push(getRouteName("board"));
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
