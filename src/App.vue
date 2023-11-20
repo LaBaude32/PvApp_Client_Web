@@ -22,13 +22,14 @@
         <h2>PvApp</h2>
       </div>
       <v-spacer />
+      <v-btn class="mr-6" color="primary" @click="action('Board')"><v-icon class="mr-3">mdi-view-dashboard</v-icon>Dashboard</v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark v-on="on" v-if="isLogged" class="diableOnMobile">
+          <v-btn color="primary" v-on="on" v-if="isLogged" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn color="primary" dark v-on="on" v-else @click="action('Login')" class="diableOnMobile">
+          <v-btn color="primary" v-on="on" v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
@@ -111,7 +112,7 @@ export default {
       drawerRight: false,
       items: [
         { path: "MyAccount", title: "Mon Compte" },
-        { path: getRouteName("board"), title: "Board" },
+        // { path: getRouteName("board"), title: "Board" },
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
@@ -124,7 +125,7 @@ export default {
         {
           path: getRouteName("board"),
           title: "Dashboard",
-          icon: "mdi-clipboard-pulse"
+          icon: "mdi-view-dashboard"
         },
         // {
         //   path: getRouteName("user"),
@@ -135,7 +136,7 @@ export default {
         {
           path: getRouteName("addUser"),
           title: "Créer un compte",
-          icon: "mdi-account",
+          icon: "mdi-account-plus",
           color: ""
         },
         // {
