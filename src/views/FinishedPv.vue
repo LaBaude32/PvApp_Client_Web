@@ -68,8 +68,6 @@ export default {
   data() {
     return {
       isPrinted: false,
-      test1: "hello1",
-      test4: "hello4",
       affairInfos: {},
       items: [],
       pvDetails: {},
