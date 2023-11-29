@@ -60,6 +60,8 @@
 import finishedPvItems from "@/components/FinishedPvItems.vue";
 import finishedPvUsers from "@/components/FinishedPvUsers.vue";
 import Axios from "axios";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
 export default {
   components: {
     finishedPvUsers,
@@ -150,11 +152,28 @@ export default {
         }
       });
     },
-    print() {
-      this.isPrinted = true;
-      setTimeout(function () {
-        window.print();
-      }, 200);
+    async print() {
+      const res = await Axios({
+        responseType: "blob",
+        url: "pvs/pvId/released/pdf",
+        params: {
+          pvId: this.$route.params.id
+        }
+      });
+
+      const fileName = `${this.releaseDate}_Affaire-${this.affairInfos.name}_Pv-n${this.pvDetails.pvNumber}`;
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${fileName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    }
+  },
+  computed: {
+    releaseDate() {
+      return DateTime.fromSQL(this.pvDetails.releaseDate).toISODate();
     }
   }
 };
