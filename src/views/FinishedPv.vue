@@ -4,7 +4,7 @@
       <v-row>
         <v-col v-if="!isPrinted" cols="12" class="d-flex">
           <v-spacer />
-          <v-btn class="mr-16" color="success" x-large @click.prevent="print">Imprimer</v-btn>
+          <v-btn class="mr-16" color="success" x-large @click.prevent="downloadPdf">Telecharger</v-btn>
         </v-col>
         <v-col cols="12">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -152,7 +152,7 @@ export default {
         }
       });
     },
-    async print() {
+    async downloadPdf() {
       const res = await Axios({
         responseType: "blob",
         url: "pvs/pvId/released/pdf",
