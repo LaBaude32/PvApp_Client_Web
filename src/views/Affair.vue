@@ -76,10 +76,6 @@
         <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
       <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pvNumber" sort-desc>
-        <template v-slot:item.actions="{ item }">
-          <v-btn small class="ma-2" @click="openPv(item)" color="primary"> {{ item.state == "Terminé" ? "Voir le Pv" : "Editer le contenu" }} </v-btn>
-          <v-btn v-if="item.state != 'Terminé'" small class="ma-2" @click="modifyPv(item)" color="error"> Editer les infos </v-btn>
-        </template>
         <template v-slot:item.meetingDate="{ item }">
           <div>{{ item.meetingDate | formatDateWithA }}</div>
         </template>
@@ -93,6 +89,14 @@
           <v-chip class="ma-2" color="orange" text-color="white" v-else>
             {{ item.state }}
           </v-chip>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn small @click="openPv(item)" :color="item.state == 'Terminé' ? 'primary' : 'warning'"
+            ><v-icon class="ma-2">{{ item.state == "Terminé" ? "mdi-eye" : "mdi-file-edit" }}</v-icon>
+          </v-btn>
+          <v-btn small class="ma-2" @click="modifyPv(item)" :color="item.state == 'Terminé' ? 'success' : 'error'">
+            <v-icon dark class="ma-2">{{ item.state == "Terminé" ? "mdi-file-download" : "mdi-information" }}</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -370,18 +374,39 @@ export default {
       this.affairDialog = false;
     },
     modifyPv(pvDatas) {
-      //TODO: ajouter un modal si le pv est déjà terminé
-      this.pvModifyingType = true;
-      this.affairsForPv = [{ ...this.affair }];
-      this.pvData = pvDatas;
+      if (pvDatas.state == "Terminé") {
+        this.downloadPvPdf(pvDatas);
+      } else {
+        this.pvModifyingType = true;
+        this.affairsForPv = [{ ...this.affair }];
+        this.pvData = pvDatas;
 
-      this.pvData.meetingDateDate = this.pvData.meetingDate.substr(0, 10);
-      this.pvData.meetingDateTime = this.pvData.meetingDate.substr(11, 5);
-      this.pvData.meetingNextDateDate = this.pvData.meetingNextDate.substr(0, 10);
-      this.pvData.meetingNextDateTime = this.pvData.meetingNextDate.substr(11, 5);
+        this.pvData.meetingDateDate = this.pvData.meetingDate.substr(0, 10);
+        this.pvData.meetingDateTime = this.pvData.meetingDate.substr(11, 5);
+        this.pvData.meetingNextDateDate = this.pvData.meetingNextDate.substr(0, 10);
+        this.pvData.meetingNextDateTime = this.pvData.meetingNextDate.substr(11, 5);
 
-      this.dialog = true;
-      this.pvModifyDialog = true;
+        this.dialog = true;
+        this.pvModifyDialog = true;
+      }
+    },
+    async downloadPvPdf(pv) {
+      const res = await Axios({
+        responseType: "blob",
+        url: "pvs/pvId/released/pdf",
+        params: {
+          pvId: pv.pvId
+        }
+      });
+
+      const fileName = `${pv.releaseDate}_Affaire-${this.affair.name}_Pv-n${pv.pvNumber}`;
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${fileName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
     },
     createPv() {
       this.pvModifyingType = false;
