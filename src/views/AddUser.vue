@@ -36,7 +36,8 @@
                   <v-text-field label="Téléphone" type="text" v-model="phone" :rules="phoneRules" counter="10" />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Groupe" type="text" v-model="userGroup" counter="35" />
+                  <!-- <v-text-field label="Groupe" type="text" v-model="userGroup" counter="35" /> -->
+                  <v-select v-model="userGroup" :items="userGroupItems" label="Groupe" clearable></v-select>
                 </v-col>
                 <v-col cols="6">
                   <v-text-field label="Fonction" type="text" v-model="userFunction" counter="35" />
@@ -90,6 +91,16 @@ export default {
       lastName: "",
       phone: "",
       userGroup: "",
+      userGroupItems: [
+        "Maîtrise d'ouvrage",
+        "Assistance à la maîtrise d'ouvrage",
+        "Maîtrise d'oeuvre",
+        "Concessionnaire",
+        "Personne public associée",
+        "COPIL",
+        "COTEC",
+        "Divers"
+      ],
       userFunction: "",
       organism: ""
     };

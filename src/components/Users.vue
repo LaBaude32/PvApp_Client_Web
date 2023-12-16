@@ -29,14 +29,7 @@
                         <v-text-field v-model="editedItem.lastName" label="Nom" :rules="nameRules" clearable counter="30"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-combobox
-                          v-model="editedItem.userGroupToReturn"
-                          :items="defaultItem.userGroup"
-                          solo
-                          label="Groupe"
-                          counter="30"
-                          clearable
-                        ></v-combobox>
+                        <v-select v-model="editedItem.userGroupToReturn" :items="defaultItem.userGroup" label="Groupe" clearable></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field v-model="editedItem.userFunction" label="Fonction" clearable counter="30"></v-text-field>
@@ -233,9 +226,9 @@ export default {
     defaultItem: {
       fullName: "",
       userGroup: [
-        "Maitrise d'ouvrage",
-        "Assistance à la maitrise d'ouvrage",
-        "Maitrise d'oeuvre",
+        "Maîtrise d'ouvrage",
+        "Assistance à la maîtrise d'ouvrage",
+        "Maîtrise d'oeuvre",
         "Concessionnaire",
         "Personne public associée",
         "COPIL",
