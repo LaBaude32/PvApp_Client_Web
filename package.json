@@ -1,6 +1,6 @@
 {
   "name": "pvapp_client_web",
-  "version": "0.1.4-beta",
+  "version": "0.2.0-beta",
   "private": true,
   "scripts": {
     "dev": "vite",
