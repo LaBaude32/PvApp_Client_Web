@@ -80,7 +80,7 @@
               </v-chip>
             </v-col>
             <v-col class="shrink">
-              <v-btn color="green" dark @click.prevent="action('/About')">Voir les nouveautés</v-btn>
+              <v-btn color="green" dark @click.prevent="action('About')">Voir les nouveautés</v-btn>
             </v-col>
           </v-row>
         </v-alert>
