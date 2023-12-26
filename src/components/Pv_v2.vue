@@ -80,6 +80,11 @@
                           </v-menu>
                         </v-col>
                       </v-row>
+                      <v-row>
+                        <v-col cols="12" sm="6">
+                          <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
+                        </v-col>
+                      </v-row>
                     </v-container>
                   </v-card-text>
 
@@ -108,6 +113,9 @@
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
+        <template v-slot:item.image="{ item }">
+          <v-img :src="srvURL + '/' + item.image"></v-img>
+        </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
@@ -117,6 +125,7 @@
 </template>
 
 <script>
+const srvURL = import.meta.env.VITE_BACKEND_API_URL;
 export default {
   name: "Pv-V2",
   props: {
@@ -143,12 +152,14 @@ export default {
   },
   data() {
     return {
+      srvURL: import.meta.env.VITE_BACKEND_API_URL,
       ItemModelDatePicker: false,
       search: "",
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
       MyMeetingType: this.meetingType,
-      MyDefaultItem: this.defaultItem
+      MyDefaultItem: this.defaultItem,
+      objectThumbnailFile: null
     };
   },
   watch: {

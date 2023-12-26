@@ -84,6 +84,7 @@ export default {
         { text: "Echeance", value: "completion", sortable: false },
         { text: "Date d'echéance", value: "completionDate" },
         { text: "Visible", value: "visible" },
+        { text: "Photo", value: "image" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
@@ -99,6 +100,7 @@ export default {
         completionDate: "",
         completionDateDate: "",
         completionDateTime: "",
+        image: null,
         visible: ""
       },
       defaultItem: {
@@ -112,6 +114,7 @@ export default {
         completionDate: "",
         completionDateDate: "",
         completionDateTime: "",
+        image: null,
         visible: true
       }
     };
