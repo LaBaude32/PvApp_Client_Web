@@ -75,7 +75,7 @@ export default {
               userId: this.$store.state.user.userId,
               affairId: affairId
             };
-            Axios.post("/pv", pvData)
+            Axios.post("/pvs", pvData)
               .then((response) => {
                 if (response.status == 201) {
                   // let pvId = response.data.id_pv;
