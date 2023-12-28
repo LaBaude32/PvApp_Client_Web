@@ -33,6 +33,8 @@
 <script>
 import Axios from "axios";
 import routesCONST from "../utilities/constantes";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
 
 export default {
   data: () => ({
@@ -71,7 +73,8 @@ export default {
             let affairId = response.data.affairId;
             let pvData = {
               state: "En cours",
-              meetingPlace: "Indéfini",
+              meetingPlace: "A modifier",
+              meetingDate: DateTime.now().toFormat("yyyy-LL-dd HH:mm") + ":00",
               userId: this.$store.state.user.userId,
               affairId: affairId
             };
