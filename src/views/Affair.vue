@@ -127,6 +127,7 @@ import ModifyLot from "@/components/ModifyLot.vue";
 import { mapGetters } from "vuex";
 import { DateTime, Settings } from "luxon";
 Settings.defaultLocale = "fr";
+
 export default {
   components: {
     ModifyProgress,
@@ -440,11 +441,9 @@ export default {
         affairId: this.$route.params.id,
         userId: this.userId
       };
-      console.log(this.pvData.meetingNextDate != "");
       if (this.pvData.meetingNextDate != "") {
         data = { meetingNextDate: this.pvData.meetingNextDate + ":00", ...data };
       }
-      console.log(data);
       let apiRoute;
       let apiMethode;
       this.pvModifyingType ? ((apiRoute = "pvs/pvId"), (apiMethode = "put")) : ((apiRoute = "/pvs"), (apiMethode = "post"));
