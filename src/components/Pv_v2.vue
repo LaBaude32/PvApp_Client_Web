@@ -114,7 +114,7 @@
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img :src="srvURL + '/' + item.image"></v-img>
+          <v-img :src="MyThumbnail(item.image)"></v-img>
         </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
@@ -125,7 +125,6 @@
 </template>
 
 <script>
-const srvURL = import.meta.env.VITE_BACKEND_API_URL;
 export default {
   name: "Pv-V2",
   props: {
@@ -152,7 +151,6 @@ export default {
   },
   data() {
     return {
-      srvURL: import.meta.env.VITE_BACKEND_API_URL,
       ItemModelDatePicker: false,
       search: "",
       MyPvUsers: this.pvUsers,
@@ -227,6 +225,15 @@ export default {
       set(val) {
         this.$emit("update:editedIndex", val);
       }
+    }
+  },
+  methods: {
+    onObjectSelected(event) {
+      this.objectThumbnailFile = event;
+      this.MyEditedItem.image = this.objectThumbnailFile;
+    },
+    MyThumbnail(imageName) {
+      return "http://localhost:8081/images/" + imageName;
     }
   }
 };
