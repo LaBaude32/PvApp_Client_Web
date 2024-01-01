@@ -201,7 +201,7 @@ export default {
       this.editedIndex = -1;
     },
 
-    save() {
+    async save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
       if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
         this.editedItem.completionDate = null;
@@ -215,7 +215,9 @@ export default {
       fd.append("completion", this.editedItem.completionToReturn);
       fd.append("completionDate", this.editedItem.completionDate);
       fd.append("image", this.editedItem.image);
+      fd.append("thumbnail", null);
       fd.append("visible", this.editedItem.visible);
+      fd.append("lots", null);
 
       // data = { ...this.editedItem };
       if (this.meetingType == "Chantier" && this.editedItem.lotsToReturn) {
@@ -224,7 +226,7 @@ export default {
           lotTransit.push(element.lotId);
         });
         // data.lots = lotTransit;
-        fd.append("lots", lotTransit);
+        fd.set("lots", lotTransit);
       }
       // data.completion = data.completionToReturn;
       // delete data.completionDateDate;
@@ -253,9 +255,8 @@ export default {
           });
       } else {
         //New item
-        // data.pvId = this.pvId;
         fd.append("pvId", this.pvId);
-        Axios.post("/items", fd)
+        await Axios.post("/items", fd)
           .then((response) => {
             if (response.status == 201) {
               // data.itemId = response.data.itemId;
@@ -263,7 +264,7 @@ export default {
               // fd.set("itemId", response.data.itemId);
               // fd.set("lot", this.editedItem.lots);
               this.items.push(response.data);
-              this.editedItem.completion = [];
+              // this.editedItem.completion = [];
               this.close();
               this.$store.dispatch("notification/success", "Ajout de l'item effectué");
             } else {
@@ -275,6 +276,7 @@ export default {
             console.log(error);
           });
       }
+      this.editedItem = { ...this.defaultItem };
     },
 
     maxPosition() {

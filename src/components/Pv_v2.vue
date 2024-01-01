@@ -56,7 +56,7 @@
                           <v-text-field v-model="MyEditedItem.resources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-combobox v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-combobox>
+                          <v-select clearable v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
@@ -114,7 +114,7 @@
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img :src="MyThumbnail(item.image)"></v-img>
+          <v-img max-width="150" :src="MyThumbnail(item.image)"></v-img>
         </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
@@ -152,7 +152,6 @@ export default {
   },
   data() {
     return {
-      imgURL: imgURL,
       ItemModelDatePicker: false,
       search: "",
       MyPvUsers: this.pvUsers,
@@ -235,7 +234,7 @@ export default {
       this.MyEditedItem.image = this.objectThumbnailFile;
     },
     MyThumbnail(imageName) {
-      return this.imgURL + imageName;
+      return imgURL + imageName;
     }
   }
 };
