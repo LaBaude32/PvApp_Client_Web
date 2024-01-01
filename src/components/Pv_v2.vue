@@ -125,6 +125,7 @@
 </template>
 
 <script>
+const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL;
 export default {
   name: "Pv-V2",
   props: {
@@ -151,6 +152,7 @@ export default {
   },
   data() {
     return {
+      imgURL: imgURL,
       ItemModelDatePicker: false,
       search: "",
       MyPvUsers: this.pvUsers,
@@ -233,7 +235,7 @@ export default {
       this.MyEditedItem.image = this.objectThumbnailFile;
     },
     MyThumbnail(imageName) {
-      return "http://localhost:8081/images/" + imageName;
+      return this.imgURL + imageName;
     }
   }
 };
