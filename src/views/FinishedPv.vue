@@ -132,6 +132,7 @@ export default {
       this.owner = res.data.owner;
       if (this.meetingType == "Chantier") {
         this.ItemHeaders.splice(1, 0, { text: "Lot", value: "lots" });
+        this.ItemHeaders.push({ text: "Photo", value: "image", sortable: false });
       }
       this.affairInfos = res.data.affair.affairInfos;
 

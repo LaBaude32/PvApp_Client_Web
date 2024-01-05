@@ -114,13 +114,22 @@
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img max-width="150" :src="MyThumbnail(item.image)"></v-img>
+          <v-img max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
         </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog v-model="MyImageDialog" max-width="800px">
+      <v-card>
+        <v-img contain max-height="750" :src="MyImageSrc"></v-img>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="error" @click="MyImageDialog = false"> Fermer </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -158,7 +167,9 @@ export default {
       MyHeaders: this.headers,
       MyMeetingType: this.meetingType,
       MyDefaultItem: this.defaultItem,
-      objectThumbnailFile: null
+      objectThumbnailFile: null,
+      MyImageDialog: false,
+      MyImageSrc: String
     };
   },
   watch: {
@@ -235,6 +246,10 @@ export default {
     },
     MyThumbnail(imageName) {
       return imgURL + imageName;
+    },
+    OpenImage(imageName) {
+      this.MyImageSrc = imgURL + imageName;
+      this.MyImageDialog = true;
     }
   }
 };
