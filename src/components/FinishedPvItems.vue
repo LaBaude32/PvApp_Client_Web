@@ -37,7 +37,8 @@ export default {
   },
   data() {
     return {
-      MyImageDialog: false
+      MyImageDialog: false,
+      MyImageSrc: ""
     };
   },
   methods: {
