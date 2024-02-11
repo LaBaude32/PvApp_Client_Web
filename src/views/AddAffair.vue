@@ -72,10 +72,11 @@ export default {
             let pvData = {
               state: "En cours",
               meetingPlace: "Indéfini",
+              meetingDate: new Date().toISOString().slice(0, 19).replace("T", " "),
               userId: this.$store.state.user.userId,
               affairId: affairId
             };
-            Axios.post("/pv", pvData)
+            Axios.post("/pvs", pvData)
               .then((response) => {
                 if (response.status == 201) {
                   // let pvId = response.data.id_pv;
