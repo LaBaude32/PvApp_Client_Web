@@ -236,12 +236,19 @@ export default {
 
       if (this.editedIndex > -1) {
         //Existing item
-        Axios.put("items/itemId", fd)
+        fd.append("itemId", this.editedItem.itemId);
+        let data = {};
+        fd.forEach((value, key) => (data[key] = value));
+        for (const iterator in data) {
+          if (data[iterator] == "null") {
+            data[iterator] = null;
+          }
+        }
+        Axios.put("items/itemId", data)
           .then((response) => {
             if (response.status == 200) {
               this.editedItem.completion = this.editedItem.completionToReturn;
-              Object.assign(this.items[this.editedIndex], this.editedItem);
-              // this.items[this.editedIndex] = { ...data };
+              Object.assign(this.items[this.editedIndex], data);
               this.editedItem.completion = [];
               this.close();
               this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");

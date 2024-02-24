@@ -81,9 +81,19 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col cols="12" sm="6">
-                          <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
-                        </v-col>
+                        <v-col cols="12">
+                          <div v-if="MyEditedItem.image">
+                            <p>
+                              Photo :
+                              <v-btn icon @click="MyEditedItem.image = null">
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </p>
+                            <v-img max-height="300" max-width="700" :src="MyThumbnail(MyEditedItem.image)"></v-img>
+                          </div>
+                          <div v-else>
+                            <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input></div
+                        ></v-col>
                       </v-row>
                     </v-container>
                   </v-card-text>
@@ -114,7 +124,7 @@
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
+          <v-img v-if="item.image" max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
         </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
