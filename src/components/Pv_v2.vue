@@ -82,7 +82,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="MyEditedItem.image">
+                          <div v-if="MyEditedItem.image && MyEditedIndex > 0">
                             <p>
                               Photo :
                               <v-btn icon @click="MyEditedItem.image = null">
