@@ -196,7 +196,7 @@ export default {
         return response;
       },
       function (error) {
-        self.$store.dispatch("notification/error", "error");
+        self.$store.dispatch("notification/error", "Erreur d'authentification");
         if (error.response.status == 401) {
           if (error.config.url == "tokens") {
             self.$store.dispatch("auth/authError");
