@@ -82,18 +82,21 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="MyEditedItem.image && MyEditedIndex > 0">
+                          <!-- <div v-if="MyEditedItem.image && MyEditedIndex > 0"> -->
+                          <!-- <div v-if="MyEditedItem.image != null"> -->
+                          <div v-if="MyEditedItem.isNewImage">
+                            <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
+                          </div>
+                          <div v-else>
                             <p>
                               Photo :
-                              <v-btn icon @click="MyEditedItem.image = null">
+                              <v-btn icon @click="removeImage(MyEditedItem)">
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </p>
                             <v-img max-height="300" max-width="700" :src="MyThumbnail(MyEditedItem.image)"></v-img>
                           </div>
-                          <div v-else>
-                            <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input></div
-                        ></v-col>
+                        </v-col>
                       </v-row>
                     </v-container>
                   </v-card-text>
@@ -180,6 +183,7 @@ export default {
       objectThumbnailFile: null,
       MyImageDialog: false,
       MyImageSrc: String
+      // isNewImage: true
     };
   },
   watch: {
@@ -260,6 +264,10 @@ export default {
     OpenImage(imageName) {
       this.MyImageSrc = imgURL + imageName;
       this.MyImageDialog = true;
+    },
+    removeImage(MyEditedItem) {
+      MyEditedItem.image = null;
+      MyEditedItem.isNewImage = true;
     }
   }
 };
