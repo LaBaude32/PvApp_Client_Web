@@ -72,6 +72,7 @@ export default {
       pvUsers: [],
       pvConnectedParticipants: [],
       items: [],
+      newImage: "lala",
       headers: [
         {
           text: "Position",
@@ -204,7 +205,7 @@ export default {
       this.editedIndex = -1;
     },
 
-    async save() {
+    save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
       if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
         this.editedItem.completionDate = null;
@@ -221,6 +222,7 @@ export default {
       fd.append("thumbnail", null);
       fd.append("visible", this.editedItem.visible);
       fd.append("lots", null);
+      fd.append("pvId", this.pvId);
 
       if (this.meetingType == "Chantier" && this.editedItem.lotsToReturn) {
         let lotTransit = [];
@@ -233,61 +235,65 @@ export default {
       if (this.editedIndex > -1) {
         //EXISTING ITEM
         fd.append("itemId", this.editedItem.itemId);
-
-        //Upload new image
-        if (fd.get("image") != null && this.editedItem.isNewImage == true) {
-          const fdImage = new FormData();
-          fdImage.append("itemId", this.editedItem.itemId);
-          fdImage.append("image", this.editedItem.image);
-          Axios.post("items/updateImage", fdImage).then((response) => {
-            if (response.status == 201) {
-              this.editedItem.image = response.data.image;
-            }
-          });
-        }
-
-        let data = {};
-        fd.forEach((value, key) => (data[key] = value));
-        for (const iterator in data) {
-          if (data[iterator] == "null") {
-            data[iterator] = null;
-          }
-        }
-        Axios.put("items/itemId", data)
-          .then((response) => {
-            if (response.status == 200) {
-              this.editedItem.completion = this.editedItem.completionToReturn;
-              Object.assign(this.items[this.editedIndex], data);
-              this.editedItem.completion = [];
-              this.close();
-              this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
-            } else {
-              console.log(response);
-              console.log(typeof response.data.itemId);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        this.updateItem(fd);
       } else {
         //NEW ITEM
-        fd.append("pvId", this.pvId);
-        await Axios.post("/items", fd)
-          .then((response) => {
-            if (response.status == 201) {
-              this.items.push(response.data);
-              this.close();
-              this.$store.dispatch("notification/success", "Ajout de l'item effectué");
-            } else {
-              console.log(response);
-              console.log(typeof response.data.itemId);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        this.postItem(fd);
       }
       this.editedItem = { ...this.defaultItem };
+    },
+
+    postItem(fd) {
+      Axios.post("/items", fd)
+        .then((response) => {
+          if (response.status == 201) {
+            this.items.push(response.data);
+            this.close();
+            this.$store.dispatch("notification/success", "Ajout de l'item effectué");
+          } else {
+            console.log(response);
+            console.log(typeof response.data.itemId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async updateItem(fd) {
+      //Upload new image
+      if (this.editedItem.image != null && this.editedItem.isNewImage == true) {
+        const fdImage = new FormData();
+        fdImage.append("itemId", this.editedItem.itemId);
+        fdImage.append("image", this.editedItem.image);
+        const res = await Axios.post("items/updateImage", fdImage);
+        fd.set("image", res.data.image);
+      }
+
+      let data = {};
+      fd.forEach((value, key) => (data[key] = value));
+      for (const iterator in data) {
+        if (data[iterator] == "null") {
+          data[iterator] = null;
+        }
+      }
+
+      Axios.put("items/itemId", data)
+        .then((response) => {
+          if (response.status == 200) {
+            this.editedItem.completion = this.editedItem.completionToReturn;
+            Object.assign(this.items[this.editedIndex], data);
+            this.editedItem.completion = [];
+            this.close();
+            this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
+          } else {
+            console.log(response);
+            console.log(typeof response.data.itemId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     maxPosition() {
