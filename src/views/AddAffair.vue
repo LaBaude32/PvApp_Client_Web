@@ -33,6 +33,8 @@
 <script>
 import Axios from "axios";
 import routesCONST from "../utilities/constantes";
+import { DateTime, Settings } from "luxon";
+Settings.defaultLocale = "fr";
 
 export default {
   data: () => ({
