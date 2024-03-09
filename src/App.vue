@@ -190,18 +190,19 @@ export default {
     }
   },
   created: function () {
+    const self = this;
     Axios.interceptors.response.use(
       function (response) {
         return response;
       },
       function (error) {
-        this.$store.dispatch("notification/error", "error");
-        if (error.status === 401) {
-          if (error.config.url == "/tokens") {
-            this.$store.dispatch("auth/authError");
+        self.$store.dispatch("notification/error", "Erreur d'authentification");
+        if (error.response.status == 401) {
+          if (error.config.url == "tokens") {
+            self.$store.dispatch("auth/authError");
           } else {
             // if you ever get an unauthorized, logout the user
-            this.$store.dispatch("auth/authLogout");
+            self.$store.dispatch("auth/authLogout");
           }
         }
         return Promise.reject(error);

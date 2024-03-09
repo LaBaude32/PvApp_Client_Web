@@ -73,8 +73,8 @@ export default {
             let affairId = response.data.affairId;
             let pvData = {
               state: "En cours",
-              meetingPlace: "A modifier",
-              meetingDate: DateTime.now().toFormat("yyyy-LL-dd HH:mm") + ":00",
+              meetingPlace: "Indéfini",
+              meetingDate: new Date().toISOString().slice(0, 19).replace("T", " "),
               userId: this.$store.state.user.userId,
               affairId: affairId
             };

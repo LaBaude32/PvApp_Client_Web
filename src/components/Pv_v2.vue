@@ -56,7 +56,7 @@
                           <v-text-field v-model="MyEditedItem.resources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-combobox v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-combobox>
+                          <v-select clearable v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
@@ -78,6 +78,24 @@
                               show-current
                             ></v-date-picker>
                           </v-menu>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12">
+                          <!-- <div v-if="MyEditedItem.image && MyEditedIndex > 0"> -->
+                          <!-- <div v-if="MyEditedItem.image != null"> -->
+                          <div v-if="MyEditedItem.isNewImage">
+                            <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
+                          </div>
+                          <div v-else>
+                            <p>
+                              Photo :
+                              <v-btn icon @click="removeImage(MyEditedItem)">
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </p>
+                            <v-img max-height="300" max-width="700" :src="MyThumbnail(MyEditedItem.image)"></v-img>
+                          </div>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -108,15 +126,28 @@
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
+        <template v-slot:item.image="{ item }">
+          <v-img v-if="item.image" max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
+        </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog v-model="MyImageDialog" max-width="800px">
+      <v-card>
+        <v-img contain max-height="750" :src="MyImageSrc"></v-img>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="error" @click="MyImageDialog = false"> Fermer </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL;
 export default {
   name: "Pv-V2",
   props: {
@@ -148,7 +179,11 @@ export default {
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
       MyMeetingType: this.meetingType,
-      MyDefaultItem: this.defaultItem
+      MyDefaultItem: this.defaultItem,
+      objectThumbnailFile: null,
+      MyImageDialog: false,
+      MyImageSrc: String
+      // isNewImage: true
     };
   },
   watch: {
@@ -216,6 +251,23 @@ export default {
       set(val) {
         this.$emit("update:editedIndex", val);
       }
+    }
+  },
+  methods: {
+    onObjectSelected(event) {
+      this.objectThumbnailFile = event;
+      this.MyEditedItem.image = this.objectThumbnailFile;
+    },
+    MyThumbnail(imageName) {
+      return imgURL + imageName;
+    },
+    OpenImage(imageName) {
+      this.MyImageSrc = imgURL + imageName;
+      this.MyImageDialog = true;
+    },
+    removeImage(MyEditedItem) {
+      MyEditedItem.image = null;
+      MyEditedItem.isNewImage = true;
     }
   }
 };

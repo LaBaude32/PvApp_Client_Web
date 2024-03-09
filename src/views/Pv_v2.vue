@@ -72,6 +72,7 @@ export default {
       pvUsers: [],
       pvConnectedParticipants: [],
       items: [],
+      newImage: "lala",
       headers: [
         {
           text: "Position",
@@ -84,6 +85,7 @@ export default {
         { text: "Echeance", value: "completion", sortable: false },
         { text: "Date d'echéance", value: "completionDate" },
         { text: "Visible", value: "visible" },
+        { text: "Photo", value: "image" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
@@ -99,20 +101,24 @@ export default {
         completionDate: "",
         completionDateDate: "",
         completionDateTime: "",
-        visible: ""
+        image: null,
+        visible: "",
+        isNewImage: ""
       },
       defaultItem: {
         position: "",
         lotsToReturn: [],
         lots: [],
-        note: "",
-        followUp: "",
-        resources: "",
+        note: null,
+        followUp: null,
+        resources: null,
         completion: ["A faire", "Urgent", "Fait"],
         completionDate: "",
         completionDateDate: "",
         completionDateTime: "",
-        visible: true
+        image: null,
+        visible: true,
+        isNewImage: true
       }
     };
   },
@@ -173,6 +179,7 @@ export default {
       this.editedItem.completionToReturn = item.completion;
       this.editedItem.completion = [item.completion];
       this.editedItem.completion.push(...this.defaultItem.completion);
+      item.image ? (this.editedItem.isNewImage = false) : (this.editedItem.isNewImage = true);
 
       this.dialog = true;
     },
@@ -200,72 +207,93 @@ export default {
 
     save() {
       this.editedItem.lots = this.editedItem.lotsToReturn;
-      // if (this.editedItem.completionDate != "" && this.editedItem.completionDate.lenght < 12) {
-      //   this.editedItem.completionDate += " 00:00:00";
-      // } else if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
-      //   this.editedItem.completionDate = null;
-      // }
       if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
         this.editedItem.completionDate = null;
       }
-      // this.editedItem.completion = this.editedItem.completionToReturn;
-      let data;
-      data = { ...this.editedItem };
-      // data.completion = data.completionToReturn;
-      if (this.meetingType == "Chantier" && data.lotsToReturn) {
+
+      const fd = new FormData();
+      fd.append("position", this.editedItem.position);
+      fd.append("note", this.editedItem.note);
+      fd.append("followUp", this.editedItem.followUp);
+      fd.append("resources", this.editedItem.resources);
+      fd.append("completion", this.editedItem.completionToReturn);
+      fd.append("completionDate", this.editedItem.completionDate);
+      fd.append("image", this.editedItem.image);
+      fd.append("thumbnail", null);
+      fd.append("visible", this.editedItem.visible);
+      fd.append("lots", null);
+      fd.append("pvId", this.pvId);
+
+      if (this.meetingType == "Chantier" && this.editedItem.lotsToReturn) {
         let lotTransit = [];
-        data.lotsToReturn.forEach((element) => {
+        this.editedItem.lotsToReturn.forEach((element) => {
           lotTransit.push(element.lotId);
         });
-        data.lots = lotTransit;
+        fd.set("lots", lotTransit);
       }
-      data.completion = data.completionToReturn;
-      delete data.completionDateDate;
-      delete data.completionDateTime;
-      delete data.completionToReturn;
-      delete data.lotsToReturn;
 
       if (this.editedIndex > -1) {
-        //Existing item
-        Axios.put("items/itemId", data)
-          .then((response) => {
-            if (response.status == 200) {
-              this.editedItem.completion = this.editedItem.completionToReturn;
-              Object.assign(this.items[this.editedIndex], this.editedItem);
-              // this.items[this.editedIndex] = { ...data };
-              this.editedItem.completion = [];
-              this.close();
-              this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
-            } else {
-              console.log(response);
-              console.log(typeof response.data.itemId);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //EXISTING ITEM
+        fd.append("itemId", this.editedItem.itemId);
+        this.updateItem(fd);
       } else {
-        //New item
-        data.pvId = this.pvId;
-        // data.createdAt = DateTime.now();("YYYY-MM-DD HH:mm:ss");
-        Axios.post("/items", data)
-          .then((response) => {
-            if (response.status == 201) {
-              data.itemId = response.data.itemId;
-              data.lots = this.editedItem.lots;
-              this.items.push(data);
-              this.editedItem.completion = [];
-              this.close();
-              this.$store.dispatch("notification/success", "Ajout de l'item effectué");
-            } else {
-              console.log(response);
-              console.log(typeof response.data.itemId);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //NEW ITEM
+        this.postItem(fd);
       }
+      this.editedItem = { ...this.defaultItem };
+    },
+
+    postItem(fd) {
+      Axios.post("/items", fd)
+        .then((response) => {
+          if (response.status == 201) {
+            this.items.push(response.data);
+            this.close();
+            this.$store.dispatch("notification/success", "Ajout de l'item effectué");
+          } else {
+            console.log(response);
+            console.log(typeof response.data.itemId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async updateItem(fd) {
+      //Upload new image
+      if (this.editedItem.image != null && this.editedItem.isNewImage == true) {
+        const fdImage = new FormData();
+        fdImage.append("itemId", this.editedItem.itemId);
+        fdImage.append("image", this.editedItem.image);
+        const res = await Axios.post("items/updateImage", fdImage);
+        fd.set("image", res.data.image);
+      }
+
+      let data = {};
+      fd.forEach((value, key) => (data[key] = value));
+      for (const iterator in data) {
+        if (data[iterator] == "null") {
+          data[iterator] = null;
+        }
+      }
+
+      Axios.put("items/itemId", data)
+        .then((response) => {
+          if (response.status == 200) {
+            this.editedItem.completion = this.editedItem.completionToReturn;
+            Object.assign(this.items[this.editedIndex], data);
+            this.editedItem.completion = [];
+            this.close();
+            this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
+          } else {
+            console.log(response);
+            console.log(typeof response.data.itemId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     maxPosition() {
