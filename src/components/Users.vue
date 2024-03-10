@@ -3,7 +3,7 @@
     <v-data-table :headers="headers" :items="users" :search="search" dense>
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-toolbar-title>Personnes</v-toolbar-title>
+          <v-toolbar-title>Participants</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
@@ -358,10 +358,11 @@ export default {
       this.closeExistingUser();
     },
     statusChange(item) {
-      let data = { ...item };
-      data.pvId = this.pvId;
-      data.userGroup = data.userGroupToReturn;
-      Axios.put("participants/userId", data)
+      let statusData = {};
+      statusData.pvId = this.pvId;
+      statusData.userId = item.userId;
+      statusData.statusPAE = item.statusPAE;
+      Axios.put("participants/userId/updateStatus", statusData)
         .then((response) => {
           if (response.status == 200) {
             this.$store.dispatch("notification/success", "Le status à bien été mis à jour");
