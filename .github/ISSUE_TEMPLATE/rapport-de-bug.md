@@ -7,32 +7,21 @@ assignees: ''
 
 ---
 
-**Décrire le bug**
-Une description claire et consiste de ce qu'est le bug.
+**Décrire le bug :**
+Une description clair et consiste de ce qu'est le bug.
 
-**Reproduction**
+**Reproduction :**
 Étapes pour reproduire le bug :
 1. Aller à '...'
 2. Cliquer sur '....'
 3. Descendre jusqu’à'....'
 4. Voir l'erreur
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Comportement attendu :**
+Une description clair et consiste de ce qui est attendu comme comportement.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Capture d'écran :**
+Si possible ajouter des captures d'écran du bug
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+**Contexte additionnel :**
+Ajouter plus de contexte sur le bug si besoin.
