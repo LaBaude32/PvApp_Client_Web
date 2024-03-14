@@ -19,7 +19,7 @@
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
           <v-card class="mx-auto" color="blue-grey lighten-5" min-height="185">
             <v-list-item three-line>
-              <v-list-item-content>
+              <v-list-item>
                 <v-list-item-title class="text-h6 mb-1">
                   Réunion du :
                   {{ pv.meetingDate | formatDate }}
@@ -36,7 +36,7 @@
                   </v-btn>
                   <div v-if="pv.meetingNextDate">Prochaine réunion : {{ pv.meetingNextDate | formatDate }}</div>
                 </v-card-text>
-              </v-list-item-content>
+              </v-list-item>
             </v-list-item>
           </v-card>
         </v-col>
@@ -49,7 +49,7 @@
         <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.affairId">
           <v-card class="mx-auto" color="blue-grey lighten-5" outlined>
             <v-list-item three-line>
-              <v-list-item-content>
+              <v-list-item>
                 <v-list-item-title class="text-h6 mb-1">{{ affair.name }}</v-list-item-title>
                 <v-list-item-subtitle>{{ affair.meetingType }}</v-list-item-subtitle>
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
@@ -65,7 +65,7 @@
                     <v-btn color="success" @click="openAffair(affair.affairId)">Ouvrir</v-btn>
                   </v-spacer>
                 </v-card-actions>
-              </v-list-item-content>
+              </v-list-item>
             </v-list-item>
           </v-card>
         </v-col>

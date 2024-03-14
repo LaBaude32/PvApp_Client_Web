@@ -3,22 +3,21 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="8">
         <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Créer un personne</v-toolbar-title>
-            <v-spacer />
+          <v-toolbar color="primary">
+            <v-toolbar-title>Créer un compte</v-toolbar-title>
           </v-toolbar>
           <v-form v-model="valid">
             <v-card-text>
               <v-row>
-                <v-col cols="7">
-                  <v-text-field label="Email" prepend-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
+                <v-col cols="6">
+                  <v-text-field label="Email" prepend-inner-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
                 </v-col>
-                <v-col cols="5">
+                <v-col cols="6">
                   <v-text-field
                     id="password"
                     label="Mot de passe"
-                    prepend-icon="mdi-lock"
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    prepend-inner-icon="mdi-lock"
+                    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showPassword ? 'text' : 'password'"
                     @click:append="showPassword = !showPassword"
                     v-model="password"

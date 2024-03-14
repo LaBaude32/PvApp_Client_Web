@@ -1,47 +1,38 @@
 <template>
-  <v-app id="inspire">
-    <v-app-bar app color="primary darken-1" clipped-right dark class="d-print-none">
+  <v-layout class="rounded rounded-md">
+    <v-app-bar color="primary darken-1" dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
-      <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
-      <v-spacer />
-      <!-- TODO: Comment detecter qu'on est en mobile ou pas ? -->
-      <div class="d-flex align-center">
-        <h2>PvApp</h2>
-      </div>
-      <v-spacer />
-      <v-btn class="mr-6" color="primary" @click="action('Board')"><v-icon class="mr-3">mdi-view-dashboard</v-icon>Dashboard</v-btn>
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" v-on="on" v-if="isLogged" class="diableOnMobile">
+      <v-app-bar-title>PvApp</v-app-bar-title>
+      <v-btn class="mr-6" @click="action('Board')"><v-icon class="mr-3">mdi-view-dashboard</v-icon>Dashboard</v-btn>
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn color="primary" v-on="on" v-else @click="action('Login')" class="diableOnMobile">
+          <v-btn v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
         </template>
-        <v-list v-if="isLogged">
-          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
+        <v-list>
+          <v-list-item v-for="(item, index) in items" :key="index" :value="index">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-      <!-- <v-app-bar-nav-icon @click.stop="invertDrawerRight" /> -->
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawerMain" app>
+    <v-navigation-drawer v-model="drawerMain">
       <v-list nav>
-        <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
-          <v-list-item-icon>
-            <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              {{ item.title }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-list-item
+          v-for="item in mainMenuItems"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          @click.prevent="actionMainMenu(item.path)"
+          link
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -53,7 +44,7 @@
           v-model="versionNotif"
           dismissible
           color="green"
-          border="left"
+          border="start"
           elevation="2"
           colored-border
           icon="mdi-information"
@@ -75,7 +66,7 @@
       </div>
     </v-main>
     <Notification />
-  </v-app>
+  </v-layout>
 </template>
 
 <script>
@@ -105,8 +96,7 @@ export default {
         {
           path: getRouteName("home"),
           title: "Pv App",
-          icon: "mdi-home",
-          color: "blue darken-2"
+          icon: "mdi-home"
         },
         {
           path: getRouteName("board"),

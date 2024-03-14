@@ -4,7 +4,7 @@
       <v-col cols="4" v-for="user in users" v-bind:key="user.id">
         <v-card class="mx-auto mb-5" max-width="344" outlined>
           <v-list-item three-line>
-            <v-list-item-content>
+            <v-list-item>
               <v-list-item-title class="text-h5 mb-1">{{ user.firstName }} {{ user.lastName }}</v-list-item-title>
               <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
               <v-list-item-subtitle>{{ user.phone }}</v-list-item-subtitle>
@@ -13,7 +13,7 @@
                 <div>Fonction : {{ user.function }}</div>
                 <div>Groupe : {{ user.user_group }}</div>
               </v-card-text>
-            </v-list-item-content>
+            </v-list-item>
           </v-list-item>
         </v-card>
       </v-col>

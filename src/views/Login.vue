@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height" fluid>
+  <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-alert type="success" v-if="isLogged">Vous êtes connecté, vous allez être redirigé dans 5 secondes</v-alert>
@@ -12,9 +12,8 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
+          <v-toolbar color="primary">
             <v-toolbar-title>Connexion</v-toolbar-title>
-            <v-spacer />
           </v-toolbar>
           <v-form v-model="valid">
             <v-card-text>
@@ -24,7 +23,7 @@
                 label="Mot de passe"
                 name="password"
                 prepend-icon="mdi-lock"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPassword ? 'text' : 'password'"
                 @click:append="showPassword = !showPassword"
                 v-model="password"
