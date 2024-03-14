@@ -1,16 +1,10 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { createStore } from "vuex";
 import user from "./modules/user";
 import auth from "./modules/auth";
 import affair from "./modules/affair";
 import notification from "./modules/notification";
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
+const store = createStore({
   modules: {
     user: {
       namespaced: true,
@@ -30,3 +24,5 @@ export default new Vuex.Store({
     }
   }
 });
+
+export default store;

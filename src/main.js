@@ -1,30 +1,20 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
 import axios from "axios";
-import { DateTime, Settings } from "luxon";
-Vue.config.productionTip = false;
 
-Settings.defaultLocale = "fr";
+import { createApp } from "vue";
+import store from "./store";
+import router from "./router";
 
-Vue.filter("formatDate", function (value) {
-  if (value) {
-    return DateTime.fromSQL(value).toFormat("ff");
-  }
-});
+import App from "./App.vue";
 
-Vue.filter("formatDateWithA", function (value) {
-  if (value) {
-    return DateTime.fromSQL(value).toFormat("ccc d LLL yyyy à T");
-  }
-});
+// Vuetify
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
 
-Vue.filter("formatDateShortDayOnly", function (value) {
-  if (value) {
-    return DateTime.fromSQL(value).toFormat("ccc d LLL y");
-  }
+const vuetify = createVuetify({
+  components,
+  directives
 });
 
 const token = localStorage.getItem("token");
@@ -35,9 +25,9 @@ if (token) {
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_API_URL;
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount("#app");
+const app = createApp(App);
+app.use(store);
+app.use(vuetify);
+app.use(router);
+
+app.mount("#app");

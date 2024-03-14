@@ -1,17 +1,17 @@
-const state = {
+const state = () => ({
   text: "",
   type: undefined,
   state: false,
   btnColor: "red",
   isDark: false
-};
+});
 
 const getters = {
-  state: state => state.state,
-  text: state => state.text,
-  type: state => state.type,
-  btnColor: state => state.btnColor,
-  isDark: state => state.isDark
+  state: (state) => state.state,
+  text: (state) => state.text,
+  type: (state) => state.type,
+  btnColor: (state) => state.btnColor,
+  isDark: (state) => state.isDark
 };
 
 const mutations = {

@@ -1,18 +1,23 @@
 import { defineConfig } from "vite";
-import { createVuePlugin as vue } from "vite-plugin-vue2";
-import Components from 'unplugin-vue-components/vite'
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
+// import { createVuePlugin as vue } from "vite-plugin-vue2";
+import vue from "@vitejs/plugin-vue";
+import { fileURLToPath } from "url";
 
-const path = require("path");
 export default defineConfig({
-  plugins: [vue(),
-  Components({
-    resolvers: [VuetifyResolver()]
-  })],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
+        }
+      }
+    })
+  ],
   resolve: {
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+      "@": fileURLToPath(new URL("./src", import.meta.url))
+    }
+  }
 });

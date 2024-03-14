@@ -1,18 +1,5 @@
 <template>
   <v-app id="inspire">
-    <!-- <v-navigation-drawer v-model="drawerRight" app clipped right>
-      <v-list dense>
-        <v-list-item @click.stop="invertRight">
-          <v-list-item-action>
-            <v-icon>mdi-exit-to-app</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Open Temporary Drawer</v-list-item-title>
-          </v-list-item-content> 
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer> -->
-
     <v-app-bar app color="primary darken-1" clipped-right dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
@@ -94,7 +81,6 @@
 <script>
 import Axios from "axios";
 import { mapGetters } from "vuex";
-// import routesCONST from "./utilities/constantes";
 import { getRouteName } from "./utilities/constantes";
 import Notification from "@/components/Notification.vue";
 import { version } from "../package";

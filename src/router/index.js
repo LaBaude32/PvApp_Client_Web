@@ -1,6 +1,5 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import { createMemoryHistory, createRouter } from "vue-router";
+import HomePage from "../views/HomePage.vue";
 import store from "../store/index";
 import routesCONST, { getRouteName, getRoutePath } from "../utilities/constantes";
 
@@ -20,15 +19,13 @@ const ifAuthenticated = (to, from, next) => {
   next("Login");
 };
 
-Vue.use(VueRouter);
-
 //TODO: verifier les droits des routes qui n'en on pas
 
 const routes = [
   {
     path: routesCONST.home.path,
     name: routesCONST.home.name,
-    component: Home
+    component: HomePage
   },
   {
     path: routesCONST.about.path,
@@ -110,16 +107,14 @@ const routes = [
     component: () => import("../views/Test.vue")
   },
   {
-    path: "*",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import("../views/Home.vue")
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("../views/HomePage.vue")
   }
 ];
 
-const router = new VueRouter({
-  mode: "history",
+const router = createRouter({
+  history: createMemoryHistory(),
   routes
 });
 

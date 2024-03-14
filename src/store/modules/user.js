@@ -1,7 +1,7 @@
 import axios from "axios";
 // import router from "./../../router";
 
-const state = {
+const state = () => ({
   isLogged: localStorage.getItem("isAuthenticated") || false,
   firstName: "",
   lastName: "",
@@ -9,7 +9,7 @@ const state = {
   fullName: localStorage.getItem("fullName") || "",
   resultCo: "",
   userId: localStorage.getItem("userId") || ""
-};
+});
 
 const getters = {
   logged: (state) => state.isLogged,
@@ -51,21 +51,20 @@ const mutations = {
 const actions = {
   login({ commit }, data) {
     return new Promise((resolve) => {
-      axios({ url: "/login", params: data, method: "get" })
-        .then(function (response) {
-          if (response.status == 202) {
-            let user = {
-              userId: response.data.userId,
-              firstName: response.data.firstName,
-              lastName: response.data.lastName,
-              email: response.data.email
-            };
-            commit("LOGIN", user);
-            localStorage.setItem("userId", user.userId);
-            localStorage.setItem("fullName", user.firstName + " " + user.lastName);
-            resolve();
-          }
-        })
+      axios({ url: "/login", params: data, method: "get" }).then(function (response) {
+        if (response.status == 202) {
+          let user = {
+            userId: response.data.userId,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            email: response.data.email
+          };
+          commit("LOGIN", user);
+          localStorage.setItem("userId", user.userId);
+          localStorage.setItem("fullName", user.firstName + " " + user.lastName);
+          resolve();
+        }
+      });
     });
   },
   logout({ commit }) {

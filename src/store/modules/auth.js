@@ -2,17 +2,17 @@ import axios from "axios";
 import router from "./../../router";
 import routesCONST from "./../../utilities/constantes";
 
-const state = {
+const state = () => ({
   tokenType: localStorage.getItem("tokenType") || "",
   token: localStorage.getItem("token") || "",
   status: ""
-};
+});
 
 const getters = {
-  token: state => state.token,
-  tokenType: state => state.tokenType,
-  isAuthenticated: state => !!state.token,
-  authStatus: state => state.status
+  token: (state) => state.token,
+  tokenType: (state) => state.tokenType,
+  isAuthenticated: (state) => !!state.token,
+  authStatus: (state) => state.status
 };
 
 const mutations = {
@@ -49,7 +49,7 @@ const actions = {
       // The Promise used for router redirect in login
       commit("AUTH_REQUEST");
       axios({ url: "/tokens", data, method: "POST" })
-        .then(response => {
+        .then((response) => {
           const token = response.data.access_token;
           const tokenType = response.data.tokenType;
           localStorage.setItem("token", token);
@@ -59,7 +59,7 @@ const actions = {
           commit("AUTH_SUCCESS", token, tokenType);
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           commit("AUTH_ERROR", error);
           localStorage.removeItem("token");
           reject();
@@ -67,7 +67,7 @@ const actions = {
     });
   },
   authLogout({ commit, dispatch }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       localStorage.removeItem("token");
       localStorage.removeItem("fullName");
       localStorage.removeItem("isAuthenticated");

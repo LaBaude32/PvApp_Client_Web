@@ -1,7 +1,7 @@
 const routesCONST = {
   home: {
-    path: "/home",
-    name: "Home"
+    path: "/homePage",
+    name: "HomePage"
   },
   board: {
     path: "/board",

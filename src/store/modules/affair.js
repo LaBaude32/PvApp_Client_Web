@@ -1,22 +1,21 @@
 import Axios from "axios";
 import router from "./../../router";
-// import { getRouteName } from "./../../utilities/constantes";
 import routesCONST from "./../../utilities/constantes";
 
-const state = {
+const state = () => ({
   affairId: "",
   name: "",
   meetingType: null,
   address: "",
   progress: ""
-};
+});
 
 const getters = {
-  affairId: state => state.affairId,
-  name: state => state.name,
-  meetingType: state => state.meetingType,
-  address: state => state.address,
-  progress: state => state.progress
+  affairId: (state) => state.affairId,
+  name: (state) => state.name,
+  meetingType: (state) => state.meetingType,
+  address: (state) => state.address,
+  progress: (state) => state.progress
 };
 
 const mutations = {
@@ -35,7 +34,7 @@ const actions = {
       params: {
         affairId: affairId
       }
-    }).then(response => {
+    }).then((response) => {
       let datas = response.data.affairInfos;
       commit("LOAD_AFFAIR", datas);
     });
@@ -45,7 +44,7 @@ const actions = {
       params: {
         affairId: affairId
       }
-    }).then(response => {
+    }).then((response) => {
       let datas = response.data.affairInfos;
       commit("LOAD_AFFAIR", datas);
       router.push({
@@ -61,13 +60,13 @@ const actions = {
         pvId: pvId,
         userId: this.state.user.userId
       }
-    }).then(response => {
+    }).then((response) => {
       let affairId = response.data.pv.affairId;
       Axios.get("affairs/affairId", {
         params: {
           affairId: affairId
         }
-      }).then(response => {
+      }).then((response) => {
         let datas = response.data.affairInfos;
         commit("LOAD_AFFAIR", datas);
         router.push({
