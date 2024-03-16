@@ -1,23 +1,22 @@
-import { createMemoryHistory, createRouter } from "vue-router";
-import HomePage from "../views/HomePage.vue";
-import store from "../store/index";
-import routesCONST, { getRouteName, getRoutePath } from "../utilities/constantes";
+import { createMemoryHistory, createRouter } from "vue-router"
+import store from "../store/index"
+import routesCONST, { getRouteName, getRoutePath } from "../utilities/constantes"
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters["auth/isAuthenticated"]) {
-    next();
-    return;
+    next()
+    return
   }
-  next("/");
-};
+  next("/")
+}
 
 const ifAuthenticated = (to, from, next) => {
   if (store.getters["auth/isAuthenticated"]) {
-    next();
-    return;
+    next()
+    return
   }
-  next("Login");
-};
+  next("Login")
+}
 
 //TODO: verifier les droits des routes qui n'en on pas
 
@@ -25,7 +24,7 @@ const routes = [
   {
     path: routesCONST.home.path,
     name: routesCONST.home.name,
-    component: HomePage
+    component: () => import("../views/HomePage.vue")
   },
   {
     path: routesCONST.about.path,
@@ -111,11 +110,11 @@ const routes = [
     name: "not-found",
     component: () => import("../views/HomePage.vue")
   }
-];
+]
 
 const router = createRouter({
   history: createMemoryHistory(),
   routes
-});
+})
 
-export default router;
+export default router

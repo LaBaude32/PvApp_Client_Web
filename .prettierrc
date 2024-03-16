@@ -1,9 +1,10 @@
 {
-  "printWidth": 150,
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "printWidth": 120,
   "tabWidth": 2,
-  "semi": true,
+  "semi": false,
   "singleQuote": false,
   "trailingComma": "none",
   "bracketSpacing": true,
-  "jsxBracketSameLine": false
+  "htmlWhitespaceSensitivity": "ignore"
 }
