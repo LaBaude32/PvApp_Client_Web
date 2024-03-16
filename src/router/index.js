@@ -1,21 +1,21 @@
-import { createMemoryHistory, createRouter } from "vue-router"
-import store from "../store/index"
-import routesCONST, { getRouteName, getRoutePath } from "../utilities/constantes"
+import { createMemoryHistory, createRouter } from 'vue-router'
+import store from '../store/index'
+import routesCONST, { getRouteName, getRoutePath } from '../utilities/constantes'
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters["auth/isAuthenticated"]) {
+  if (!store.getters['auth/isAuthenticated']) {
     next()
     return
   }
-  next("/")
+  next('/')
 }
 
 const ifAuthenticated = (to, from, next) => {
-  if (store.getters["auth/isAuthenticated"]) {
+  if (store.getters['auth/isAuthenticated']) {
     next()
     return
   }
-  next("Login")
+  next('Login')
 }
 
 //TODO: verifier les droits des routes qui n'en on pas
@@ -24,7 +24,7 @@ const routes = [
   {
     path: routesCONST.home.path,
     name: routesCONST.home.name,
-    component: () => import("../views/HomePage.vue")
+    component: () => import('../views/HomePage.vue')
   },
   {
     path: routesCONST.about.path,
@@ -32,7 +32,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import("../views/About.vue")
+    component: () => import('../views/About.vue')
   },
   {
     path: routesCONST.login.path,
@@ -40,7 +40,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import("../views/Login.vue"),
+    component: () => import('../views/Login.vue'),
     beforeEnter: ifNotAuthenticated
   },
   {
@@ -49,7 +49,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import("../views/Users.vue"),
+    component: () => import('../views/Users.vue'),
     beforeEnter: ifAuthenticated
   },
   {
@@ -58,57 +58,57 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import("../views/BoardPage.vue"),
+    component: () => import('../views/BoardPage.vue'),
     beforeEnter: ifAuthenticated
   },
   {
-    path: routesCONST.affair.path + "/:id",
+    path: routesCONST.affair.path + '/:id',
     name: routesCONST.affair.name,
-    component: () => import("../views/Affair.vue"),
+    component: () => import('../views/Affair.vue'),
     beforeEnter: ifAuthenticated
   },
   {
-    path: routesCONST.pv.path + "/:id",
+    path: routesCONST.pv.path + '/:id',
     name: routesCONST.pv.name,
-    component: () => import("../views/Pv_v2.vue"),
+    component: () => import('../views/Pv.vue'),
     beforeEnter: ifAuthenticated
   },
   {
     path: routesCONST.addAffair.path,
     name: routesCONST.addAffair.name,
-    component: () => import("../views/AddAffair.vue"),
+    component: () => import('../views/AddAffair.vue'),
     beforeEnter: ifAuthenticated
   },
   {
-    path: getRoutePath("addPv"),
-    name: getRouteName("addPv"),
-    component: () => import("../views/AddPv.vue"),
+    path: getRoutePath('addPv'),
+    name: getRouteName('addPv'),
+    component: () => import('../views/AddPv.vue'),
     beforeEnter: ifAuthenticated
   },
   {
-    path: getRoutePath("addUser"),
-    name: getRouteName("addUser"),
-    component: () => import("../views/AddUser.vue")
+    path: getRoutePath('addUser'),
+    name: getRouteName('addUser'),
+    component: () => import('../views/AddUser.vue')
   },
   {
-    path: getRoutePath("addLot"),
-    name: getRouteName("addLot"),
-    component: () => import("../views/AddLot.vue")
+    path: getRoutePath('addLot'),
+    name: getRouteName('addLot'),
+    component: () => import('../views/AddLot.vue')
   },
   {
-    path: getRoutePath("finishedPv") + "/:id",
-    name: getRouteName("finishedPv"),
-    component: () => import("../views/FinishedPv.vue")
+    path: getRoutePath('finishedPv') + '/:id',
+    name: getRouteName('finishedPv'),
+    component: () => import('../views/FinishedPv.vue')
   },
   {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
-    component: () => import("../views/Test.vue")
+    component: () => import('../views/Test.vue')
   },
   {
-    path: "/:pathMatch(.*)*",
-    name: "not-found",
-    component: () => import("../views/HomePage.vue")
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('../views/HomePage.vue')
   }
 ]
 

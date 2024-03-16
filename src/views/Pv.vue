@@ -11,7 +11,7 @@
     </v-container>
 
     <v-divider class="mb-10"></v-divider>
-    <Pv-v2
+    <Items
       v-if="meetingType"
       v-model:dialog="dialog"
       v-model:items="items"
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Pv_v2 from '../components/Pv_v2.vue'
+import Items from '../components/Items.vue'
 import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
 import Axios from 'axios'
@@ -56,10 +56,9 @@ Settings.defaultLocale = 'fr'
 
 export default {
   components: {
-    'Pv-v2': Pv_v2,
     Users,
     ModalValidation,
-    Pv_v2
+    Items
   },
   data() {
     return {

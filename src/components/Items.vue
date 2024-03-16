@@ -177,7 +177,7 @@
 <script>
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
 export default {
-  name: 'Pv-V2',
+  name: 'Items',
   props: {
     dialog: Boolean,
     items: Array,
