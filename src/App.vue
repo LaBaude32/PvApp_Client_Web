@@ -1,16 +1,19 @@
 <template>
-  <v-layout class="rounded rounded-md">
+  <v-layout>
     <v-app-bar color="primary darken-1" dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-app-bar-title>PvApp</v-app-bar-title>
-      <v-btn class="mr-6" @click="action('Board')"><v-icon class="mr-3">mdi-view-dashboard</v-icon>Dashboard</v-btn>
+      <v-btn class="mr-6" @click="action('Board')">
+        <v-icon class="mr-3">mdi-view-dashboard</v-icon>
+        Dashboard
+      </v-btn>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn v-else @click="action('Login')" class="diableOnMobile">
+          <v-btn v-bind="props" v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
@@ -37,7 +40,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <div id="app" class="mt-10">
+      <div id="app-version-notif" class="mt-10">
         <v-alert
           class="mx-auto"
           max-width="800px"
@@ -51,7 +54,7 @@
           prominent
         >
           <v-row align="center">
-            <v-col class="grow"> Une nouvelle version est disponnible. </v-col>
+            <v-col class="grow">Une nouvelle version est disponnible.</v-col>
             <v-col class="shrink">
               <v-chip class="ma-3" color="green" text-color="white">
                 {{ appVersion }}
@@ -62,19 +65,19 @@
             </v-col>
           </v-row>
         </v-alert>
-        <router-view />
       </div>
+      <router-view />
     </v-main>
     <Notification />
   </v-layout>
 </template>
 
 <script>
-import Axios from "axios";
-import { mapGetters } from "vuex";
-import { getRouteName } from "./utilities/constantes";
-import Notification from "@/components/Notification.vue";
-import { version } from "../package";
+import Axios from "axios"
+import { mapGetters } from "vuex"
+import { getRouteName } from "./utilities/constantes"
+import Notification from "@/components/Notification.vue"
+import { version } from "../package"
 
 export default {
   components: {
@@ -89,7 +92,6 @@ export default {
       drawerRight: false,
       items: [
         { path: "MyAccount", title: "Mon Compte" },
-        // { path: getRouteName("board"), title: "Board" },
         { path: "Logout", title: "Se deconnecter" }
       ],
       mainMenuItems: [
@@ -103,38 +105,20 @@ export default {
           title: "Dashboard",
           icon: "mdi-view-dashboard"
         },
-        // {
-        //   path: getRouteName("user"),
-        //   title: "Personnes",
-        //   icon: "mdi-account",
-        //   color: ""
-        // },
         {
           path: getRouteName("addUser"),
           title: "Créer un compte",
           icon: "mdi-account-plus",
           color: ""
         },
-        // {
-        //   path: getRouteName("addLot"),
-        //   title: "Créer un lot",
-        //   icon: "mdi-account",
-        //   color: ""
-        // },
         {
           path: getRouteName("about"),
           title: "A propos",
           icon: "mdi-information",
           color: ""
-          // },
-          // {
-          //   path: getRouteName("test"),
-          //   title: "page TEST",
-          //   icon: "mdi-alert",
-          //   color: "orange"
         }
       ]
-    };
+    }
   },
   computed: {
     ...mapGetters("user", {
@@ -144,62 +128,61 @@ export default {
   },
   methods: {
     actionMainMenu(path) {
-      this.$router.push({ name: path });
+      this.$router.push({ name: path })
     },
     action(path) {
       if (path == "Logout") {
         this.$store.dispatch("auth/authLogout").then(() => {
-          this.$router.push("Login");
-        });
+          this.$router.push("Login")
+        })
       } else {
-        this.$router.push({ name: path });
+        this.$router.push({ name: path })
       }
     },
     invertRight() {
-      this.right = !this.right;
+      this.right = !this.right
     },
     invertDrawerMain() {
-      this.drawerMain = !this.drawerMain;
+      this.drawerMain = !this.drawerMain
     },
     invertDrawerRight() {
-      this.drawerRight = !this.drawerRight;
+      this.drawerRight = !this.drawerRight
     }
   },
   created: function () {
-    const self = this;
+    const self = this
     Axios.interceptors.response.use(
       function (response) {
-        return response;
+        return response
       },
       function (error) {
-        self.$store.dispatch("notification/error", "Erreur d'authentification");
+        self.$store.dispatch("notification/error", "Erreur d'authentification")
         if (error.response.status == 401) {
           if (error.config.url == "tokens") {
-            self.$store.dispatch("auth/authError");
+            self.$store.dispatch("auth/authError")
           } else {
             // if you ever get an unauthorized, logout the user
-            self.$store.dispatch("auth/authLogout");
+            self.$store.dispatch("auth/authLogout")
           }
         }
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    );
+    )
     //verification de nouvelle version
-    let oldVersion = localStorage.getItem("appVersion");
+    let oldVersion = localStorage.getItem("appVersion")
     if (oldVersion != this.appVersion) {
-      this.versionNotif = true;
-      localStorage.setItem("appVersion", this.appVersion);
+      this.versionNotif = true
+      localStorage.setItem("appVersion", this.appVersion)
     }
   }
-};
+}
 </script>
 
 <style>
-#app {
+#app-version-notif {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 

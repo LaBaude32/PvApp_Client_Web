@@ -58,9 +58,9 @@
 </template>
 
 <script>
-import Axios from "axios";
-import { getRouteName } from "../utilities/constantes";
-import md5 from "md5";
+import Axios from "axios"
+import { getRouteName } from "../utilities/constantes"
+import md5 from "md5"
 export default {
   data() {
     return {
@@ -102,7 +102,7 @@ export default {
       ],
       userFunction: "",
       organism: ""
-    };
+    }
   },
   methods: {
     validate() {
@@ -115,16 +115,16 @@ export default {
         userGroup: this.userGroup,
         userFunction: this.userFunction,
         organism: this.organism
-      };
+      }
       Axios.post("users", datas)
         .then((response) => {
-          console.log(response);
-          this.$router.push(getRouteName("board"));
+          console.log(response)
+          this.$router.push(getRouteName("board"))
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     }
   }
-};
+}
 </script>
