@@ -1,22 +1,31 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="MyHeaders" :items="MyItems" sort-by="position" :search="search">
+      <v-data-table
+        :headers="MyHeaders"
+        :items="MyItems"
+        :sort-by="[{ key: 'position', order: 'asc' }]"
+        :search="search"
+      >
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meetingDate | formatDate }} </v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Chercher" single-line hide-details></v-text-field>
-            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              prepend-inner-icon="mdi-magnify"
+              label="Chercher"
+              single-line
+              hide-details
+            ></v-text-field>
             <v-dialog v-model="MyDialog" max-width="800px">
-              <template v-slot:activator="{ on }">
-                <v-btn color="primary" dark class="mb-2" v-on="on">Nouvel item</v-btn>
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" color="primary" dark class="mb-2">Nouvel item</v-btn>
               </template>
               <v-card>
                 <v-form v-model="MyValid">
                   <v-card-title>
-                    <span class="text-h5">{{ MyFormTitle }}</span>
+                    <span class="text-h5">{{ formTitle }}</span>
                   </v-card-title>
 
                   <v-card-text>
@@ -50,22 +59,33 @@
                           <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-textarea v-model="MyEditedItem.followUp" label="Suite à donner" counter auto-grow filled></v-textarea>
+                          <v-textarea
+                            v-model="MyEditedItem.followUp"
+                            label="Suite à donner"
+                            counter
+                            auto-grow
+                            filled
+                          ></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="MyEditedItem.resources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-select clearable v-model="MyEditedItem.completionToReturn" :items="MyEditedItem.completion" label="Echéance"></v-select>
+                          <v-select
+                            clearable
+                            v-model="MyEditedItem.completionToReturn"
+                            :items="MyEditedItem.completion"
+                            label="Echéance"
+                          ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
-                            <template v-slot:activator="{ on }">
+                            <template v-slot:activator="{ props }">
                               <v-text-field
+                                v-bind="props"
                                 :value="computedDateFormattedCompletion"
                                 label="Date de l'echéance"
                                 readonly
-                                v-on="on"
                                 clearable
                                 @click:clear="MyCompletionDate = null"
                                 prepend-icon="mdi-calendar"
@@ -85,7 +105,12 @@
                           <!-- <div v-if="MyEditedItem.image && MyEditedIndex > 0"> -->
                           <!-- <div v-if="MyEditedItem.image != null"> -->
                           <div v-if="MyEditedItem.isNewImage">
-                            <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
+                            <v-file-input
+                              label="Photo"
+                              accept="image/*"
+                              prepend-icon="mdi-camera"
+                              @change="onObjectSelected"
+                            ></v-file-input>
                           </div>
                           <div v-else>
                             <p>
@@ -112,22 +137,25 @@
           </v-toolbar>
         </template>
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
-            {{ lot.name }}
-          </v-chip>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>{{ lot.name }}</v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
           <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
         </template>
         <template v-slot:item.completionDate="{ item }">
-          {{ item.completionDate | formatDateShortDayOnly }}
+          {{ $filters.formatDateShortDayOnly(item.completionDate) }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img v-if="item.image" max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
+          <v-img
+            v-if="item.image"
+            max-width="150"
+            :src="MyThumbnail(item.image)"
+            @click="OpenImage(item.image)"
+          ></v-img>
         </template>
         <template v-slot:no-data>
           <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'item pour ce PV</p>
@@ -139,7 +167,7 @@
         <v-img contain max-height="750" :src="MyImageSrc"></v-img>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" @click="MyImageDialog = false"> Fermer </v-btn>
+          <v-btn color="error" @click="MyImageDialog = false">Fermer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -147,23 +175,23 @@
 </template>
 
 <script>
-const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL;
+const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
 export default {
-  name: "Pv-V2",
+  name: 'Pv-V2',
   props: {
     dialog: Boolean,
+    items: Array,
     valid: Boolean,
+    editedIndex: Number,
+    editedItem: Object,
+    formatedCompletionDate: String,
     standardRequirement: Array,
     pvUsers: Array,
-    items: Array,
     pvDetails: Object,
     meetingType: String,
     headers: Array,
-    editedIndex: Number,
-    editedItem: Object,
     defaultItem: Object,
     formTitle: String,
-    formatedCompletionDate: String,
     computedDateFormattedCompletion: String,
     editItem: Function,
     deleteItem: Function,
@@ -172,10 +200,11 @@ export default {
     maxPosition: Function,
     changeVisible: Function
   },
+  emits: ['update:dialog', 'update:items', 'update:editedIndex', 'update:editedItem', 'update:formatedCompletionDate'],
   data() {
     return {
       ItemModelDatePicker: false,
-      search: "",
+      search: '',
       MyPvUsers: this.pvUsers,
       MyHeaders: this.headers,
       MyMeetingType: this.meetingType,
@@ -184,91 +213,88 @@ export default {
       MyImageDialog: false,
       MyImageSrc: String
       // isNewImage: true
-    };
+    }
   },
   watch: {
     MyDialog(val) {
       if (this.MyEditedIndex == -1) {
         if (this.maxPosition() > 0) {
-          this.MyDefaultItem.position = this.maxPosition();
+          this.MyDefaultItem.position = this.maxPosition()
         } else {
-          this.MyDefaultItem.position = 1;
+          this.MyDefaultItem.position = 1
         }
-        this.MyEditedItem = Object.assign({}, this.MyDefaultItem);
+        this.MyEditedItem = Object.assign({}, this.MyDefaultItem)
       }
-      val || this.close();
+      val || this.close()
     }
   },
 
   computed: {
     MyCompletionDate: {
       get() {
-        return this.formatedCompletionDate;
+        return this.formatedCompletionDate
       },
       set(val) {
-        this.$emit("update:formatedCompletionDate", val);
+        this.$emit('update:formatedCompletionDate', val)
       }
-    },
-    MyFormTitle() {
-      return this.formTitle;
     },
     MyDialog: {
       get() {
-        return this.dialog;
+        return this.dialog
       },
       set(val) {
-        this.$emit("update:dialog", val);
+        this.$emit('update:dialog', val)
       }
     },
     MyValid: {
       get() {
-        return this.valid;
+        return this.valid
       },
       set(val) {
-        this.$emit("update:valid", val);
+        this.$emit('update:valid', val)
       }
     },
     MyItems: {
       get() {
-        return this.items;
+        return this.items
       },
       set(val) {
-        this.$emit("update:items", val);
+        this.$emit('update:items', val)
       }
     },
     MyEditedItem: {
       get() {
-        return this.editedItem;
+        return this.editedItem
       },
       set(val) {
-        this.$emit("update:editedItem", val);
+        this.$emit('update:editedItem', val)
       }
     },
     MyEditedIndex: {
       get() {
-        return this.editedIndex;
+        return this.editedIndex
       },
       set(val) {
-        this.$emit("update:editedIndex", val);
+        this.$emit('update:editedIndex', val)
       }
     }
   },
   methods: {
     onObjectSelected(event) {
-      this.objectThumbnailFile = event;
-      this.MyEditedItem.image = this.objectThumbnailFile;
+      this.objectThumbnailFile = event
+      this.MyEditedItem.image = this.objectThumbnailFile
     },
     MyThumbnail(imageName) {
-      return imgURL + imageName;
+      return imgURL + imageName
     },
     OpenImage(imageName) {
-      this.MyImageSrc = imgURL + imageName;
-      this.MyImageDialog = true;
+      this.MyImageSrc = imgURL + imageName
+      this.MyImageDialog = true
     },
     removeImage(MyEditedItem) {
-      MyEditedItem.image = null;
-      MyEditedItem.isNewImage = true;
+      MyEditedItem.image = null
+      MyEditedItem.isNewImage = true
     }
   }
-};
+}
 </script>

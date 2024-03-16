@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ModalValidation :dialog.sync="ModalValidationDialog" :validate="pvValidation" />
+    <ModalValidation v-model:dialog="ModalValidationDialog" :validate="pvValidation" />
     <v-container class="pt-0">
       <v-row>
         <v-col cols="12" class="d-flex justify-space-between">
@@ -13,19 +13,19 @@
     <v-divider class="mb-10"></v-divider>
     <Pv-v2
       v-if="meetingType"
-      :dialog.sync="dialog"
+      v-model:dialog="dialog"
+      v-model:items="items"
+      v-model:valid="valid"
+      v-model:editedIndex="editedIndex"
+      v-model:editedItem="editedItem"
+      v-model:formatedCompletionDate="formatedCompletionDate"
       :pvDetails="pvDetails"
       :pvUsers="pvUsers"
-      :items.sync="items"
       :meetingType="meetingType"
       :headers="headers"
-      :valid.sync="valid"
       :standardRequirement="standardRequirement"
-      :editedIndex.sync="editedIndex"
-      :editedItem.sync="editedItem"
       :defaultItem="defaultItem"
       :formTitle="formTitle"
-      :formatedCompletionDate.sync="formatedCompletionDate"
       :computedDateFormattedCompletion="computedDateFormattedCompletion"
       :editItem="editItem"
       :deleteItem="deleteItem"
@@ -45,20 +45,21 @@
 </template>
 
 <script>
-import Pv_v2 from "@/components/Pv_v2.vue";
-import Users from "@/components/Users.vue";
-import ModalValidation from "@/components/ModalValidation.vue";
-import Axios from "axios";
-import { getRouteName } from "../utilities/constantes";
-import { mapGetters } from "vuex";
-import { DateTime, Settings } from "luxon";
-Settings.defaultLocale = "fr";
+import Pv_v2 from '../components/Pv_v2.vue'
+import Users from '@/components/Users.vue'
+import ModalValidation from '@/components/ModalValidation.vue'
+import Axios from 'axios'
+import { getRouteName } from '../utilities/constantes'
+import { mapGetters } from 'vuex'
+import { DateTime, Settings } from 'luxon'
+Settings.defaultLocale = 'fr'
 
 export default {
   components: {
-    "Pv-v2": Pv_v2,
+    'Pv-v2': Pv_v2,
     Users,
-    ModalValidation
+    ModalValidation,
+    Pv_v2
   },
   data() {
     return {
@@ -67,269 +68,276 @@ export default {
       ModalValidationDialog: false,
       valid: false,
       meetingType: undefined,
-      standardRequirement: [(v) => !!v || "Requis"],
+      standardRequirement: [(v) => !!v || 'Requis'],
       pvDetails: {},
       pvUsers: [],
       pvConnectedParticipants: [],
       items: [],
-      newImage: "lala",
+      newImage: 'lala',
       headers: [
         {
-          text: "Position",
-          align: "center",
-          value: "position"
+          text: 'Position',
+          align: 'center',
+          value: 'position'
         },
-        { text: "Note", value: "note", sortable: false },
-        { text: "Suite à donner", value: "followUp", sortable: false },
-        { text: "Ressource", value: "ressources", sortable: false },
-        { text: "Echeance", value: "completion", sortable: false },
-        { text: "Date d'echéance", value: "completionDate" },
-        { text: "Visible", value: "visible" },
-        { text: "Photo", value: "image" },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: 'Note', value: 'note', sortable: false },
+        { text: 'Suite à donner', value: 'followUp', sortable: false },
+        { text: 'Ressource', value: 'ressources', sortable: false },
+        { text: 'Echeance', value: 'completion', sortable: false },
+        { text: "Date d'echéance", value: 'completionDate' },
+        { text: 'Visible', value: 'visible' },
+        { text: 'Photo', value: 'image' },
+        { text: 'Actions', value: 'actions', sortable: false }
       ],
       editedIndex: -1,
       editedItem: {
-        position: "",
+        position: '',
         lotsToReturn: [],
         lots: [],
-        note: "",
-        followUp: "",
-        resources: "",
+        note: '',
+        followUp: '',
+        resources: '',
         completion: [],
-        completionToReturn: "",
-        completionDate: "",
-        completionDateDate: "",
-        completionDateTime: "",
+        completionToReturn: '',
+        completionDate: '',
+        completionDateDate: '',
+        completionDateTime: '',
         image: null,
-        visible: "",
-        isNewImage: ""
+        visible: '',
+        isNewImage: ''
       },
       defaultItem: {
-        position: "",
+        position: '',
         lotsToReturn: [],
         lots: [],
         note: null,
         followUp: null,
         resources: null,
-        completion: ["A faire", "Urgent", "Fait"],
-        completionDate: "",
-        completionDateDate: "",
-        completionDateTime: "",
+        completion: ['A faire', 'Urgent', 'Fait'],
+        completionDate: '',
+        completionDateDate: '',
+        completionDateTime: '',
         image: null,
         visible: true,
         isNewImage: true
       }
-    };
+    }
   },
 
   computed: {
-    ...mapGetters("user", {
-      userId: "userId"
+    ...mapGetters('user', {
+      userId: 'userId'
     }),
     formTitle() {
-      return this.editedIndex === -1 ? "Nouvel item" : "Modifier l'item";
+      return this.editedIndex === -1 ? 'Nouvel item' : "Modifier l'item"
     },
     formatedCompletionDate: {
       get() {
-        return this.editedItem.completionDate ? DateTime.fromSQL(this.editedItem.completionDate).toFormat("yyyy-LL-dd") : "";
+        return this.editedItem.completionDate
+          ? DateTime.fromSQL(this.editedItem.completionDate).toFormat('yyyy-LL-dd')
+          : ''
       },
       set(val) {
-        this.editedItem.completionDate = DateTime.fromSQL(val).toFormat("yyyy-LL-dd");
+        this.editedItem.completionDate = DateTime.fromSQL(val).toFormat('yyyy-LL-dd')
       }
     },
     computedDateFormattedCompletion() {
-      return this.editedItem.completionDate ? DateTime.fromSQL(this.editedItem.completionDate).toFormat("ccc d LLL yyyy") : "";
+      return this.editedItem.completionDate
+        ? DateTime.fromSQL(this.editedItem.completionDate).toFormat('ccc d LLL yyyy')
+        : ''
     }
   },
 
   mounted() {
-    this.getData();
+    this.getData()
   },
 
   methods: {
     async getData() {
-      this.pvId = this.$route.params.id;
+      this.pvId = this.$route.params.id
       let dt = {
         params: {
           pvId: this.pvId,
           userId: this.userId
         }
-      };
-      let res = await Axios.get("pvs/pvId", dt);
+      }
+      let res = await Axios.get('pvs/pvId', dt)
       if (res.data.items) {
-        this.items = [...res.data.items];
+        this.items = [...res.data.items]
       }
-      this.pvDetails = res.data.pv;
-      this.pvUsers = res.data.users;
-      this.pvConnectedParticipants = res.data.connectedParticipants;
-      this.meetingType = res.data.pv.affairMeetingType;
-      if (this.meetingType == "Chantier") {
-        this.headers.splice(1, 0, { text: "Lot", value: "lots" });
-        this.defaultItem.lots = this.pvDetails.lots;
+      this.pvDetails = res.data.pv
+      this.pvUsers = res.data.users
+      this.pvConnectedParticipants = res.data.connectedParticipants
+      this.meetingType = res.data.pv.affairMeetingType
+      if (this.meetingType == 'Chantier') {
+        this.headers.splice(1, 0, { text: 'Lot', value: 'lots' })
+        this.defaultItem.lots = this.pvDetails.lots
       }
-      this.$store.dispatch("affair/loadAffairByPv", this.pvDetails.affairId);
+      this.$store.dispatch('affair/loadAffairByPv', this.pvDetails.affairId)
     },
 
     editItem(item) {
-      this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { ...item };
-      this.editedItem.lotsToReturn = item.lots;
-      this.editedItem.lots = this.pvDetails.lots;
-      this.editedItem.completionToReturn = item.completion;
-      this.editedItem.completion = [item.completion];
-      this.editedItem.completion.push(...this.defaultItem.completion);
-      item.image ? (this.editedItem.isNewImage = false) : (this.editedItem.isNewImage = true);
+      this.editedIndex = this.items.indexOf(item)
+      this.editedItem = { ...item }
+      this.editedItem.lotsToReturn = item.lots
+      this.editedItem.lots = this.pvDetails.lots
+      this.editedItem.completionToReturn = item.completion
+      this.editedItem.completion = [item.completion]
+      this.editedItem.completion.push(...this.defaultItem.completion)
+      item.image ? (this.editedItem.isNewImage = false) : (this.editedItem.isNewImage = true)
 
-      this.dialog = true;
+      this.dialog = true
     },
 
     deleteItem(item) {
-      const index = this.items.indexOf(item);
-      confirm("Etes-vous sûr de vouloir supprimer cet item?") &&
-        Axios.delete("items/itemId", { params: { itemId: item.itemId, pvId: this.pvId } })
+      const index = this.items.indexOf(item)
+      confirm('Etes-vous sûr de vouloir supprimer cet item?') &&
+        Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: this.pvId } })
           .then((response) => {
             if (response.status == 204) {
-              this.$store.dispatch("notification/success", "L'item à bien été supprimé");
-              this.items.splice(index, 1);
+              this.$store.dispatch('notification/success', "L'item à bien été supprimé")
+              this.items.splice(index, 1)
             }
           })
           .catch((error) => {
-            this.$store.dispatch("notification/error", `Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`);
-          });
+            this.$store.dispatch(
+              'notification/error',
+              `Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`
+            )
+          })
     },
 
     close() {
-      this.dialog = false;
-      this.editedItem = { ...this.defaultItem };
-      this.editedIndex = -1;
+      this.dialog = false
+      this.editedItem = { ...this.defaultItem }
+      this.editedIndex = -1
     },
 
     save() {
-      this.editedItem.lots = this.editedItem.lotsToReturn;
-      if (this.editedItem.completionDate == "" || this.editedItem.completionDate == "Invalid date") {
-        this.editedItem.completionDate = null;
+      this.editedItem.lots = this.editedItem.lotsToReturn
+      if (this.editedItem.completionDate == '' || this.editedItem.completionDate == 'Invalid date') {
+        this.editedItem.completionDate = null
       }
 
-      const fd = new FormData();
-      fd.append("position", this.editedItem.position);
-      fd.append("note", this.editedItem.note);
-      fd.append("followUp", this.editedItem.followUp);
-      fd.append("resources", this.editedItem.resources);
-      fd.append("completion", this.editedItem.completionToReturn);
-      fd.append("completionDate", this.editedItem.completionDate);
-      fd.append("image", this.editedItem.image);
-      fd.append("thumbnail", null);
-      fd.append("visible", this.editedItem.visible);
-      fd.append("lots", null);
-      fd.append("pvId", this.pvId);
+      const fd = new FormData()
+      fd.append('position', this.editedItem.position)
+      fd.append('note', this.editedItem.note)
+      fd.append('followUp', this.editedItem.followUp)
+      fd.append('resources', this.editedItem.resources)
+      fd.append('completion', this.editedItem.completionToReturn)
+      fd.append('completionDate', this.editedItem.completionDate)
+      fd.append('image', this.editedItem.image)
+      fd.append('thumbnail', null)
+      fd.append('visible', this.editedItem.visible)
+      fd.append('lots', null)
+      fd.append('pvId', this.pvId)
 
-      if (this.meetingType == "Chantier" && this.editedItem.lotsToReturn) {
-        let lotTransit = [];
+      if (this.meetingType == 'Chantier' && this.editedItem.lotsToReturn) {
+        let lotTransit = []
         this.editedItem.lotsToReturn.forEach((element) => {
-          lotTransit.push(element.lotId);
-        });
-        fd.set("lots", lotTransit);
+          lotTransit.push(element.lotId)
+        })
+        fd.set('lots', lotTransit)
       }
 
       if (this.editedIndex > -1) {
         //EXISTING ITEM
-        fd.append("itemId", this.editedItem.itemId);
-        this.updateItem(fd);
+        fd.append('itemId', this.editedItem.itemId)
+        this.updateItem(fd)
       } else {
         //NEW ITEM
-        this.postItem(fd);
+        this.postItem(fd)
       }
-      this.editedItem = { ...this.defaultItem };
+      this.editedItem = { ...this.defaultItem }
     },
 
     postItem(fd) {
-      Axios.post("/items", fd)
+      Axios.post('/items', fd)
         .then((response) => {
           if (response.status == 201) {
-            this.items.push(response.data);
-            this.close();
-            this.$store.dispatch("notification/success", "Ajout de l'item effectué");
+            this.items.push(response.data)
+            this.close()
+            this.$store.dispatch('notification/success', "Ajout de l'item effectué")
           } else {
-            console.log(response);
-            console.log(typeof response.data.itemId);
+            console.log(response)
+            console.log(typeof response.data.itemId)
           }
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
 
     async updateItem(fd) {
       //Upload new image
       if (this.editedItem.image != null && this.editedItem.isNewImage == true) {
-        const fdImage = new FormData();
-        fdImage.append("itemId", this.editedItem.itemId);
-        fdImage.append("image", this.editedItem.image);
-        const res = await Axios.post("items/updateImage", fdImage);
-        fd.set("image", res.data.image);
+        const fdImage = new FormData()
+        fdImage.append('itemId', this.editedItem.itemId)
+        fdImage.append('image', this.editedItem.image)
+        const res = await Axios.post('items/updateImage', fdImage)
+        fd.set('image', res.data.image)
       }
 
-      let data = {};
-      fd.forEach((value, key) => (data[key] = value));
+      let data = {}
+      fd.forEach((value, key) => (data[key] = value))
       for (const iterator in data) {
-        if (data[iterator] == "null") {
-          data[iterator] = null;
+        if (data[iterator] == 'null') {
+          data[iterator] = null
         }
       }
 
-      Axios.put("items/itemId", data)
+      Axios.put('items/itemId', data)
         .then((response) => {
           if (response.status == 200) {
-            this.editedItem.completion = this.editedItem.completionToReturn;
-            Object.assign(this.items[this.editedIndex], data);
-            this.editedItem.completion = [];
-            this.close();
-            this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
+            this.editedItem.completion = this.editedItem.completionToReturn
+            Object.assign(this.items[this.editedIndex], data)
+            this.editedItem.completion = []
+            this.close()
+            this.$store.dispatch('notification/success', "Mise à jour de l'item effectué")
           } else {
-            console.log(response);
-            console.log(typeof response.data.itemId);
+            console.log(response)
+            console.log(typeof response.data.itemId)
           }
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
 
     maxPosition() {
-      return Math.max(...this.items.map((items) => items.position)) + 1;
+      return Math.max(...this.items.map((items) => items.position)) + 1
     },
 
     changeVisible(item) {
       let data = {
         itemId: item.itemId,
         visible: item.visible
-      };
-      Axios.put("items/itemId/visibility", data)
+      }
+      Axios.put('items/itemId/visibility', data)
         .then((response) => {
           if (response.status == 200) {
-            this.$store.dispatch("notification/success", "L'item a été mis à jour");
+            this.$store.dispatch('notification/success', "L'item a été mis à jour")
           }
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     pvValidation() {
-      Axios.put("pvs/pvId/validation", { pvId: this.pvId })
+      Axios.put('pvs/pvId/validation', { pvId: this.pvId })
         .then((response) => {
           if (response.status == 204) {
-            this.$router.push({ name: getRouteName("finishedPv"), params: { id: this.pvId } });
-            this.ModalValidationDialog = false;
+            this.$router.push({ name: getRouteName('finishedPv'), params: { id: this.pvId } })
+            this.ModalValidationDialog = false
           }
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     returnToAffair() {
-      this.$router.push({ name: getRouteName("affair"), params: { id: this.pvDetails.affairId } });
+      this.$router.push({ name: getRouteName('affair'), params: { id: this.pvDetails.affairId } })
     }
   }
-};
+}
 </script>
