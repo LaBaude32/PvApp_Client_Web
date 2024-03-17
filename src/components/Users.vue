@@ -1,6 +1,6 @@
 <template>
   <v-card max-width="95%" class="mx-auto mb-10">
-    <v-data-table :headers="headers" :items="users" :search="search" dense>
+    <v-data-table :headers="headers" :items="users" :search="search">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Participants</v-toolbar-title>
@@ -196,121 +196,121 @@
 </template>
 
 <script>
-import Axios from "axios"
-import { mapGetters, mapState } from "vuex"
+import Axios from 'axios'
+import { mapGetters, mapState } from 'vuex'
 
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
 
 export default {
-  name: "Users",
+  name: 'Users',
   props: { users: Array, connectedParticipants: Array },
   data: () => ({
     pvId: Number,
     valid1: false,
     valid2: false,
     nameRules: [
-      (v) => !!v || "Requis",
-      (v) => (v && v.length >= 2) || "Doit être supérieur 1 charactère",
-      (v) => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"
+      (v) => !!v || 'Requis',
+      (v) => (v && v.length >= 2) || 'Doit être supérieur 1 charactère',
+      (v) => (v && v.length <= 30) || 'Doit être inférieur à 30 charactères'
     ],
-    standardRules: [(v) => (v && v.length <= 30) || "Doit être inférieur à 30 charactères"],
+    standardRules: [(v) => (v && v.length <= 30) || 'Doit être inférieur à 30 charactères'],
     // emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    emailRules: [(v) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Le mail doit être valide"],
-    phoneRules: [(v) => !v || /\d{10}/.test(v) || "Doit être un numéro de téléphone valide"],
-    statusRules: [(v) => !!v || "Requis"],
-    standardRequirement: [(v) => !!v || "Requis"],
-    search: "",
+    emailRules: [(v) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail doit être valide'],
+    phoneRules: [(v) => !v || /\d{10}/.test(v) || 'Doit être un numéro de téléphone valide'],
+    statusRules: [(v) => !!v || 'Requis'],
+    standardRequirement: [(v) => !!v || 'Requis'],
+    search: '',
     dialogNewOrModifiedUser: false,
     dialogExistingUser: false,
-    connectedParticipant: "",
-    connectedUser: "",
+    connectedParticipant: '',
+    connectedUser: '',
     //TODO: récuperer les connected User via l'API
     connectedUsers: [
       {
         user_id: 1,
-        fullName: "Baud Coup",
-        firstName: "Baud",
-        lastName: "Coup",
-        email: "baud@baud.fr",
-        phone: "0675",
-        userFunction: "dev",
-        organism: "SAS"
+        fullName: 'Baud Coup',
+        firstName: 'Baud',
+        lastName: 'Coup',
+        email: 'baud@baud.fr',
+        phone: '0675',
+        userFunction: 'dev',
+        organism: 'SAS'
       },
       {
         user_id: 2,
-        fullName: "Omb Bollo",
-        firstName: "Omb",
-        lastName: "Bollo"
+        fullName: 'Omb Bollo',
+        firstName: 'Omb',
+        lastName: 'Bollo'
       },
       {
         user_id: 3,
-        fullName: "Sam Coup",
-        firstName: "Sam",
-        lastName: "Coup"
+        fullName: 'Sam Coup',
+        firstName: 'Sam',
+        lastName: 'Coup'
       }
     ],
     headers: [
       {
-        text: "Prénom Nom",
-        align: "start",
-        value: "fullName"
+        title: 'Prénom Nom',
+        align: 'start',
+        value: 'fullName'
       },
       {
-        text: "Groupe",
-        value: "userGroup",
+        title: 'Groupe',
+        value: 'userGroup',
         sortable: false
       },
-      { text: "Fonction", value: "userFunction" },
-      { text: "Organisme", value: "organism" },
-      { text: "Mail", value: "email", sortable: false },
-      { text: "Téléphone", value: "phone", sortable: false },
-      { text: "Statut", value: "statusPAE" },
-      { text: "Modifier", value: "actions", sortable: false }
+      { title: 'Fonction', value: 'userFunction' },
+      { title: 'Organisme', value: 'organism' },
+      { title: 'Mail', value: 'email', sortable: false },
+      { title: 'Téléphone', value: 'phone', sortable: false },
+      { title: 'Statut', value: 'statusPAE' },
+      { title: 'Modifier', value: 'actions', sortable: false }
     ],
     editedIndex: -1,
     editedItem: {
-      fullName: "",
-      userGroupToReturn: "",
+      fullName: '',
+      userGroupToReturn: '',
       userGroup: [],
-      userFunction: "",
-      organism: "",
-      email: "",
-      phone: "",
-      statusPAE: "",
-      firstName: "",
-      lastName: ""
+      userFunction: '',
+      organism: '',
+      email: '',
+      phone: '',
+      statusPAE: '',
+      firstName: '',
+      lastName: ''
     },
     defaultItem: {
-      fullName: "",
+      fullName: '',
       userGroup: [
         "Maîtrise d'ouvrage",
         "Assistance à la maîtrise d'ouvrage",
         "Maîtrise d'oeuvre",
-        "Concessionnaire",
-        "Personne public associée",
-        "COPIL",
-        "COTEC",
-        "Divers"
+        'Concessionnaire',
+        'Personne public associée',
+        'COPIL',
+        'COTEC',
+        'Divers'
       ],
-      userFunction: "",
-      organism: "",
-      email: "",
-      phone: "",
-      statusPAE: ["Présent", "Absent", "Excusé"],
-      firstName: "",
-      lastName: ""
+      userFunction: '',
+      organism: '',
+      email: '',
+      phone: '',
+      statusPAE: ['Présent', 'Absent', 'Excusé'],
+      firstName: '',
+      lastName: ''
     }
   }),
 
   computed: {
-    ...mapGetters("affair", {
-      affair_name: "name"
+    ...mapGetters('affair', {
+      affair_name: 'name'
     }),
-    ...mapState("user", {
-      userId: "userId"
+    ...mapState('user', {
+      userId: 'userId'
     }),
     formTitle() {
-      return this.editedIndex === -1 ? "Ajouter une personne" : "Modifier une personne"
+      return this.editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
     }
   },
   mounted() {
@@ -327,9 +327,9 @@ export default {
   // },
 
   methods: {
-    formReset() {
-      this.$refs.form1.resetValidation()
-    },
+    // formReset() {
+    //   this.$refs.form1.reset()
+    // },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -339,11 +339,11 @@ export default {
 
     deleteItem(item) {
       const index = this.users.indexOf(item)
-      confirm("Etes-vous sûr de vouloir supprimer cette personne?") &&
-        Axios.delete("participants/userId", { params: { userId: item.userId, pvId: this.pvId } })
+      confirm('Etes-vous sûr de vouloir supprimer cette personne?') &&
+        Axios.delete('participants/userId', { params: { userId: item.userId, pvId: this.pvId } })
           .then((response) => {
             if (response.status == 204) {
-              this.$store.dispatch("notification/success", "L'utilisateur à bien été supprimé")
+              this.$store.dispatch('notification/success', "L'utilisateur à bien été supprimé")
               this.users.splice(index, 1)
             }
           })
@@ -357,7 +357,7 @@ export default {
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
-        this.formReset()
+        // this.formReset()
       }, 300)
     },
 
@@ -367,12 +367,12 @@ export default {
       data.userGroup = data.userGroupToReturn
       if (this.editedIndex > -1) {
         //Exisiting User
-        Axios.post("participants/userId", data)
+        Axios.post('participants/userId', data)
           .then((response) => {
             if (response.status == 200) {
               Object.assign(this.users[this.editedIndex], this.editedItem)
-              let message = "Le participant à bien été mis à jour"
-              this.$store.dispatch("notification/success", message)
+              let message = 'Le participant à bien été mis à jour'
+              this.$store.dispatch('notification/success', message)
             }
           })
           .catch((error) => {
@@ -381,13 +381,13 @@ export default {
       } else {
         //New User
         data.password = this.affair_name
-        Axios.post("users", data)
+        Axios.post('users', data)
           .then((response) => {
             if (response.status == 201) {
               data.userId = response.data.userId
               this.users.push(data)
-              let message = "Le participant à bien été ajouté"
-              this.$store.dispatch("notification/success", message)
+              let message = 'Le participant à bien été ajouté'
+              this.$store.dispatch('notification/success', message)
             }
           })
           .catch((error) => {
@@ -419,10 +419,10 @@ export default {
       statusData.pvId = this.pvId
       statusData.userId = item.userId
       statusData.statusPAE = item.statusPAE
-      Axios.put("participants/userId/updateStatus", statusData)
+      Axios.put('participants/userId/updateStatus', statusData)
         .then((response) => {
           if (response.status == 200) {
-            this.$store.dispatch("notification/success", "Le status à bien été mis à jour")
+            this.$store.dispatch('notification/success', 'Le status à bien été mis à jour')
           }
         })
         .catch((error) => {

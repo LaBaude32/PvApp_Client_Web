@@ -15,7 +15,6 @@
       v-if="meetingType"
       v-model:dialog="dialog"
       v-model:items="items"
-      v-model:valid="valid"
       v-model:editedIndex="editedIndex"
       v-model:editedItem="editedItem"
       v-model:formatedCompletionDate="formatedCompletionDate"
@@ -65,7 +64,6 @@ export default {
       pvId: Number,
       dialog: false,
       ModalValidationDialog: false,
-      valid: false,
       meetingType: undefined,
       standardRequirement: [(v) => !!v || 'Requis'],
       pvDetails: {},
@@ -75,18 +73,18 @@ export default {
       newImage: 'lala',
       headers: [
         {
-          text: 'Position',
+          title: 'Position',
           align: 'center',
           value: 'position'
         },
-        { text: 'Note', value: 'note', sortable: false },
-        { text: 'Suite à donner', value: 'followUp', sortable: false },
-        { text: 'Ressource', value: 'ressources', sortable: false },
-        { text: 'Echeance', value: 'completion', sortable: false },
-        { text: "Date d'echéance", value: 'completionDate' },
-        { text: 'Visible', value: 'visible' },
-        { text: 'Photo', value: 'image' },
-        { text: 'Actions', value: 'actions', sortable: false }
+        { title: 'Note', value: 'note', sortable: false },
+        { title: 'Suite à donner', value: 'followUp', sortable: false },
+        { title: 'Ressource', value: 'ressources', sortable: false },
+        { title: 'Echeance', value: 'completion', sortable: false },
+        { title: "Date d'echéance", value: 'completionDate' },
+        { title: 'Visible', value: 'visible' },
+        { title: 'Photo', value: 'image' },
+        { title: 'Actions', value: 'actions', sortable: false }
       ],
       editedIndex: -1,
       editedItem: {
@@ -179,7 +177,7 @@ export default {
       this.editedIndex = this.items.indexOf(item)
       this.editedItem = { ...item }
       this.editedItem.lotsToReturn = item.lots
-      this.editedItem.lots = this.pvDetails.lots
+      this.pvDetails.lots ? (this.editedItem.lots = this.pvDetails.lots) : (this.editedItem = undefined)
       this.editedItem.completionToReturn = item.completion
       this.editedItem.completion = [item.completion]
       this.editedItem.completion.push(...this.defaultItem.completion)

@@ -20,10 +20,10 @@
             ></v-text-field>
             <v-dialog v-model="MyDialog" max-width="800px">
               <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" color="primary" dark class="mb-2">Nouvel item</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-bind="props">Nouvel item</v-btn>
               </template>
               <v-card>
-                <v-form v-model="MyValid">
+                <v-form>
                   <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
                   </v-card-title>
@@ -42,6 +42,7 @@
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="MyMeetingType == 'Chantier'">
                           <v-select
+                            v-if="MyEditedItem.lots"
                             v-model="MyEditedItem.lotsToReturn"
                             :items="MyEditedItem.lots"
                             item-text="name"
@@ -129,7 +130,7 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                    <v-btn :disabled="!MyValid" color="blue darken-1" text @click="save">Enregister</v-btn>
+                    <v-btn color="blue darken-1" text @click="save">Enregister</v-btn>
                   </v-card-actions>
                 </v-form>
               </v-card>
@@ -181,7 +182,6 @@ export default {
   props: {
     dialog: Boolean,
     items: Array,
-    valid: Boolean,
     editedIndex: Number,
     editedItem: Object,
     formatedCompletionDate: String,
@@ -244,14 +244,6 @@ export default {
       },
       set(val) {
         this.$emit('update:dialog', val)
-      }
-    },
-    MyValid: {
-      get() {
-        return this.valid
-      },
-      set(val) {
-        this.$emit('update:valid', val)
       }
     },
     MyItems: {
