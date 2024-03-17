@@ -162,6 +162,9 @@ export default {
       if (res.data.items) {
         this.items = [...res.data.items]
       }
+      this.items.forEach((element) => {
+        element.visible == 1 ? (element.visible = true) : false
+      })
       this.pvDetails = res.data.pv
       this.pvUsers = res.data.users
       this.pvConnectedParticipants = res.data.connectedParticipants

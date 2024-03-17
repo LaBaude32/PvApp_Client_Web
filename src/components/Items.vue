@@ -141,7 +141,12 @@
           <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>{{ lot.name }}</v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
-          <v-switch v-model="item.visible" role="switch" @change="changeVisible(item)"></v-switch>
+          <v-switch
+            v-model="item.visible"
+            role="switch"
+            @change="changeVisible(item)"
+            :color="item.visible ? 'success' : ''"
+          ></v-switch>
         </template>
         <template v-slot:item.completionDate="{ item }">
           {{ $filters.formatDateShortDayOnly(item.completionDate) }}
