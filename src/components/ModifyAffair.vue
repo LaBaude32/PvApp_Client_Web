@@ -6,13 +6,28 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-text-field v-model="affairDatas.name" :counter="50" label="Nom de l'affaire" :rules="nameRules"></v-text-field>
+              <v-text-field
+                v-model="affairDatas.name"
+                :counter="50"
+                label="Nom de l'affaire"
+                :rules="nameRules"
+              ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-text-field v-model="affairDatas.address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
+              <v-text-field
+                v-model="affairDatas.address"
+                counter
+                label="Adresse de l'affaire"
+                :rules="addressRules"
+              ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-combobox v-model="affairDatas.meetingType" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
+              <v-combobox
+                v-model="affairDatas.meetingType"
+                :items="items"
+                label="Phase"
+                :rules="meetingRules"
+              ></v-combobox>
             </v-col>
             <v-col cols="12">
               <v-textarea
@@ -39,29 +54,39 @@
 
 <script>
 export default {
-  name: "ModifyAffair",
+  name: 'ModifyAffair',
   props: {
-    dialog: Boolean,
     affairDatas: Object,
     validate: Function,
     enableVider: Boolean
   },
+  emits: ['update:affairDatas'],
   data: () => ({
     valid: false,
     nameRules: [
-      (v) => !!v || "Requis",
-      (v) => (v && v.length <= 50) || "Doit être inferieur à 50 caractères",
-      (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"
+      (v) => !!v || 'Requis',
+      (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
+      (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
     ],
-    addressRules: [(v) => !!v || "Requis", (v) => (v && v.length >= 10) || "Doit être supérieur à 10 caractères"],
-    descriptionRules: [(v) => v.length <= 100 || "Doit être inferieur à 120 caractères"],
-    meetingRules: [(v) => !!v || "Requis", (v) => v == "Chantier" || v == "Etude" || "Choisir dans la liste"],
-    items: ["Chantier", "Etude"]
+    addressRules: [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'],
+    descriptionRules: [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères'],
+    meetingRules: [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste'],
+    items: ['Chantier', 'Etude']
   }),
   methods: {
     reset() {
-      this.$refs.form.reset();
+      this.$refs.form.reset()
+    }
+  },
+  computed: {
+    MyAffairDatas: {
+      get() {
+        return this.affairDatas
+      },
+      set(val) {
+        return this.$emit('update:affairDatas', val)
+      }
     }
   }
-};
+}
 </script>

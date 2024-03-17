@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="users" :group-by="groupBy" :items-per-page="-1" hide-default-footer>
+      <v-data-table :headers="headers" :items="users" :sort-by="sortBy" :items-per-page="-1" hide-default-footer>
         <template v-slot:item.fullName="{ item }">
           <div>{{ item.firstName }} {{ item.lastName }}</div>
         </template>
@@ -15,7 +15,7 @@ export default {
   props: {
     users: Array,
     headers: Array,
-    groupBy: String
+    sortBy: Array
   }
-};
+}
 </script>

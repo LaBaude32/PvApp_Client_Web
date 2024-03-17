@@ -6,7 +6,7 @@
           <v-spacer />
           <v-btn class="mr-16" color="success" x-large @click.prevent="downloadPdf">Telecharger</v-btn>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="text-center">
           <p class="text-uppercase text-h4">Opération :</p>
           <v-divider />
           <p class="mt-2 text-h5">{{ affairInfos.name }}</p>
@@ -30,38 +30,50 @@
           </v-row>
           <v-divider />
           <p class="text-uppercase mt-2 text-h6">
-            PV de la réunion de {{ meetingType }} n°{{ pvDetails.pvNumber }} du {{ pvDetails.meetingDate | formatDateWithA }}
+            PV de la réunion de {{ meetingType }} n°{{ pvDetails.pvNumber }} du
+            {{ $filters.formatDateWithA(pvDetails.meetingDate) }}
             <span v-if="pvDetails.meetingPlace">, {{ pvDetails.meetingPlace }}</span>
           </p>
           <p v-if="pvDetails.meetingNextDate" class="red--text text-h6">
-            Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}, {{ pvDetails.meetingNextPlace }}
+            Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }},
+            {{ pvDetails.meetingNextPlace }}
           </p>
         </v-col>
       </v-row>
     </v-container>
-    <finishedPvUsers v-if="meetingType" :users="pvUsers" :headers="UserHeaders" groupBy="userGroup" />
+    <finishedPvUsers
+      v-if="meetingType"
+      :users="pvUsers"
+      :headers="UserHeaders"
+      :sortBy="[{ key: 'userGroup', order: 'asc' }]"
+    />
     <v-container>
       <v-divider class="my-10" />
     </v-container>
-    <finishedPvItems v-if="meetingType" :items="items" :headers="ItemHeaders" sortBy="position" />
+    <finishedPvItems
+      v-if="meetingType"
+      :items="items"
+      :headers="ItemHeaders"
+      :sortBy="[{ key: 'position', order: 'asc' }]"
+    />
     <v-container>
       <v-divider class="my-10" />
       <div v-if="pvDetails.meetingNextDate">
-        <p class="text-uppercase">Prochaine réunion : le {{ pvDetails.meetingNextDate | formatDateWithA }}</p>
+        <p class="text-uppercase">Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }}</p>
         <p class="font-italic body-2">Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.</p>
       </div>
-      <p>Fait et diffusé le {{ pvDetails.releaseDate | formatDateWithA }}</p>
+      <p>Fait et diffusé le {{ $filters.formatDateWithA(pvDetails.releaseDate) }}</p>
       <p>{{ owner.firstName }} {{ owner.lastName }}</p>
     </v-container>
   </div>
 </template>
 
 <script>
-import finishedPvItems from "@/components/FinishedPvItems.vue";
-import finishedPvUsers from "@/components/FinishedPvUsers.vue";
-import Axios from "axios";
-import { DateTime, Settings } from "luxon";
-Settings.defaultLocale = "fr";
+import finishedPvItems from '@/components/FinishedPvItems.vue'
+import finishedPvUsers from '@/components/FinishedPvUsers.vue'
+import Axios from 'axios'
+import { DateTime, Settings } from 'luxon'
+Settings.defaultLocale = 'fr'
 export default {
   components: {
     finishedPvUsers,
@@ -76,106 +88,106 @@ export default {
       meetingType: undefined,
       pvUsers: [],
       owner: {},
-      maitresDOeuvre: "",
-      maitreDOuvrage: "",
+      maitresDOeuvre: '',
+      maitreDOuvrage: '',
       UserHeaders: [
         {
-          text: "Prénom Nom",
-          align: "start",
-          value: "fullName"
+          title: 'Prénom Nom',
+          align: 'start',
+          value: 'fullName'
         },
         {
-          text: "Groupe",
-          value: "userGroup"
+          title: 'Groupe',
+          value: 'userGroup'
         },
-        { text: "Fonction", value: "function" },
-        { text: "Organisme", value: "organism" },
-        { text: "Mail", value: "email", sortable: false },
-        { text: "Téléphone", value: "phone", sortable: false },
-        { text: "Statut", value: "statusPAE" }
+        { title: 'Fonction', value: 'function' },
+        { title: 'Organisme', value: 'organism' },
+        { title: 'Mail', value: 'email', sortable: false },
+        { title: 'Téléphone', value: 'phone', sortable: false },
+        { title: 'Statut', value: 'statusPAE' }
       ],
       ItemHeaders: [
         {
-          text: "Position",
-          align: "center",
-          value: "position"
+          title: 'Position',
+          align: 'center',
+          value: 'position'
         },
-        { text: "Note", value: "note", sortable: false },
-        { text: "Suite à donner", value: "followUp", sortable: false },
-        { text: "Ressource", value: "resources", sortable: false },
-        { text: "Echeance", value: "completion", sortable: false },
-        { text: "Date d'echéance", value: "completionDate" }
+        { title: 'Note', value: 'note', sortable: false },
+        { title: 'Suite à donner', value: 'followUp', sortable: false },
+        { title: 'Ressource', value: 'resources', sortable: false },
+        { title: 'Echeance', value: 'completion', sortable: false },
+        { title: "Date d'echéance", value: 'completionDate' }
       ]
-    };
+    }
   },
   mounted() {
-    this.getPvData();
+    this.getPvData()
   },
 
   methods: {
     async getPvData() {
-      this.idPv = this.$route.params.id;
+      this.idPv = this.$route.params.id
       let dt = {
         params: {
           pvId: this.$route.params.id
         }
-      };
-      let res = await Axios.get("pvs/pvId/released", dt);
+      }
+      let res = await Axios.get('pvs/pvId/released', dt)
       if (res.status == 200) {
         if (res.data.items) {
-          this.items = [...res.data.items];
+          this.items = [...res.data.items]
         }
       }
-      this.pvDetails = res.data.pv;
-      this.pvUsers = res.data.users;
-      this.meetingType = res.data.pv.affairMeetingType;
-      this.owner = res.data.owner;
-      if (this.meetingType == "Chantier") {
-        this.ItemHeaders.splice(1, 0, { text: "Lot", value: "lots" });
-        this.ItemHeaders.push({ text: "Photo", value: "image", sortable: false });
+      this.pvDetails = res.data.pv
+      this.pvUsers = res.data.users
+      this.meetingType = res.data.pv.affairMeetingType
+      this.owner = res.data.owner
+      if (this.meetingType == 'Chantier') {
+        this.ItemHeaders.splice(1, 0, { text: 'Lot', value: 'lots' })
+        this.ItemHeaders.push({ text: 'Photo', value: 'image', sortable: false })
       }
-      this.affairInfos = res.data.affair.affairInfos;
+      this.affairInfos = res.data.affair.affairInfos
 
       this.pvUsers.forEach((element) => {
         if (element.userGroup == "Maîtrise d'oeuvre") {
-          if (this.maitresDOeuvre == "") {
-            this.maitresDOeuvre = element.organism;
+          if (this.maitresDOeuvre == '') {
+            this.maitresDOeuvre = element.organism
           } else {
-            this.maitresDOeuvre += " - " + element.organism;
+            this.maitresDOeuvre += ' - ' + element.organism
           }
         }
         if (element.userGroup == "Maîtrise d'ouvrage") {
-          if (this.maitreDOuvrage == "") {
-            this.maitreDOuvrage = element.organism;
+          if (this.maitreDOuvrage == '') {
+            this.maitreDOuvrage = element.organism
           } else {
-            this.maitreDOuvrage += " - " + element.organism;
+            this.maitreDOuvrage += ' - ' + element.organism
           }
         }
-      });
+      })
     },
     async downloadPdf() {
       const res = await Axios({
-        responseType: "blob",
-        url: "pvs/pvId/released/pdf",
+        responseType: 'blob',
+        url: 'pvs/pvId/released/pdf',
         params: {
           pvId: this.$route.params.id
         }
-      });
+      })
 
-      const fileName = `${this.releaseDate}_Affaire-${this.affairInfos.name}_Pv-n${this.pvDetails.pvNumber}`;
+      const fileName = `${this.releaseDate}_Affaire-${this.affairInfos.name}_Pv-n${this.pvDetails.pvNumber}`
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${fileName}.pdf`);
-      document.body.appendChild(link);
-      link.click();
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `${fileName}.pdf`)
+      document.body.appendChild(link)
+      link.click()
     }
   },
   computed: {
     releaseDate() {
-      return DateTime.fromSQL(this.pvDetails.releaseDate).toISODate();
+      return DateTime.fromSQL(this.pvDetails.releaseDate).toISODate()
     }
   }
-};
+}
 </script>

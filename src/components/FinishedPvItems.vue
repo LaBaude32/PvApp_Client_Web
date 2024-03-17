@@ -8,7 +8,7 @@
           </v-chip>
         </template>
         <template v-slot:item.completionDate="{ item }">
-          {{ item.completionDate | formatDateShortDayOnly }}
+          {{ $filters.formatDateShortDayOnly(item.completionDate) }}
         </template>
         <template v-slot:item.image="{ item }">
           <v-img max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
@@ -20,7 +20,7 @@
         <v-img contain max-height="750" :src="MyImageSrc"></v-img>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" @click="MyImageDialog = false"> Fermer </v-btn>
+          <v-btn color="error" @click="MyImageDialog = false">Fermer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -28,27 +28,27 @@
 </template>
 
 <script>
-const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL;
+const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
 export default {
   props: {
     items: Array,
     headers: Array,
-    sortBy: String
+    sortBy: Array
   },
   data() {
     return {
       MyImageDialog: false,
-      MyImageSrc: ""
-    };
+      MyImageSrc: ''
+    }
   },
   methods: {
     MyThumbnail(imageName) {
-      return imgURL + imageName;
+      return imgURL + imageName
     },
     OpenImage(imageName) {
-      this.MyImageSrc = imgURL + imageName;
-      this.MyImageDialog = true;
+      this.MyImageSrc = imgURL + imageName
+      this.MyImageDialog = true
     }
   }
-};
+}
 </script>
