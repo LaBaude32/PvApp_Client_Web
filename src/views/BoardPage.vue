@@ -86,10 +86,10 @@
 </template>
 
 <script>
-import axios from "axios"
-import routesCONST, { getRouteName } from "../utilities/constantes"
+import axios from 'axios'
+import routesCONST, { getRouteName } from '../utilities/constantes'
 
-import { mapState } from "vuex"
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -98,21 +98,21 @@ export default {
     }
   },
   computed: {
-    ...mapState("user", {
-      userId: "userId"
+    ...mapState('user', {
+      userId: 'userId'
     })
   },
   methods: {
     openAffair(affairId) {
-      this.$store.dispatch("affair/openAffair", affairId)
+      this.$store.dispatch('affair/openAffair', affairId)
     },
     openPv(pvId) {
-      this.$store.dispatch("affair/openPv", pvId)
+      this.$store.dispatch('affair/openPv', pvId)
     },
     openFinishedPv(pvId) {
       // this.$store.dispatch("affair/openPv", pvId);
       this.$router.push({
-        name: getRouteName("finishedPv"),
+        name: getRouteName('finishedPv'),
         params: { id: pvId }
       })
     },
@@ -120,7 +120,7 @@ export default {
       this.$router.push({ name: routesCONST.addAffair.name })
     },
     createPv() {
-      this.$router.push(getRouteName("addPv"))
+      this.$router.push(getRouteName('addPv'))
     }
   },
   mounted() {
@@ -137,29 +137,16 @@ export default {
       }
     }
     if (typeof this.userId != undefined) {
-      axios
-        .get("pvs/userId", dtPvs)
-        .then(function (response) {
-          // handle success
-          self.pvs = response.data
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error)
-        })
-
-      axios
-        .get("affairs/userId", dtAffairs)
-        .then(function (response) {
-          // handle success
-          self.affairs = response.data
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error)
-        })
+      axios.get('pvs/userId', dtPvs).then(function (response) {
+        // handle success
+        self.pvs = response.data
+      })
+      axios.get('affairs/userId', dtAffairs).then(function (response) {
+        // handle success
+        self.affairs = response.data
+      })
     } else {
-      this.$store.dispatch("auth/authLogout")
+      this.$store.dispatch('auth/authLogout')
     }
   }
 }

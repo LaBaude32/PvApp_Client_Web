@@ -56,7 +56,7 @@
       :headers="ItemHeaders"
       :sortBy="[{ key: 'position', order: 'asc' }]"
     />
-    <v-container>
+    <v-container class="text-center">
       <v-divider class="my-10" />
       <div v-if="pvDetails.meetingNextDate">
         <p class="text-uppercase">Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }}</p>
