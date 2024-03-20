@@ -45,7 +45,7 @@
                             v-if="MyEditedItem.lots"
                             v-model="MyEditedItem.lotsToReturn"
                             :items="MyEditedItem.lots"
-                            item-text="name"
+                            item-title="name"
                             return-object
                             label="Lot"
                             chips
@@ -54,7 +54,11 @@
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
-                          <v-switch v-model="MyEditedItem.visible" label="Visible"></v-switch>
+                          <v-switch
+                            v-model="MyEditedItem.visible"
+                            label="Visible"
+                            :color="MyEditedItem.visible ? 'success' : ''"
+                          ></v-switch>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled></v-textarea>

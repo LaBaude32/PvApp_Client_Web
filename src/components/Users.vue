@@ -178,7 +178,11 @@
         </v-toolbar>
       </template>
       <template v-slot:item.statusPAE="{ item }">
-        <v-select v-model="item.statusPAE" :items="defaultItem.statusPAE" @change="statusChange(item)"></v-select>
+        <v-select
+          v-model="item.statusPAE"
+          :items="defaultItem.statusPAE"
+          @update:modelValue="statusChange(item)"
+        ></v-select>
       </template>
       <template v-slot:item.fullName="{ item }">
         <div>{{ item.firstName }} {{ item.lastName }}</div>
