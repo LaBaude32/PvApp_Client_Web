@@ -16,7 +16,7 @@
                   label="Jour de la réunion"
                   readonly
                   v-bind="props"
-                  prepend-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -42,7 +42,7 @@
                 <v-text-field
                   v-model="myMeetingDateTime"
                   label="Heure de la réunion"
-                  prepend-icon="mdi-clock-outline"
+                  prepend-inner-icon="mdi-clock-outline"
                   readonly
                   v-bind="props"
                 ></v-text-field>
@@ -76,7 +76,7 @@
                   readonly
                   v-bind="props"
                   @click:clear="myMeetingNextDateDate = null"
-                  prepend-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -102,7 +102,7 @@
                 <v-text-field
                   v-model="myMeetingNextDateTime"
                   label="Heure de la prochaine réunion"
-                  prepend-icon="mdi-clock-outline"
+                  prepend-inner-icon="mdi-clock-outline"
                   readonly
                   v-bind="props"
                   clearable
