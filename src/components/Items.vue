@@ -93,7 +93,7 @@
                                 readonly
                                 clearable
                                 @click:clear="MyCompletionDate = null"
-                                prepend-icon="mdi-calendar"
+                                prepend-inner-icon="mdi-calendar"
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -107,8 +107,6 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <!-- <div v-if="MyEditedItem.image && MyEditedIndex > 0"> -->
-                          <!-- <div v-if="MyEditedItem.image != null"> -->
                           <div v-if="MyEditedItem.isNewImage">
                             <v-file-input
                               label="Photo"

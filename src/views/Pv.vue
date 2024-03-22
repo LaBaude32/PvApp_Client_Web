@@ -140,7 +140,8 @@ export default {
     },
     computedDateFormattedCompletion() {
       return this.editedItem.completionDate
-        ? DateTime.fromSQL(this.editedItem.completionDate).toFormat('ccc d LLL yyyy')
+        ? // ? DateTime.fromSQL(this.editedItem.completionDate).toFormat('ccc d LLL yyyy')
+          DateTime.fromSQL(this.editedItem.completionDate)
         : ''
     }
   },
