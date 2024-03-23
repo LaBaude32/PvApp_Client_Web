@@ -3632,12 +3632,12 @@ __metadata:
     prettier: "npm:^3.2.5"
     sass: "npm:~1.72.0"
     unplugin-vue-components: "npm:^0.26.0"
-    vite: "npm:^5.2.2"
+    vite: "npm:^5.2.4"
     vite-plugin-vue2: "npm:^2.0.3"
     vite-plugin-vuetify: "npm:^2.0.3"
     vue: "npm:^3.4.21"
     vue-router: "npm:^4.3.0"
-    vuetify: "npm:^3.5.10"
+    vuetify: "npm:^3.5.11"
     vuex: "npm:^4.1.0"
   languageName: unknown
   linkType: soft
@@ -4312,9 +4312,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "vite@npm:5.2.2"
+"vite@npm:^5.2.4":
+  version: 5.2.4
+  resolution: "vite@npm:5.2.4"
   dependencies:
     esbuild: "npm:^0.20.1"
     fsevents: "npm:~2.3.3"
@@ -4348,7 +4348,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/472c6a1d41707ef51a5056ccc9e347333a3a975beb6069998d3d7a134555662b856e27628cc1354200c32d63373d7e4ef73385a4e90cc3032e48d06fb77928e5
+  checksum: 10c0/a8a57da83b5a46d9fc135fc4c51d08e1e60cdc4263ce6e7b23d60501c70605dd541726c331ab4d837ad774cdbf0b78bac088da770287620f81ad8b4d7b39dd74
   languageName: node
   linkType: hard
 
@@ -4427,12 +4427,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.5.10":
-  version: 3.5.10
-  resolution: "vuetify@npm:3.5.10"
+"vuetify@npm:^3.5.11":
+  version: 3.5.11
+  resolution: "vuetify@npm:3.5.11"
   peerDependencies:
     typescript: ">=4.7"
-    vite-plugin-vuetify: ">=1.0.0-alpha.12"
+    vite-plugin-vuetify: ">=2.0.3"
     vue: ^3.3.0
     vue-i18n: ^9.0.0
     webpack-plugin-vuetify: ">=2.0.0-alpha.11"
@@ -4445,7 +4445,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 10c0/fe125befeb3419d86108d68501de7e66b2828e92f2973d9b11afb668c3b403b3d81a6f72a1bd82f41e310a00a2409df1055239306529a1ab39549068d92f2fb6
+  checksum: 10c0/b9519063e60784bf223de16088df8aeef9cc04909e213692562883164eecef2d525049289a0fef6f2fe5cbeac0244d0dad872162d91a9aa5c4f9e8fac926dbdf
   languageName: node
   linkType: hard
 
