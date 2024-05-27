@@ -1472,14 +1472,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "axios@npm:1.7.1"
+"axios@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "axios@npm:1.7.2"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/554395472f18f4ddb43b4be2900473bc1a4d589464a8ab16f6954c53d9cace4317d5c9e009d5bb05f098d9565b2fa45f152a5d4cecb87536c8f0c370c25a7770
+  checksum: 10c0/cbd47ce380fe045313364e740bb03b936420b8b5558c7ea36a4563db1258c658f05e40feb5ddd41f6633fdd96d37ac2a76f884dad599c5b0224b4c451b3fa7ae
   languageName: node
   linkType: hard
 
@@ -3622,7 +3622,7 @@ __metadata:
     "@vue/compat": "npm:^3.4.27"
     "@vue/compiler-sfc": "npm:^3.4.27"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
-    axios: "npm:^1.7.1"
+    axios: "npm:^1.7.2"
     eslint: "npm:^9.3.0"
     eslint-plugin-prettier: "npm:^5.1.3"
     eslint-plugin-vue: "npm:^9.26.0"
@@ -3636,7 +3636,7 @@ __metadata:
     vite-plugin-vuetify: "npm:^2.0.3"
     vue: "npm:^3.4.27"
     vue-router: "npm:^4.3.2"
-    vuetify: "npm:^3.6.6"
+    vuetify: "npm:^3.6.7"
     vuex: "npm:^4.1.0"
   languageName: unknown
   linkType: soft
@@ -4422,9 +4422,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.6.6":
-  version: 3.6.6
-  resolution: "vuetify@npm:3.6.6"
+"vuetify@npm:^3.6.7":
+  version: 3.6.7
+  resolution: "vuetify@npm:3.6.7"
   peerDependencies:
     typescript: ">=4.7"
     vite-plugin-vuetify: ">=1.0.0"
@@ -4440,7 +4440,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 10c0/5ed298235e73942cf5bd123bb398f82e6a122054cce8defeaec937564aa085be3f850db6194c2e3ae4dcd3053d1347709546dc3d81926b16ff240fec0509b6e4
+  checksum: 10c0/7449a292a464a6c2150a2f1d8791d55fcbbafe6481a97a9f479d1ca60402d7434426872dde603e71c60dbfef491233b4bc26c3622b496a1f77587c9ac96d4c4e
   languageName: node
   linkType: hard
 
