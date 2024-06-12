@@ -50,6 +50,10 @@ const routesCONST = {
   test: {
     path: "/test",
     name: "Test"
+  },
+  test2: {
+    path: "/test2",
+    name: "Test2"
   }
 };
 

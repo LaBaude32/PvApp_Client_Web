@@ -2,88 +2,69 @@
   <v-form v-model="valid" ref="form">
     <v-container>
       <v-row>
-        <v-col cols="6" sm="6">
-          <v-text-field
-            id="date-picker-activator"
-            label="Date de l'echéance"
-            readonly
-            clearable
-            @click:clear="MyCompletionDate = null"
-            prepend-inner-icon="mdi-calendar"
-          ></v-text-field>
-          <v-menu activator="#date-picker-activator" :close-on-content-click="false" max-width="290">
+        <v-col>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-text-field
+                v-bind="props"
+                label="Date de la réunion"
+                readonly
+                clearable
+                @click:clear="meeting_date_date = null"
+                prepend-inner-icon="mdi-calendar"
+                v-model="displayMeetingDate"
+              ></v-text-field>
+            </template>
             <v-date-picker
               title="Selectionner une date"
               header="Nouvelle date"
-              update:modelValue="#date-picker-activator = false"
+              v-model="meeting_date_date"
             ></v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col>
+          <v-menu :close-on-content-click="false">
+            <template v-slot:activator="{ props }">
+              <v-text-field
+                v-bind="props"
+                label="Heure de la réunion"
+                readonly
+                clearable
+                @click:clear="meeting_date_date = null"
+                prepend-inner-icon="mdi-clock-meeting_date_time-four-outline"
+                v-model="meeting_date_time"
+              ></v-text-field>
+            </template>
+            <v-time-picker title="Selectionner l'heure" format="24hr" v-model="meeting_date_time"></v-time-picker>
           </v-menu>
         </v-col>
       </v-row>
     </v-container>
-    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
+    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate2">Valider</v-btn>
   </v-form>
 </template>
 
-<script>
-import Axios from 'axios'
-import { mapState } from 'vuex'
-import routesCONST, { getRouteName } from '../utilities/constantes'
+<script setup>
+import { useDate } from 'vuetify'
+import { ref, onMounted, computed } from 'vue'
 
-export default {
-  data() {
-    return {
-      valid: false,
-      menu2: false,
-      menu4: false,
-      meeting_date_time: '',
-      meeting_next_date_time: ''
-    }
-  },
-  methods: {
-    createAffair() {
-      this.$router.push(getRouteName('addAffair'))
-    },
-    validate() {
-      if (this.meeting_next_date_date == 'empty string') {
-        this.meeting_next_date = this.meeting_next_date_date + ' ' + this.meeting_next_date_time + ':00'
-      } else {
-        this.meeting_next_date = null
-      }
-      let pvData = {
-        meeting_date: this.meeting_date_date + ' ' + this.meeting_date_time + ':00',
-        meeting_place: this.meeting_place,
-        meeting_next_date: this.meeting_next_date,
-        meeting_next_place: this.meeting_next_place,
-        state: this.state,
-        affair_id: this.affair_id.id_affair
-      }
-      console.log(pvData)
-      Axios.post('addPv', pvData)
-        .then((response) => {
-          let pvId = response.data.id_pv
-          this.$router.push({
-            name: routesCONST.pv.name,
-            params: { id: pvId }
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    allowedStep: (m) => m % 5 === 0
-  },
-  mounted() {},
-  computed: {
-    ...mapState('user', {
-      userId: 'userId'
-    })
-    // computedDateFormattedMeetingDate() {
-    //   return this.meeting_date_date ? moment(this.meeting_date_date).format("dddd LL") : "";
-    // },
-    // computedDateFormattedMeetingNextDate() {
-    //   return this.meeting_next_date_date ? moment(this.meeting_next_date_date).format("dddd LL") : "";
-    // }
-  }
+const valid = ref(false)
+const date = useDate()
+const meeting_date_date = ref(null)
+const meeting_date_time = ref(null)
+
+function validate2() {
+  console.log(date.toISO(meeting_date_date.value))
+  console.log(meeting_date_time.value)
 }
+
+// onMounted(() => {
+//   console.log(date.format(meeting_date_date, 'keyboardDate'))
+// })
+
+// const userId = computed(() => store.state.userId)
+
+const displayMeetingDate = computed(() => {
+  return meeting_date_date.value ? date.format(meeting_date_date.value, 'fullDate') : null
+})
 </script>
