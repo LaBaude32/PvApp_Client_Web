@@ -178,12 +178,12 @@ function createAffair() {
 }
 function validate() {
   if (meetingNextDateDate == 'empty string') {
-    meetingNextDate = meetingNextDateDate + ' ' + meetingNextDateTime + ':00'
+    meetingNextDate.value = meetingNextDateDate + ' ' + meetingNextDateTime + ':00'
   } else {
-    meetingNextDate = null
+    meetingNextDate.value = null
   }
   let pvData = {
-    meetingDate: meetingDateDate + ' ' + meetingDateTime + ':00',
+    meetingDate: meetingDateDate.value + ' ' + meetingDateTime + ':00',
     meetingPlace: meetingPlace,
     meetingNextDate: meetingNextDate,
     meetingNextPlace: meetingNextPlace,
