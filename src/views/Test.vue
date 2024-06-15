@@ -50,8 +50,8 @@ import { ref, onMounted, computed } from 'vue'
 
 const valid = ref(false)
 const date = useDate()
-const meeting_date_date = ref(null)
-const meeting_date_time = ref(null)
+const meeting_date_date = ref()
+const meeting_date_time = ref()
 
 function validate2() {
   console.log(date.toISO(meeting_date_date.value))

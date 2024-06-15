@@ -111,6 +111,11 @@ const routes = [
     component: () => import('../views/Test2.vue')
   },
   {
+    path: routesCONST.test3.path,
+    name: routesCONST.test3.name,
+    component: () => import('../views/Test3.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('../views/HomePage.vue')

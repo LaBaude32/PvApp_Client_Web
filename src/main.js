@@ -20,14 +20,14 @@ const vuetify = createVuetify({
     ...components, VTimePicker
   },
   directives,
-  locale: {
-    locale: 'fr',
-  },
-  date: {
-    locale: {
-      fr: 'fr-FR',
-    },
-  },
+  // locale: {
+  //   locale: 'fr',
+  // },
+  // date: {
+  //   locale: {
+  //     fr: 'fr-FR',
+  //   },
+  // },
 })
 
 const token = localStorage.getItem("token")

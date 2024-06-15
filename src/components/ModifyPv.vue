@@ -9,65 +9,71 @@
       <v-card-text>
         <v-row>
           <v-col cols="6">
-            <v-menu v-model="meetingDateDateMenu" max-width="290">
+            <v-menu>
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  :value="meetingDate"
-                  label="Jour de la réunion"
-                  readonly
                   v-bind="props"
+                  v-model="displayMeetingDate"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="myMeetingDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="myMeetingDateDate"
-                @change="meetingDateDateMenu = false"
-                locale="fr-fr"
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="mymyMeetingDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6">
-            <v-menu
-              ref="menuRef1"
-              v-model="meetingDateTimeMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="myMeetingDateTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
+            <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  v-model="myMeetingDateTime"
-                  label="Heure de la réunion"
-                  prepend-inner-icon="mdi-clock-outline"
-                  readonly
                   v-bind="props"
+                  label="Heure de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="meetingDateTime = null"
+                  prepend-inner-icon="mdi-clock-outline"
+                  v-model="myMeetingDateTime"
                 ></v-text-field>
               </template>
-              <v-time-picker
-                v-if="meetingDateTimeMenu"
-                v-model="myMeetingDateTime"
-                format="24hr"
-                full-width
-                @click:minute="$refs.menuRef1.save(myMeetingDateTime)"
-                :allowed-minutes="allowedStep"
-              ></v-time-picker>
+              <v-time-picker title="Selectionner l'heure" format="24hr" v-model="myMeetingDateTime"></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
             <v-text-field
               v-model="myPvData.meetingPlace"
               counter
-              clearable
               label="Lieu de la réunion"
               :rules="addressRules"
             ></v-text-field>
           </v-col>
           <v-col cols="6">
-            <v-menu v-model="meetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  v-model="displayNextMeetingDate"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="myMeetingNextDateDate = null"
+                  prepend-inner-icon="mdi-calendar"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="myMeetingNextDateDate"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6">
+            <v-menu v-model="myMeetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
               <template v-slot:activator="{ props }">
                 <v-text-field
                   :value="myMeetingNextDate"
@@ -81,7 +87,7 @@
               </template>
               <v-date-picker
                 v-model="myMeetingNextDateDate"
-                @change="meetingNextDateDateMenu = false"
+                @change="MeetingNextDateDateMenu = false"
                 locale="fr-fr"
               ></v-date-picker>
             </v-menu>
@@ -157,98 +163,101 @@
   </v-card>
 </template>
 
-<script>
-import { DateTime, Settings } from 'luxon'
-Settings.defaultLocale = 'fr'
+<script setup>
+import { ref } from 'vue'
 
-export default {
-  name: 'ModifyPv',
-  props: {
-    data: Object,
-    meetingDate: String,
-    meetingNextDate: String,
-    meetingDateDate: String,
-    meetingDateTime: String,
-    meetingNextDateDate: String,
-    meetingNextDateTime: String,
-    affairs: Array,
-    modifyingType: Boolean,
-    validate: Function,
-    cancel: Function
-  },
-  data() {
-    return {
-      meetingDateDateMenu: false,
-      meetingDateTimeMenu: false,
-      meetingNextDateDateMenu: false,
-      meetingNextDateTimeMenu: false,
-      myPvData: this.data,
-      valid: false,
-      addressRules: [(v) => v.length >= 3 || 'Doit être supérieur à 3 caractères'],
-      affairRules: [(v) => !!v || 'Requis']
-    }
-  },
-  computed: {
-    myMeetingDateDate: {
-      get() {
-        return this.meetingDateDate
-      },
-      set(val) {
-        this.$emit('update:meetingDateDate', val)
-      }
-    },
-    myMeetingDateTime: {
-      get() {
-        return this.meetingDateTime
-      },
-      set(val) {
-        this.$emit('update:meetingDateTime', val)
-      }
-    },
-    myMeetingNextDateDate: {
-      get() {
-        return this.meetingNextDateDate
-      },
-      set(val) {
-        this.$emit('update:meetingNextDateDate', val)
-      }
-    },
-    myMeetingNextDateTime: {
-      get() {
-        return this.meetingNextDateTime
-      },
-      set(val) {
-        this.$emit('update:meetingNextDateTime', val)
-      }
-    },
+defineProps({
+  data: Object,
+  meetingDate: String,
+  myMeetingDateDate: String,
+  meetingDateTime: String,
+  meetingNextDate: String,
+  myMeetingNextDateDate: String,
+  meetingNextDateTime: String,
+  affairs: Array,
+  modifyingType: Boolean,
+  validate: Function,
+  cancel: Function
+})
 
-    myMeetingDate: {
-      get() {
-        return this.meetingDate
-      },
-      set(val) {
-        this.$emit('update:meetingDate', val)
-      }
-    },
-    myMeetingNextDate: {
-      get() {
-        return this.meetingNextDate
-      },
-      set(val) {
-        this.$emit('update:meetingNextDate', val)
-      }
-    },
-    computedDateFormattedMeetingDate() {
-      return this.myMeetingDateDate ? DateTime.fromSQL(this.myPvData.meetingDateDate).toFormat('DDDD') : ''
-    },
-    computedDateFormattedMeetingNextDate() {
-      return this.myPvData.meetingNextDateDate
-        ? DateTime.fromSQL(this.myPvData.meetingNextDateDate).toFormat('DDDD')
-        : ''
-    }
+defineEmits({
+  myMeetingDateDate,
+  meetingDateTime,
+  myMeetingNextDateDate,
+  meetingNextDateTime,
+  meetingDate,
+  meetingNextDate
+})
+
+const myPvData = data
+const valid = ref(false)
+const affairRules = ref([(v) => !!v || 'Requis'])
+const addressRules = ref([
+  (v) => !!v || 'Requis',
+  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
+])
+
+const mymyMeetingDateDate = computed({
+  get: () => {
+    return myMeetingDateDate
   },
-  methods: {
-    allowedStep: (m) => m % 5 === 0
+  set: (val) => {
+    emit('myMeetingDateDate', val)
   }
-}
+})
+
+const myMeetingDateTime = computed({
+  get: () => {
+    return meetingDateTime
+  },
+  set: (val) => {
+    emit('meetingDateTime', val)
+  }
+})
+const mymyMeetingNextDateDate = computed({
+  get: () => {
+    return myMeetingNextDateDate
+  },
+  set: (val) => {
+    emit('myMeetingNextDateDate', val)
+  }
+})
+const myMeetingNextDateTime = computed({
+  get: () => {
+    return meetingNextDateTime
+  },
+  set: (val) => {
+    emit('meetingNextDateTime', val)
+  }
+})
+const myMeetingDate = computed({
+  get: () => {
+    return meetingDate
+  },
+  set: (val) => {
+    emit('meetingDate', val)
+  }
+})
+const myMeetingNextDate = computed({
+  get: () => {
+    return meetingNextDate
+  },
+  set: (val) => {
+    emit('meetingNextDate', val)
+  }
+})
+
+const displayMeetingDate = computed({
+  get: () => (myMeetingDateDate.value ? date.format(myMeetingDateDate.value, 'fullDate') : null),
+  set: (val) => {
+    myMeetingDateDate.value = val
+  }
+})
+
+const displayNextMeetingDate = computed({
+  get: () => (myMeetingNextDateDate.value ? date.format(myMeetingNextDateDate.value, 'fullDate') : null),
+  set: (val) => {
+    myMeetingNextDateDate.value = val
+  }
+})
 </script>

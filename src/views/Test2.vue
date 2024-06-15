@@ -4,49 +4,39 @@
       <v-container>
         <v-row>
           <v-col cols="6" lg="6">
-            <v-menu v-model="menu1" :close-on-content-click="false" max-width="290">
+            <v-menu>
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  :value="computedDateFormattedMeetingDate"
-                  label="Jour de la réunion"
-                  readonly
                   v-bind="props"
+                  v-model="displayMeetingDate"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
                   @click:clear="meetingDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="meetingDateDate" @change="menu1 = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="meetingDateDate"
+              ></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6" sm="6">
-            <v-menu
-              ref="menuRef2"
-              v-model="menu2"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="meetingDateTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
+            <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  v-model="meetingDateTime"
-                  label="Heure de la réunion"
-                  prepend-inner-icon="mdi-clock-outline"
-                  readonly
                   v-bind="props"
+                  label="Heure de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="meetingDateTime = null"
+                  prepend-inner-icon="mdi-clock-outline"
+                  v-model="meetingDateTime"
                 ></v-text-field>
               </template>
-              <v-time-picker
-                v-if="menu2"
-                v-model="meetingDateTime"
-                format="24hr"
-                full-width
-                @click:minute="$refs.menuRef2.save(meetingDateTime)"
-                :allowed-minutes="allowedStep"
-              ></v-time-picker>
+              <v-time-picker title="Selectionner l'heure" format="24hr" v-model="meetingDateTime"></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
@@ -57,53 +47,40 @@
               :rules="addressRules"
             ></v-text-field>
           </v-col>
-
           <v-col cols="6" lg="6">
-            <v-menu v-model="menu3" :close-on-content-click="false" max-width="290">
+            <v-menu>
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  :value="computedDateFormattedMeetingNextDate"
-                  clearable
-                  label="Jour de la prochaine réunion"
-                  readonly
                   v-bind="props"
+                  v-model="displayNextMeetingDate"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
                   @click:clear="meetingNextDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="meetingNextDateDate" @change="menu3 = false" locale="fr-fr"></v-date-picker>
+              <v-date-picker
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="meetingNextDateDate"
+              ></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="6" sm="6">
-            <v-menu
-              ref="menu"
-              v-model="menu4"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="meetingNextDateTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
+            <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  v-model="meetingNextDateTime"
-                  label="Heure de la prochaine réunion"
-                  prepend-inner-icon="mdi-clock-outline"
-                  readonly
                   v-bind="props"
+                  label="Heure de la réunion"
+                  readonly
                   clearable
+                  @click:clear="meetingNextDateTime = null"
+                  prepend-inner-icon="mdi-clock-outline"
+                  v-model="meetingNextDateTime"
                 ></v-text-field>
               </template>
-              <v-time-picker
-                v-if="menu4"
-                v-model="meetingNextDateTime"
-                format="24hr"
-                full-width
-                @click:minute="$refs.menu.save(meetingNextDateTime)"
-                :allowed-minutes="allowedStep"
-              ></v-time-picker>
+              <v-time-picker title="Selectionner l'heure" format="24hr" v-model="meetingNextDateTime"></v-time-picker>
             </v-menu>
           </v-col>
 
@@ -134,29 +111,21 @@ import { ref, onMounted, computed } from 'vue'
 import Axios from 'axios'
 import { useStore } from 'vuex'
 import routesCONST, { getRouteName } from '../utilities/constantes'
-import { DateTime, Settings } from 'luxon'
-Settings.defaultLocale = 'fr'
+import { useDate } from 'vuetify'
 
 const store = useStore()
-// const date = useDate()
+const date = useDate()
 
-const dialog = ref(false)
 const valid = ref(false)
-const menu1 = ref(false)
-const menu2 = ref(false)
-const menu3 = ref(false)
-const menu4 = ref(false)
-const meetingDateDate = ref(new Date().toISOString().substr(0, 10))
-const meetingDateTime = ref(DateTime.now().toFormat('T').substr(0, 2) + ':00')
-const meetingNextDateDate = ref('')
-const meetingNextDateTime = ref('')
-const meetingNextDate = ref('')
-const meetingDate = ref('')
-const affairs = ref([])
+const meetingDateDate = ref()
+const meetingDateTime = ref()
+const meetingNextDateDate = ref()
+const meetingNextDateTime = ref()
+const affairs = ref()
 const state = ref('En cours')
-const meetingPlace = ref('')
-const meetingNextPlace = ref('')
-const affairId = ref('')
+const meetingPlace = ref()
+const meetingNextPlace = ref()
+const affairId = ref()
 const affairRules = ref([(v) => !!v || 'Requis'])
 const addressRules = ref([
   (v) => !!v || 'Requis',
@@ -165,32 +134,34 @@ const addressRules = ref([
 
 const userId = computed(() => store.state.userId)
 
-const computedDateFormattedMeetingDate = computed(() => {
-  return meetingDateDate ? DateTime.fromSQL(meetingDateDate).toFormat('DDDD') : ''
+const displayMeetingDate = computed({
+  get: () => (meetingDateDate.value ? date.format(meetingDateDate.value, 'fullDate') : null),
+  set: (val) => {
+    meetingDateDate.value = val
+  }
 })
 
-const computedDateFormattedMeetingNextDate = computed(() => {
-  return meetingNextDateDate ? DateTime.fromSQL(meetingNextDateDate).toFormat('DDDD') : ''
+const displayNextMeetingDate = computed({
+  get: () => (meetingNextDateDate.value ? date.format(meetingNextDateDate.value, 'fullDate') : null),
+  set: (val) => {
+    meetingNextDateDate.value = val
+  }
 })
 
-function createAffair() {
-  this.$router.push(getRouteName('addAffair'))
-}
 function validate() {
-  if (meetingNextDateDate == 'empty string') {
-    meetingNextDate.value = meetingNextDateDate + ' ' + meetingNextDateTime + ':00'
-  } else {
-    meetingNextDate.value = null
-  }
   let pvData = {
-    meetingDate: meetingDateDate.value + ' ' + meetingDateTime + ':00',
-    meetingPlace: meetingPlace,
-    meetingNextDate: meetingNextDate,
-    meetingNextPlace: meetingNextPlace,
-    state: state,
-    affairId: affairId.id_affair
+    // meetingDate: meetingDateDate.value + ' ' + meetingDateTime + ':00',
+    meetingDate: date.toISO(meetingDateDate.value) + 'T' + meetingDateTime.value,
+    meetingPlace: meetingPlace.value,
+    meetingNextDate: meetingNextDateDate.value
+      ? date.toISO(meetingNextDateDate.value) + 'T' + meetingNextDateTime.value
+      : null,
+    meetingNextPlace: meetingNextPlace.value,
+    state: state.value,
+    affairId: affairId.value
   }
-  Axios.post('addPv', pvData)
+  console.log(pvData)
+  Axios.post('pvs', pvData)
     .then((response) => {
       let pvId = response.data.pv.pvId
       this.$router.push({
@@ -202,26 +173,20 @@ function validate() {
       console.log(error)
     })
 }
-function allowedStep(m) {
-  m % 5 === 0
-}
 
 onMounted(async () => {
-  // let self = this
   const dtAffairs = {
     params: {
-      userId: userId
+      // userId: userId
+      userId: 42
     }
   }
-  let res
   if (typeof userId != undefined) {
     Axios.get('affairs/userId', dtAffairs)
       .then(function (response) {
-        // handle success
-        self.affairs = response.data
+        affairs.value = response.data
       })
       .catch(function (error) {
-        // handle error
         console.log(error)
       })
   } else {

@@ -1,3 +1,5 @@
+import Test3 from "../views/Test3.vue";
+
 const routesCONST = {
   home: {
     path: "/homePage",
@@ -54,6 +56,10 @@ const routesCONST = {
   test2: {
     path: "/test2",
     name: "Test2"
+  },
+  test3: {
+    path: "/test3",
+    name: "Test3"
   }
 };
 
