@@ -1,113 +1,106 @@
 <template>
-  <div>
-    <!-- <v-form v-model="valid" ref="form" v-if="affairs != ''">
-      <v-container class="text-center">
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
-      </v-container>
-    </v-form> -->
-    <v-form v-model="valid" ref="form" v-if="affairs != ''">
-      <v-container>
-        <v-row>
-          <v-col cols="6" lg="6">
-            <v-menu v-model="menu1" :close-on-content-click="false" max-width="290">
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  :value="computedDateFormattedMeetingDate"
-                  label="Jour de la réunion"
-                  readonly
-                  @click:clear="meetingDateDate = null"
-                  prepend-inner-icon="mdi-calendar"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="meetingDateDate" @change="menu1 = false" locale="fr-fr"></v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container class="text-center">
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
-      </v-container>
-    </v-form>
-  </div>
+  <v-btn @click="openDialog">Nouveau Pv</v-btn>
+  <v-dialog v-model="dialog" max-width="80%">
+    <TestModifyPv
+      v-model:pvData="pvData"
+      v-model:isFormValid="isFormValid"
+      :validateForm="pvModifySave"
+      :affairs="affairsForPv"
+      :pvModifyingType="pvModifyingType"
+      :cancel="cancelPvModify"
+      :isNewPv="isNewPv"
+    />
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import Axios from 'axios'
+import { ref, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
-import routesCONST, { getRouteName } from '../utilities/constantes'
-import { DateTime, Settings } from 'luxon'
-Settings.defaultLocale = 'fr'
+import Axios from 'axios'
+import TestModifyPv from '../components/TestModifyPv.vue'
 
 const store = useStore()
-// const date = useDate()
 
-const valid = ref(false)
-const menu1 = ref(false)
-const meetingDateDate = ref(new Date().toISOString().substr(0, 10))
-const meetingDateTime = ref(DateTime.now().toFormat('T').substr(0, 2) + ':00')
-const meetingNextDateDate = ref('')
-const meetingNextDateTime = ref('')
-const meetingNextDate = ref('')
-const affairs = ref()
-const state = ref('En cours')
-const meetingPlace = ref('')
-const meetingNextPlace = ref('')
-const affairId = ref('')
+const isFormValid = ref(false)
+const affairsForPv = ref([])
+const pvModifyingType = ref(false)
+const dialog = ref(false)
+const isNewPv = ref(false)
 
-const computedDateFormattedMeetingDate = computed(() => {
-  return meetingDateDate ? DateTime.fromSQL(meetingDateDate).toFormat('DDDD') : ''
+const pvData = reactive({
+  meetingDateDate: ref(null),
+  meetingDateTime: ref(null),
+  meetingNextDateDate: ref(null),
+  meetingNextDateTime: ref(null),
+  meetingPlace: ref(null),
+  meetingNextPlace: ref(null),
+  affairId: ref(null)
 })
 
 onMounted(async () => {
-  // let self = this
   const dtAffairs = {
     params: {
-      // userId: userId
-      userId: 42
+      userId: store.state.user.userId
     }
   }
-  let res
   if (typeof userId != undefined) {
     Axios.get('affairs/userId', dtAffairs)
       .then(function (response) {
-        // handle success
-        self.affairs = response.data
+        affairsForPv.value = response.data
       })
       .catch(function (error) {
-        // handle error
         console.log(error)
       })
   } else {
-    this.$store.dispatch('auth/authLogout')
+    store.dispatch('auth/authLogout')
   }
 })
 
-function validate() {
-  if (meetingNextDateDate == 'empty string') {
-    meetingNextDate.value = meetingNextDateDate + ' ' + meetingNextDateTime + ':00'
-  } else {
-    meetingNextDate.value = null
+function openDialog() {
+  isNewPv.value = true
+  dialog.value = true
+}
+
+function cancelPvModify() {
+  for (const key in pvData) {
+      pvData[key] = null
   }
-  let pvData = {
-    meetingDate: meetingDateDate.value + ' ' + meetingDateTime + ':00',
-    meetingPlace: meetingPlace,
-    meetingNextDate: meetingNextDate,
-    meetingNextPlace: meetingNextPlace,
-    state: state,
-    affairId: affairId.id_affair
-  }
-  Axios.post('addPv', pvData)
-    .then((response) => {
-      let pvId = response.data.pv.pvId
-      this.$router.push({
-        name: routesCONST.pv.name,
-        params: { id: pvId }
-      })
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  isNewPv.value = false
+  dialog.value = false
+}
+
+function pvModifySave() {
+  console.log(pvData.meetingDateDate)
+  // let data = {
+  //   pvId: pvData.pvId,
+  //   meetingDate: pvData.meetingDateDate + ' ' + pvData.meetingDateTime + ':00',
+  //   meetingPlace: pvData.meetingPlace,
+  //   meetingNextPlace: pvData.meetingNextPlace,
+  //   state: pvData.state,
+  //   affairId: $route.params.id,
+  //   userId: userId
+  // }
+  // if (pvData.meetingNextDate != '') {
+  //   data = { meetingNextDate: pvData.meetingNextDate + ':00', ...data }
+  // }
+  // let apiRoute
+  // let apiMethode
+  // pvModifyingType ? ((apiRoute = 'pvs/pvId'), (apiMethode = 'put')) : ((apiRoute = '/pvs'), (apiMethode = 'post'))
+  // Axios({ method: apiMethode, url: apiRoute, data: data })
+  //   .then((response) => {
+  //     if (response.status == 200 || response.status == 201) {
+  //       dialog = false
+  //       pvModifyDialog = false
+  //       if (!pvModifyingType) {
+  //         // pvData.pvId = response.data.pv.pvId;
+  //         // pvData.pvNumber = response.data.pv.pvNumber;
+  //         pvs.push(response.data)
+  //       }
+  //       $store.dispatch('notification/success', 'Pv correctement enregistré')
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.log(error)
+  //   })
 }
 </script>

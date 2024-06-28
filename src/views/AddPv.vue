@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <v-form v-model="valid" ref="form" v-if="affairs != ''">
       <v-container>
         <v-row>
@@ -103,63 +103,61 @@
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
       </v-container>
     </v-form>
-  </div>
+  </div> -->
+  <v-dialog v-model="dialog" max-width="80%">
+    <TestModifyPv
+      v-model:pvData="pvData"
+      v-model:isFormValid="isFormValid"
+      :validateForm="validate"
+      :affairs="affairsForPv"
+      :pvModifyingType="pvModifyingType"
+      :cancel="cancelForm"
+      :isNewPv="isNewPv"
+    />
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import Axios from 'axios'
 import { useStore } from 'vuex'
-import routesCONST, { getRouteName } from '../utilities/constantes'
+import routesCONST from '../utilities/constantes'
 import { useDate } from 'vuetify'
+import TestModifyPv from '../components/TestModifyPv.vue'
 
 const store = useStore()
 const date = useDate()
 
-const valid = ref(false)
-const meetingDateDate = ref()
-const meetingDateTime = ref()
-const meetingNextDateDate = ref()
-const meetingNextDateTime = ref()
-const affairs = ref()
+const isFormValid = ref(false)
+const affairsForPv = ref([])
+const pvModifyingType = ref(false)
+const dialog = ref(false)
+const isNewPv = ref(true)
 const state = ref('En cours')
-const meetingPlace = ref()
-const meetingNextPlace = ref()
-const affairId = ref()
-const affairRules = ref([(v) => !!v || 'Requis'])
-const addressRules = ref([
-  (v) => !!v || 'Requis',
-  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-])
 
-const displayMeetingDate = computed({
-  get: () => (meetingDateDate.value ? date.format(meetingDateDate.value, 'fullDate') : null),
-  set: (val) => {
-    meetingDateDate.value = val
-  }
-})
-
-const displayNextMeetingDate = computed({
-  get: () => (meetingNextDateDate.value ? date.format(meetingNextDateDate.value, 'fullDate') : null),
-  set: (val) => {
-    meetingNextDateDate.value = val
-  }
+const pvData = reactive({
+  meetingDateDate: ref(null),
+  meetingDateTime: ref(null),
+  meetingNextDateDate: ref(null),
+  meetingNextDateTime: ref(null),
+  meetingPlace: ref(null),
+  meetingNextPlace: ref(null),
+  affairId: ref(null)
 })
 
 function validate() {
-  let pvData = {
-    // meetingDate: meetingDateDate.value + ' ' + meetingDateTime + ':00',
-    meetingDate: date.toISO(meetingDateDate.value) + 'T' + meetingDateTime.value,
-    meetingPlace: meetingPlace.value,
-    meetingNextDate: meetingNextDateDate.value
-      ? date.toISO(meetingNextDateDate.value) + 'T' + meetingNextDateTime.value
+  let data = {
+    meetingDate: date.toISO(pvData.meetingDateDate) + 'T' + pvData.meetingDateTime,
+    meetingPlace: pvData.meetingPlace,
+    meetingNextDate: pvData.meetingNextDateDate
+      ? date.toISO(pvData.meetingNextDateDate) + 'T' + pvData.meetingNextDateTime
       : null,
-    meetingNextPlace: meetingNextPlace.value,
+    meetingNextPlace: pvData.meetingNextPlace ? pvData.meetingNextPlace : null,
     state: state.value,
-    affairId: affairId.value
+    affairId: pvData.affairId
   }
-  console.log(pvData)
-  Axios.post('pvs', pvData)
+  console.log(data)
+  Axios.post('pvs', data)
     .then((response) => {
       let pvId = response.data.pv.pvId
       this.$router.push({
@@ -172,6 +170,14 @@ function validate() {
     })
 }
 
+function cancelForm() {
+  for (const key in pvData) {
+    pvData[key] = null
+  }
+  isNewPv.value = false
+  dialog.value = false
+}
+
 onMounted(async () => {
   const dtAffairs = {
     params: {
@@ -181,7 +187,8 @@ onMounted(async () => {
   if (typeof userId != undefined) {
     Axios.get('affairs/userId', dtAffairs)
       .then(function (response) {
-        affairs.value = response.data
+        affairsForPv.value = response.data
+        dialog.value = true
       })
       .catch(function (error) {
         console.log(error)

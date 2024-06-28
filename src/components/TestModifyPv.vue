@@ -1,0 +1,156 @@
+<template>
+  <v-card class="pa-2 pb-3">
+    <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
+    <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title>
+    <v-form v-model="isFormValid">
+      <v-card-text>
+        <v-row>
+          <v-col cols="6" lg="6">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="pvData.meetingDateDate = null"
+                  prepend-inner-icon="mdi-calendar"
+                  v-model="displayMeetingDate"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="pvData.meetingDateDate"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6" sm="6">
+            <v-menu :close-on-content-click="false">
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  label="Heure de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="pvData.meetingDateTime = null"
+                  prepend-inner-icon="mdi-clock-outline"
+                  v-model="pvData.meetingDateTime"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                title="Selectionner l'heure"
+                format="24hr"
+                v-model="pvData.meetingDateTime"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              v-model="pvData.meetingPlace"
+              counter
+              label="Lieu de la réunion"
+              :rules="addressRules"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  v-model="displayNextMeetingDate"
+                  label="Date de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="pvData.meetingNextDateDate = null"
+                  prepend-inner-icon="mdi-calendar"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                title="Selectionner une date"
+                header="Nouvelle date"
+                v-model="pvData.meetingNextDateDate"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6" sm="6">
+            <v-menu :close-on-content-click="false">
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  label="Heure de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="pvData.meetingNextDateTime = null"
+                  prepend-inner-icon="mdi-clock-outline"
+                  v-model="pvData.meetingNextDateTime"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                title="Selectionner l'heure"
+                format="24hr"
+                v-model="pvData.meetingNextDateTime"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+
+          <v-col cols="12">
+            <v-text-field v-model="pvData.meetingNextPlace" counter label="Lieu de la prochaine réunion"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-select
+              v-model="pvData.affairId"
+              :items="affairs"
+              item-title="name"
+              item-value="affairId"
+              label="Affaire"
+              :rules="affairRules"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" @click="cancel">Annuler</v-btn>
+        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="validateForm">Enregistrer</v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { useDate } from 'vuetify'
+
+const date = useDate()
+
+defineProps({
+  affairs: Array,
+  isNewPv: Boolean,
+  validateForm: Function,
+  cancel: Function
+})
+
+const isFormValid = defineModel('isFormValid', { default: false, required: true })
+const pvData = defineModel('pvData', { required: true })
+
+const affairRules = ref([(v) => !!v || 'Requis'])
+const addressRules = ref([
+  (v) => !!v || 'Requis',
+  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
+])
+
+const displayMeetingDate = computed({
+  get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
+  set: (val) => {
+    pvData.value.meetingDateDate = val
+  }
+})
+
+const displayNextMeetingDate = computed({
+  get: () => (pvData.value.meetingNextDateDate ? date.format(pvData.value.meetingNextDateDate, 'fullDate') : null),
+  set: (val) => {
+    pvData.value.meetingNextDateDate = val
+  }
+})
+</script>

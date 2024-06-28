@@ -24,7 +24,7 @@
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
-                v-model="mymyMeetingDateDate"
+                v-model="myMeetingDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -58,7 +58,7 @@
                 <v-text-field
                   v-bind="props"
                   v-model="displayNextMeetingDate"
-                  label="Date de la réunion"
+                  label="Date de la prochaine réunion"
                   readonly
                   clearable
                   @click:clear="myMeetingNextDateDate = null"
@@ -168,26 +168,17 @@ import { ref } from 'vue'
 
 defineProps({
   data: Object,
-  meetingDate: String,
-  myMeetingDateDate: String,
-  meetingDateTime: String,
-  meetingNextDate: String,
-  myMeetingNextDateDate: String,
-  meetingNextDateTime: String,
   affairs: Array,
   modifyingType: Boolean,
   validate: Function,
   cancel: Function
 })
 
-defineEmits({
-  myMeetingDateDate,
-  meetingDateTime,
-  myMeetingNextDateDate,
-  meetingNextDateTime,
-  meetingDate,
-  meetingNextDate
-})
+const isFormValid = defineModel('isFormValid', { default: false, required: true })
+const meetingDateDate = defineModel('meetingDateDate', { required: true })
+const meetingDateTime = defineModel('meetingDateTime', { required: true })
+const meetingNextDateDate = defineModel('meetingNextDateDate', { required: true })
+const meetingNextDateTime = defineModel('meetingNextDateTime', { required: true })
 
 const myPvData = data
 const valid = ref(false)
@@ -196,56 +187,6 @@ const addressRules = ref([
   (v) => !!v || 'Requis',
   (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
 ])
-
-const mymyMeetingDateDate = computed({
-  get: () => {
-    return myMeetingDateDate
-  },
-  set: (val) => {
-    emit('myMeetingDateDate', val)
-  }
-})
-
-const myMeetingDateTime = computed({
-  get: () => {
-    return meetingDateTime
-  },
-  set: (val) => {
-    emit('meetingDateTime', val)
-  }
-})
-const mymyMeetingNextDateDate = computed({
-  get: () => {
-    return myMeetingNextDateDate
-  },
-  set: (val) => {
-    emit('myMeetingNextDateDate', val)
-  }
-})
-const myMeetingNextDateTime = computed({
-  get: () => {
-    return meetingNextDateTime
-  },
-  set: (val) => {
-    emit('meetingNextDateTime', val)
-  }
-})
-const myMeetingDate = computed({
-  get: () => {
-    return meetingDate
-  },
-  set: (val) => {
-    emit('meetingDate', val)
-  }
-})
-const myMeetingNextDate = computed({
-  get: () => {
-    return meetingNextDate
-  },
-  set: (val) => {
-    emit('meetingNextDate', val)
-  }
-})
 
 const displayMeetingDate = computed({
   get: () => (myMeetingDateDate.value ? date.format(myMeetingDateDate.value, 'fullDate') : null),
