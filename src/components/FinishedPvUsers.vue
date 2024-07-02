@@ -10,12 +10,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    users: Array,
-    headers: Array,
-    sortBy: Array
-  }
-}
+<script setup>
+defineProps({
+  users: Array,
+  headers: Array,
+  sortBy: Array
+})
 </script>

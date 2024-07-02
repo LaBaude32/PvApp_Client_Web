@@ -27,28 +27,25 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
-export default {
-  props: {
-    items: Array,
-    headers: Array,
-    sortBy: Array
-  },
-  data() {
-    return {
-      MyImageDialog: false,
-      MyImageSrc: ''
-    }
-  },
-  methods: {
-    MyThumbnail(imageName) {
-      return imgURL + imageName
-    },
-    OpenImage(imageName) {
-      this.MyImageSrc = imgURL + imageName
-      this.MyImageDialog = true
-    }
-  }
+
+defineProps({
+  items: Array,
+  headers: Array,
+  sortBy: Array
+})
+
+const MyImageDialog = ref(false)
+const MyImageSrc = ref()
+
+function MyThumbnail(imageName) {
+  return imgURL + imageName
+}
+function OpenImage(imageName) {
+  this.MyImageSrc = imgURL + imageName
+  this.MyImageDialog = true
 }
 </script>
