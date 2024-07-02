@@ -124,9 +124,11 @@ import { useStore } from 'vuex'
 import routesCONST from '../utilities/constantes'
 import { useDate } from 'vuetify'
 import TestModifyPv from '../components/TestModifyPv.vue'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
 const date = useDate()
+const router = useRouter()
 
 const isFormValid = ref(false)
 const affairsForPv = ref([])
@@ -159,8 +161,12 @@ function validate() {
   console.log(data)
   Axios.post('pvs', data)
     .then((response) => {
-      let pvId = response.data.pv.pvId
-      this.$router.push({
+      let pvId = response.data.pvId
+      // this.$router.push({
+      //   name: routesCONST.pv.name,
+      //   params: { id: pvId }
+      // })
+      router.push({
         name: routesCONST.pv.name,
         params: { id: pvId }
       })
@@ -176,6 +182,7 @@ function cancelForm() {
   }
   isNewPv.value = false
   dialog.value = false
+  router.back()
 }
 
 onMounted(async () => {
