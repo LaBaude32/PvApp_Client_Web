@@ -174,7 +174,7 @@ defineProps({
   cancel: Function
 })
 
-const isFormValid = defineModel('isFormValid', { default: false, required: true })
+const isFormValid = defineModel('isFormValid', { type: Boolean, default: false, required: true })
 const meetingDateDate = defineModel('meetingDateDate', { required: true })
 const meetingDateTime = defineModel('meetingDateTime', { required: true })
 const meetingNextDateDate = defineModel('meetingNextDateDate', { required: true })
