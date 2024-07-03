@@ -335,7 +335,7 @@ export default {
       this.lots.push({ name: '', lotId: undefined, affairId: undefined })
     },
     ModifyLotDelete(lot, index) {
-      Axios.delete('deleteLot', { params: { lotId: lot.lotId } })
+      Axios.delete('lots/lotId', { params: { lotId: lot.lotId } })
         .then((response) => {
           if (response.data == 'success') {
             this.numberLots--
