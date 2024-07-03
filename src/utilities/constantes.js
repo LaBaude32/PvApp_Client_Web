@@ -1,5 +1,3 @@
-import Test3 from "../views/Test3.vue";
-
 const routesCONST = {
   home: {
     path: "/homePage",
@@ -62,6 +60,22 @@ const routesCONST = {
     name: "Test3"
   }
 };
+
+export const FormAddressRules = [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères']
+export const FormNameRules = [
+  (v) => !!v || 'Requis',
+  (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
+  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
+]
+export const FormDescriptionRules = [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères']
+export const FormMeetingRules = [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste']
+export const FormStandardRules = [
+  (v) => !!v || 'Requis',
+  (v) => (v && v.length >= 3) || 'Doit être au moins de 3 caractères',
+  (v) => (v && v.length <= 45) || 'Doit être au max 45 caractères'
+]
+export const FormAffairRules = [(v) => !!v || 'Requis']
+
 
 export const getRouteName = name => {
   return routesCONST[name].name;

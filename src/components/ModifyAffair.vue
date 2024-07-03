@@ -10,7 +10,7 @@
                 v-model="affairDatas.name"
                 :counter="50"
                 label="Nom de l'affaire"
-                :rules="nameRules"
+                :rules="FormNameRules"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -18,7 +18,7 @@
                 v-model="affairDatas.address"
                 counter
                 label="Adresse de l'affaire"
-                :rules="addressRules"
+                :rules="FormAddressRules"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -26,7 +26,7 @@
                 v-model="affairDatas.meetingType"
                 :items="items"
                 label="Phase"
-                :rules="meetingRules"
+                :rules="FormMeetingRules"
               ></v-combobox>
             </v-col>
             <v-col cols="12">
@@ -36,7 +36,7 @@
                 :counter="100"
                 rows="1"
                 label="Description de l'affaire"
-                :rules="descriptionRules"
+                :rules="FormDescriptionRules"
               ></v-textarea>
             </v-col>
           </v-row>
@@ -54,27 +54,21 @@
 
 <script setup>
 import { ref } from 'vue'
+import { FormAddressRules, FormNameRules, FormDescriptionRules, FormMeetingRules } from '@/utilities/constantes'
 
 defineProps({
   validate: Function,
-  enableVider: Boolean
+  enableVider: Boolean //FIXME: logique étrange
 })
 
 const affairDatas = defineModel('affairDatas', { type: Object, required: true })
 
 const valid = ref(false)
 
-const addressRules = [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères']
-const nameRules = [
-  (v) => !!v || 'Requis',
-  (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
-  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-]
-const descriptionRules = [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères']
-const meetingRules = [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste']
 const items = ['Chantier', 'Etude']
 
 function reset() {
+  //FIXME: fonctionne pas
   this.$refs.form.reset()
 }
 </script>

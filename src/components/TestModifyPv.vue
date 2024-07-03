@@ -50,7 +50,7 @@
               v-model="pvData.meetingPlace"
               counter
               label="Lieu de la réunion"
-              :rules="addressRules"
+              :rules="FormAddressRules"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
@@ -104,7 +104,7 @@
               item-title="name"
               item-value="affairId"
               label="Affaire"
-              :rules="affairRules"
+              :rules="FormAffairRules"
             ></v-select>
           </v-col>
         </v-row>
@@ -119,8 +119,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useDate } from 'vuetify'
+
+import { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
 
 const date = useDate()
 
@@ -133,9 +135,6 @@ defineProps({
 
 const isFormValid = defineModel('isFormValid', { default: false, required: true })
 const pvData = defineModel('pvData', { required: true })
-
-const affairRules = [(v) => !!v || 'Requis']
-const addressRules = [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères']
 
 const displayMeetingDate = computed({
   get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
