@@ -3,12 +3,12 @@
     <v-card-title>Modifier la progression de l'affaire</v-card-title>
     <v-card-text>
       <div class="text-center mt-10">
-        <v-progress-circular :value="myProgressValue" color="deep-orange lighten-2" size="80" width="8">
-          {{ myProgressValue }} %
+        <v-progress-circular :value="progressValue" color="deep-orange lighten-2" size="80" width="8">
+          {{ progressValue }} %
         </v-progress-circular>
       </div>
       <v-slider
-        v-model="myProgressValue"
+        v-model="progressValue"
         color="orange"
         thumb-label
         step="5"
@@ -24,26 +24,10 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'ModifyProgress',
-  props: {
-    progressValue: Number,
-    modifyProgressSave: Function
-  },
-  emits: ['update:progressValue'],
-  data() {
-    return {}
-  },
-  computed: {
-    myProgressValue: {
-      get() {
-        return this.progressValue
-      },
-      set(val) {
-        this.$emit('update:progressValue', val)
-      }
-    }
-  }
-}
+<script setup>
+defineProps({
+  modifyProgressSave: Function
+})
+
+const progressValue = defineModel('progressValue', { type: Number, required: true })
 </script>

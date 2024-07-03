@@ -52,41 +52,29 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'ModifyAffair',
-  props: {
-    affairDatas: Object,
-    validate: Function,
-    enableVider: Boolean
-  },
-  emits: ['update:affairDatas'],
-  data: () => ({
-    valid: false,
-    nameRules: [
-      (v) => !!v || 'Requis',
-      (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
-      (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-    ],
-    addressRules: [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'],
-    descriptionRules: [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères'],
-    meetingRules: [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste'],
-    items: ['Chantier', 'Etude']
-  }),
-  methods: {
-    reset() {
-      this.$refs.form.reset()
-    }
-  },
-  computed: {
-    MyAffairDatas: {
-      get() {
-        return this.affairDatas
-      },
-      set(val) {
-        return this.$emit('update:affairDatas', val)
-      }
-    }
-  }
+<script setup>
+import { ref } from 'vue'
+
+defineProps({
+  validate: Function,
+  enableVider: Boolean
+})
+
+const affairDatas = defineModel('affairDatas', { type: Object, required: true })
+
+const valid = ref(false)
+
+const addressRules = [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères']
+const nameRules = [
+  (v) => !!v || 'Requis',
+  (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
+  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
+]
+const descriptionRules = [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères']
+const meetingRules = [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste']
+const items = ['Chantier', 'Etude']
+
+function reset() {
+  this.$refs.form.reset()
 }
 </script>
