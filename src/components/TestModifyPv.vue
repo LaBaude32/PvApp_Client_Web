@@ -134,11 +134,8 @@ defineProps({
 const isFormValid = defineModel('isFormValid', { default: false, required: true })
 const pvData = defineModel('pvData', { required: true })
 
-const affairRules = ref([(v) => !!v || 'Requis'])
-const addressRules = ref([
-  (v) => !!v || 'Requis',
-  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-])
+const affairRules = [(v) => !!v || 'Requis']
+const addressRules = [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères']
 
 const displayMeetingDate = computed({
   get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
