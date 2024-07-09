@@ -1,6 +1,6 @@
 const state = () => ({
   text: "",
-  type: undefined,
+  color: "blue",
   state: false,
   btnColor: "red",
   isDark: false
@@ -9,7 +9,7 @@ const state = () => ({
 const getters = {
   state: (state) => state.state,
   text: (state) => state.text,
-  type: (state) => state.type,
+  color: (state) => state.color,
   btnColor: (state) => state.btnColor,
   isDark: (state) => state.isDark
 };
@@ -17,24 +17,25 @@ const getters = {
 const mutations = {
   CLOSE(state) {
     state.text = "";
-    state.type = undefined;
+    state.color = "grey";
     state.state = false;
     state.isDark = false;
   },
   SUCCESS(state, text) {
     state.text = text;
-    state.type = "success";
+    state.color = "green";
     state.state = true;
     state.btnColor = "white";
   },
   STANDARD(state, text) {
     state.text = text;
+    state.color = "red"
     state.state = true;
   },
   ERROR(state, text) {
     state.text = text;
     state.state = true;
-    state.type = "error";
+    state.color = "red";
     state.btnColor = "white";
   }
 };

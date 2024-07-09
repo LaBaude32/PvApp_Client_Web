@@ -137,6 +137,7 @@ const dialog = ref(false)
 const isNewPv = ref(true)
 const state = ref('En cours')
 
+//TODO:changer la reactive par une ref
 const pvData = reactive({
   meetingDateDate: ref(null),
   meetingDateTime: ref(null),
