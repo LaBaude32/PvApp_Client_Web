@@ -23,14 +23,11 @@
       :meetingType="meetingType"
       :headers="headers"
       :standardRequirement="standardRequirement"
-      :defaultItem="defaultItem"
       :formTitle="formTitle"
-      :computedDateFormattedCompletion="computedDateFormattedCompletion"
       :editItem="editItem"
       :deleteItem="deleteItem"
       :close="close"
       :save="save"
-      :maxPosition="maxPosition"
       :changeVisible="changeVisible"
     />
     <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
@@ -137,12 +134,6 @@ export default {
       set(val) {
         this.editedItem.completionDate = DateTime.fromSQL(val).toFormat('yyyy-LL-dd')
       }
-    },
-    computedDateFormattedCompletion() {
-      return this.editedItem.completionDate
-        ? // ? DateTime.fromSQL(this.editedItem.completionDate).toFormat('ccc d LLL yyyy')
-          DateTime.fromSQL(this.editedItem.completionDate)
-        : ''
     }
   },
 
@@ -304,11 +295,6 @@ export default {
           console.log(error)
         })
     },
-
-    maxPosition() {
-      return Math.max(...this.items.map((items) => items.position)) + 1
-    },
-
     changeVisible(item) {
       let data = {
         itemId: item.itemId,

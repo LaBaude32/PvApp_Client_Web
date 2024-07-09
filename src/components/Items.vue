@@ -1,12 +1,7 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table
-        :headers="MyHeaders"
-        :items="MyItems"
-        :sort-by="[{ key: 'position', order: 'asc' }]"
-        :search="search"
-      >
+      <v-data-table :headers="headers" :items="items" :sort-by="[{ key: 'position', order: 'asc' }]" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title v-if="pvDetails">Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}</v-toolbar-title>
@@ -33,18 +28,18 @@
                       <v-row>
                         <v-col cols="12" sm="4" md="4">
                           <v-text-field
-                            v-model="MyEditedItem.position"
+                            v-model="editedItem.position"
                             label="Position"
                             min="1"
                             type="number"
                             :rules="standardRequirement"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="4" md="4" v-if="MyMeetingType == 'Chantier'">
+                        <v-col cols="12" sm="4" md="4" v-if="meetingType == 'Chantier'">
                           <v-select
-                            v-if="MyEditedItem.lots"
-                            v-model="MyEditedItem.lotsToReturn"
-                            :items="MyEditedItem.lots"
+                            v-if="editedItem.lots"
+                            v-model="editedItem.lotsToReturn"
+                            :items="editedItem.lots"
                             item-title="name"
                             return-object
                             label="Lot"
@@ -55,17 +50,17 @@
                         </v-col>
                         <v-col cols="12" sm="4" md="4">
                           <v-switch
-                            v-model="MyEditedItem.visible"
+                            v-model="editedItem.visible"
                             label="Visible"
-                            :color="MyEditedItem.visible ? 'success' : ''"
+                            :color="editedItem.visible ? 'success' : ''"
                           ></v-switch>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-textarea v-model="MyEditedItem.note" label="Note" counter auto-grow filled></v-textarea>
+                          <v-textarea v-model="editedItem.note" label="Note" counter auto-grow filled></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-textarea
-                            v-model="MyEditedItem.followUp"
+                            v-model="editedItem.followUp"
                             label="Suite à donner"
                             counter
                             auto-grow
@@ -73,41 +68,59 @@
                           ></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="MyEditedItem.resources" label="Ressources"></v-text-field>
+                          <v-text-field v-model="editedItem.resources" label="Ressources"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
                             clearable
-                            v-model="MyEditedItem.completionToReturn"
-                            :items="MyEditedItem.completion"
+                            v-model="editedItem.completionToReturn"
+                            :items="editedItem.completion"
                             label="Echéance"
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
+                          <!-- <v-text-field
                             id="date-picker-activator"
                             v-bind="props"
                             :value="computedDateFormattedCompletion"
                             label="Date de l'echéance"
                             readonly
                             clearable
-                            @click:clear="MyCompletionDate = null"
+                            @click:clear="formatedCompletionDate = null"
                             prepend-inner-icon="mdi-calendar"
                           ></v-text-field>
                           <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
                             <template v-slot:activator="{ props }"></template>
                             <v-date-picker
-                              v-model="MyCompletionDate"
+                              v-model="formatedCompletionDate"
                               @change="ItemModelDatePicker = false"
                               locale="fr-fr"
                               show-current
+                            ></v-date-picker>
+                          </v-menu> -->
+                          <v-menu>
+                            <template v-slot:activator="{ props }">
+                              <v-text-field
+                                v-bind="props"
+                                v-model="displayDateFormattedCompletion"
+                                label="Date de l'echéance"
+                                readonly
+                                clearable
+                                @click:clear="editedItem.completionDate = null"
+                                prepend-inner-icon="mdi-calendar"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              title="Selectionner une date"
+                              header="Nouvelle date"
+                              v-model="editedItem.completionDate"
                             ></v-date-picker>
                           </v-menu>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="MyEditedItem.isNewImage">
+                          <div v-if="editedItem.isNewImage">
                             <v-file-input
                               label="Photo"
                               accept="image/*"
@@ -118,11 +131,11 @@
                           <div v-else>
                             <p>
                               Photo :
-                              <v-btn icon @click="removeImage(MyEditedItem)">
+                              <v-btn icon @click="removeImage(editedItem)">
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </p>
-                            <v-img max-height="300" max-width="700" :src="MyThumbnail(MyEditedItem.image)"></v-img>
+                            <v-img max-height="300" max-width="700" :src="MyThumbnail(editedItem.image)"></v-img>
                           </div>
                         </v-col>
                       </v-row>
@@ -182,118 +195,92 @@
   </div>
 </template>
 
-<script>
-const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
-export default {
-  name: 'Items',
-  props: {
-    dialog: Boolean,
-    items: Array,
-    editedIndex: Number,
-    editedItem: Object,
-    formatedCompletionDate: String,
-    standardRequirement: Array,
-    pvUsers: Array,
-    pvDetails: Object,
-    meetingType: String,
-    headers: Array,
-    defaultItem: Object,
-    formTitle: String,
-    computedDateFormattedCompletion: String,
-    editItem: Function,
-    deleteItem: Function,
-    close: Function,
-    save: Function,
-    maxPosition: Function,
-    changeVisible: Function
-  },
-  emits: ['update:dialog', 'update:items', 'update:editedIndex', 'update:editedItem', 'update:formatedCompletionDate'],
-  data() {
-    return {
-      ItemModelDatePicker: false,
-      search: '',
-      MyPvUsers: this.pvUsers,
-      MyHeaders: this.headers,
-      MyMeetingType: this.meetingType,
-      MyDefaultItem: this.defaultItem,
-      objectThumbnailFile: null,
-      MyImageDialog: false,
-      MyImageSrc: String
-      // isNewImage: true
-    }
-  },
-  watch: {
-    MyDialog(val) {
-      if (this.MyEditedIndex == -1) {
-        if (this.maxPosition() > 0) {
-          this.MyDefaultItem.position = this.maxPosition()
-        } else {
-          this.MyDefaultItem.position = 1
-        }
-        this.MyEditedItem = Object.assign({}, this.MyDefaultItem)
-      }
-      val || this.close()
-    }
-  },
+<script setup>
+import { ref, watch, computed, onMounted } from 'vue'
+import { useDate } from 'vuetify'
 
-  computed: {
-    MyCompletionDate: {
-      get() {
-        return this.formatedCompletionDate
-      },
-      set(val) {
-        this.$emit('update:formatedCompletionDate', val)
-      }
-    },
-    MyDialog: {
-      get() {
-        return this.dialog
-      },
-      set(val) {
-        this.$emit('update:dialog', val)
-      }
-    },
-    MyItems: {
-      get() {
-        return this.items
-      },
-      set(val) {
-        this.$emit('update:items', val)
-      }
-    },
-    MyEditedItem: {
-      get() {
-        return this.editedItem
-      },
-      set(val) {
-        this.$emit('update:editedItem', val)
-      }
-    },
-    MyEditedIndex: {
-      get() {
-        return this.editedIndex
-      },
-      set(val) {
-        this.$emit('update:editedIndex', val)
-      }
-    }
-  },
-  methods: {
-    onObjectSelected(event) {
-      this.objectThumbnailFile = event
-      this.MyEditedItem.image = this.objectThumbnailFile
-    },
-    MyThumbnail(imageName) {
-      return imgURL + imageName
-    },
-    OpenImage(imageName) {
-      this.MyImageSrc = imgURL + imageName
-      this.MyImageDialog = true
-    },
-    removeImage(MyEditedItem) {
-      MyEditedItem.image = null
-      MyEditedItem.isNewImage = true
-    }
-  }
+const date = useDate()
+
+const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
+
+defineProps({
+  standardRequirement: Array,
+  pvUsers: Array,
+  pvDetails: Object,
+  meetingType: String,
+  headers: Array,
+  defaultItem: Object,
+  formTitle: String,
+  editItem: Function,
+  deleteItem: Function,
+  close: Function,
+  save: Function,
+  maxPosition: Function,
+  changeVisible: Function
+})
+const dialog = defineModel('dialog', { type: Boolean, required: true, default: false })
+const items = defineModel('items', { type: Array, required: true })
+const editedIndex = defineModel('editedIndex', { type: Number, required: true })
+const editedItem = defineModel('editedItem', { type: Object, required: true })
+
+const search = ref()
+const objectThumbnailFile = ref(null)
+const MyImageDialog = ref(false)
+const MyImageSrc = ref(String)
+const defaultItem = {
+  position: null,
+  lotsToReturn: [],
+  lots: [],
+  note: null,
+  followUp: null,
+  resources: null,
+  completion: ['A faire', 'Urgent', 'Fait'],
+  completionDate: '',
+  completionDateDate: '',
+  completionDateTime: '',
+  image: null,
+  visible: true,
+  isNewImage: true
 }
+
+const MyDialog = computed({
+  get() {
+    return dialog.value
+  },
+  set(val) {
+    dialog.value = val
+  }
+})
+
+watch(MyDialog, (val) => {
+  if (editedIndex.value == -1) {
+    maxPosition > 0 ? (defaultItem.position = maxPosition) : (defaultItem.position = 1)
+    editedItem.value = Object.assign({}, defaultItem)
+  }
+  val || close()
+})
+
+function onObjectSelected(event) {
+  objectThumbnailFile.value = event
+  editedItem.value.image = objectThumbnailFile.value
+}
+function MyThumbnail(imageName) {
+  return imgURL + imageName
+}
+function OpenImage(imageName) {
+  MyImageSrc.value = imgURL + imageName
+  MyImageDialog.value = true
+}
+function removeImage(item) {
+  item.image = null
+  item.isNewImage = true
+}
+
+const maxPosition = computed(() => {
+  return Math.max(...items.value.map((items) => items.position)) + 1
+})
+
+const displayDateFormattedCompletion = computed(() => {
+  return editedItem.value.completionDate ? date.format(editedItem.value.completionDate, 'fullDate') : null
+})
 </script>
