@@ -49,6 +49,7 @@
                           v-model="editedItem.userGroupToReturn"
                           :items="defaultItem.userGroup"
                           label="Groupe"
+                          :rules="FormRequiredRules"
                           clearable
                         ></v-select>
                       </v-col>
@@ -58,6 +59,7 @@
                           label="Fonction"
                           clearable
                           counter="30"
+                          :rules="FormNameRules"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -66,6 +68,7 @@
                           label="Organisme"
                           clearable
                           counter="30"
+                          :rules="FormNameRules"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -91,6 +94,7 @@
                           :items="defaultItem.statusPAE"
                           label="Status"
                           clearable
+                          :rules="FormRequiredRules"
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -127,10 +131,6 @@
                           :rules="FormRequiredRules"
                           return-object
                         >
-                          <!-- <template v-slot:selection="{ item }">{{ item.firstName }} {{ item.lastName }}</template> -->
-                          <!-- <template v-slot:item="{ props, item }">
-                            <v-list-item v-bind="props">{{ item.raw.firstName }} {{ item.raw.lastName }}</v-list-item>
-                          </template> -->
                         </v-select>
                       </v-col>
                       <v-row v-if="connectedParticipant">
@@ -210,9 +210,10 @@ const route = useRoute()
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
 
 defineProps({
-  users: Array,
   allConnectedParticipants: Array
 })
+
+const users = defineModel('users', { type: Array, required: true })
 
 const pvId = ref(Number)
 const valid1 = ref(false)
@@ -302,7 +303,7 @@ const defaultItem = {
 const formTitle = computed(() => {
   return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
 })
-const affair_name = computed(() => store.getters['affair/name'])
+const affairName = computed(() => store.getters['affair/name'])
 const userId = computed(() => store.getters['user/userId'])
 
 onMounted(() => {
@@ -310,20 +311,20 @@ onMounted(() => {
 })
 
 function editItem(item) {
-  editedIndex = users.indexOf(item)
-  editedItem = Object.assign({}, item)
-  editedItem.userGroupToReturn = item.userGroup
-  dialogNewOrModifiedUser = true
+  editedIndex.value = users.value.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  editedItem.value.userGroupToReturn = item.userGroup
+  dialogNewOrModifiedUser.value = true
 }
 
 function deleteItem(item) {
-  const index = users.indexOf(item)
+  const index = users.value.indexOf(item)
   confirm('Etes-vous sûr de vouloir supprimer cette personne?') &&
-    Axios.delete('participants/userId', { params: { userId: item.userId, pvId: pvId } })
+    Axios.delete('participants/userId', { params: { userId: item.userId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {
           store.dispatch('notification/success', "L'utilisateur à bien été supprimé")
-          users.splice(index, 1)
+          users.value.splice(index, 1)
         }
       })
       .catch((error) => {
@@ -341,17 +342,16 @@ function closeNewOrModifiedUser() {
 }
 
 function saveNewOrModifiedUser() {
-  let data = { ...editedItem }
-  data.pvId = pvId
+  let data = { ...editedItem.value }
+  data.pvId = pvId.value
   data.userGroup = data.userGroupToReturn
-  if (editedIndex > -1) {
+  if (editedIndex.value > -1) {
     //Exisiting User
-    Axios.post('participants/userId', data)
+    Axios.put('participants/userId', data)
       .then((response) => {
         if (response.status == 200) {
-          Object.assign(users[editedIndex], editedItem)
-          let message = 'Le participant à bien été mis à jour'
-          store.dispatch('notification/success', message)
+          Object.assign(users.value[editedIndex.value], editedItem.value)
+          store.dispatch('notification/success', 'Le participant à bien été mis à jour')
         }
       })
       .catch((error) => {
@@ -359,14 +359,13 @@ function saveNewOrModifiedUser() {
       })
   } else {
     //New User
-    data.password = affair_name
+    data.password = affairName.value
     Axios.post('users', data)
       .then((response) => {
         if (response.status == 201) {
           data.userId = response.data.userId
-          users.push(data)
-          let message = 'Le participant à bien été ajouté'
-          store.dispatch('notification/success', message)
+          users.value.push(data)
+          store.dispatch('notification/success', 'Le participant à bien été ajouté')
         }
       })
       .catch((error) => {
@@ -386,16 +385,17 @@ function closeExistingUser() {
 }
 
 function saveExistingUser() {
-  if (editedIndex > -1) {
-    Object.assign(users[editedIndex], editedItem)
+  if (editedIndex.value > -1) {
+    Object.assign(users[editedIndex], editedItem.value)
   } else {
-    users.push(connectedParticipant)
+    users.value.push(connectedParticipant.value)
+    //TODO: mettre en place l'API pour cette fontion
   }
   closeExistingUser()
 }
 function statusChange(item) {
   let statusData = {}
-  statusData.pvId = pvId
+  statusData.pvId = pvId.value
   statusData.userId = item.userId
   statusData.statusPAE = item.statusPAE
   Axios.put('participants/userId/updateStatus', statusData)

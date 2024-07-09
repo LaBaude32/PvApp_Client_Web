@@ -75,8 +75,8 @@ export const FormStandardRules = [
   (v) => (v && v.length <= 45) || 'Doit être au max 45 caractères'
 ]
 export const FormAffairRules = [(v) => !!v || 'Requis']
-export const FormEmailRules = [(v) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail doit être valide']
-export const FormPhoneRules = [(v) => !v || /\d{10}/.test(v) || 'Doit être un numéro de téléphone valide']
+export const FormEmailRules = [(v) => !!v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail doit être valide']
+export const FormPhoneRules = [(v) => !!v || /\d{10}/.test(v) || 'Doit être un numéro de téléphone valide']
 export const FormRequiredRules = [(v) => !!v || 'Requis']
 
 export const getRouteName = name => {
