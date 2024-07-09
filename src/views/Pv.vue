@@ -37,7 +37,7 @@
 
     <v-divider class="my-10"></v-divider>
 
-    <Users v-if="pvUsers" :users="pvUsers" :connectedParticipants="pvConnectedParticipants" />
+    <Users v-if="pvUsers" :users="pvUsers" :allConnectedParticipants="pvConnectedParticipants" />
 
     <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
   </div>

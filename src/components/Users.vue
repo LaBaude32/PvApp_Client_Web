@@ -30,7 +30,7 @@
                         <v-text-field
                           v-model="editedItem.firstName"
                           label="Prénom"
-                          :rules="nameRules"
+                          :rules="FormNameRules"
                           clearable
                           counter="30"
                         ></v-text-field>
@@ -39,7 +39,7 @@
                         <v-text-field
                           v-model="editedItem.lastName"
                           label="Nom"
-                          :rules="nameRules"
+                          :rules="FormNameRules"
                           clearable
                           counter="30"
                         ></v-text-field>
@@ -72,7 +72,7 @@
                         <v-text-field
                           v-model="editedItem.phone"
                           label="Téléphone"
-                          :rules="phoneRules"
+                          :rules="FormPhoneRules"
                           clearable
                           counter="10"
                         ></v-text-field>
@@ -81,7 +81,7 @@
                         <v-text-field
                           v-model="editedItem.email"
                           label="Mail"
-                          :rules="emailRules"
+                          :rules="FormEmailRules"
                           clearable
                         ></v-text-field>
                       </v-col>
@@ -99,8 +99,8 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeNewOrModifiedUser">Annuler</v-btn>
-                  <v-btn :disabled="!valid1" color="blue darken-1" text @click="saveNewOrModifiedUser">
+                  <v-btn color="red darken-1" text @click="closeNewOrModifiedUser">Annuler</v-btn>
+                  <v-btn :disabled="!valid1" color="green darken-1" text @click="saveNewOrModifiedUser">
                     Enregistrer
                   </v-btn>
                 </v-card-actions>
@@ -116,51 +116,49 @@
                 <v-card-title>
                   <span class="text-h5">Choisir dans votre répertoire</span>
                 </v-card-title>
-
                 <v-card-text>
                   <v-container>
                     <v-row>
                       <v-col cols="12">
-                        <v-combobox
+                        <v-select
                           v-model="connectedParticipant"
-                          :items="connectedParticipants"
-                          item-value="user_id"
-                          label="Personne"
-                          :rules="standardRequirement"
+                          :items="connectedUsers"
+                          item-title="fullName"
+                          :rules="FormRequiredRules"
+                          return-object
                         >
-                          <template v-slot:selection="{ item }">{{ item.firstName }} {{ item.lastName }}</template>
-                          <template v-slot:item="{ item }">{{ item.firstName }} {{ item.lastName }}</template>
-                        </v-combobox>
+                          <!-- <template v-slot:selection="{ item }">{{ item.firstName }} {{ item.lastName }}</template> -->
+                          <!-- <template v-slot:item="{ props, item }">
+                            <v-list-item v-bind="props">{{ item.raw.firstName }} {{ item.raw.lastName }}</v-list-item>
+                          </template> -->
+                        </v-select>
                       </v-col>
                       <v-row v-if="connectedParticipant">
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.firstName" label="Prénom" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.lastName" label="Nom" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.userGroup" label="Groupe" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.email" label="Mail" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="connectedParticipant.phone" label="Téléphone" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="connectedParticipant.userFunction"
-                            label="Fonction"
-                            readonly
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="connectedParticipant.organism"
-                            label="Organisme"
-                            readonly
-                          ></v-text-field>
+                        <v-col class="ml-3">
+                          <p>
+                            <b>Prénom :</b>
+                            {{ connectedParticipant.firstName }}
+                          </p>
+                          <p>
+                            <b>Nom :</b>
+                            {{ connectedParticipant.lastName }}
+                          </p>
+                          <p>
+                            <b>Email :</b>
+                            {{ connectedParticipant.email }}
+                          </p>
+                          <p>
+                            <b>Téléphone :</b>
+                            {{ connectedParticipant.phone }}
+                          </p>
+                          <p>
+                            <b>Fonction :</b>
+                            {{ connectedParticipant.userFunction }}
+                          </p>
+                          <p>
+                            <b>Organisme :</b>
+                            {{ connectedParticipant.organism }}
+                          </p>
                         </v-col>
                       </v-row>
                     </v-row>
@@ -169,8 +167,8 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeExistingUser">Annuler</v-btn>
-                  <v-btn :disabled="!valid2" color="blue darken-1" text @click="saveExistingUser">Enregistrer</v-btn>
+                  <v-btn color="red darken-1" text @click="closeExistingUser">Annuler</v-btn>
+                  <v-btn :disabled="!valid2" color="green darken-1" text @click="saveExistingUser">Enregistrer</v-btn>
                 </v-card-actions>
               </v-form>
             </v-card>
@@ -199,240 +197,215 @@
   </v-card>
 </template>
 
-<script>
+<script setup>
 import Axios from 'axios'
-import { mapGetters, mapState } from 'vuex'
+import { ref, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { FormNameRules, FormEmailRules, FormPhoneRules, FormRequiredRules } from '@/utilities/constantes'
+
+const store = useStore()
+const route = useRoute()
 
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
 
-export default {
-  name: 'Users',
-  props: { users: Array, connectedParticipants: Array },
-  data: () => ({
-    pvId: Number,
-    valid1: false,
-    valid2: false,
-    nameRules: [
-      (v) => !!v || 'Requis',
-      (v) => (v && v.length >= 2) || 'Doit être supérieur 1 charactère',
-      (v) => (v && v.length <= 30) || 'Doit être inférieur à 30 charactères'
-    ],
-    standardRules: [(v) => (v && v.length <= 30) || 'Doit être inférieur à 30 charactères'],
-    // emailRules: [v => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
-    emailRules: [(v) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail doit être valide'],
-    phoneRules: [(v) => !v || /\d{10}/.test(v) || 'Doit être un numéro de téléphone valide'],
-    statusRules: [(v) => !!v || 'Requis'],
-    standardRequirement: [(v) => !!v || 'Requis'],
-    search: '',
-    dialogNewOrModifiedUser: false,
-    dialogExistingUser: false,
-    connectedParticipant: '',
-    connectedUser: '',
-    //TODO: récuperer les connected User via l'API
-    connectedUsers: [
-      {
-        user_id: 1,
-        fullName: 'Baud Coup',
-        firstName: 'Baud',
-        lastName: 'Coup',
-        email: 'baud@baud.fr',
-        phone: '0675',
-        userFunction: 'dev',
-        organism: 'SAS'
-      },
-      {
-        user_id: 2,
-        fullName: 'Omb Bollo',
-        firstName: 'Omb',
-        lastName: 'Bollo'
-      },
-      {
-        user_id: 3,
-        fullName: 'Sam Coup',
-        firstName: 'Sam',
-        lastName: 'Coup'
-      }
-    ],
-    headers: [
-      {
-        title: 'Prénom Nom',
-        align: 'start',
-        value: 'fullName'
-      },
-      {
-        title: 'Groupe',
-        value: 'userGroup',
-        sortable: false
-      },
-      { title: 'Fonction', value: 'userFunction' },
-      { title: 'Organisme', value: 'organism' },
-      { title: 'Mail', value: 'email', sortable: false },
-      { title: 'Téléphone', value: 'phone', sortable: false },
-      { title: 'Statut', value: 'statusPAE' },
-      { title: 'Modifier', value: 'actions', sortable: false }
-    ],
-    editedIndex: -1,
-    editedItem: {
-      fullName: '',
-      userGroupToReturn: '',
-      userGroup: [],
-      userFunction: '',
-      organism: '',
-      email: '',
-      phone: '',
-      statusPAE: '',
-      firstName: '',
-      lastName: ''
-    },
-    defaultItem: {
-      fullName: '',
-      userGroup: [
-        "Maîtrise d'ouvrage",
-        "Assistance à la maîtrise d'ouvrage",
-        "Maîtrise d'oeuvre",
-        'Concessionnaire',
-        'Personne public associée',
-        'COPIL',
-        'COTEC',
-        'Divers'
-      ],
-      userFunction: '',
-      organism: '',
-      email: '',
-      phone: '',
-      statusPAE: ['Présent', 'Absent', 'Excusé'],
-      firstName: '',
-      lastName: ''
-    }
-  }),
+defineProps({
+  users: Array,
+  allConnectedParticipants: Array
+})
 
-  computed: {
-    ...mapGetters('affair', {
-      affair_name: 'name'
-    }),
-    ...mapState('user', {
-      userId: 'userId'
-    }),
-    formTitle() {
-      return this.editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
-    }
+const pvId = ref(Number)
+const valid1 = ref(false)
+const valid2 = ref(false)
+
+const search = ref('')
+const dialogNewOrModifiedUser = ref(false)
+const dialogExistingUser = ref(false)
+const connectedParticipant = ref()
+//TODO: récuperer les connected User via l'API
+const connectedUsers = [
+  {
+    userId: 1,
+    fullName: 'Baud Coup',
+    firstName: 'Baud',
+    lastName: 'Coup',
+    email: 'baud@baud.fr',
+    phone: '0675',
+    userFunction: 'dev',
+    organism: 'SAS'
   },
-  mounted() {
-    this.pvId = this.$route.params.id
+  {
+    userId: 2,
+    fullName: 'Omb Bollo',
+    firstName: 'Omb',
+    lastName: 'Bollo'
   },
-
-  // watch: {
-  //   dialogNewOrModifiedUser(val) {
-  //     val || this.closeNewOrModifiedUser();
-  //   },
-  //   dialogExistingUser(val) {
-  //     val || this.closeExistingUser();
-  //   }
-  // },
-
-  methods: {
-    // formReset() {
-    //   this.$refs.form1.reset()
-    // },
-    editItem(item) {
-      this.editedIndex = this.users.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.editedItem.userGroupToReturn = item.userGroup
-      this.dialogNewOrModifiedUser = true
-    },
-
-    deleteItem(item) {
-      const index = this.users.indexOf(item)
-      confirm('Etes-vous sûr de vouloir supprimer cette personne?') &&
-        Axios.delete('participants/userId', { params: { userId: item.userId, pvId: this.pvId } })
-          .then((response) => {
-            if (response.status == 204) {
-              this.$store.dispatch('notification/success', "L'utilisateur à bien été supprimé")
-              this.users.splice(index, 1)
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-    },
-
-    closeNewOrModifiedUser() {
-      this.dialogNewOrModifiedUser = false
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-        // this.formReset()
-      }, 300)
-    },
-
-    saveNewOrModifiedUser() {
-      let data = { ...this.editedItem }
-      data.pvId = this.pvId
-      data.userGroup = data.userGroupToReturn
-      if (this.editedIndex > -1) {
-        //Exisiting User
-        Axios.post('participants/userId', data)
-          .then((response) => {
-            if (response.status == 200) {
-              Object.assign(this.users[this.editedIndex], this.editedItem)
-              let message = 'Le participant à bien été mis à jour'
-              this.$store.dispatch('notification/success', message)
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      } else {
-        //New User
-        data.password = this.affair_name
-        Axios.post('users', data)
-          .then((response) => {
-            if (response.status == 201) {
-              data.userId = response.data.userId
-              this.users.push(data)
-              let message = 'Le participant à bien été ajouté'
-              this.$store.dispatch('notification/success', message)
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
-      this.closeNewOrModifiedUser()
-    },
-
-    closeExistingUser() {
-      this.dialogExistingUser = false
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.connectedParticipant = null
-        this.editedIndex = -1
-      }, 300)
-    },
-
-    saveExistingUser() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.users[this.editedIndex], this.editedItem)
-      } else {
-        this.users.push(this.connectedParticipant)
-      }
-      this.closeExistingUser()
-    },
-    statusChange(item) {
-      let statusData = {}
-      statusData.pvId = this.pvId
-      statusData.userId = item.userId
-      statusData.statusPAE = item.statusPAE
-      Axios.put('participants/userId/updateStatus', statusData)
-        .then((response) => {
-          if (response.status == 200) {
-            this.$store.dispatch('notification/success', 'Le status à bien été mis à jour')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
+  {
+    userId: 3,
+    fullName: 'Sam Coup',
+    firstName: 'Sam',
+    lastName: 'Coup'
   }
+]
+const headers = [
+  {
+    title: 'Prénom Nom',
+    align: 'start',
+    value: 'fullName'
+  },
+  {
+    title: 'Groupe',
+    value: 'userGroup',
+    sortable: false
+  },
+  { title: 'Fonction', value: 'userFunction' },
+  { title: 'Organisme', value: 'organism' },
+  { title: 'Mail', value: 'email', sortable: false },
+  { title: 'Téléphone', value: 'phone', sortable: false },
+  { title: 'Statut', value: 'statusPAE' },
+  { title: 'Modifier', value: 'actions', sortable: false }
+]
+const editedIndex = ref(-1)
+const editedItem = ref({
+  fullName: '',
+  userGroupToReturn: '',
+  userGroup: [],
+  userFunction: '',
+  organism: '',
+  email: '',
+  phone: '',
+  statusPAE: '',
+  firstName: '',
+  lastName: ''
+})
+const defaultItem = {
+  fullName: '',
+  userGroup: [
+    "Maîtrise d'ouvrage",
+    "Assistance à la maîtrise d'ouvrage",
+    "Maîtrise d'oeuvre",
+    'Concessionnaire',
+    'Personne public associée',
+    'COPIL',
+    'COTEC',
+    'Divers'
+  ],
+  userFunction: '',
+  organism: '',
+  email: '',
+  phone: '',
+  statusPAE: ['Présent', 'Absent', 'Excusé'],
+  firstName: '',
+  lastName: ''
+}
+
+const formTitle = computed(() => {
+  return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
+})
+const affair_name = computed(() => store.getters['affair/name'])
+const userId = computed(() => store.getters['user/userId'])
+
+onMounted(() => {
+  pvId.value = route.params.id
+})
+
+function editItem(item) {
+  editedIndex = users.indexOf(item)
+  editedItem = Object.assign({}, item)
+  editedItem.userGroupToReturn = item.userGroup
+  dialogNewOrModifiedUser = true
+}
+
+function deleteItem(item) {
+  const index = users.indexOf(item)
+  confirm('Etes-vous sûr de vouloir supprimer cette personne?') &&
+    Axios.delete('participants/userId', { params: { userId: item.userId, pvId: pvId } })
+      .then((response) => {
+        if (response.status == 204) {
+          store.dispatch('notification/success', "L'utilisateur à bien été supprimé")
+          users.splice(index, 1)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+}
+
+function closeNewOrModifiedUser() {
+  dialogNewOrModifiedUser.value = false
+  setTimeout(() => {
+    editedItem.value = Object.assign({}, defaultItem)
+    editedIndex.value = -1
+    // formReset()
+  }, 300)
+}
+
+function saveNewOrModifiedUser() {
+  let data = { ...editedItem }
+  data.pvId = pvId
+  data.userGroup = data.userGroupToReturn
+  if (editedIndex > -1) {
+    //Exisiting User
+    Axios.post('participants/userId', data)
+      .then((response) => {
+        if (response.status == 200) {
+          Object.assign(users[editedIndex], editedItem)
+          let message = 'Le participant à bien été mis à jour'
+          store.dispatch('notification/success', message)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    //New User
+    data.password = affair_name
+    Axios.post('users', data)
+      .then((response) => {
+        if (response.status == 201) {
+          data.userId = response.data.userId
+          users.push(data)
+          let message = 'Le participant à bien été ajouté'
+          store.dispatch('notification/success', message)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+  closeNewOrModifiedUser()
+}
+
+function closeExistingUser() {
+  dialogExistingUser.value = false
+  setTimeout(() => {
+    editedItem.value = Object.assign({}, defaultItem)
+    connectedParticipant.value = null
+    editedIndex.value = -1
+  }, 300)
+}
+
+function saveExistingUser() {
+  if (editedIndex > -1) {
+    Object.assign(users[editedIndex], editedItem)
+  } else {
+    users.push(connectedParticipant)
+  }
+  closeExistingUser()
+}
+function statusChange(item) {
+  let statusData = {}
+  statusData.pvId = pvId
+  statusData.userId = item.userId
+  statusData.statusPAE = item.statusPAE
+  Axios.put('participants/userId/updateStatus', statusData)
+    .then((response) => {
+      if (response.status == 200) {
+        store.dispatch('notification/success', 'Le status à bien été mis à jour')
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 </script>
