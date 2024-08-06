@@ -20,7 +20,3 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-
-#Tauri build output
-/dist_tauri
-.yarn/install-state.gz
