@@ -13,7 +13,7 @@
               single-line
               hide-details
             ></v-text-field>
-            <v-dialog v-model="MyDialog" max-width="800px">
+            <v-dialog v-model="MyDialog" max-width="80%">
               <template v-slot:activator="{ props }">
                 <v-btn v-bind="props" color="primary" dark class="mb-2">Nouvel item</v-btn>
               </template>
@@ -74,7 +74,7 @@
                           <v-select
                             clearable
                             v-model="editedItem.completionToReturn"
-                            :items="editedItem.completion"
+                            :items="defaultItem.completion"
                             label="Echéance"
                           ></v-select>
                         </v-col>

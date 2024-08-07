@@ -30,13 +30,13 @@
       :save="save"
       :changeVisible="changeVisible"
     />
-    <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
+    <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
 
     <v-divider class="my-10"></v-divider>
 
     <Users v-if="pvUsers" v-model:users="pvUsers" :allConnectedParticipants="pvConnectedParticipants" />
 
-    <v-skeleton-loader class="mx-auto" max-width="1000" type="table" v-else></v-skeleton-loader>
+    <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
   </div>
 </template>
 
@@ -76,7 +76,7 @@ export default {
         },
         { title: 'Note', value: 'note', sortable: false },
         { title: 'Suite à donner', value: 'followUp', sortable: false },
-        { title: 'Ressource', value: 'ressources', sortable: false },
+        { title: 'Ressource', value: 'resources', sortable: false },
         { title: 'Echeance', value: 'completion', sortable: false },
         { title: "Date d'echéance", value: 'completionDate' },
         { title: 'Visible', value: 'visible' },
@@ -85,23 +85,23 @@ export default {
       ],
       editedIndex: -1,
       editedItem: {
-        position: '',
+        position: Number,
         lotsToReturn: [],
         lots: [],
         note: '',
         followUp: '',
         resources: '',
-        completion: [],
-        completionToReturn: '',
+        completion: '',
+        completionToReturn: null,
         completionDate: '',
         completionDateDate: '',
         completionDateTime: '',
         image: null,
         visible: '',
-        isNewImage: ''
+        isNewImage: false
       },
       defaultItem: {
-        position: '',
+        position: Number,
         lotsToReturn: [],
         lots: [],
         note: null,
@@ -113,7 +113,7 @@ export default {
         completionDateTime: '',
         image: null,
         visible: true,
-        isNewImage: true
+        isNewImage: false
       }
     }
   },
@@ -236,7 +236,9 @@ export default {
       if (this.editedIndex > -1) {
         //EXISTING ITEM
         fd.append('itemId', this.editedItem.itemId)
-        this.updateItem(fd)
+        if (this.editedItem.image != null && this.editedItem.isNewImage == true) {
+          this.updateItem(fd)
+        }
       } else {
         //NEW ITEM
         this.postItem(fd)
