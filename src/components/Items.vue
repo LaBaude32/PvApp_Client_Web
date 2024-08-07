@@ -15,7 +15,7 @@
             ></v-text-field>
             <v-dialog v-model="MyDialog" max-width="800px">
               <template v-slot:activator="{ props }">
-                <v-btn color="primary" dark class="mb-2" v-bind="props">Nouvel item</v-btn>
+                <v-btn v-bind="props" color="primary" dark class="mb-2">Nouvel item</v-btn>
               </template>
               <v-card>
                 <v-form>
@@ -80,8 +80,8 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <!-- <v-text-field
-                            id="date-picker-activator"
                             v-bind="props"
+                            id="date-picker-activator"
                             :value="computedDateFormattedCompletion"
                             label="Date de l'echéance"
                             readonly

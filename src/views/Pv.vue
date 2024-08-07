@@ -163,6 +163,7 @@ export default {
       this.meetingType = res.data.pv.affairMeetingType
       if (this.meetingType == 'Chantier') {
         this.headers.splice(1, 0, { text: 'Lot', value: 'lots' })
+        // this.headers.splice(1, 0, { text: 'Lot', value: 'lots' })
         this.defaultItem.lots = this.pvDetails.lots
       }
       this.$store.dispatch('affair/loadAffairByPv', this.pvDetails.affairId)

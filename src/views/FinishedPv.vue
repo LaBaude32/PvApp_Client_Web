@@ -11,6 +11,8 @@
           <v-divider />
           <p class="mt-2 text-h5">{{ affairInfos.name }}</p>
           <v-divider />
+          <p class="mt-2 text-h7">Avancement : {{ affairInfos.progress }}%</p>
+          <v-divider />
           <p class="mt-2 text-subtitle-1-1">{{ affairInfos.description }}</p>
           <v-row v-if="maitreDOuvrage">
             <v-col cols="6">
