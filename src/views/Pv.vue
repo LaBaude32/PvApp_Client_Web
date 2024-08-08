@@ -60,10 +60,10 @@ const dialog = ref(false)
 const ModalValidationDialog = ref(false)
 const meetingType = ref(null)
 const standardRequirement = [(v) => !!v || 'Requis']
-const pvDetails = ref(Object)
-const pvUsers = ref(Array)
-const pvConnectedParticipants = ref(Array)
-const items = ref(Array)
+const pvDetails = ref({})
+const pvUsers = ref([])
+const pvConnectedParticipants = ref([])
+const items = ref([])
 const newImage = ref('')
 const headers = ref([
   {
@@ -95,10 +95,10 @@ const editedItem = ref({
   completionDateTime: '',
   image: null,
   visible: '',
-  isNewImage: false
+  isItemAlreadyHadImage: false
 })
 const defaultItem = ref({
-  position: Number,
+  position: null,
   lotsToReturn: [],
   lots: [],
   note: null,
@@ -110,7 +110,7 @@ const defaultItem = ref({
   completionDateTime: '',
   image: null,
   visible: true,
-  isNewImage: false
+  isItemAlreadyHadImage: false
 })
 
 const userId = computed(() => store.getters['user/userId'])
@@ -121,7 +121,7 @@ onMounted(() => {
 })
 
 async function getData() {
-  pvId = route.params.id
+  pvId.value = route.params.id
   let dt = {
     params: {
       pvId: pvId.value,
@@ -148,22 +148,20 @@ async function getData() {
 }
 
 function editItem(item) {
-  editedIndex.value = items.value.indexOf(item)
   editedItem.value = { ...item }
+  editedIndex.value = items.value.findIndex((element) => element.itemId === editedItem.value.itemId)
   editedItem.value.lotsToReturn = item.lots
-  pvDetails.value.lots ? (editedItem.lots = pvDetails.lots) : (editedItem = undefined)
+  pvDetails.value.lots ? (editedItem.value.lots = pvDetails.value.lots) : null
   editedItem.value.completionToReturn = item.completion
-  editedItem.value.completion = [item.completion]
-  editedItem.value.completion.push(...defaultItem.completion)
-  item.image ? (editedItem.value.isNewImage = false) : (editedItem.value.isNewImage = true)
-
-  dialog = true
+  editedItem.value.completion = [defaultItem.value.completion]
+  item.image ? (editedItem.value.isItemAlreadyHadImage = true) : (editedItem.value.isItemAlreadyHadImage = false) //TODO: très étrange
+  dialog.value = true
 }
 
 function deleteItem(item) {
   const index = items.value.indexOf(item)
   confirm('Etes-vous sûr de vouloir supprimer cet item?') &&
-    Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: pvId } })
+    Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {
           store.dispatch('notification/success', "L'item à bien été supprimé")
@@ -176,58 +174,56 @@ function deleteItem(item) {
 }
 
 function close() {
-  dialog = false
-  editedItem = { ...defaultItem }
-  editedIndex = -1
+  dialog.value = false
+  editedItem.value = { ...defaultItem.value }
+  editedIndex.value = -1
 }
 
 function save() {
-  editedItem.lots = editedItem.lotsToReturn
-  if (editedItem.completionDate == '' || editedItem.completionDate == 'Invalid date') {
-    editedItem.completionDate = null
+  editedItem.value.lots = editedItem.value.lotsToReturn
+  if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
+    editedItem.value.completionDate = null
   }
 
   const fd = new FormData()
-  fd.append('position', editedItem.position)
-  fd.append('note', editedItem.note)
-  fd.append('followUp', editedItem.followUp)
-  fd.append('resources', editedItem.resources)
-  fd.append('completion', editedItem.completionToReturn)
-  fd.append('completionDate', editedItem.completionDate)
-  fd.append('image', editedItem.image)
+  fd.append('position', editedItem.value.position)
+  fd.append('note', editedItem.value.note)
+  fd.append('followUp', editedItem.value.followUp)
+  fd.append('resources', editedItem.value.resources)
+  fd.append('completion', editedItem.value.completionToReturn)
+  fd.append('completionDate', editedItem.value.completionDate)
+  fd.append('image', editedItem.value.image)
   fd.append('thumbnail', null)
-  fd.append('visible', editedItem.visible)
+  fd.append('visible', editedItem.value.visible)
   fd.append('lots', null)
-  fd.append('pvId', pvId)
+  fd.append('pvId', pvId.value)
 
-  if (meetingType == 'Chantier' && editedItem.lotsToReturn) {
+  if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
     let lotTransit = []
-    editedItem.lotsToReturn.forEach((element) => {
+    editedItem.value.lotsToReturn.forEach((element) => {
       lotTransit.push(element.lotId)
     })
     fd.set('lots', lotTransit)
   }
 
-  if (editedIndex > -1) {
+  if (editedIndex.value > -1) {
     //EXISTING ITEM
-    fd.append('itemId', editedItem.itemId)
-    if (editedItem.image != null && editedItem.isNewImage == true) {
-      updateItem(fd)
-    }
+    fd.append('itemId', editedItem.value.itemId)
+    updateItem(fd)
   } else {
     //NEW ITEM
     postItem(fd)
   }
-  editedItem = { ...defaultItem }
+  editedItem.value = { ...defaultItem.value }
 }
 
 function postItem(fd) {
   Axios.post('/items', fd)
     .then((response) => {
       if (response.status == 201) {
-        items.push(response.data)
+        items.value.push(response.data)
         close()
-        $store.dispatch('notification/success', "Ajout de l'item effectué")
+        store.dispatch('notification/success', "Ajout de l'item effectué")
       } else {
         console.log(response)
         console.log(typeof response.data.itemId)
@@ -240,10 +236,10 @@ function postItem(fd) {
 
 async function updateItem(fd) {
   //Upload new image
-  if (editedItem.image != null && editedItem.isNewImage == true) {
+  if (editedItem.value.image !== null && editedItem.value.isItemAlreadyHadImage === true) {
     const fdImage = new FormData()
-    fdImage.append('itemId', editedItem.itemId)
-    fdImage.append('image', editedItem.image)
+    fdImage.append('itemId', editedItem.value.itemId)
+    fdImage.append('image', editedItem.value.image)
     const res = await Axios.post('items/updateImage', fdImage)
     fd.set('image', res.data.image)
   }
@@ -259,11 +255,12 @@ async function updateItem(fd) {
   Axios.put('items/itemId', data)
     .then((response) => {
       if (response.status == 200) {
-        editedItem.completion = editedItem.completionToReturn
-        Object.assign(items[editedIndex], data)
-        editedItem.completion = []
+        editedItem.value.completion = editedItem.value.completionToReturn
+        data.visible == 'true' ? (data.visible = true) : (data.visible = false)
+        Object.assign(items.value[editedIndex.value], data)
         close()
-        $store.dispatch('notification/success', "Mise à jour de l'item effectué")
+        editedItem.value.completion = []
+        store.dispatch('notification/success', "Mise à jour de l'item effectué")
       } else {
         console.log(response)
         console.log(typeof response.data.itemId)
@@ -282,7 +279,7 @@ function changeVisible(item) {
   Axios.put('items/itemId/visibility', data)
     .then((response) => {
       if (response.status == 200) {
-        $store.dispatch('notification/success', "L'item a été mis à jour")
+        store.dispatch('notification/success', "L'item a été mis à jour")
       }
     })
     .catch((error) => {
@@ -291,11 +288,11 @@ function changeVisible(item) {
 }
 
 function pvValidation() {
-  Axios.put('pvs/pvId/validation', { pvId: pvId })
+  Axios.put('pvs/pvId/validation', { pvId: pvId.value })
     .then((response) => {
       if (response.status == 204) {
-        router.push({ name: getRouteName('finishedPv'), params: { id: pvId } })
-        ModalValidationDialog = false
+        router.push({ name: getRouteName('finishedPv'), params: { id: pvId.value } })
+        ModalValidationDialog.value = false
       }
     })
     .catch((error) => {
@@ -303,6 +300,6 @@ function pvValidation() {
     })
 }
 function returnToAffair() {
-  router.push({ name: getRouteName('affair'), params: { id: pvDetails.affairId } })
+  router.push({ name: getRouteName('affair'), params: { id: pvDetails.value.affairId } })
 }
 </script>

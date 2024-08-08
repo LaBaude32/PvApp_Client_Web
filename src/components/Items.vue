@@ -120,7 +120,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="editedItem.isNewImage">
+                          <div v-if="editedItem.isItemAlreadyHadImage">
                             <v-file-input
                               label="Photo"
                               accept="image/*"
@@ -240,7 +240,7 @@ const defaultItem = {
   completionDateTime: '',
   image: null,
   visible: true,
-  isNewImage: true
+  isItemAlreadyHadImage: false
 }
 
 const MyDialog = computed({
@@ -253,7 +253,7 @@ const MyDialog = computed({
 })
 
 watch(MyDialog, (val) => {
-  if (editedIndex.value == -1) {
+  if (editedIndex.value === -1) {
     maxPosition > 0 ? (defaultItem.position = maxPosition) : (defaultItem.position = 1)
     editedItem.value = Object.assign({}, defaultItem)
   }
@@ -273,7 +273,7 @@ function OpenImage(imageName) {
 }
 function removeImage(item) {
   item.image = null
-  item.isNewImage = true
+  item.isItemAlreadyHadImage = true
 }
 
 const maxPosition = computed(() => {
