@@ -115,10 +115,6 @@
       </v-data-table>
     </v-card>
     <v-card max-width="80%" class="mx-auto mt-10">
-      <v-app-bar dark color="primary">
-        <v-toolbar-title>Modifications</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-app-bar>
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
