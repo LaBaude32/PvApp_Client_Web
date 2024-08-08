@@ -120,7 +120,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="editedItem.isItemAlreadyHadImage">
+                          <div v-if="editedItem.image == null || editedItem.isNewImage == true">
                             <v-file-input
                               label="Photo"
                               accept="image/*"
@@ -240,7 +240,8 @@ const defaultItem = {
   completionDateTime: '',
   image: null,
   visible: true,
-  isItemAlreadyHadImage: false
+  isItemAlreadyHadImage: false,
+  isNewImage: true
 }
 
 const MyDialog = computed({

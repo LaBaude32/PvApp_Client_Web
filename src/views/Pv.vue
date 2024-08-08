@@ -180,6 +180,7 @@ function close() {
 }
 
 function save() {
+  //TODO: commencer par upload l'image si besoin puis envoyer l'item normalement pas en FormData
   editedItem.value.lots = editedItem.value.lotsToReturn
   if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
     editedItem.value.completionDate = null
