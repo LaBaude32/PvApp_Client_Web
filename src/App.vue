@@ -73,11 +73,11 @@
 </template>
 
 <script>
-import Axios from "axios"
-import { mapGetters } from "vuex"
-import { getRouteName } from "./utilities/constantes"
-import Notification from "@/components/Notification.vue"
-import { version } from "../package"
+import Axios from 'axios'
+import { mapGetters } from 'vuex'
+import { getRouteName } from './utilities/constantes'
+import Notification from '@/components/Notification.vue'
+import { version } from '../package'
 
 export default {
   components: {
@@ -91,39 +91,39 @@ export default {
       drawerMain: false,
       drawerRight: false,
       items: [
-        { path: "MyAccount", title: "Mon Compte" },
-        { path: "Logout", title: "Se deconnecter" }
+        { path: 'MyAccount', title: 'Mon Compte' },
+        { path: 'Logout', title: 'Se deconnecter' }
       ],
       mainMenuItems: [
         {
-          path: getRouteName("home"),
-          title: "Pv App",
-          icon: "mdi-home"
+          path: getRouteName('home'),
+          title: 'Pv App',
+          icon: 'mdi-home'
         },
         {
-          path: getRouteName("board"),
-          title: "Dashboard",
-          icon: "mdi-view-dashboard"
+          path: getRouteName('board'),
+          title: 'Dashboard',
+          icon: 'mdi-view-dashboard'
         },
         {
-          path: getRouteName("addUser"),
-          title: "Créer un compte",
-          icon: "mdi-account-plus",
-          color: ""
+          path: getRouteName('addUser'),
+          title: 'Créer un compte',
+          icon: 'mdi-account-plus',
+          color: ''
         },
         {
-          path: getRouteName("about"),
-          title: "A propos",
-          icon: "mdi-information",
-          color: ""
+          path: getRouteName('about'),
+          title: 'A propos',
+          icon: 'mdi-information',
+          color: ''
         }
       ]
     }
   },
   computed: {
-    ...mapGetters("user", {
-      isLogged: "logged",
-      fullName: "fullName"
+    ...mapGetters('user', {
+      isLogged: 'isLogged',
+      fullName: 'fullName'
     })
   },
   methods: {
@@ -131,9 +131,9 @@ export default {
       this.$router.push({ name: path })
     },
     action(path) {
-      if (path == "Logout") {
-        this.$store.dispatch("auth/authLogout").then(() => {
-          this.$router.push("Login")
+      if (path == 'Logout') {
+        this.$store.dispatch('auth/authLogout').then(() => {
+          this.$router.push('Login')
         })
       } else {
         this.$router.push({ name: path })
@@ -156,23 +156,23 @@ export default {
         return response
       },
       function (error) {
-        self.$store.dispatch("notification/error", "Erreur d'authentification")
+        self.$store.dispatch('notification/error', "Erreur d'authentification")
         if (error.response.status == 401) {
-          if (error.config.url == "tokens") {
-            self.$store.dispatch("auth/authError")
+          if (error.config.url == 'tokens') {
+            self.$store.dispatch('auth/authError')
           } else {
             // if you ever get an unauthorized, logout the user
-            self.$store.dispatch("auth/authLogout")
+            self.$store.dispatch('auth/authLogout')
           }
         }
         return Promise.reject(error)
       }
     )
     //verification de nouvelle version
-    let oldVersion = localStorage.getItem("appVersion")
+    let oldVersion = localStorage.getItem('appVersion')
     if (oldVersion != this.appVersion) {
       this.versionNotif = true
-      localStorage.setItem("appVersion", this.appVersion)
+      localStorage.setItem('appVersion', this.appVersion)
     }
   }
 }

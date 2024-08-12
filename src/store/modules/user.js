@@ -12,7 +12,7 @@ const state = () => ({
 });
 
 const getters = {
-  logged: (state) => state.isLogged,
+  isLogged: (state) => state.isLogged,
   firstName: (state) => state.firstName,
   lastName: (state) => state.lastName,
   email: (state) => state.email,
