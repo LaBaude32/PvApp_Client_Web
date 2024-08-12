@@ -48,8 +48,6 @@ import Axios from 'axios'
 import { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
-import { DateTime, Settings } from 'luxon'
-Settings.defaultLocale = 'fr'
 
 const store = useStore()
 const route = useRoute()
@@ -180,7 +178,7 @@ function close() {
 }
 
 function save() {
-  //TODO: commencer par upload l'image si besoin puis envoyer l'item normalement pas en FormData
+  //FIXME: commencer par upload l'image si besoin puis envoyer l'item normalement pas en FormData
   editedItem.value.lots = editedItem.value.lotsToReturn
   if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
     editedItem.value.completionDate = null

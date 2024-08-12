@@ -226,6 +226,7 @@ const search = ref()
 const objectThumbnailFile = ref(null)
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
+//TODO:voir si on peu pas mettre cet objet dans constantes.js 
 const defaultItem = ref({
   position: null,
   lotsToReturn: [],
