@@ -215,7 +215,6 @@ defineProps({
   deleteItem: Function,
   close: Function,
   save: Function,
-  maxPosition: Function,
   changeVisible: Function
 })
 const dialog = defineModel('dialog', { type: Boolean, required: true, default: false })
@@ -227,7 +226,7 @@ const search = ref()
 const objectThumbnailFile = ref(null)
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
-const defaultItem = {
+const defaultItem = ref({
   position: null,
   lotsToReturn: [],
   lots: [],
@@ -242,7 +241,7 @@ const defaultItem = {
   visible: true,
   isItemAlreadyHadImage: false,
   isNewImage: true
-}
+})
 
 const MyDialog = computed({
   get() {
@@ -255,8 +254,8 @@ const MyDialog = computed({
 
 watch(MyDialog, (val) => {
   if (editedIndex.value === -1) {
-    maxPosition > 0 ? (defaultItem.position = maxPosition) : (defaultItem.position = 1)
-    editedItem.value = Object.assign({}, defaultItem)
+    maxPosition.value > 0 ? (defaultItem.value.position = maxPosition.value) : (defaultItem.value.position = 1)
+    editedItem.value = Object.assign({}, defaultItem.value)
   }
   val || close()
 })
