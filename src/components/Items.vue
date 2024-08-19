@@ -74,7 +74,7 @@
                           <v-select
                             clearable
                             v-model="editedItem.completionToReturn"
-                            :items="defaultItem.completion"
+                            :items="myDefaultItem.completion"
                             label="Echéance"
                           ></v-select>
                         </v-col>
@@ -122,6 +122,7 @@
                         <v-col cols="12">
                           <div v-if="editedItem.image == null || editedItem.isNewImage == true">
                             <v-file-input
+                              id="picture"
                               label="Photo"
                               accept="image/*"
                               prepend-icon="mdi-camera"
@@ -198,6 +199,7 @@
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue'
 import { useDate } from 'vuetify'
+import { defaultItem } from '../utilities/types'
 
 const date = useDate()
 
@@ -209,7 +211,7 @@ defineProps({
   pvDetails: Object,
   meetingType: String,
   headers: Array,
-  defaultItem: Object,
+  myDefaultItem: Object,
   formTitle: String,
   editItem: Function,
   deleteItem: Function,
@@ -223,26 +225,10 @@ const editedIndex = defineModel('editedIndex', { type: Number, required: true })
 const editedItem = defineModel('editedItem', { type: Object, required: true })
 
 const search = ref()
-const objectThumbnailFile = ref(null)
+// const objectThumbnailFile = ref(null)
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
-//TODO:voir si on peu pas mettre cet objet dans constantes.js 
-const defaultItem = ref({
-  position: null,
-  lotsToReturn: [],
-  lots: [],
-  note: null,
-  followUp: null,
-  resources: null,
-  completion: ['A faire', 'Urgent', 'Fait'],
-  completionDate: '',
-  completionDateDate: '',
-  completionDateTime: '',
-  image: null,
-  visible: true,
-  isItemAlreadyHadImage: false,
-  isNewImage: true
-})
+const myDefaultItem = ref(defaultItem)
 
 const MyDialog = computed({
   get() {
@@ -255,15 +241,16 @@ const MyDialog = computed({
 
 watch(MyDialog, (val) => {
   if (editedIndex.value === -1) {
-    maxPosition.value > 0 ? (defaultItem.value.position = maxPosition.value) : (defaultItem.value.position = 1)
-    editedItem.value = Object.assign({}, defaultItem.value)
+    maxPosition.value > 0 ? (myDefaultItem.value.position = maxPosition.value) : (myDefaultItem.value.position = 1)
+    editedItem.value = Object.assign({}, myDefaultItem.value)
   }
   val || close()
 })
 
 function onObjectSelected(event) {
-  objectThumbnailFile.value = event
-  editedItem.value.image = objectThumbnailFile.value
+  // objectThumbnailFile.value = event
+  // editedItem.value.image = objectThumbnailFile.value
+  editedItem.value.image = document.getElementById('picture').files[0]
 }
 function MyThumbnail(imageName) {
   return imgURL + imageName
@@ -274,7 +261,7 @@ function OpenImage(imageName) {
 }
 function removeImage(item) {
   item.image = null
-  item.isItemAlreadyHadImage = true
+  item.isImageChange = true
 }
 
 const maxPosition = computed(() => {

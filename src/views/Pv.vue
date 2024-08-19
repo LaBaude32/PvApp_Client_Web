@@ -48,6 +48,7 @@ import Axios from 'axios'
 import { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
+import { defaultItem } from '../utilities/types'
 
 const store = useStore()
 const route = useRoute()
@@ -93,23 +94,9 @@ const editedItem = ref({
   completionDateTime: '',
   image: null,
   visible: '',
-  isItemAlreadyHadImage: false
+  isImageChange: false
 })
-const defaultItem = ref({
-  position: null,
-  lotsToReturn: [],
-  lots: [],
-  note: null,
-  followUp: null,
-  resources: null,
-  completion: ['A faire', 'Urgent', 'Fait'],
-  completionDate: '',
-  completionDateDate: '',
-  completionDateTime: '',
-  image: null,
-  visible: true,
-  isItemAlreadyHadImage: false
-})
+const myDefaultItem = ref(defaultItem)
 
 const userId = computed(() => store.getters['user/userId'])
 const formTitle = computed(() => (editedIndex === -1 ? 'Nouvel item' : "Modifier l'item"))
@@ -140,7 +127,7 @@ async function getData() {
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { text: 'Lot', value: 'lots' })
     // headers.splice(1, 0, { text: 'Lot', value: 'lots' })
-    defaultItem.value.lots = pvDetails.lots
+    myDefaultItem.value.lots = pvDetails.lots
   }
   store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
 }
@@ -151,8 +138,8 @@ function editItem(item) {
   editedItem.value.lotsToReturn = item.lots
   pvDetails.value.lots ? (editedItem.value.lots = pvDetails.value.lots) : null
   editedItem.value.completionToReturn = item.completion
-  editedItem.value.completion = [defaultItem.value.completion]
-  item.image ? (editedItem.value.isItemAlreadyHadImage = true) : (editedItem.value.isItemAlreadyHadImage = false) //TODO: très étrange
+  editedItem.value.completion = [myDefaultItem.value.completion]
+  // item.image ? (editedItem.value.isImageChange = true) : (editedItem.value.isImageChange = false) //TODO: très étrange
   dialog.value = true
 }
 
@@ -173,101 +160,75 @@ function deleteItem(item) {
 
 function close() {
   dialog.value = false
-  editedItem.value = { ...defaultItem.value }
+  editedItem.value = { ...myDefaultItem.value }
   editedIndex.value = -1
 }
 
-function save() {
-  //FIXME: commencer par upload l'image si besoin puis envoyer l'item normalement pas en FormData
-  editedItem.value.lots = editedItem.value.lotsToReturn
-  if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
-    editedItem.value.completionDate = null
-  }
-
-  const fd = new FormData()
-  fd.append('position', editedItem.value.position)
-  fd.append('note', editedItem.value.note)
-  fd.append('followUp', editedItem.value.followUp)
-  fd.append('resources', editedItem.value.resources)
-  fd.append('completion', editedItem.value.completionToReturn)
-  fd.append('completionDate', editedItem.value.completionDate)
-  fd.append('image', editedItem.value.image)
-  fd.append('thumbnail', null)
-  fd.append('visible', editedItem.value.visible)
-  fd.append('lots', null)
-  fd.append('pvId', pvId.value)
-
-  if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
-    let lotTransit = []
-    editedItem.value.lotsToReturn.forEach((element) => {
-      lotTransit.push(element.lotId)
-    })
-    fd.set('lots', lotTransit)
-  }
-
+async function save() {
+  const itemToBeSend = formatItemToBeSend()
+  let message
   if (editedIndex.value > -1) {
     //EXISTING ITEM
-    fd.append('itemId', editedItem.value.itemId)
-    updateItem(fd)
+    const itemUpdated = await updateItem(itemToBeSend)
+    itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false)
+    Object.assign(items.value[editedIndex.value], itemUpdated)
+    message = "Mise à jour de l'item effectué"
   } else {
     //NEW ITEM
-    postItem(fd)
-  }
-  editedItem.value = { ...defaultItem.value }
-}
-
-function postItem(fd) {
-  Axios.post('/items', fd)
-    .then((response) => {
-      if (response.status == 201) {
-        items.value.push(response.data)
-        close()
-        store.dispatch('notification/success', "Ajout de l'item effectué")
-      } else {
-        console.log(response)
-        console.log(typeof response.data.itemId)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
-async function updateItem(fd) {
-  //Upload new image
-  if (editedItem.value.image !== null && editedItem.value.isItemAlreadyHadImage === true) {
-    const fdImage = new FormData()
-    fdImage.append('itemId', editedItem.value.itemId)
-    fdImage.append('image', editedItem.value.image)
-    const res = await Axios.post('items/updateImage', fdImage)
-    fd.set('image', res.data.image)
-  }
-
-  let data = {}
-  fd.forEach((value, key) => (data[key] = value))
-  for (const iterator in data) {
-    if (data[iterator] == 'null') {
-      data[iterator] = null
+    const item = await postItem(itemToBeSend)
+    if (editedItem.value.image) {
+      const itemWithImage = await uploadImage(item.itemId)
+      items.value.push(itemWithImage)
+      message = "Ajout de l'item effectué"
     }
   }
+  close()
+  editedItem.value = { ...myDefaultItem.value }
+  store.dispatch('notification/success', message)
+}
 
-  Axios.put('items/itemId', data)
-    .then((response) => {
-      if (response.status == 200) {
-        editedItem.value.completion = editedItem.value.completionToReturn
-        data.visible == 'true' ? (data.visible = true) : (data.visible = false)
-        Object.assign(items.value[editedIndex.value], data)
-        close()
-        editedItem.value.completion = []
-        store.dispatch('notification/success', "Mise à jour de l'item effectué")
-      } else {
-        console.log(response)
-        console.log(typeof response.data.itemId)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+async function postItem(itemWithoutImage) {
+  try {
+    const res = await Axios.post('/items', itemWithoutImage)
+    return res.data
+  } catch (error) {
+    throw new Error('Erreur : ' + error)
+  }
+}
+
+async function uploadImage(itemId) {
+  const fdImage = new FormData()
+  fdImage.append('itemId', itemId)
+  fdImage.append('image', editedItem.value.image)
+  try {
+    const res = await Axios.post('items/uploadImage', fdImage)
+    return res.data
+  } catch (error) {
+    throw new Error('erreur: ' + error)
+  }
+}
+
+async function updateItem(itemWithoutImage) {
+  try {
+    // 1. MAJ l'item
+    const res = await Axios.put('items/itemId', itemWithoutImage)
+    // 2. si besoin MAJ l'image
+    console.log(editedItem.value)
+    //FIXME: verifier si l'image à changer
+    // Cas 1 : l'image n'a pas changée -> pas besoin de faire quoi que ce soit -> verifié par isImageChange
+    // Cas 2 : l'image à été changée
+    // Cas 3 : l'image a été supprimée -> a comparer avec l'ancien item -> ajouter peut etre un isImageDeleted
+    if (editedItem.value.image !== null && editedItem.value.isImageChange === true) {
+      const fdImage = new FormData()
+      fdImage.append('itemId', editedItem.value.itemId)
+      fdImage.append('image', editedItem.value.image)
+      const res = await Axios.post('items/updateImage', fdImage)
+      return res.data
+    }
+    return res.data
+  } catch (error) {
+    throw new Error('Erreur : ' + error)
+  }
 }
 
 function changeVisible(item) {
@@ -300,5 +261,32 @@ function pvValidation() {
 }
 function returnToAffair() {
   router.push({ name: getRouteName('affair'), params: { id: pvDetails.value.affairId } })
+}
+
+function formatItemToBeSend() {
+  if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
+    editedItem.value.completionDate = null
+  }
+  editedItem.value.lots = editedItem.value.lotsToReturn
+  editedItem.value.completion = editedItem.value.completionToReturn
+  let itemToBeSend = { ...editedItem.value }
+  itemToBeSend.pvId = pvId.value
+  delete itemToBeSend.image
+  delete itemToBeSend.thumbnail
+  delete itemToBeSend.isImageChange
+  delete itemToBeSend.completionDateDate
+  delete itemToBeSend.completionDateTime
+  delete itemToBeSend.completionToReturn
+  delete itemToBeSend.lotsToReturn
+
+  // if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
+  //   let lotTransit = []
+  //   editedItem.value.lotsToReturn.forEach((element) => {
+  //     lotTransit.push(element.lotId)
+  //   })
+  //   fd.set('lots', lotTransit)
+  // }
+
+  return itemToBeSend
 }
 </script>
