@@ -311,7 +311,7 @@ export default {
       data.userGroup = data.userGroupToReturn;
       if (this.editedIndex > -1) {
         //Exisiting User
-        Axios.post("participants/userId", data)
+        Axios.put("participants/userId", data)
           .then((response) => {
             if (response.status == 200) {
               Object.assign(this.users[this.editedIndex], this.editedItem);

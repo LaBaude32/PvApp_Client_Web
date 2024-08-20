@@ -81,7 +81,7 @@ export default {
         },
         { text: "Note", value: "note", sortable: false },
         { text: "Suite à donner", value: "followUp", sortable: false },
-        { text: "Ressource", value: "ressources", sortable: false },
+        { text: "Ressource", value: "resources", sortable: false },
         { text: "Echeance", value: "completion", sortable: false },
         { text: "Date d'echéance", value: "completionDate" },
         { text: "Visible", value: "visible" },
