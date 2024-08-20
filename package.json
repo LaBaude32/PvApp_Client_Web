@@ -26,7 +26,7 @@
     "eslint-plugin-vue": "^9.27.0",
     "prettier": "^3.3.3",
     "sass": "~1.32.13",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vite-plugin-vue2": "^2.0.3",
     "vue-template-compiler": "^2.7.16",
     "vuetify-loader": "^1.9.2"
