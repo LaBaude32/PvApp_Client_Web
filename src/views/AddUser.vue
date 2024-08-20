@@ -10,7 +10,13 @@
             <v-card-text>
               <v-row>
                 <v-col cols="6">
-                  <v-text-field label="Email" prepend-inner-icon="mdi-account" type="text" v-model="email" :rules="emailRules" />
+                  <v-text-field
+                    label="Email"
+                    prepend-inner-icon="mdi-account"
+                    type="text"
+                    v-model="email"
+                    :rules="emailRules"
+                  />
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
@@ -58,50 +64,52 @@
 </template>
 
 <script>
-import Axios from "axios"
-import { getRouteName } from "../utilities/constantes"
-import md5 from "md5"
+import Axios from 'axios'
+import { getRouteName } from '../utilities/constantes'
+import md5 from 'md5'
 export default {
   data() {
     return {
       valid: false,
       showPassword: false,
-      emailRules: [(v) => !!v || "Requis", (v) => /.+@.+\..+/.test(v) || "Le mail doit être valide"],
+      emailRules: [(v) => !!v || 'Requis', (v) => /.+@.+\..+/.test(v) || 'Le mail doit être valide'],
       pwdRules: [
-        (v) => !!v || "Requis",
-        (v) => v.length >= 8 || "Il doit y avoir plus de 8 caracères",
-        (v) => /(?=.*[A-Z])/.test(v) || "Il faut une majuscule",
-        (v) => /(?=.*\d)/.test(v) || "Il faut un nombre",
-        (v) => /([!@#$%])/.test(v) || "Il faut un charactère spécial [!@#$%]"
+        (v) => !!v || 'Requis',
+        (v) => v.length >= 8 || 'Il doit y avoir plus de 8 caracères',
+        (v) => /(?=.*[A-Z])/.test(v) || 'Il faut une majuscule',
+        (v) => /(?=.*\d)/.test(v) || 'Il faut un nombre',
+        (v) => /([!@#$%])/.test(v) || 'Il faut un charactère spécial [!@#$%]'
       ],
       standardRules: [
-        (v) => !!v || "Requis",
-        (v) => (v && v.length >= 3) || "Il doit y avoir plus de 3 caracères",
-        (v) => (v && v.length < 35) || "Il doit y avoir plus de 4 caracères"
+        (v) => !!v || 'Requis',
+        (v) => (v && v.length >= 3) || 'Il doit y avoir plus de 3 caracères',
+        (v) => (v && v.length < 35) || 'Il doit y avoir plus de 4 caracères'
       ],
       phoneRules: [
-        (v) => !!v || "Requis",
-        (v) => (v && v.length == 10) || "Doit être égal à 10 charactère",
-        (v) => /\d/.test(v) || "Doit être consituté de chiffres uniquement"
+        (v) => !!v || 'Requis',
+        (v) => (v && v.length == 10) || 'Doit être égal à 10 charactère',
+        (v) => /\d/.test(v) || 'Doit être consituté de chiffres uniquement'
       ],
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
-      userGroup: "",
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      userGroup: '',
+      //TODO: mettre dans types.js
       userGroupItems: [
         "Maîtrise d'ouvrage",
         "Assistance à la maîtrise d'ouvrage",
         "Maîtrise d'oeuvre",
-        "Concessionnaire",
-        "Personne public associée",
-        "COPIL",
-        "COTEC",
-        "Divers"
+        'Entreprise',
+        'Concessionnaire',
+        'Personne public associée',
+        'COPIL',
+        'COTEC',
+        'Divers'
       ],
-      userFunction: "",
-      organism: ""
+      userFunction: '',
+      organism: ''
     }
   },
   methods: {
@@ -116,10 +124,10 @@ export default {
         userFunction: this.userFunction,
         organism: this.organism
       }
-      Axios.post("users", datas)
+      Axios.post('users', datas)
         .then((response) => {
           console.log(response)
-          this.$router.push(getRouteName("board"))
+          this.$router.push(getRouteName('board'))
         })
         .catch((error) => {
           console.log(error)

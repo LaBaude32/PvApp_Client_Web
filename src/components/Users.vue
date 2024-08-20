@@ -130,8 +130,7 @@
                           item-title="fullName"
                           :rules="FormRequiredRules"
                           return-object
-                        >
-                        </v-select>
+                        ></v-select>
                       </v-col>
                       <v-row v-if="connectedParticipant">
                         <v-col class="ml-3">
@@ -267,6 +266,7 @@ const headers = [
   { title: 'Modifier', value: 'actions', sortable: false }
 ]
 const editedIndex = ref(-1)
+//TODO: mettre dans types.js
 const editedItem = ref({
   fullName: '',
   userGroupToReturn: '',
@@ -279,12 +279,14 @@ const editedItem = ref({
   firstName: '',
   lastName: ''
 })
+//TODO: mettre dans types.js
 const defaultItem = {
   fullName: '',
   userGroup: [
     "Maîtrise d'ouvrage",
     "Assistance à la maîtrise d'ouvrage",
     "Maîtrise d'oeuvre",
+    'Entreprise',
     'Concessionnaire',
     'Personne public associée',
     'COPIL',
