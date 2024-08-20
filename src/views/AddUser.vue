@@ -95,6 +95,7 @@ export default {
         "Maîtrise d'ouvrage",
         "Assistance à la maîtrise d'ouvrage",
         "Maîtrise d'oeuvre",
+        "Entreprise",
         "Concessionnaire",
         "Personne public associée",
         "COPIL",
