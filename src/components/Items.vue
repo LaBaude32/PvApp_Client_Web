@@ -37,11 +37,11 @@
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meetingType == 'Chantier'">
                           <v-select
-                            v-if="editedItem.lots"
+                            v-if="pvDetails.affairMeetingType == 'Chantier'"
                             v-model="editedItem.lotsToReturn"
-                            :items="editedItem.lots"
+                            :items="pvDetails.lots"
                             item-title="name"
-                            return-object
+                            item-value="lotId"
                             label="Lot"
                             chips
                             multiple
@@ -120,7 +120,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="editedItem.image == null || editedItem.isNewImage == true">
+                          <div v-if="editedItem.image == null || editedItem.isImageChange == true">
                             <v-file-input
                               id="picture"
                               label="Photo"
@@ -251,6 +251,7 @@ function onObjectSelected(event) {
   // objectThumbnailFile.value = event
   // editedItem.value.image = objectThumbnailFile.value
   editedItem.value.image = document.getElementById('picture').files[0]
+  editedItem.value.isImageChange = true
 }
 function MyThumbnail(imageName) {
   return imgURL + imageName

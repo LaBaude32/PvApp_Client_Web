@@ -125,8 +125,7 @@ async function getData() {
   pvConnectedParticipants.value = res.data.connectedParticipants
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
-    headers.value.splice(1, 0, { text: 'Lot', value: 'lots' })
-    // headers.splice(1, 0, { text: 'Lot', value: 'lots' })
+    headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })
     myDefaultItem.value.lots = pvDetails.lots
   }
   store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
@@ -139,7 +138,7 @@ function editItem(item) {
   pvDetails.value.lots ? (editedItem.value.lots = pvDetails.value.lots) : null
   editedItem.value.completionToReturn = item.completion
   editedItem.value.completion = [myDefaultItem.value.completion]
-  // item.image ? (editedItem.value.isImageChange = true) : (editedItem.value.isImageChange = false) //TODO: très étrange
+  editedItem.value.isImageChange = false
   dialog.value = true
 }
 
@@ -175,12 +174,13 @@ async function save() {
     message = "Mise à jour de l'item effectué"
   } else {
     //NEW ITEM
-    const item = await postItem(itemToBeSend)
+    let item = await postItem(itemToBeSend)
     if (editedItem.value.image) {
-      const itemWithImage = await uploadImage(item.itemId)
-      items.value.push(itemWithImage)
-      message = "Ajout de l'item effectué"
+      item = await uploadImage(item.itemId)
     }
+    item.visible == 1 ? (item.visible = true) : (item.visible = false)
+    items.value.push(item)
+    message = "Ajout de l'item effectué"
   }
   close()
   editedItem.value = { ...myDefaultItem.value }
@@ -213,11 +213,6 @@ async function updateItem(itemWithoutImage) {
     // 1. MAJ l'item
     const res = await Axios.put('items/itemId', itemWithoutImage)
     // 2. si besoin MAJ l'image
-    console.log(editedItem.value)
-    //FIXME: verifier si l'image à changer
-    // Cas 1 : l'image n'a pas changée -> pas besoin de faire quoi que ce soit -> verifié par isImageChange
-    // Cas 2 : l'image à été changée
-    // Cas 3 : l'image a été supprimée -> a comparer avec l'ancien item -> ajouter peut etre un isImageDeleted
     if (editedItem.value.image !== null && editedItem.value.isImageChange === true) {
       const fdImage = new FormData()
       fdImage.append('itemId', editedItem.value.itemId)
