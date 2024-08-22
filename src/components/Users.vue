@@ -208,9 +208,10 @@ const route = useRoute()
 
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
 
-defineProps({
-  allConnectedParticipants: Array
-})
+//TODO: A utiliser pour l'annuaire des participants
+// defineProps({
+//   allConnectedParticipants: Array
+// })
 
 const users = defineModel('users', { type: Array, required: true })
 
