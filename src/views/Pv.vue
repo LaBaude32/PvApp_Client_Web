@@ -5,7 +5,15 @@
       <v-row>
         <v-col cols="12" class="d-flex justify-space-between">
           <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
-          <v-btn color="primary" @click="ModalValidationDialog = true">Finaliser et diffuser le PV</v-btn>
+          <div>
+            <v-btn color="warning" @click.prevent="downloadPDF">
+              <v-icon icon="mdi-file-download" class="mr-2" />
+              un PDF provisoire
+            </v-btn>
+            <v-btn class="ml-5" color="primary" @click="ModalValidationDialog = true">
+              Finaliser et diffuser le PV
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -254,6 +262,7 @@ function pvValidation() {
       console.log(error)
     })
 }
+
 function returnToAffair() {
   router.push({ name: getRouteName('affair'), params: { id: pvDetails.value.affairId } })
 }
@@ -283,5 +292,22 @@ function formatItemToBeSend() {
   // }
 
   return itemToBeSend
+}
+
+async function downloadPDF() {
+  const res = await new Axios({
+    responseType: 'blob',
+    url: 'pvs/pvId/released/pdf',
+    params: {
+      pvId: pvDetails.value.pvId
+    }
+  })
+  const fileName = `Affaire-${pvDetails.affairName}_Pv-n${pvDetails.pvNumber}`
+  const url = window.URL.createObjectURL(new Blob([res.data]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', `${fileName}.pdf`)
+  document.body.appendChild(link)
+  link.click()
 }
 </script>
