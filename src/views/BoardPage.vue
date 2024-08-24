@@ -85,69 +85,64 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
+import Axios from 'axios'
 import routesCONST, { getRouteName } from '../utilities/constantes'
+import { useStore } from 'vuex'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+const store = useStore()
+const router = useRouter()
 
-import { mapState } from 'vuex'
-export default {
-  data() {
-    return {
-      pvs: [],
-      affairs: []
-    }
-  },
-  computed: {
-    ...mapState('user', {
-      userId: 'userId'
-    })
-  },
-  methods: {
-    openAffair(affairId) {
-      this.$store.dispatch('affair/openAffair', affairId)
-    },
-    openPv(pvId) {
-      this.$store.dispatch('affair/openPv', pvId)
-    },
-    openFinishedPv(pvId) {
-      // this.$store.dispatch("affair/openPv", pvId);
-      this.$router.push({
-        name: getRouteName('finishedPv'),
-        params: { id: pvId }
-      })
-    },
-    createAffair() {
-      this.$router.push({ name: routesCONST.addAffair.name })
-    },
-    createPv() {
-      this.$router.push(getRouteName('addPv'))
-    }
-  },
-  mounted() {
-    let self = this
-    const dtPvs = {
-      params: {
-        userId: this.userId,
-        numberOfPvs: 2
-      }
-    }
-    const dtAffairs = {
-      params: {
-        userId: this.userId
-      }
-    }
-    if (typeof this.userId != undefined) {
-      axios.get('pvs/userId', dtPvs).then(function (response) {
-        // handle success
-        self.pvs = response.data
-      })
-      axios.get('affairs/userId', dtAffairs).then(function (response) {
-        // handle success
-        self.affairs = response.data
-      })
-    } else {
-      this.$store.dispatch('auth/authLogout')
+const pvs = ref([])
+const affairs = ref([])
+
+const userId = computed(() => {
+  return store.getters['user/userId']
+})
+
+function openAffair(affairId) {
+  store.dispatch('affair/openAffair', affairId)
+}
+function openPv(pvId) {
+  store.dispatch('affair/openPv', pvId)
+}
+function openFinishedPv(pvId) {
+  router.push({
+    name: getRouteName('finishedPv'),
+    params: { id: pvId }
+  })
+}
+function createAffair() {
+  router.push({ name: routesCONST.addAffair.name })
+}
+function createPv() {
+  router.push(getRouteName('addPv'))
+}
+
+onMounted(() => {
+  const dtPvs = {
+    params: {
+      userId: userId.value,
+      numberOfPvs: 2
     }
   }
-}
+  const dtAffairs = {
+    params: {
+      userId: userId.value
+    }
+  }
+  if (typeof userId.value != undefined) {
+    Axios.get('pvs/userId', dtPvs).then(function (response) {
+      // handle success
+      pvs.value = response.data
+    })
+    Axios.get('affairs/userId', dtAffairs).then(function (response) {
+      // handle success
+      affairs.value = response.data
+    })
+  } else {
+    store.dispatch('auth/authLogout')
+  }
+})
 </script>
