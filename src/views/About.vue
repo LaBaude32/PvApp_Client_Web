@@ -40,13 +40,6 @@
   </div>
 </template>
 
-<script>
-import { version } from "../../package"
-export default {
-  data() {
-    return {
-      appVersion: version
-    }
-  }
-}
+<script setup>
+import { version as appVersion } from '../../package'
 </script>

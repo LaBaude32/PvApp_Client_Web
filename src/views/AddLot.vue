@@ -4,11 +4,6 @@
   </v-container>
 </template>
 
-<script>
-import ModifyLot from "@/components/ModifyLot.vue";
-export default {
-  components: {
-    ModifyLot
-  }
-};
+<script setup>
+import ModifyLot from '@/components/ModifyLot.vue'
 </script>
