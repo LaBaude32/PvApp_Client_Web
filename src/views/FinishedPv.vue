@@ -55,7 +55,7 @@
     <finishedPvItems
       v-if="meetingType"
       :items="items"
-      :headers="ItemHeaders"
+      :headers="myItemHeaders"
       :sortBy="[{ key: 'position', order: 'asc' }]"
     />
     <v-container class="text-center">
@@ -70,126 +70,92 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import finishedPvItems from '@/components/FinishedPvItems.vue'
 import finishedPvUsers from '@/components/FinishedPvUsers.vue'
 import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { UserHeaders, ItemHeaders } from '../utilities/types'
 Settings.defaultLocale = 'fr'
-export default {
-  components: {
-    finishedPvUsers,
-    finishedPvItems
-  },
-  data() {
-    return {
-      isPrinted: false,
-      affairInfos: {},
-      items: [],
-      pvDetails: {},
-      meetingType: undefined,
-      pvUsers: [],
-      owner: {},
-      maitresDOeuvre: '',
-      maitreDOuvrage: '',
-      UserHeaders: [
-        {
-          title: 'Prénom Nom',
-          align: 'start',
-          value: 'fullName'
-        },
-        {
-          title: 'Groupe',
-          value: 'userGroup'
-        },
-        { title: 'Fonction', value: 'function' },
-        { title: 'Organisme', value: 'organism' },
-        { title: 'Mail', value: 'email', sortable: false },
-        { title: 'Téléphone', value: 'phone', sortable: false },
-        { title: 'Statut', value: 'statusPAE' }
-      ],
-      ItemHeaders: [
-        {
-          title: 'Position',
-          align: 'center',
-          value: 'position'
-        },
-        { title: 'Note', value: 'note', sortable: false },
-        { title: 'Suite à donner', value: 'followUp', sortable: false },
-        { title: 'Ressource', value: 'resources', sortable: false },
-        { title: 'Echeance', value: 'completion', sortable: false },
-        { title: "Date d'echéance", value: 'completionDate' }
-      ]
-    }
-  },
-  mounted() {
-    this.getPvData()
-  },
 
-  methods: {
-    async getPvData() {
-      this.idPv = this.$route.params.id
-      let dt = {
-        params: {
-          pvId: this.$route.params.id
-        }
-      }
-      let res = await Axios.get('pvs/pvId/released', dt)
-      if (res.status == 200) {
-        if (res.data.items) {
-          this.items = [...res.data.items]
-        }
-      }
-      this.pvDetails = res.data.pv
-      this.pvUsers = res.data.users
-      this.meetingType = res.data.pv.affairMeetingType
-      this.owner = res.data.owner
-      if (this.meetingType == 'Chantier') {
-        this.ItemHeaders.splice(1, 0, { text: 'Lot', value: 'lots' })
-        this.ItemHeaders.push({ text: 'Photo', value: 'image', sortable: false })
-      }
-      this.affairInfos = res.data.affair.affairInfos
+const route = useRoute()
 
-      this.pvUsers.forEach((element) => {
-        if (element.userGroup == "Maîtrise d'oeuvre") {
-          if (this.maitresDOeuvre == '') {
-            this.maitresDOeuvre = element.organism
-          } else {
-            this.maitresDOeuvre += ' - ' + element.organism
-          }
-        }
-        if (element.userGroup == "Maîtrise d'ouvrage") {
-          if (this.maitreDOuvrage == '') {
-            this.maitreDOuvrage = element.organism
-          } else {
-            this.maitreDOuvrage += ' - ' + element.organism
-          }
-        }
-      })
-    },
-    async downloadPdf() {
-      const res = await Axios({
-        responseType: 'blob',
-        url: 'pvs/pvId/released/pdf',
-        params: {
-          pvId: this.$route.params.id
-        }
-      })
+const myItemHeaders = ref(ItemHeaders)
+const isPrinted = ref(false)
+const affairInfos = ref({})
+const items = ref([])
+const pvDetails = ref({})
+const meetingType = ref(undefined)
+const pvUsers = ref([])
+const owner = ref({})
+const maitresDOeuvre = ref('')
+const maitreDOuvrage = ref('')
 
-      const fileName = `${this.releaseDate}_Affaire-${this.affairInfos.name}_Pv-n${this.pvDetails.pvNumber}`
+const releaseDate = computed(() => {
+  return DateTime.fromSQL(pvDetails.value.releaseDate).toISODate()
+})
 
-      const url = window.URL.createObjectURL(new Blob([res.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `${fileName}.pdf`)
-      document.body.appendChild(link)
-      link.click()
-    }
-  },
-  computed: {
-    releaseDate() {
-      return DateTime.fromSQL(this.pvDetails.releaseDate).toISODate()
+onMounted(() => {
+  getPvData()
+})
+
+async function getPvData() {
+  let dt = {
+    params: {
+      pvId: route.params.id
     }
   }
+  let res = await Axios.get('pvs/pvId/released', dt)
+  if (res.status == 200) {
+    if (res.data.items) {
+      items.value = [...res.data.items]
+    }
+  }
+  pvDetails.value = res.data.pv
+  pvUsers.value = res.data.users
+  meetingType.value = res.data.pv.affairMeetingType
+  owner.value = res.data.owner
+  if (meetingType.value == 'Chantier') {
+    myItemHeaders.value.splice(1, 0, { text: 'Lot', value: 'lots' })
+    myItemHeaders.value.push({ text: 'Photo', value: 'image', sortable: false })
+  }
+  affairInfos.value = res.data.affair.affairInfos
+
+  pvUsers.value.forEach((element) => {
+    if (element.userGroup == "Maîtrise d'oeuvre") {
+      if (maitresDOeuvre.value == '') {
+        maitresDOeuvre.value = element.organism
+      } else {
+        maitresDOeuvre.value += ' - ' + element.organism
+      }
+    }
+    if (element.userGroup == "Maîtrise d'ouvrage") {
+      if (maitreDOuvrage.value == '') {
+        maitreDOuvrage.value = element.organism
+      } else {
+        maitreDOuvrage.value += ' - ' + element.organism
+      }
+    }
+  })
+}
+
+async function downloadPdf() {
+  const res = await Axios({
+    responseType: 'blob',
+    url: 'pvs/pvId/released/pdf',
+    params: {
+      pvId: route.params.id
+    }
+  })
+
+  const fileName = `${releaseDate.value}_Affaire-${affairInfos.value.name}_Pv-n${pvDetails.value.pvNumber}`
+  const url = window.URL.createObjectURL(new Blob([res.data]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', `${fileName}.pdf`)
+  document.body.appendChild(link)
+  link.click()
 }
 </script>
