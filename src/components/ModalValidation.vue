@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="MyDialog" persistent max-width="350">
+  <v-dialog v-model="dialog" persistent max-width="350">
     <v-card>
       <v-card-title class="text-h5">Voulez-vous valider le PV ?</v-card-title>
       <v-card-text>
@@ -10,33 +10,16 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="MyDialog = false">Non</v-btn>
+        <v-btn color="green darken-1" text @click="dialog = false">Non</v-btn>
         <v-btn color="green darken-1" text @click="validate">Oui</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'ModalValidation',
-  props: {
-    dialog: Boolean,
-    validate: Function
-  },
-  emits: ['update:dialog'],
-  data() {
-    return {}
-  },
-  computed: {
-    MyDialog: {
-      get() {
-        return this.dialog
-      },
-      set(val) {
-        this.$emit('update:dialog', val)
-      }
-    }
-  }
-}
+<script setup>
+defineProps({
+  validate: Function
+})
+const dialog = defineModel('dialog', { type: Boolean, required: true })
 </script>
