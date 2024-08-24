@@ -32,7 +32,7 @@
                             label="Position"
                             min="1"
                             type="number"
-                            :rules="standardRequirement"
+                            :rules="FormRequiredRules"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meetingType == 'Chantier'">
@@ -154,7 +154,9 @@
           </v-toolbar>
         </template>
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>{{ lot.name }}</v-chip>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
+            {{ lot.name }}
+          </v-chip>
         </template>
         <template v-slot:item.visible="{ item }">
           <v-switch
@@ -200,18 +202,17 @@
 import { ref, watch, computed, onMounted } from 'vue'
 import { useDate } from 'vuetify'
 import { defaultItem } from '../utilities/types'
+import { FormRequiredRules } from '../utilities/constantes';
 
 const date = useDate()
 
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
 
 defineProps({
-  standardRequirement: Array,
   pvUsers: Array,
   pvDetails: Object,
   meetingType: String,
   headers: Array,
-  myDefaultItem: Object,
   formTitle: String,
   editItem: Function,
   deleteItem: Function,

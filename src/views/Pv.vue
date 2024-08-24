@@ -29,7 +29,6 @@
       :pvUsers="pvUsers"
       :meetingType="meetingType"
       :headers="headers"
-      :standardRequirement="standardRequirement"
       :formTitle="formTitle"
       :editItem="editItem"
       :deleteItem="deleteItem"
@@ -66,7 +65,6 @@ const pvId = ref(Number)
 const dialog = ref(false)
 const ModalValidationDialog = ref(false)
 const meetingType = ref(null)
-const standardRequirement = [(v) => !!v || 'Requis']
 const pvDetails = ref({})
 const pvUsers = ref([])
 const pvConnectedParticipants = ref([])
