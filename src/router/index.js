@@ -44,8 +44,8 @@ const routes = [
     beforeEnter: ifNotAuthenticated
   },
   {
-    path: routesCONST.user.path,
-    name: routesCONST.user.name,
+    path: routesCONST.users.path,
+    name: routesCONST.users.name,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

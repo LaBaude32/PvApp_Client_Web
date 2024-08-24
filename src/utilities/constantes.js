@@ -7,9 +7,9 @@ const routesCONST = {
     path: "/board",
     name: "Board"
   },
-  user: {
-    path: "/user",
-    name: "User"
+  users: {
+    path: "/users",
+    name: "Users"
   },
   about: {
     path: "/about",

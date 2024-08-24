@@ -21,40 +21,21 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script setup>
+import { ref, onMounted } from 'vue'
+import Axios from 'axios'
 
-const axios = require("axios");
+const users = ref([])
 
-export default {
-  name: "Users",
-  data() {
-    return {
-      users: []
-    };
-  },
-  mounted() {
-    let self = this;
-
-    axios({
-      methode: "get",
-      url: "getAllUsers",
-      Authorization: this.$store.getters.tokenType + " " + this.$store.getters.token
+onMounted(() => {
+  Axios.get('users')
+    .then(function (response) {
+      // handle success
+      users.value = response.data
     })
-      .then(function (response) {
-        // handle success
-        self.users = response.data;
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-  },
-  computed: {
-    ...mapGetters("auth", {
-      token: "token",
-      tokenType: "tokenType"
+    .catch(function (error) {
+      // handle error
+      console.log(error)
     })
-  }
-};
+})
 </script>
