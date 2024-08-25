@@ -44,3 +44,13 @@ export const ItemHeaders = [
     { title: 'Echeance', value: 'completion', sortable: false },
     { title: "Date d'echéance", value: 'completionDate' }
 ]
+
+export const pvData = {
+    meetingDateDate: null,
+    meetingDateTime: null,
+    meetingNextDateDate: null,
+    meetingNextDateTime: null,
+    meetingPlace: null,
+    meetingNextPlace: null,
+    affairId: null
+}

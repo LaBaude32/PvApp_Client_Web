@@ -105,104 +105,18 @@
     </v-form>
   </div> -->
   <v-dialog v-model="dialog" max-width="80%">
-    <TestModifyPv
-      v-model:pvData="pvData"
-      v-model:isFormValid="isFormValid"
-      :validateForm="validate"
-      :affairs="affairsForPv"
-      :pvModifyingType="pvModifyingType"
-      :cancel="cancelForm"
-      :isNewPv="isNewPv"
-    />
+    <TestModifyPv v-model="isNewPv" @close-dialog="dialog = false" />
   </v-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
-import Axios from 'axios'
-import { useStore } from 'vuex'
-import routesCONST from '../utilities/constantes'
-import { useDate } from 'vuetify'
+import { onMounted, ref } from 'vue'
 import TestModifyPv from '../components/TestModifyPv.vue'
-import { useRouter } from 'vue-router'
 
-const store = useStore()
-const date = useDate()
-const router = useRouter()
-
-const isFormValid = ref(false)
-const affairsForPv = ref([])
-const pvModifyingType = ref(false)
 const dialog = ref(false)
 const isNewPv = ref(true)
-const state = ref('En cours')
 
-//TODO:changer la reactive par une ref
-const pvData = reactive({
-  meetingDateDate: ref(null),
-  meetingDateTime: ref(null),
-  meetingNextDateDate: ref(null),
-  meetingNextDateTime: ref(null),
-  meetingPlace: ref(null),
-  meetingNextPlace: ref(null),
-  affairId: ref(null)
-})
-
-function validate() {
-  let data = {
-    meetingDate: date.toISO(pvData.meetingDateDate) + 'T' + pvData.meetingDateTime,
-    meetingPlace: pvData.meetingPlace,
-    meetingNextDate: pvData.meetingNextDateDate
-      ? date.toISO(pvData.meetingNextDateDate) + 'T' + pvData.meetingNextDateTime
-      : null,
-    meetingNextPlace: pvData.meetingNextPlace ? pvData.meetingNextPlace : null,
-    state: state.value,
-    affairId: pvData.affairId
-  }
-  console.log(data)
-  Axios.post('pvs', data)
-    .then((response) => {
-      let pvId = response.data.pvId
-      // this.$router.push({
-      //   name: routesCONST.pv.name,
-      //   params: { id: pvId }
-      // })
-      router.push({
-        name: routesCONST.pv.name,
-        params: { id: pvId }
-      })
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
-function cancelForm() {
-  for (const key in pvData) {
-    pvData[key] = null
-  }
-  isNewPv.value = false
-  dialog.value = false
-  router.back()
-}
-
-onMounted(async () => {
-  const dtAffairs = {
-    params: {
-      userId: store.state.user.userId
-    }
-  }
-  if (typeof userId != undefined) {
-    Axios.get('affairs/userId', dtAffairs)
-      .then(function (response) {
-        affairsForPv.value = response.data
-        dialog.value = true
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  } else {
-    store.dispatch('auth/authLogout')
-  }
+onMounted(() => {
+  dialog.value = true
 })
 </script>
