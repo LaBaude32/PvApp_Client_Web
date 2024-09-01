@@ -46,7 +46,7 @@
     <finishedPvUsers
       v-if="meetingType"
       :users="pvUsers"
-      :headers="UserHeaders"
+      :headers="USER_HEADERS"
       :sortBy="[{ key: 'userGroup', order: 'asc' }]"
     />
     <v-container>
@@ -55,7 +55,7 @@
     <finishedPvItems
       v-if="meetingType"
       :items="items"
-      :headers="myItemHeaders"
+      :headers="itemHeaders"
       :sortBy="[{ key: 'position', order: 'asc' }]"
     />
     <v-container class="text-center">
@@ -77,12 +77,12 @@ import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { UserHeaders, ItemHeaders } from '../utilities/types'
+import { USER_HEADERS, ITEM_HEADERS } from '../utilities/types'
 Settings.defaultLocale = 'fr'
 
 const route = useRoute()
 
-const myItemHeaders = ref(ItemHeaders)
+const itemHeaders = ref(ITEM_HEADERS)
 const isPrinted = ref(false)
 const affairInfos = ref({})
 const items = ref([])
@@ -118,8 +118,8 @@ async function getPvData() {
   meetingType.value = res.data.pv.affairMeetingType
   owner.value = res.data.owner
   if (meetingType.value == 'Chantier') {
-    myItemHeaders.value.splice(1, 0, { text: 'Lot', value: 'lots' })
-    myItemHeaders.value.push({ text: 'Photo', value: 'image', sortable: false })
+    itemHeaders.value.splice(1, 0, { text: 'Lot', value: 'lots' })
+    itemHeaders.value.push({ text: 'Photo', value: 'image', sortable: false })
   }
   affairInfos.value = res.data.affair.affairInfos
 

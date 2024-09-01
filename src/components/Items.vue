@@ -74,7 +74,7 @@
                           <v-select
                             clearable
                             v-model="editedItem.completionToReturn"
-                            :items="myDefaultItem.completion"
+                            :items="defaultItem.completion"
                             label="Echéance"
                           ></v-select>
                         </v-col>
@@ -201,8 +201,8 @@
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue'
 import { useDate } from 'vuetify'
-import { defaultItem } from '../utilities/types'
-import { FormRequiredRules } from '../utilities/constantes';
+import { DEFAULT_ITEM } from '../utilities/types'
+import { FormRequiredRules } from '../utilities/constantes'
 
 const date = useDate()
 
@@ -229,7 +229,7 @@ const search = ref()
 // const objectThumbnailFile = ref(null)
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
-const myDefaultItem = ref(defaultItem)
+const defaultItem = ref(DEFAULT_ITEM)
 
 const MyDialog = computed({
   get() {
@@ -242,8 +242,8 @@ const MyDialog = computed({
 
 watch(MyDialog, (val) => {
   if (editedIndex.value === -1) {
-    maxPosition.value > 0 ? (myDefaultItem.value.position = maxPosition.value) : (myDefaultItem.value.position = 1)
-    editedItem.value = Object.assign({}, myDefaultItem.value)
+    maxPosition.value > 0 ? (defaultItem.value.position = maxPosition.value) : (defaultItem.value.position = 1)
+    editedItem.value = Object.assign({}, defaultItem.value)
   }
   val || close()
 })

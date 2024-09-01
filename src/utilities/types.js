@@ -1,4 +1,4 @@
-export const defaultItem = {
+export const DEFAULT_ITEM = {
     position: null,
     lotsToReturn: [],
     lots: [],
@@ -15,7 +15,7 @@ export const defaultItem = {
     isNewImage: true
 }
 
-export const UserHeaders = [
+export const USER_HEADERS = [
     {
         title: 'Prénom Nom',
         align: 'start',
@@ -32,7 +32,7 @@ export const UserHeaders = [
     { title: 'Statut', value: 'statusPAE' }
 ]
 
-export const ItemHeaders = [
+export const ITEM_HEADERS = [
     {
         title: 'Position',
         align: 'center',
@@ -45,12 +45,13 @@ export const ItemHeaders = [
     { title: "Date d'echéance", value: 'completionDate' }
 ]
 
-export const pvData = {
+export const PV_DATA = {
     meetingDateDate: null,
     meetingDateTime: null,
     meetingNextDateDate: null,
     meetingNextDateTime: null,
     meetingPlace: null,
     meetingNextPlace: null,
-    affairId: null
+    affairId: null,
+    state: 'En cours',
 }
