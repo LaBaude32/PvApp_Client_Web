@@ -84,7 +84,7 @@
                         <v-col cols="12">
                           <!-- <div v-if="MyEditedItem.image && MyEditedIndex > 0"> -->
                           <!-- <div v-if="MyEditedItem.image != null"> -->
-                          <div v-if="MyEditedItem.isNewImage">
+                          <div v-if="MyEditedItem.image == null || MyEditedItem.isImageChange">
                             <v-file-input label="Photo" accept="image/*" prepend-icon="mdi-camera" @change="onObjectSelected"></v-file-input>
                           </div>
                           <div v-else>
@@ -183,7 +183,6 @@ export default {
       objectThumbnailFile: null,
       MyImageDialog: false,
       MyImageSrc: String
-      // isNewImage: true
     };
   },
   watch: {
@@ -257,6 +256,7 @@ export default {
     onObjectSelected(event) {
       this.objectThumbnailFile = event;
       this.MyEditedItem.image = this.objectThumbnailFile;
+      this.MyEditedItem.isImageChange = true;
     },
     MyThumbnail(imageName) {
       return imgURL + imageName;
@@ -267,7 +267,7 @@ export default {
     },
     removeImage(MyEditedItem) {
       MyEditedItem.image = null;
-      MyEditedItem.isNewImage = true;
+      MyEditedItem.isImageChange = true;
     }
   }
 };

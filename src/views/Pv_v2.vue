@@ -102,8 +102,8 @@ export default {
         completionDateDate: "",
         completionDateTime: "",
         image: null,
-        visible: "",
-        isNewImage: ""
+        visible: 1,
+        isImageChange: false
       },
       defaultItem: {
         position: "",
@@ -117,8 +117,8 @@ export default {
         completionDateDate: "",
         completionDateTime: "",
         image: null,
-        visible: true,
-        isNewImage: true
+        visible: 1,
+        isImageChange: false
       }
     };
   },
@@ -179,7 +179,7 @@ export default {
       this.editedItem.completionToReturn = item.completion;
       this.editedItem.completion = [item.completion];
       this.editedItem.completion.push(...this.defaultItem.completion);
-      item.image ? (this.editedItem.isNewImage = false) : (this.editedItem.isNewImage = true);
+      this.editedItem.isImageChange = false;
 
       this.dialog = true;
     },
@@ -247,7 +247,9 @@ export default {
       Axios.post("/items", fd)
         .then((response) => {
           if (response.status == 201) {
-            this.items.push(response.data);
+            let newItem = response.data;
+            newItem.visible == 1 ? (newItem.visible = true) : (newItem.visible = false);
+            this.items.push(newItem);
             this.close();
             this.$store.dispatch("notification/success", "Ajout de l'item effectué");
           } else {
@@ -262,7 +264,7 @@ export default {
 
     async updateItem(fd) {
       //Upload new image
-      if (this.editedItem.image != null && this.editedItem.isNewImage == true) {
+      if (this.editedItem.image != null && this.editedItem.isImageChange == true) {
         const fdImage = new FormData();
         fdImage.append("itemId", this.editedItem.itemId);
         fdImage.append("image", this.editedItem.image);
@@ -281,8 +283,9 @@ export default {
       Axios.put("items/itemId", data)
         .then((response) => {
           if (response.status == 200) {
-            this.editedItem.completion = this.editedItem.completionToReturn;
-            Object.assign(this.items[this.editedIndex], data);
+            let itemUpdated = response.data;
+            itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false);
+            Object.assign(this.items[this.editedIndex], itemUpdated);
             this.editedItem.completion = [];
             this.close();
             this.$store.dispatch("notification/success", "Mise à jour de l'item effectué");
