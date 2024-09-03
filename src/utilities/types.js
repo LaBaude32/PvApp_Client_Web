@@ -12,7 +12,6 @@ export const DEFAULT_ITEM = {
     image: null,
     visible: true,
     isImageChange: false,
-    isNewImage: true
 }
 
 export const USER_HEADERS = [
