@@ -55,7 +55,7 @@ import Axios from 'axios'
 import { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
-import { defaultItem } from '../utilities/types'
+import { DEFAULT_ITEM } from '../utilities/types'
 
 const store = useStore()
 const route = useRoute()
@@ -102,7 +102,7 @@ const editedItem = ref({
   visible: '',
   isImageChange: false
 })
-const myDefaultItem = ref(defaultItem)
+const defaultItem = ref(DEFAULT_ITEM)
 
 const userId = computed(() => store.getters['user/userId'])
 const formTitle = computed(() => (editedIndex === -1 ? 'Nouvel item' : "Modifier l'item"))
@@ -132,7 +132,7 @@ async function getData() {
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })
-    myDefaultItem.value.lots = pvDetails.lots
+    defaultItem.value.lots = pvDetails.lots
   }
   store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
 }
@@ -143,7 +143,7 @@ function editItem(item) {
   editedItem.value.lotsToReturn = item.lots
   pvDetails.value.lots ? (editedItem.value.lots = pvDetails.value.lots) : null
   editedItem.value.completionToReturn = item.completion
-  editedItem.value.completion = [myDefaultItem.value.completion]
+  editedItem.value.completion = [defaultItem.value.completion]
   editedItem.value.isImageChange = false
   dialog.value = true
 }
@@ -165,7 +165,7 @@ function deleteItem(item) {
 
 function close() {
   dialog.value = false
-  editedItem.value = { ...myDefaultItem.value }
+  editedItem.value = { ...defaultItem.value }
   editedIndex.value = -1
 }
 
@@ -174,6 +174,7 @@ async function save() {
   let message
   if (editedIndex.value > -1) {
     //EXISTING ITEM
+    //FIXME: erreur sur les lots ici
     const itemUpdated = await updateItem(itemToBeSend)
     itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false)
     Object.assign(items.value[editedIndex.value], itemUpdated)
@@ -189,7 +190,7 @@ async function save() {
     message = "Ajout de l'item effectué"
   }
   close()
-  editedItem.value = { ...myDefaultItem.value }
+  editedItem.value = { ...defaultItem.value }
   store.dispatch('notification/success', message)
 }
 
@@ -272,6 +273,7 @@ function formatItemToBeSend() {
   editedItem.value.lots = editedItem.value.lotsToReturn
   editedItem.value.completion = editedItem.value.completionToReturn
   let itemToBeSend = { ...editedItem.value }
+  console.log(itemToBeSend)
   itemToBeSend.pvId = pvId.value
   delete itemToBeSend.image
   delete itemToBeSend.thumbnail
@@ -281,13 +283,13 @@ function formatItemToBeSend() {
   delete itemToBeSend.completionToReturn
   delete itemToBeSend.lotsToReturn
 
-  // if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
-  //   let lotTransit = []
-  //   editedItem.value.lotsToReturn.forEach((element) => {
-  //     lotTransit.push(element.lotId)
-  //   })
-  //   fd.set('lots', lotTransit)
-  // }
+  if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
+    let lotTransit = []
+    editedItem.value.lotsToReturn.forEach((element) => {
+      lotTransit.push(element.lotId)
+    })
+    itemToBeSend.lotsIds = lotTransit
+  }
 
   return itemToBeSend
 }

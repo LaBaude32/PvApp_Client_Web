@@ -1,7 +1,7 @@
 <template>
   <v-card class="pa-2 pb-3">
     <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
-    <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(myPvData.meetingDate) }}</v-card-title>
+    <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title>
     <v-card-text v-if="datasLoaded" class="pa-4 text-center">
       <p>Chargement des données</p>
       <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
@@ -17,7 +17,7 @@
                   label="Date de la réunion"
                   readonly
                   clearable
-                  @click:clear="myPvData.meetingDateDate = null"
+                  @click:clear="pvData.meetingDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                   v-model="displayMeetingDate"
                 ></v-text-field>
@@ -25,7 +25,7 @@
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
-                v-model="myPvData.meetingDateDate"
+                v-model="pvData.meetingDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -37,21 +37,21 @@
                   label="Heure de la réunion"
                   readonly
                   clearable
-                  @click:clear="myPvData.meetingDateTime = null"
+                  @click:clear="pvData.meetingDateTime = null"
                   prepend-inner-icon="mdi-clock-outline"
-                  v-model="myPvData.meetingDateTime"
+                  v-model="pvData.meetingDateTime"
                 ></v-text-field>
               </template>
               <v-time-picker
                 title="Selectionner l'heure"
                 format="24hr"
-                v-model="myPvData.meetingDateTime"
+                v-model="pvData.meetingDateTime"
               ></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
             <v-text-field
-              v-model="myPvData.meetingPlace"
+              v-model="pvData.meetingPlace"
               counter
               label="Lieu de la réunion"
               :rules="FormAddressRules"
@@ -66,14 +66,14 @@
                   label="Date de la réunion"
                   readonly
                   clearable
-                  @click:clear="myPvData.meetingNextDateDate = null"
+                  @click:clear="pvData.meetingNextDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
-                v-model="myPvData.meetingNextDateDate"
+                v-model="pvData.meetingNextDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -85,34 +85,31 @@
                   label="Heure de la réunion"
                   readonly
                   clearable
-                  @click:clear="myPvData.meetingNextDateTime = null"
+                  @click:clear="pvData.meetingNextDateTime = null"
                   prepend-inner-icon="mdi-clock-outline"
-                  v-model="myPvData.meetingNextDateTime"
+                  v-model="pvData.meetingNextDateTime"
                 ></v-text-field>
               </template>
               <v-time-picker
                 title="Selectionner l'heure"
                 format="24hr"
-                v-model="myPvData.meetingNextDateTime"
+                v-model="pvData.meetingNextDateTime"
               ></v-time-picker>
             </v-menu>
           </v-col>
 
           <v-col cols="12">
-            <v-text-field
-              v-model="myPvData.meetingNextPlace"
-              counter
-              label="Lieu de la prochaine réunion"
-            ></v-text-field>
+            <v-text-field v-model="pvData.meetingNextPlace" counter label="Lieu de la prochaine réunion"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-select
-              v-model="myPvData.affairId"
+              v-model="pvData.affairId"
               :items="affairs"
               item-title="name"
               item-value="affairId"
               label="Affaire"
               :rules="FormAffairRules"
+              :disabled="props.affairId != undefined"
             ></v-select>
           </v-col>
         </v-row>
@@ -134,7 +131,11 @@ import { useRouter } from 'vue-router'
 import Axios from 'axios'
 
 import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
-import { pvData } from '@/utilities/types'
+import { PV_DATA } from '@/utilities/types'
+
+const props = defineProps({
+  affairId: { type: Number }
+})
 
 const store = useStore()
 const date = useDate()
@@ -143,37 +144,38 @@ const router = useRouter()
 const isFormValid = ref(false)
 const affairs = ref([])
 const state = ref('En cours')
-const myPvData = ref(pvData)
+const pvData = ref(PV_DATA)
 const datasLoaded = ref(true)
 
-const isNewPv = defineModel('isNewPv', { type: Boolean, required: false, default: true })
+const isNewPv = defineModel('isNewPv', { type: Boolean, default: true })
+const existingPvData = defineModel('pvData', { type: Object })
 
 const emit = defineEmits(['closeDialog'])
 
 const displayMeetingDate = computed({
-  get: () => (myPvData.value.meetingDateDate ? date.format(myPvData.value.meetingDateDate, 'fullDate') : null),
+  get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
   set: (val) => {
-    myPvData.value.meetingDateDate = val
+    pvData.value.meetingDateDate = val
   }
 })
 
 const displayNextMeetingDate = computed({
-  get: () => (myPvData.value.meetingNextDateDate ? date.format(myPvData.value.meetingNextDateDate, 'fullDate') : null),
+  get: () => (pvData.value.meetingNextDateDate ? date.format(pvData.value.meetingNextDateDate, 'fullDate') : null),
   set: (val) => {
-    myPvData.value.meetingNextDateDate = val
+    pvData.value.meetingNextDateDate = val
   }
 })
 
 function validate() {
   const data = {
-    meetingDate: date.toISO(myPvData.value.meetingDateDate) + 'T' + myPvData.value.meetingDateTime,
-    meetingPlace: myPvData.value.meetingPlace,
-    meetingNextDate: myPvData.value.meetingNextDateDate
-      ? date.toISO(myPvData.value.meetingNextDateDate) + 'T' + myPvData.value.meetingNextDateTime
+    meetingDate: date.toISO(pvData.value.meetingDateDate) + 'T' + pvData.value.meetingDateTime,
+    meetingPlace: pvData.value.meetingPlace,
+    meetingNextDate: pvData.value.meetingNextDateDate
+      ? date.toISO(pvData.value.meetingNextDateDate) + 'T' + pvData.value.meetingNextDateTime
       : null,
-    meetingNextPlace: myPvData.value.meetingNextPlace ? myPvData.value.meetingNextPlace : null,
+    meetingNextPlace: pvData.value.meetingNextPlace ? pvData.value.meetingNextPlace : null,
     state: state.value,
-    affairId: myPvData.value.affairId
+    affairId: pvData.value.affairId
   }
   Axios.post('pvs', data)
     .then((response) => {
@@ -189,15 +191,17 @@ function validate() {
 }
 
 function cancelForm() {
-  for (const key in myPvData.value) {
-    myPvData.value[key] = null
+  for (const key in pvData.value) {
+    pvData.value[key] = null
   }
   isNewPv.value = false
   emit('closeDialog')
-  router.back()
+  if (!props.affairId) {
+    router.back()
+  }
 }
 
-onMounted(async () => {
+onMounted(() => {
   const dtAffairs = {
     params: {
       userId: store.state.user.userId
@@ -207,7 +211,6 @@ onMounted(async () => {
     Axios.get('affairs/userId', dtAffairs)
       .then(function (response) {
         affairs.value = response.data
-        datasLoaded.value = false
       })
       .catch(function (error) {
         console.log(error)
@@ -215,5 +218,14 @@ onMounted(async () => {
   } else {
     store.dispatch('auth/authLogout')
   }
+  if (props.affairId) {
+    pvData.value.affairId = props.affairId
+  }
+  console.log(existingPvData)
+
+  if (existingPvData) {
+    pvData.value = existingPvData
+  }
+  datasLoaded.value = false
 })
 </script>
