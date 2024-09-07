@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="MyHeaders" :items="MyItems" sort-by="position" :search="search">
+      <v-data-table :headers="MyHeaders" :items="MyItems" sort-by="position" sort-desc="true" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title v-if="pvDetails">Pv du {{ pvDetails.meetingDate | formatDate }} </v-toolbar-title>
