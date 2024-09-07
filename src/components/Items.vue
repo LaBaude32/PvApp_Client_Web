@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="items" :sort-by="[{ key: 'position', order: 'asc' }]" :search="search">
+      <v-data-table :headers="headers" :items="items" :sort-by="[{ key: 'position', order: 'desc' }]" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title v-if="pvDetails">Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}</v-toolbar-title>
