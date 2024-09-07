@@ -83,13 +83,7 @@
         ></v-text-field>
         <v-btn dark color="primary" class="ml-5" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="pvs"
-        :search="search"
-        :sort-by="[{ key: 'pvNumber', order: 'asc' }]"
-        sort-desc
-      >
+      <v-data-table :headers="headers" :items="pvs" :search="search" :sort-by="[{ key: 'pvNumber', order: 'desc' }]">
         <template v-slot:item.meetingDate="{ item }">
           <div>{{ $filters.formatDateWithA(item.meetingDate) }}</div>
         </template>
@@ -172,18 +166,18 @@ const search = ref('')
 const pvs = ref([])
 const isNewPv = ref(true)
 const headers = [
-  { text: 'Numéro', align: 'center', value: 'pvNumber' },
+  { title: 'Numéro', align: 'center', value: 'pvNumber' },
   {
-    text: 'Date',
-    align: 'start',
+    title: 'Date',
+    align: 'center',
     value: 'meetingDate',
     sortable: false
   },
-  { text: 'Etat', align: 'center', value: 'state', sortable: true },
-  { text: 'Lieu', value: 'meetingPlace', sortable: false },
-  { text: 'Prochaine date', value: 'meetingNextDate', sortable: false },
-  { text: 'Prochain lieu', value: 'meetingNextPlace', sortable: false },
-  { text: 'Action', value: 'actions', align: 'center', sortable: false }
+  { title: 'Etat', align: 'center', value: 'state', sortable: true },
+  { title: 'Lieu', align: 'center', value: 'meetingPlace', sortable: false },
+  { title: 'Prochaine date', align: 'center', value: 'meetingNextDate', sortable: false },
+  { title: 'Prochain lieu', align: 'center', value: 'meetingNextPlace', sortable: false },
+  { title: 'Action', value: 'actions', align: 'center', sortable: false }
 ]
 const userId = computed(() => {
   return store.getters['user/userId']
