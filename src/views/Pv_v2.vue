@@ -262,24 +262,26 @@ export default {
         });
     },
 
-    async updateItem(fd) {
+    async updateItem() {
       //Upload new image
+      let data = { ...this.editedItem };
       if (this.editedItem.image != null && this.editedItem.isImageChange == true) {
         const fdImage = new FormData();
         fdImage.append("itemId", this.editedItem.itemId);
         fdImage.append("image", this.editedItem.image);
         const res = await Axios.post("items/updateImage", fdImage);
-        fd.set("image", res.data.image);
+        data.image = res.data.image;
       }
-
-      let data = {};
-      fd.forEach((value, key) => (data[key] = value));
-      for (const iterator in data) {
-        if (data[iterator] == "null") {
-          data[iterator] = null;
-        }
+      data.completion = data.completionToReturn;
+      if (this.meetingType == "Chantier" && data.lotsToReturn) {
+        let lotTransit = [];
+        data.lotsToReturn.forEach((element) => {
+          lotTransit.push(element.lotId);
+        });
+        data.lots = lotTransit;
+      } else {
+        data.lots = null;
       }
-
       Axios.put("items/itemId", data)
         .then((response) => {
           if (response.status == 200) {
