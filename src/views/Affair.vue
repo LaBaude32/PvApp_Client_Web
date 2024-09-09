@@ -30,7 +30,7 @@
         v-model:pvData="pvData"
         v-if="pvModifyDialog"
         :affairId="affair.affairId"
-        @close-dialog="dialog = false"
+        @close-dialog="closePvDialog"
       />
 
       <ModifyLot
@@ -142,6 +142,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 Settings.defaultLocale = 'fr'
+import { PV_DATA } from '@/utilities/types'
 
 const store = useStore()
 const router = useRouter()
@@ -413,6 +414,7 @@ async function downloadPvPdf(pv) {
 }
 
 function createPv() {
+  isNewPv.value = true
   pvModifyDialog.value = true
   dialog.value = true
 }
@@ -449,5 +451,12 @@ function pvModifySave() {
     .catch((error) => {
       console.log(error)
     })
+}
+
+function closePvDialog(isSaved) {
+  console.log(isSaved);
+  
+  pvData.value = PV_DATA
+  dialog.value = false
 }
 </script>

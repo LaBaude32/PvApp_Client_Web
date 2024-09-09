@@ -2,11 +2,11 @@
   <v-card class="pa-2 pb-3">
     <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
     <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title>
-    <v-card-text v-if="datasLoaded" class="pa-4 text-center">
+    <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
       <p>Chargement des données</p>
       <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
     </v-card-text>
-    <v-form v-else v-model="isFormValid">
+    <v-form v-else ref="my-form" v-model="isFormValid">
       <v-card-text>
         <v-row>
           <v-col cols="6" lg="6">
@@ -115,6 +115,7 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
+        <!-- TODO:Ajouter un bouton pour supprimer un PV -->
         <v-spacer />
         <v-btn color="error" @click="cancelForm">Annuler</v-btn>
         <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="validate">Enregistrer</v-btn>
@@ -127,7 +128,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { useDate } from 'vuetify'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Axios from 'axios'
 
 import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
@@ -140,17 +141,18 @@ const props = defineProps({
 const store = useStore()
 const date = useDate()
 const router = useRouter()
+const route = useRoute()
 
 const isFormValid = ref(false)
 const affairs = ref([])
 const state = ref('En cours')
 const pvData = ref(PV_DATA)
-const datasLoaded = ref(true)
+const datasIsLoading = ref(true)
 
 const isNewPv = defineModel('isNewPv', { type: Boolean, default: true })
 const existingPvData = defineModel('pvData', { type: Object })
 
-const emit = defineEmits(['closeDialog'])
+const emit = defineEmits(['closeDialog', isSaved])
 
 const displayMeetingDate = computed({
   get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
@@ -177,31 +179,45 @@ function validate() {
     state: state.value,
     affairId: pvData.value.affairId
   }
-  Axios.post('pvs', data)
-    .then((response) => {
-      const pvId = response.data.pvId
-      router.push({
-        name: routesCONST.pv.name,
-        params: { id: pvId }
+  if (isNewPv.value) {
+    Axios.post('pvs', data)
+      .then((response) => {
+        const pvId = response.data.pvId
+        router.push({
+          name: routesCONST.pv.name,
+          params: { id: pvId }
+        })
       })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    data.pvId = pvData.value.pvId
+    Axios.put('pvs/pvId', data).then((res) => {
+      pvData.value = res.data
+      existingPvData.value = res.data
+      console.log(res.data)
+      isNewPv.value = false
+      emit('closeDialog' , true)
     })
-    .catch((error) => {
-      console.log(error)
-    })
+  }
 }
 
 function cancelForm() {
-  for (const key in pvData.value) {
-    pvData.value[key] = null
-  }
-  isNewPv.value = false
   emit('closeDialog')
-  if (!props.affairId) {
-    router.back()
+  if (route.path == '/AddPv') {
+    router.push('board')
   }
 }
 
 onMounted(() => {
+  if (!isNewPv.value) {
+    pvData.value = { ...existingPvData.value }
+    pvData.value.meetingDateDate = date.parseISO(pvData.value.meetingDate.slice(0, 10))
+    pvData.value.meetingDateTime = pvData.value.meetingDate.slice(-8)
+    pvData.value.meetingNextDateDate ? date.parseISO(pvData.value.meetingNextDate.slice(0, 10)) : null
+    pvData.value.meetingNextDateTime ? pvData.value.meetingNextDate.slice(-8) : null
+  }
   const dtAffairs = {
     params: {
       userId: store.state.user.userId
@@ -221,11 +237,6 @@ onMounted(() => {
   if (props.affairId) {
     pvData.value.affairId = props.affairId
   }
-  console.log(existingPvData)
-
-  if (existingPvData) {
-    pvData.value = existingPvData
-  }
-  datasLoaded.value = false
+  datasIsLoading.value = false
 })
 </script>
