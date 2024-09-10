@@ -217,6 +217,7 @@ onMounted(() => {
     pvData.value = { ...existingPvData.value }
     pvData.value.meetingDateDate = date.parseISO(pvData.value.meetingDate.slice(0, 10))
     pvData.value.meetingDateTime = pvData.value.meetingDate.slice(-8)
+    //FIXME:ça va pas du tout
     pvData.value.meetingNextDateDate ? date.parseISO(pvData.value.meetingNextDate.slice(0, 10)) : null
     pvData.value.meetingNextDateTime ? pvData.value.meetingNextDate.slice(-8) : null
   }
