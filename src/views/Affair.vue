@@ -454,8 +454,11 @@ function pvModifySave() {
 }
 
 function closePvDialog(isSaved) {
-  console.log(isSaved);
-  
+  const index = pvs.value.findIndex((el) => el.pvId === pvData.value.pvId)
+  if (isSaved) {
+    Object.assign(pvs.value[index], pvData.value)
+  }
+
   pvData.value = PV_DATA
   dialog.value = false
 }

@@ -148,11 +148,12 @@ const affairs = ref([])
 const state = ref('En cours')
 const pvData = ref(PV_DATA)
 const datasIsLoading = ref(true)
+const isSaved = ref(false)
 
 const isNewPv = defineModel('isNewPv', { type: Boolean, default: true })
 const existingPvData = defineModel('pvData', { type: Object })
 
-const emit = defineEmits(['closeDialog', isSaved])
+const emit = defineEmits(['closeDialog'])
 
 const displayMeetingDate = computed({
   get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
@@ -196,15 +197,16 @@ function validate() {
     Axios.put('pvs/pvId', data).then((res) => {
       pvData.value = res.data
       existingPvData.value = res.data
-      console.log(res.data)
       isNewPv.value = false
-      emit('closeDialog' , true)
+      isSaved.value = true
+      emit('closeDialog', isSaved.value)
     })
   }
 }
 
 function cancelForm() {
-  emit('closeDialog')
+  isSaved.value = false
+  emit('closeDialog', isSaved.value)
   if (route.path == '/AddPv') {
     router.push('board')
   }
