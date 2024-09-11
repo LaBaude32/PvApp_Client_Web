@@ -25,7 +25,7 @@
         :validate="pvModifySave"
         :cancel="cancelPvModify"
       /> -->
-      <TestModifyPv
+      <ModifyPv
         v-model:isNewPv="isNewPv"
         v-model:pvData="pvData"
         v-if="pvModifyDialog"
@@ -135,7 +135,6 @@ import routesCONST, { getRouteName } from '../utilities/constantes'
 import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifyAffair from '@/components/ModifyAffair.vue'
 import ModifyPv from '@/components/ModifyPv.vue'
-import TestModifyPv from '../components/TestModifyPv.vue'
 import ModifyLot from '@/components/ModifyLot.vue'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
@@ -158,7 +157,6 @@ const pvData = ref({})
 const dialog = ref(false)
 const enableVider = ref(false)
 const affair = ref({})
-const affairsForPv = ref([])
 const lots = ref([])
 const numberLots = ref(Number)
 const oldLots = ref([])
@@ -183,44 +181,6 @@ const headers = [
 const userId = computed(() => {
   return store.getters['user/userId']
 })
-// const meetingDateDate = computed({
-//   get() {
-//     return pvData.value.meetingDate.substr(0, 10)
-//   },
-//   set(val) {
-//     pvData.value.meetingDate = val + ' ' + pvData.value.meetingDateTime
-//     pvData.value.meetingDateDate = val
-//   }
-// })
-// const meetingDateTime = computed({
-//   get() {
-//     return pvData.value.meetingDate.substr(11, 5)
-//   },
-//   set(val) {
-//     pvData.value.meetingDate = pvData.value.meetingDateDate + ' ' + val
-//     pvData.value.meetingDateTime = val
-//   }
-// })
-// const meetingNextDateDate = computed({
-//   get() {
-//     return pvData.value.meetingNextDate.substr(0, 10)
-//   },
-//   set(val) {
-//     pvData.value.meetingNextDateTime
-//       ? (pvData.value.meetingNextDate = val + ' ' + pvData.value.meetingNextDateTime)
-//       : (pvData.value.meetingNextDate = val)
-//     pvData.value.meetingNextDateDate = val
-//   }
-// })
-// const meetingNextDateTime = computed({
-//   get() {
-//     return pvData.value.meetingNextDate.substr(11, 5)
-//   },
-//   set(val) {
-//     pvData.value.meetingNextDate = pvData.value.meetingNextDateDate + ' ' + val
-//     pvData.value.meetingNextDateTime = val
-//   }
-// })
 
 onMounted(() => {
   const affairId = route.params.id

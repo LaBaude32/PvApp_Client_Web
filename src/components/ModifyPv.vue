@@ -1,34 +1,35 @@
 <template>
   <v-card class="pa-2 pb-3">
-    <v-card-title v-if="modifyingType">
-      Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}
-    </v-card-title>
-    <v-card-title v-else>Nouveau procès verbal</v-card-title>
-    <!-- {{ pvData }} -->
-    <v-form v-model="valid" ref="form">
+    <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
+    <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title>
+    <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
+      <p>Chargement des données</p>
+      <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
+    </v-card-text>
+    <v-form v-else ref="my-form" v-model="isFormValid">
       <v-card-text>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="6" lg="6">
             <v-menu>
               <template v-slot:activator="{ props }">
                 <v-text-field
                   v-bind="props"
-                  v-model="displayMeetingDate"
                   label="Date de la réunion"
                   readonly
                   clearable
-                  @click:clear="meetingDateDate = null"
+                  @click:clear="pvData.meetingDateDate = null"
                   prepend-inner-icon="mdi-calendar"
+                  v-model="displayMeetingDate"
                 ></v-text-field>
               </template>
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
-                v-model="meetingDateDate"
+                v-model="pvData.meetingDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="6" sm="6">
             <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <v-text-field
@@ -36,12 +37,16 @@
                   label="Heure de la réunion"
                   readonly
                   clearable
-                  @click:clear="meetingDateTime = null"
+                  @click:clear="pvData.meetingDateTime = null"
                   prepend-inner-icon="mdi-clock-outline"
-                  v-model="meetingNextDateTime"
+                  v-model="pvData.meetingDateTime"
                 ></v-text-field>
               </template>
-              <v-time-picker title="Selectionner l'heure" format="24hr" v-model="meetingNextDateTime"></v-time-picker>
+              <v-time-picker
+                title="Selectionner l'heure"
+                format="24hr"
+                v-model="pvData.meetingDateTime"
+              ></v-time-picker>
             </v-menu>
           </v-col>
           <v-col cols="12">
@@ -49,163 +54,190 @@
               v-model="pvData.meetingPlace"
               counter
               label="Lieu de la réunion"
-              :rules="addressRules"
+              :rules="FormAddressRules"
             ></v-text-field>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="6" lg="6">
             <v-menu>
               <template v-slot:activator="{ props }">
                 <v-text-field
                   v-bind="props"
                   v-model="displayNextMeetingDate"
-                  label="Date de la prochaine réunion"
+                  label="Date de la réunion"
                   readonly
                   clearable
-                  @click:clear="meetingNextDateDate = null"
+                  @click:clear="pvData.meetingNextDateDate = null"
                   prepend-inner-icon="mdi-calendar"
                 ></v-text-field>
               </template>
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
-                v-model="meetingNextDateDate"
+                v-model="pvData.meetingNextDateDate"
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="6">
-            <v-menu v-model="meetingNextDateDateMenu" :close-on-content-click="false" max-width="290">
+          <v-col cols="6" sm="6">
+            <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <v-text-field
-                  :value="displayNextMeetingDate"
-                  clearable
-                  label="Jour de la prochaine réunion"
-                  readonly
                   v-bind="props"
-                  @click:clear="meetingNextDateDate = null"
-                  prepend-inner-icon="mdi-calendar"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="meetingNextDateDate"
-                @change="meetingNextDateDateMenu = false"
-                locale="fr-fr"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-          <v-col cols="6">
-            <v-menu
-              ref="menuRef2"
-              v-model="meetingNextDateTimeMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="meetingNextDateTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-model="meetingNextDateTime"
-                  label="Heure de la prochaine réunion"
+                  label="Heure de la réunion"
+                  readonly
+                  clearable
+                  @click:clear="pvData.meetingNextDateTime = null"
                   prepend-inner-icon="mdi-clock-outline"
-                  readonly
-                  v-bind="props"
-                  clearable
-                  @click:clear="meetingNextDateTime = null"
+                  v-model="pvData.meetingNextDateTime"
                 ></v-text-field>
               </template>
               <v-time-picker
-                v-if="meetingNextDateTimeMenu"
-                v-model="meetingNextDateTime"
+                title="Selectionner l'heure"
                 format="24hr"
-                full-width
-                @click:minute="$refs.menuRef2.save(meetingNextDateTime)"
-                :allowed-minutes="allowedStep"
+                v-model="pvData.meetingNextDateTime"
               ></v-time-picker>
             </v-menu>
           </v-col>
+
           <v-col cols="12">
             <v-text-field v-model="pvData.meetingNextPlace" counter label="Lieu de la prochaine réunion"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-switch
-              v-model="pvData.state"
-              :label="pvData.state"
-              role="switch"
-              false-value="En cours"
-              true-value="Terminé"
-            ></v-switch>
-          </v-col>
-          <v-col cols="12" v-if="!pvData.affairId">
-            <v-combobox
+            <v-select
               v-model="pvData.affairId"
               :items="affairs"
-              item-text="name"
-              item-value="id_affair"
+              item-title="name"
+              item-value="affairId"
               label="Affaire"
-              :rules="affairRules"
-            ></v-combobox>
+              :rules="FormAffairRules"
+              :disabled="props.affairId != undefined"
+            ></v-select>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
+        <!-- TODO:Ajouter un bouton pour supprimer un PV -->
         <v-spacer />
-        <!-- <v-btn v-if="!modifyingType" color="error" @click.prevent="cancel">Annuler</v-btn> -->
-        <v-btn color="error" @click.prevent="cancel">Annuler</v-btn>
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="validate">Enregistrer</v-btn>
+        <v-btn color="error" @click="cancelForm">Annuler</v-btn>
+        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">Enregistrer</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useDate } from 'vuetify'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import Axios from 'axios'
 
+import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
+import { PV_DATA } from '@/utilities/types'
+
+const store = useStore()
 const date = useDate()
-defineProps({
-  data: Object,
-  affairs: Array,
-  modifyingType: Boolean,
-  validate: Function,
-  cancel: Function
+const router = useRouter()
+const route = useRoute()
+
+const isFormValid = ref(false)
+const affairs = ref([])
+const state = ref('En cours')
+const pvData = ref(PV_DATA)
+const datasIsLoading = ref(true)
+const isSaved = ref(false)
+
+const props = defineProps({
+  affairId: { type: Number }
 })
-
-const isFormValid = defineModel('isFormValid', { type: Boolean, default: false, required: true })
-const meetingDateDate = defineModel('meetingDateDate', { required: true })
-const meetingDateTime = defineModel('meetingDateTime', { required: true })
-const meetingNextDateDate = defineModel('meetingNextDateDate', { required: true })
-const meetingNextDateTime = defineModel('meetingNextDateTime', { required: true })
-const pvData = defineModel('data', { type: Object, required: true })
-
-const valid = ref(false)
-const meetingNextDateDateMenu = ref(false)
-const meetingNextDateTimeMenu = ref(false)
-const affairRules = ref([(v) => !!v || 'Requ  is'])
-const addressRules = ref([
-  (v) => !!v || 'Requis',
-  (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-])
+const isNewPv = defineModel('isNewPv', { type: Boolean, default: true })
+const existingPvData = defineModel('pvData', { type: Object })
+const emit = defineEmits(['closeDialog'])
 
 const displayMeetingDate = computed({
-  get: () => (meetingDateDate.value ? date.format(meetingDateDate.value, 'fullDate') : null),
+  get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
   set: (val) => {
-    meetingDateDate.value = val
+    pvData.value.meetingDateDate = val
   }
 })
-
 const displayNextMeetingDate = computed({
-  get: () => (meetingNextDateDate.value ? date.format(meetingNextDateDate.value, 'fullDate') : null),
+  get: () => (pvData.value.meetingNextDateDate ? date.format(pvData.value.meetingNextDateDate, 'fullDate') : null),
   set: (val) => {
-    meetingNextDateDate.value = val
+    pvData.value.meetingNextDateDate = val
   }
 })
 
-// const computedDateFormattedMeetingDate = computed(() => {
-//   return meetingDateDate.value ? DateTime.fromSQL(meetingDateDate.value).toFormat('DDDD') : ''
-// })
-// const computedDateFormattedMeetingNextDate = computed(() => {
-//   return meetingNextDateDate.value ? DateTime.fromSQL(meetingNextDateDate.value).toFormat('DDDD') : ''
-// })
+function saveForm() {
+  const data = {
+    meetingDate: date.toISO(pvData.value.meetingDateDate) + 'T' + pvData.value.meetingDateTime,
+    meetingPlace: pvData.value.meetingPlace,
+    meetingNextDate: pvData.value.meetingNextDateDate
+      ? date.toISO(pvData.value.meetingNextDateDate) + 'T' + pvData.value.meetingNextDateTime
+      : null,
+    meetingNextPlace: pvData.value.meetingNextPlace ? pvData.value.meetingNextPlace : null,
+    state: state.value,
+    affairId: pvData.value.affairId
+  }
+  if (isNewPv.value) {
+    Axios.post('pvs', data)
+      .then((response) => {
+        const pvId = response.data.pvId
+        router.push({
+          name: routesCONST.pv.name,
+          params: { id: pvId }
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    data.pvId = pvData.value.pvId
+    Axios.put('pvs/pvId', data).then((res) => {
+      pvData.value = res.data
+      existingPvData.value = res.data
+      isNewPv.value = false
+      isSaved.value = true
+      emit('closeDialog', isSaved.value)
+    })
+  }
+}
+
+function cancelForm() {
+  isSaved.value = false
+  emit('closeDialog', isSaved.value)
+  if (route.path == '/AddPv') {
+    router.push('board')
+  }
+}
+
+onMounted(() => {
+  if (!isNewPv.value) {
+    pvData.value = { ...existingPvData.value }
+    pvData.value.meetingDateDate = date.parseISO(pvData.value.meetingDate.slice(0, 10))
+    pvData.value.meetingDateTime = pvData.value.meetingDate.slice(-8)
+    if (pvData.value.meetingNextDate) {
+      pvData.value.meetingNextDateDate = date.parseISO(pvData.value.meetingNextDate.slice(0, 10))
+      pvData.value.meetingNextDateTime = pvData.value.meetingNextDate.slice(-8)
+    }
+  }
+  const dtAffairs = {
+    params: {
+      userId: store.state.user.userId
+    }
+  }
+  if (typeof userId != undefined) {
+    Axios.get('affairs/userId', dtAffairs)
+      .then(function (response) {
+        affairs.value = response.data
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  } else {
+    store.dispatch('auth/authLogout')
+  }
+  if (props.affairId) {
+    pvData.value.affairId = props.affairId
+  }
+  datasIsLoading.value = false
+})
 </script>
