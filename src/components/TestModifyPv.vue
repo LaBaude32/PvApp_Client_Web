@@ -118,7 +118,7 @@
         <!-- TODO:Ajouter un bouton pour supprimer un PV -->
         <v-spacer />
         <v-btn color="error" @click="cancelForm">Annuler</v-btn>
-        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="validate">Enregistrer</v-btn>
+        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">Enregistrer</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -134,10 +134,6 @@ import Axios from 'axios'
 import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
 import { PV_DATA } from '@/utilities/types'
 
-const props = defineProps({
-  affairId: { type: Number }
-})
-
 const store = useStore()
 const date = useDate()
 const router = useRouter()
@@ -150,9 +146,11 @@ const pvData = ref(PV_DATA)
 const datasIsLoading = ref(true)
 const isSaved = ref(false)
 
+const props = defineProps({
+  affairId: { type: Number }
+})
 const isNewPv = defineModel('isNewPv', { type: Boolean, default: true })
 const existingPvData = defineModel('pvData', { type: Object })
-
 const emit = defineEmits(['closeDialog'])
 
 const displayMeetingDate = computed({
@@ -161,7 +159,6 @@ const displayMeetingDate = computed({
     pvData.value.meetingDateDate = val
   }
 })
-
 const displayNextMeetingDate = computed({
   get: () => (pvData.value.meetingNextDateDate ? date.format(pvData.value.meetingNextDateDate, 'fullDate') : null),
   set: (val) => {
@@ -169,7 +166,7 @@ const displayNextMeetingDate = computed({
   }
 })
 
-function validate() {
+function saveForm() {
   const data = {
     meetingDate: date.toISO(pvData.value.meetingDateDate) + 'T' + pvData.value.meetingDateTime,
     meetingPlace: pvData.value.meetingPlace,
