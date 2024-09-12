@@ -10,21 +10,8 @@
         v-if="affairDialog"
         v-model:affairDatas="affair"
         :validate="ModifyAffairSave"
-        :enableVider="enableVider"
+        @close-dialog="cancelAffairDialog"
       />
-      <!-- <ModifyPv
-        v-if="pvModifyDialog"
-        v-model:data="pvData"
-        v-model:meetingDateDate="meetingDateDate"
-        v-model:meetingDateTime="meetingDateTime"
-        v-model:meetingNextDateDate="meetingNextDateDate"
-        v-model:meetingNextDateTime="meetingNextDateTime"
-        v-model:isFormValid="isFormValid"
-        :affairs="affairsForPv"
-        :modifyingType="pvModifyingType"
-        :validate="pvModifySave"
-        :cancel="cancelPvModify"
-      /> -->
       <ModifyPv
         v-model:isNewPv="isNewPv"
         v-model:pvData="pvData"
@@ -32,7 +19,6 @@
         :affairId="affair.affairId"
         @close-dialog="closePvDialog"
       />
-
       <ModifyLot
         v-if="lotModifyDialog"
         :lotData.sync="lots"
@@ -155,7 +141,6 @@ const pvModifyingType = ref(true)
 const lotModifyCancelable = ref(false)
 const pvData = ref({})
 const dialog = ref(false)
-const enableVider = ref(false)
 const affair = ref({})
 const lots = ref([])
 const numberLots = ref(Number)
@@ -420,6 +405,10 @@ function closePvDialog(isSaved) {
   }
 
   pvData.value = PV_DATA
+  dialog.value = false
+}
+
+function cancelAffairDialog() {
   dialog.value = false
 }
 </script>

@@ -50,14 +50,6 @@ const routesCONST = {
   test: {
     path: "/test",
     name: "Test"
-  },
-  test2: {
-    path: "/test2",
-    name: "Test2"
-  },
-  test3: {
-    path: "/test3",
-    name: "Test3"
   }
 };
 
@@ -67,7 +59,7 @@ export const FormNameRules = [
   (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
   (v) => (v && v.length >= 3) || 'Doit être supérieur à 3 caractères'
 ]
-export const FormDescriptionRules = [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères']
+export const FormDescriptionRules = [(v) => v?.length <= 100 || 'Doit être inferieur à 100 caractères']
 export const FormMeetingRules = [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste']
 export const FormStandardRules = [
   (v) => !!v || 'Requis',

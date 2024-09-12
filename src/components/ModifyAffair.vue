@@ -44,9 +44,9 @@
       </v-card-text>
 
       <v-card-actions>
+        <v-btn color="error" class="mr-4" @click="$emit('closeDialog')">Annuler</v-btn>
         <v-spacer />
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
-        <v-btn v-if="enableVider" color="error" class="mr-4" @click="reset">Vider</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -57,18 +57,11 @@ import { ref } from 'vue'
 import { FormAddressRules, FormNameRules, FormDescriptionRules, FormMeetingRules } from '@/utilities/constantes'
 
 defineProps({
-  validate: Function,
-  enableVider: Boolean //FIXME: logique étrange
+  validate: Function
 })
-
 const affairDatas = defineModel('affairDatas', { type: Object, required: true })
+const emit = defineEmits(['closeDialog'])
 
 const valid = ref(false)
-
 const items = ['Chantier', 'Etude']
-
-function reset() {
-  //FIXME: fonctionne pas
-  this.$refs.form.reset()
-}
 </script>

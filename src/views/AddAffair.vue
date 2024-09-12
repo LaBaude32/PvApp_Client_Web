@@ -1,124 +1,59 @@
 <template>
-  <div>
-    <v-form v-model="valid" ref="form">
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field v-model="name" :counter="50" label="Nom de l'affaire" :rules="nameRules"></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field v-model="address" counter label="Adresse de l'affaire" :rules="addressRules"></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-combobox v-model="meetingType" :items="items" label="Phase" :rules="meetingRules"></v-combobox>
-          </v-col>
-          <v-col cols="12">
-            <v-textarea
-              v-model="description"
-              auto-grow
-              :counter="100"
-              rows="1"
-              label="Description de l'affaire"
-              :rules="descriptionRules"
-            ></v-textarea>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container class="text-center">
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
-        <v-btn color="error" class="mr-4" @click="reset">Vider</v-btn>
-      </v-container>
-    </v-form>
-  </div>
+  <v-dialog v-model="dialog" max-width="70%">
+    <ModifyAffair v-model:affairDatas="affair" :validate="validate" @close-dialog="cancelDialog" />
+  </v-dialog>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, computed } from 'vue'
 import Axios from 'axios'
+import { useRouter } from 'vue-router'
 import routesCONST from '../utilities/constantes'
-import { DateTime, Settings } from 'luxon'
-Settings.defaultLocale = 'fr'
+import ModifyAffair from '@/components/ModifyAffair.vue'
+import { useStore } from 'vuex'
 
-export default {
-  data: () => ({
-    valid: false,
-    nameRules: [
-      (v) => !!v || 'Requis',
-      (v) => (v && v.length <= 50) || 'Doit être inferieur à 50 caractères',
-      (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
-    ],
-    addressRules: [(v) => !!v || 'Requis', (v) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'],
-    descriptionRules: [(v) => v.length <= 100 || 'Doit être inferieur à 120 caractères'],
-    meetingRules: [(v) => !!v || 'Requis', (v) => v == 'Chantier' || v == 'Etude' || 'Choisir dans la liste'],
-    name: '',
-    address: '',
-    meetingType: '',
-    description: '',
-    items: ['Chantier', 'Etude']
-  }),
-  computed: {
-    id() {
-      return this.$store.state.user.userId
-    }
-  },
-  methods: {
-    validate() {
-      // this.$refs.form.validate();
-      let affairData = {
-        name: this.name,
-        address: this.address,
-        meetingType: this.meetingType,
-        progress: 0
-      }
-      Axios.post('/affairs', affairData)
-        .then((response) => {
-          if (response.status == 201) {
-            let affairId = response.data.affairId
-            let pvData = {
-              state: 'En cours',
-              meetingPlace: 'Indéfini',
-              meetingDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-              userId: this.$store.state.user.userId,
-              affairId: affairId
+const router = useRouter()
+const store = useStore()
+
+const affair = ref({ description: '' })
+const dialog = ref(false)
+
+onMounted(() => {
+  dialog.value = true
+})
+
+function validate() {
+  Axios.post('/affairs', affair.value)
+    .then((response) => {
+      if (response.status == 201) {
+        const affairId = response.data.affairId
+        const pvData = {
+          state: 'En cours',
+          meetingPlace: 'Indéfini',
+          meetingDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          userId: store.state.user.userId,
+          affairId: affairId
+        }
+        Axios.post('/pvs', pvData)
+          .then((response) => {
+            if (response.status == 201) {
+              router.push({
+                name: routesCONST.affair.name,
+                params: { id: affairId }
+              })
             }
-            Axios.post('/pvs', pvData)
-              .then((response) => {
-                if (response.status == 201) {
-                  // let pvId = response.data.id_pv;
-                  // let PvHasUserData = {
-                  //   pv_id: pvId,
-                  //   user_id: this.$store.state.user.userId,
-                  //   status_PAE: "Présent"
-                  // };
-                  // Axios.post("/addPvHasUser", PvHasUserData)
-                  //   .then(response => {
-                  //     if (response.status == 201) {
-                  //       this.$router.push({
-                  //         name: routesCONST.affair.name,
-                  //         params: { id: affairId }
-                  //       });
-                  //     }
-                  //   })
-                  //   .catch(error => {
-                  //     console.log(error);
-                  //   });
-                  this.$router.push({
-                    name: routesCONST.affair.name,
-                    params: { id: affairId }
-                  })
-                }
-              })
-              .catch((error) => {
-                console.log(error)
-              })
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    reset() {
-      this.$refs.form.reset()
-    }
-  }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+function cancelDialog() {
+  router.push('board')
 }
 </script>
