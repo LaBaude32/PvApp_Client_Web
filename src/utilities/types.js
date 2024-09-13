@@ -31,6 +31,18 @@ export const USER_HEADERS = [
     { title: 'Statut', value: 'statusPAE' }
 ]
 
+export const USER_GROUPE_ITEMS = [
+    "Maîtrise d'ouvrage",
+    "Assistance à la maîtrise d'ouvrage",
+    "Maîtrise d'oeuvre",
+    'Entreprise',
+    'Concessionnaire',
+    'Personne public associée',
+    'COPIL',
+    'COTEC',
+    'Divers'
+]
+
 export const ITEM_HEADERS = [
     {
         title: 'Position',
