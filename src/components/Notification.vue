@@ -1,29 +1,21 @@
 <template>
-  <v-snackbar top right :color="color" app>
-    <v-icon :color="btnColor" :dark="isDark" @click="close">mdi-close-circle</v-icon>
-    {{ text }}
-    <v-btn
-      v-if="color == 'red'"
-      class="ml-2"
-      target="_blank"
-      href="https://github.com/LaBaude32/PvApp_Client_Web/issues"
-    >
-      Signaler un bug
-    </v-btn>
+  <v-snackbar v-model="store.state" :color="store.color" :timeout="store.timeout">
+    {{ store.text }}
+    <template v-slot:actions>
+      <v-btn
+        v-if="store.color == 'red'"
+        class="ml-2"
+        target="_blank"
+        href="https://gitlab.com/LaBaude32/PvApp_Core/-/issues"
+      >
+        Signaler un bug
+      </v-btn>
+      <v-icon @click="store.close">mdi-close-circle</v-icon>
+    </template>
   </v-snackbar>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-const store = useStore()
-
-const text = computed(() => store.getters['notification/text'])
-const color = computed(() => store.getters['notification/color'])
-const btnColor = computed(() => store.getters['notification/btnColor'])
-const isDark = computed(() => store.getters['notification/isDark'])
-
-function close() {
-  store.dispatch('notification/close')
-}
+import { useNotificationStore } from '../store/notification'
+const store = useNotificationStore()
 </script>

@@ -14,6 +14,7 @@ import * as components from "vuetify/components"
 import * as directives from "vuetify/directives"
 import { VTimePicker } from 'vuetify/labs/VTimePicker'
 import { fr } from "vuetify/locale"
+import { createPinia } from "pinia"
 
 const vuetify = createVuetify({
   components: {
@@ -38,11 +39,14 @@ if (token) {
 }
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_API_URL
+const pinia = createPinia()
+
 
 const app = createApp(App)
 app.use(store)
 app.use(vuetify)
 app.use(router)
+app.use(pinia)
 
 app.config.globalProperties.$filters = { ...filters }
 
