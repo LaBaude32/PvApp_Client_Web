@@ -40,31 +40,19 @@
     </v-navigation-drawer>
 
     <v-main>
-      <div id="app-version-notif" class="mt-10">
-        <v-alert
-          class="mx-auto"
-          max-width="800px"
-          v-model="versionNotif"
-          dismissible
-          color="green"
-          border="start"
-          elevation="2"
-          colored-border
-          icon="mdi-information"
-          prominent
-        >
-          <v-row align="center">
-            <v-col class="grow">Une nouvelle version est disponnible.</v-col>
-            <v-col class="shrink">
-              <v-chip class="ma-3" color="green" text-color="white">
-                {{ appVersion }}
-              </v-chip>
-            </v-col>
-            <v-col class="shrink">
-              <v-btn color="green" dark @click.prevent="action('About')">Voir les nouveautés</v-btn>
-            </v-col>
-          </v-row>
-        </v-alert>
+      <div v-if="versionNotif" id="app-version-notif" class="mt-10">
+        <v-banner class="mx-auto" max-width="800px" dark color="green" icon="mdi-information" lines="1" stacked="false">
+          <v-banner-text>
+            Une nouvelle version est disponnible :
+            <v-chip class="ma-3" color="green" text-color="white">
+              {{ version }}
+            </v-chip>
+          </v-banner-text>
+
+          <template v-slot:actions>
+            <v-btn color="green" variant="outlined" dark @click.prevent="action('About')">Voir les nouveautés</v-btn>
+          </template>
+        </v-banner>
       </div>
       <router-view />
     </v-main>
@@ -72,110 +60,98 @@
   </v-layout>
 </template>
 
-<script>
+<script setup>
 import Axios from 'axios'
-import { mapGetters } from 'vuex'
-import { getRouteName } from './utilities/constantes'
+import { getRouteName } from '@/utilities/constantes'
 import Notification from '@/components/Notification.vue'
-import { version } from '../package'
+import { version } from '../package.json'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
-export default {
-  components: {
-    Notification
+const router = useRouter()
+const store = useStore()
+
+const right = ref(false)
+const versionNotif = ref(false)
+const drawerMain = ref(false)
+const drawerRight = ref(false)
+const items = [
+  { path: 'MyAccount', title: 'Mon Compte' },
+  { path: 'Logout', title: 'Se deconnecter' }
+]
+const mainMenuItems = [
+  {
+    path: getRouteName('home'),
+    title: 'Pv App',
+    icon: 'mdi-home'
   },
-  data() {
-    return {
-      appVersion: version,
-      right: false,
-      versionNotif: false,
-      drawerMain: false,
-      drawerRight: false,
-      items: [
-        { path: 'MyAccount', title: 'Mon Compte' },
-        { path: 'Logout', title: 'Se deconnecter' }
-      ],
-      mainMenuItems: [
-        {
-          path: getRouteName('home'),
-          title: 'Pv App',
-          icon: 'mdi-home'
-        },
-        {
-          path: getRouteName('board'),
-          title: 'Dashboard',
-          icon: 'mdi-view-dashboard'
-        },
-        {
-          path: getRouteName('addUser'),
-          title: 'Créer un compte',
-          icon: 'mdi-account-plus',
-          color: ''
-        },
-        {
-          path: getRouteName('about'),
-          title: 'A propos',
-          icon: 'mdi-information',
-          color: ''
-        }
-      ]
-    }
+  {
+    path: getRouteName('board'),
+    title: 'Dashboard',
+    icon: 'mdi-view-dashboard'
   },
-  computed: {
-    ...mapGetters('user', {
-      isLogged: 'isLogged',
-      fullName: 'fullName'
+  {
+    path: getRouteName('addUser'),
+    title: 'Créer un compte',
+    icon: 'mdi-account-plus',
+    color: ''
+  },
+  {
+    path: getRouteName('about'),
+    title: 'A propos',
+    icon: 'mdi-information',
+    color: ''
+  }
+]
+const isLogged = computed(() => store.getters['user/isLogged'])
+const fullName = computed(() => store.getters['user/fullName'])
+
+function actionMainMenu(path) {
+  router.push({ name: path })
+}
+function action(path) {
+  if (path == 'Logout') {
+    store.dispatch('auth/authLogout').then(() => {
+      router.push('Login')
     })
-  },
-  methods: {
-    actionMainMenu(path) {
-      this.$router.push({ name: path })
-    },
-    action(path) {
-      if (path == 'Logout') {
-        this.$store.dispatch('auth/authLogout').then(() => {
-          this.$router.push('Login')
-        })
-      } else {
-        this.$router.push({ name: path })
-      }
-    },
-    invertRight() {
-      this.right = !this.right
-    },
-    invertDrawerMain() {
-      this.drawerMain = !this.drawerMain
-    },
-    invertDrawerRight() {
-      this.drawerRight = !this.drawerRight
-    }
-  },
-  created: function () {
-    const self = this
-    Axios.interceptors.response.use(
-      function (response) {
-        return response
-      },
-      function (error) {
-        self.$store.dispatch('notification/error', "Erreur d'authentification")
-        if (error.response.status == 401) {
-          if (error.config.url == 'tokens') {
-            self.$store.dispatch('auth/authError')
-          } else {
-            // if you ever get an unauthorized, logout the user
-            self.$store.dispatch('auth/authLogout')
-          }
-        }
-        return Promise.reject(error)
-      }
-    )
-    //verification de nouvelle version
-    let oldVersion = localStorage.getItem('appVersion')
-    if (oldVersion != this.appVersion) {
-      this.versionNotif = true
-      localStorage.setItem('appVersion', this.appVersion)
-    }
+  } else {
+    router.push({ name: path })
   }
 }
+function invertRight() {
+  right.value = !right.value
+}
+function invertDrawerMain() {
+  drawerMain.value = !drawerMain.value
+}
+function invertDrawerRight() {
+  drawerRight.value = !drawerRight.value
+}
+onMounted(() => {
+  Axios.interceptors.response.use(
+    function (response) {
+      return response
+    },
+    function (error) {
+      store.dispatch('notification/error', "Erreur d'authentification")
+      if (error.response.status == 401) {
+        if (error.config.url == 'tokens') {
+          store.dispatch('auth/authError')
+        } else {
+          // if you ever get an unauthorized, logout the user
+          store.dispatch('auth/authLogout')
+        }
+      }
+      return Promise.reject(error)
+    }
+  )
+  //verification de nouvelle version
+  if (localStorage.getItem('appVersion') != version) {
+    versionNotif.value = true
+    localStorage.setItem('appVersion', version)
+  }
+})
 </script>
 
 <style>
