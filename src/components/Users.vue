@@ -202,8 +202,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { FormNameRules, FormEmailRules, FormPhoneRules, FormRequiredRules } from '@/utilities/constantes'
+import { useNotificationStore } from '../store/notification'
 
 const store = useStore()
+const notifStore = useNotificationStore()
 const route = useRoute()
 
 //TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
@@ -326,7 +328,7 @@ function deleteItem(item) {
     Axios.delete('participants/userId', { params: { userId: item.userId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {
-          store.dispatch('notification/success', "L'utilisateur à bien été supprimé")
+          notifStore.success("L'utilisateur à bien été supprimé")
           users.value.splice(index, 1)
         }
       })
@@ -354,7 +356,7 @@ function saveNewOrModifiedUser() {
       .then((response) => {
         if (response.status == 200) {
           Object.assign(users.value[editedIndex.value], editedItem.value)
-          store.dispatch('notification/success', 'Le participant à bien été mis à jour')
+          notifStore.success('Le participant à bien été mis à jour')
         }
       })
       .catch((error) => {
@@ -368,7 +370,7 @@ function saveNewOrModifiedUser() {
         if (response.status == 201) {
           data.userId = response.data.userId
           users.value.push(data)
-          store.dispatch('notification/success', 'Le participant à bien été ajouté')
+          notifStore.success('Le participant à bien été ajouté')
         }
       })
       .catch((error) => {
@@ -404,7 +406,7 @@ function statusChange(item) {
   Axios.put('participants/userId/updateStatus', statusData)
     .then((response) => {
       if (response.status == 200) {
-        store.dispatch('notification/success', 'Le status à bien été mis à jour')
+        notifStore.success('Le status à bien été mis à jour')
       }
     })
     .catch((error) => {

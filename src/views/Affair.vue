@@ -128,8 +128,10 @@ import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 Settings.defaultLocale = 'fr'
 import { PV_DATA } from '@/utilities/types'
+import { useNotificationStore } from '../store/notification'
 
 const store = useStore()
+const notifStore = useNotificationStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -245,7 +247,7 @@ function modifyLotSave() {
               console.log(response)
 
               if (response.data.affairId != '') {
-                store.dispatch('notification/success', "La progession de l'affaire à correctement été mise à jour")
+                notifStore.success("La progession de l'affaire à correctement été mise à jour")
               }
             })
             .catch((error) => {
@@ -301,7 +303,7 @@ function modifyProgressSave() {
   Axios.put('affairs/affairId', data)
     .then((response) => {
       if (response.status == 200) {
-        store.dispatch('notification/success', "La progession de l'affaire à correctement été mise à jour")
+        notifStore.success("La progession de l'affaire à correctement été mise à jour")
       }
     })
     .catch((error) => {
@@ -320,7 +322,7 @@ function ModifyAffairSave() {
   Axios.put('affairs/affairId', affair.value)
     .then((response) => {
       if (response.status == 200) {
-        store.dispatch('notification/success', "La progession de l'affaire à correctement été mise à jour")
+        notifStore.success("La progession de l'affaire à correctement été mise à jour")
       }
     })
     .catch((error) => {
@@ -390,7 +392,7 @@ function pvModifySave() {
           // pvData.pvNumber = response.data.pv.pvNumber;
           pvs.value.push(response.data)
         }
-        store.dispatch('notification/success', 'Pv correctement enregistré')
+        notifStore.success('Pv correctement enregistré')
       }
     })
     .catch((error) => {

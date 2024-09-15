@@ -56,8 +56,10 @@ import { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { DEFAULT_ITEM } from '../utilities/types'
+import { useNotificationStore } from '../store/notification'
 
 const store = useStore()
+const notifStore = useNotificationStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -154,12 +156,12 @@ function deleteItem(item) {
     Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {
-          store.dispatch('notification/success', "L'item à bien été supprimé")
+          notifStore.success("L'item à bien été supprimé")
           items.value.splice(index, 1)
         }
       })
       .catch((error) => {
-        store.dispatch('notification/error', `Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`)
+        notifStore.error(`Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`)
       })
 }
 
@@ -191,7 +193,7 @@ async function save() {
   }
   close()
   editedItem.value = { ...defaultItem.value }
-  store.dispatch('notification/success', message)
+  notifStore.success(message)
 }
 
 async function postItem(itemWithoutImage) {
@@ -241,7 +243,7 @@ function changeVisible(item) {
   Axios.put('items/itemId/visibility', data)
     .then((response) => {
       if (response.status == 200) {
-        store.dispatch('notification/success', "L'item a été mis à jour")
+        notifStore.success("L'item a été mis à jour")
       }
     })
     .catch((error) => {
