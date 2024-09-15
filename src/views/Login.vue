@@ -69,7 +69,6 @@ function login() {
     email: email.value,
     password: md5(password.value)
   }
-  //FIXME: si on a une erreur, on est quand même envoyé sur l'interface .. pk ?
   if (localStorage.getItem('token') == null) {
     store
       .dispatch('auth/authRequest', dt)
