@@ -54,7 +54,7 @@
           </template>
         </v-banner>
       </div>
-      <router-view />
+      <router-view class="mt-5" />
     </v-main>
     <Notification />
   </v-layout>
