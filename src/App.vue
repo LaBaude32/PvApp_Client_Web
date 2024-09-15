@@ -68,9 +68,11 @@ import { version } from '../package.json'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { useNotificationStore } from './store/notification'
 
 const router = useRouter()
 const store = useStore()
+const notifStore = useNotificationStore()
 
 const right = ref(false)
 const versionNotif = ref(false)
@@ -119,14 +121,8 @@ function action(path) {
     router.push({ name: path })
   }
 }
-function invertRight() {
-  right.value = !right.value
-}
 function invertDrawerMain() {
   drawerMain.value = !drawerMain.value
-}
-function invertDrawerRight() {
-  drawerRight.value = !drawerRight.value
 }
 onMounted(() => {
   Axios.interceptors.response.use(
@@ -134,7 +130,7 @@ onMounted(() => {
       return response
     },
     function (error) {
-      store.dispatch('notification/error', "Erreur d'authentification")
+      notifStore.error("Erreur d'authentification")
       if (error.response.status == 401) {
         if (error.config.url == 'tokens') {
           store.dispatch('auth/authError')

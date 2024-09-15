@@ -21,7 +21,13 @@ export const useNotificationStore = defineStore('notification', () => {
     state.value = true
   }
 
-  return { success, close, timeout, state, color, text }
+  function error(val: string) {
+    text.value = val
+    color.value = 'red'
+    state.value = true
+  }
+
+  return { success, close, timeout, state, color, text, error }
 })
 
 // @ts-expect-error
