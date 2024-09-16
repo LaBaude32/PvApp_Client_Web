@@ -2,7 +2,6 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-alert type="success" v-if="isLogged">Vous êtes connecté, vous allez être redirigé dans 5 secondes</v-alert>
         <v-alert type="error" v-if="resultConnetion === 'errorId'">Erreur sur l'email ou le mot de passe</v-alert>
         <v-alert type="error" v-if="resultConnetion === 'errorConnection'">
           Erreur de connexion au serveur, veuillez vérifier votre connexion internet
@@ -52,8 +51,10 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import md5 from 'md5'
 import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
+import { useNotificationStore } from '../store/notification'
 
 const store = useStore()
+const notifStore = useNotificationStore()
 const router = useRouter()
 
 const valid = ref(false)
@@ -61,7 +62,6 @@ const showPassword = ref(false)
 const email = ref(null)
 const password = ref(null)
 
-const isLogged = computed(() => store.getters['user/isLogged'])
 const resultConnetion = computed(() => store.getters['user/resultCo'])
 
 function login() {
@@ -76,9 +76,8 @@ function login() {
         store
           .dispatch('user/login', dt)
           .then(() => {
-            window.setTimeout(() => {
-              router.push('/Board')
-            }, 5000)
+            notifStore.success('Connexion réussie')
+            router.push('/Board')
           })
           .catch(() => {
             store.dispatch('auth/authError')
