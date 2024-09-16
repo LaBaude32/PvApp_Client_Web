@@ -41,7 +41,6 @@ if (token) {
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_API_URL
 const pinia = createPinia()
 
-
 const app = createApp(App)
 app.use(store)
 app.use(vuetify)

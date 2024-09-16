@@ -57,9 +57,11 @@ import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { DEFAULT_ITEM } from '../utilities/types'
 import { useNotificationStore } from '../store/notification'
+import { useAffairStore } from '../store/affair'
 
 const store = useStore()
 const notifStore = useNotificationStore()
+const affairStore = useAffairStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -136,7 +138,8 @@ async function getData() {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })
     defaultItem.value.lots = pvDetails.lots
   }
-  store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
+  affairStore.getAffairById(pvDetails.value.affairId)
+  // store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
 }
 
 function editItem(item) {
