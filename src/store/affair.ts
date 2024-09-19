@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import { ref } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useStore } from 'vuex'
+import { useNotificationStore } from './notification'
 
 interface affair {
   affairId: number
@@ -9,42 +9,36 @@ interface affair {
   meetingType: 'Chantier' | 'Etude'
   adresse: string
   progress: number
+  lots?: [string]
 }
 
 export const useAffairStore = defineStore('affair', () => {
-  // const affairId = ref<number>()
-  // const name = ref('')
-  // const meetingType = ref<'Chantier' | 'Etude'>()
-  // const address = ref('')
-  // const progress = ref(0)
   const affair = ref<affair>()
-  const store = useStore()
+  const notifStore = useNotificationStore()
 
-  //   function loadAffairByPv(affairId) {
   function getAffairById(affairId) {
-    console.log(affairId)
     Axios.get('affairs/affairId', {
       params: {
         affairId: affairId
       }
-    }).then((response) => {
-      affair.value = response.data.affairInfos
     })
+      .then((response) => {
+        affair.value = response.data.affairInfos
+      })
+      .catch((error) => {
+        notifStore.error('Erreur sur la récueration des données : ' + error.response)
+      })
   }
 
-  function openPv(pvId) {
-    //FIXME: Corriger ça, ce call API n'a pas de sens puisqu'il est refait à l'ouverture de la page
-    Axios.get('pvs/pvId', {
-      params: {
-        pvId: pvId,
-        userId: store.getters['user/userId']
-      }
-    }).then((response) => {
-      getAffairById(response.data.pv.affairId)
-    })
+  function registerAffair(gettedAffair: affair) {
+    affair.value = gettedAffair
   }
 
-  return { affair, getAffairById, openPv }
+  function registerLotOnAffair(gettedLots: [string]) {
+    affair.value!.lots = gettedLots
+  }
+
+  return { affair, getAffairById, registerAffair, registerLotOnAffair }
 })
 
 // @ts-expect-error

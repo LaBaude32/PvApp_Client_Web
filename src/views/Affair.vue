@@ -129,9 +129,11 @@ import { useRouter, useRoute } from 'vue-router'
 Settings.defaultLocale = 'fr'
 import { PV_DATA } from '@/utilities/types'
 import { useNotificationStore } from '../store/notification'
+import { useAffairStore } from '../store/affair'
 
 const store = useStore()
 const notifStore = useNotificationStore()
+const affairStore = useAffairStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -178,7 +180,11 @@ onMounted(() => {
   })
     .then((response) => {
       affair.value = response.data.affairInfos
-      lots.value = response.data.lots
+      affairStore.registerAffair(response.data.affairInfos)
+      if (response.data.lots) {
+        lots.value = response.data.lots
+        affairStore.registerLotOnAffair(response.data.lots)
+      }
     })
     .catch((error) => {
       console.log(error)

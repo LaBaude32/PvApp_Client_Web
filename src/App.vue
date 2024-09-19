@@ -138,7 +138,9 @@ onMounted(() => {
           // if you ever get an unauthorized, logout the user
           store.dispatch('auth/authLogout')
         }
+        notifStore.error("Erreur d'authentification : " + error.response)
       }
+      notifStore.error('Erreur réseau : ' + error.response)
       return Promise.reject(error)
     }
   )

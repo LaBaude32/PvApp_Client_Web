@@ -55,7 +55,7 @@ import Axios from 'axios'
 import { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
-import { DEFAULT_ITEM } from '../utilities/types'
+import { DEFAULT_ITEM } from '../utilities/types.js'
 import { useNotificationStore } from '../store/notification'
 import { useAffairStore } from '../store/affair'
 
@@ -139,7 +139,6 @@ async function getData() {
     defaultItem.value.lots = pvDetails.lots
   }
   affairStore.getAffairById(pvDetails.value.affairId)
-  // store.dispatch('affair/loadAffairByPv', pvDetails.value.affairId)
 }
 
 function editItem(item) {

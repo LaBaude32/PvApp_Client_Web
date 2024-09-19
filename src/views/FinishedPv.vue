@@ -77,7 +77,7 @@ import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { USER_HEADERS, ITEM_HEADERS } from '../utilities/types'
+import { USER_HEADERS, ITEM_HEADERS } from '../utilities/types.js'
 Settings.defaultLocale = 'fr'
 
 const route = useRoute()

@@ -11,7 +11,7 @@ export const DEFAULT_ITEM = {
     completionDateTime: '',
     image: null,
     visible: true,
-    isImageChange: false,
+    isImageChange: false
 }
 
 export const USER_HEADERS = [
@@ -64,5 +64,5 @@ export const PV_DATA = {
     meetingPlace: null,
     meetingNextPlace: null,
     affairId: null,
-    state: 'En cours',
+    state: 'En cours'
 }

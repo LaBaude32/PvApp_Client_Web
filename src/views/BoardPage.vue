@@ -91,10 +91,8 @@ import routesCONST, { getRouteName } from '../utilities/constantes'
 import { useStore } from 'vuex'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAffairStore } from '../store/affair'
 const store = useStore()
 const router = useRouter()
-const affairStore = useAffairStore()
 
 const pvs = ref([])
 const affairs = ref([])
@@ -104,7 +102,6 @@ const userId = computed(() => {
 })
 
 function openAffair(affairId) {
-  affairStore.getAffairById(affairId)
   router.push({
     name: 'Affair',
     params: { id: affairId }
