@@ -14,12 +14,12 @@
     "luxon": "^3.5.0",
     "md5": "^2.3.0",
     "pinia": "^2.2.2",
+    "pinia-plugin-persistedstate": "^4.0.2",
     "unplugin-vue-components": "^0.27.4",
     "vite-plugin-vuetify": "^2.0.4",
     "vue": "^3.5.6",
     "vue-router": "^4.4.5",
-    "vuetify": "^3.7.2",
-    "vuex": "^4.1.0"
+    "vuetify": "^3.7.2"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
@@ -32,7 +32,7 @@
     "prettier": "^3.3.3",
     "sass": "~1.79.1",
     "vite": "^5.4.6",
-    "vite-plugin-vue2": "^2.0.3"
+    "vite-plugin-vue-devtools": "^7.4.5"
   },
   "eslintConfig": {
     "root": true,
@@ -50,5 +50,5 @@
     "> 1%",
     "last 2 versions"
   ],
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.5.0"
 }

@@ -88,17 +88,17 @@
 <script setup>
 import Axios from 'axios'
 import routesCONST, { getRouteName } from '../utilities/constantes'
-import { useStore } from 'vuex'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-const store = useStore()
+import { useUserStore } from '../store/user'
+const userStore = useUserStore()
 const router = useRouter()
 
 const pvs = ref([])
 const affairs = ref([])
 
 const userId = computed(() => {
-  return store.getters['user/userId']
+  return userStore.user.userId
 })
 
 function openAffair(affairId) {
@@ -149,8 +149,6 @@ onMounted(() => {
       // handle success
       affairs.value = response.data
     })
-  } else {
-    store.dispatch('auth/authLogout')
   }
 })
 </script>

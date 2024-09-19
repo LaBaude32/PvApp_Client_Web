@@ -15,14 +15,14 @@
 
 <script setup>
 import { getRouteName } from '../utilities/constantes'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { useUserStore } from '../store/user'
 
-const store = useStore()
+const userStore = useUserStore()
 const router = useRouter()
 
-const isLogged = computed(() => store.getters['user/logged'])
+const isLogged = computed(() => userStore.isLogged)
 
 function goToDashboard() {
   router.push(getRouteName('board'))

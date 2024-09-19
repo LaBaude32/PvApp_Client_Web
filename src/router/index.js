@@ -1,24 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
-import store from '../store/index'
-import routesCONST, { getRouteName, getRoutePath } from '../utilities/constantes'
-
-const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters['auth/isAuthenticated']) {
-    next()
-    return
-  }
-  next('/')
-}
-
-const ifAuthenticated = (to, from, next) => {
-  if (store.getters['auth/isAuthenticated']) {
-    next()
-    return
-  }
-  next('Login')
-}
-
-//TODO: verifier les droits des routes qui n'en on pas
+import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
+import { useAuthStore } from '@/store/auth'
+import { useNotificationStore } from '@/store/notification'
 
 const routes = [
   {
@@ -29,61 +12,42 @@ const routes = [
   {
     path: routesCONST.about.path,
     name: routesCONST.about.name,
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import('../views/About.vue')
   },
   {
     path: routesCONST.login.path,
     name: routesCONST.login.name,
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/Login.vue'),
-    beforeEnter: ifNotAuthenticated
+    component: () => import('../views/Login.vue')
   },
   {
     path: routesCONST.users.path,
     name: routesCONST.users.name,
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/Users.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/Users.vue')
   },
   {
     path: routesCONST.board.path,
     name: routesCONST.board.name,
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/BoardPage.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/BoardPage.vue')
   },
   {
     path: routesCONST.affair.path + '/:id',
     name: routesCONST.affair.name,
-    component: () => import('../views/Affair.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/Affair.vue')
   },
   {
     path: routesCONST.pv.path + '/:id',
     name: routesCONST.pv.name,
-    component: () => import('../views/Pv.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/Pv.vue')
   },
   {
     path: routesCONST.addAffair.path,
     name: routesCONST.addAffair.name,
-    component: () => import('../views/AddAffair.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/AddAffair.vue')
   },
   {
     path: getRoutePath('addPv'),
     name: getRouteName('addPv'),
-    component: () => import('../views/AddPv.vue'),
-    beforeEnter: ifAuthenticated
+    component: () => import('../views/AddPv.vue')
   },
   {
     path: getRoutePath('addUser'),
@@ -115,6 +79,25 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = [
+    getRoutePath('login'),
+    getRoutePath('addUser'),
+    getRoutePath('home'),
+    getRoutePath('finishedPv'),
+    getRoutePath('about')
+  ]
+  const authRequired = !publicPages.includes(to.path)
+  const authStore = useAuthStore()
+  const notifStore = useNotificationStore()
+
+  if (authRequired && !authStore.isAuthenticated) {
+    notifStore.error('Veuillez vous connecter')
+    return '/login'
+  }
 })
 
 export default router

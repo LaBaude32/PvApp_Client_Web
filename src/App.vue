@@ -67,17 +67,17 @@ import Notification from '@/components/Notification.vue'
 import { version } from '../package.json'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 import { useNotificationStore } from './store/notification'
+import { useAuthStore } from './store/auth'
+import { useUserStore } from './store/user'
 
 const router = useRouter()
-const store = useStore()
+const userStore = useUserStore()
 const notifStore = useNotificationStore()
+const authStore = useAuthStore()
 
-const right = ref(false)
 const versionNotif = ref(false)
 const drawerMain = ref(false)
-const drawerRight = ref(false)
 const items = [
   { path: 'MyAccount', title: 'Mon Compte' },
   { path: 'Logout', title: 'Se deconnecter' }
@@ -106,15 +106,15 @@ const mainMenuItems = [
     color: ''
   }
 ]
-const isLogged = computed(() => store.getters['user/isLogged'])
-const fullName = computed(() => store.getters['user/fullName'])
+const isLogged = computed(() => userStore.isLogged)
+const fullName = computed(() => userStore.fullName)
 
 function actionMainMenu(path) {
   router.push({ name: path })
 }
 function action(path) {
   if (path == 'Logout') {
-    store.dispatch('auth/authLogout').then(() => {
+    authStore.authLogout().then(() => {
       router.push('Login')
     })
   } else {
@@ -125,22 +125,18 @@ function invertDrawerMain() {
   drawerMain.value = !drawerMain.value
 }
 onMounted(() => {
+  authStore.setAxios()
   Axios.interceptors.response.use(
     function (response) {
       return response
     },
     function (error) {
-      notifStore.error("Erreur d'authentification")
-      if (error.response.status == 401) {
-        if (error.config.url == 'tokens') {
-          store.dispatch('auth/authError')
-        } else {
-          // if you ever get an unauthorized, logout the user
-          store.dispatch('auth/authLogout')
-        }
-        notifStore.error("Erreur d'authentification : " + error.response)
+      if ([401, 403].includes(error.response.status)) {
+        authStore.authError()
+        notifStore.error("Erreur d'authentification : " + error.message)
+      } else {
+        notifStore.error('Erreur réseau : ' + error.message)
       }
-      notifStore.error('Erreur réseau : ' + error.response)
       return Promise.reject(error)
     }
   )

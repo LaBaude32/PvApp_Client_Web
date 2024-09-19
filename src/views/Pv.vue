@@ -52,14 +52,14 @@ import Items from '@/components/Items.vue'
 import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
 import Axios from 'axios'
-import { getRouteName } from '../utilities/constantes'
-import { useStore } from 'vuex'
+import { getRouteName } from '@/utilities/constantes'
 import { useRoute, useRouter } from 'vue-router'
-import { DEFAULT_ITEM } from '../utilities/types.js'
-import { useNotificationStore } from '../store/notification'
-import { useAffairStore } from '../store/affair'
+import { DEFAULT_ITEM } from '@/utilities/types.js'
+import { useNotificationStore } from '@/store/notification'
+import { useAffairStore } from '@/store/affair'
+import { useUserStore } from '@/store/user'
 
-const store = useStore()
+const userStore = useUserStore()
 const notifStore = useNotificationStore()
 const affairStore = useAffairStore()
 const route = useRoute()
@@ -108,7 +108,9 @@ const editedItem = ref({
 })
 const defaultItem = ref(DEFAULT_ITEM)
 
-const userId = computed(() => store.getters['user/userId'])
+const userId = computed(() => {
+  return userStore.user.userId
+})
 const formTitle = computed(() => (editedIndex === -1 ? 'Nouvel item' : "Modifier l'item"))
 
 onMounted(() => {
@@ -277,7 +279,6 @@ function formatItemToBeSend() {
   editedItem.value.lots = editedItem.value.lotsToReturn
   editedItem.value.completion = editedItem.value.completionToReturn
   let itemToBeSend = { ...editedItem.value }
-  console.log(itemToBeSend)
   itemToBeSend.pvId = pvId.value
   delete itemToBeSend.image
   delete itemToBeSend.thumbnail

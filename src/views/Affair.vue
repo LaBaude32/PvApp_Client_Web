@@ -124,14 +124,14 @@ import ModifyPv from '@/components/ModifyPv.vue'
 import ModifyLot from '@/components/ModifyLot.vue'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 Settings.defaultLocale = 'fr'
 import { PV_DATA } from '@/utilities/types'
 import { useNotificationStore } from '../store/notification'
 import { useAffairStore } from '../store/affair'
+import { useUserStore } from '../store/user'
 
-const store = useStore()
+const userStore = useUserStore()
 const notifStore = useNotificationStore()
 const affairStore = useAffairStore()
 const router = useRouter()
@@ -168,7 +168,7 @@ const headers = [
   { title: 'Action', value: 'actions', align: 'center', sortable: false }
 ]
 const userId = computed(() => {
-  return store.getters['user/userId']
+  return userStore.user.userId
 })
 
 onMounted(() => {
@@ -250,8 +250,6 @@ function modifyLotSave() {
           }
           Axios.put('lots', dataToSend)
             .then((response) => {
-              console.log(response)
-
               if (response.data.affairId != '') {
                 notifStore.success("La progession de l'affaire à correctement été mise à jour")
               }
@@ -375,7 +373,7 @@ function createPv() {
 function pvModifySave() {
   let data = {
     pvId: pvData.value.pvId,
-    meetingDate: pvData.value.meetingDateDate + ' ' + pvData.value.meetingDateTime + ':00',
+    meetingDate: pvData.value.meetingDateDate + '  ' + pvData.value.meetingDateTime + ':00',
     meetingPlace: pvData.value.meetingPlace,
     meetingNextPlace: pvData.value.meetingNextPlace,
     state: pvData.value.state,

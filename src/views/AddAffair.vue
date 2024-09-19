@@ -10,10 +10,10 @@ import Axios from 'axios'
 import { useRouter } from 'vue-router'
 import routesCONST from '../utilities/constantes'
 import ModifyAffair from '@/components/ModifyAffair.vue'
-import { useStore } from 'vuex'
+import { useUserStore } from '../store/user'
 
 const router = useRouter()
-const store = useStore()
+const userStore = useUserStore()
 
 const affair = ref({ description: '' })
 const dialog = ref(false)
@@ -31,7 +31,7 @@ function validate() {
           state: 'En cours',
           meetingPlace: 'Indéfini',
           meetingDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-          userId: store.state.user.userId,
+          userId: userStore.user.userId,
           affairId: affairId
         }
         Axios.post('/pvs', pvData)

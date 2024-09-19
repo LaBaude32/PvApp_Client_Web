@@ -1,19 +1,12 @@
 import { defineConfig } from "vite";
-// import { createVuePlugin as vue } from "vite-plugin-vue2";
+import vueDevTools from 'vite-plugin-vue-devtools'
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath } from "url";
 
 export default defineConfig({
   plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          compatConfig: {
-            MODE: 2
-          }
-        }
-      }
-    })
+    vue(),
+    vueDevTools()
   ],
   resolve: {
     alias: {

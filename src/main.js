@@ -1,10 +1,7 @@
 import axios from "axios"
-
 import { createApp } from "vue"
-import store from "./store"
 import router from "./router"
 import filters from "./utilities/filters"
-
 import App from "./App.vue"
 
 // Vuetify
@@ -15,6 +12,7 @@ import * as directives from "vuetify/directives"
 import { VTimePicker } from 'vuetify/labs/VTimePicker'
 import { fr } from "vuetify/locale"
 import { createPinia } from "pinia"
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const vuetify = createVuetify({
   components: {
@@ -40,12 +38,12 @@ if (token) {
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_API_URL
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 const app = createApp(App)
-app.use(store)
+app.use(pinia)
 app.use(vuetify)
 app.use(router)
-app.use(pinia)
 
 app.config.globalProperties.$filters = { ...filters }
 

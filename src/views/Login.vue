@@ -2,10 +2,11 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-alert type="error" v-if="resultConnetion === 'errorId'">Erreur sur l'email ou le mot de passe</v-alert>
-        <v-alert type="error" v-if="resultConnetion === 'errorConnection'">
+        <v-alert type="error" v-if="resultConnetion === 'ErrorId'">Erreur sur l'email ou le mot de passe</v-alert>
+        <!-- <v-alert type="error" v-if="resultConnetion === 'ErrorConnection'">
+          TODO:cette possibilité n'existe pas dans les actions du store
           Erreur de connexion au serveur, veuillez vérifier votre connexion internet
-        </v-alert>
+        </v-alert> -->
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
@@ -47,14 +48,16 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import md5 from 'md5'
 import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
 import { useNotificationStore } from '../store/notification'
+import { useAuthStore } from '../store/auth'
+import { useUserStore } from '../store/user'
 
-const store = useStore()
+const userStore = useUserStore()
 const notifStore = useNotificationStore()
+const authStore = useAuthStore()
 const router = useRouter()
 
 const valid = ref(false)
@@ -62,7 +65,7 @@ const showPassword = ref(false)
 const email = ref(null)
 const password = ref(null)
 
-const resultConnetion = computed(() => store.getters['user/resultCo'])
+const resultConnetion = computed(() => userStore.resultCo)
 
 function login() {
   const dt = {
@@ -70,21 +73,21 @@ function login() {
     password: md5(password.value)
   }
   if (localStorage.getItem('token') == null) {
-    store
-      .dispatch('auth/authRequest', dt)
+    authStore
+      .authRequest(dt)
       .then(() => {
-        store
-          .dispatch('user/login', dt)
+        userStore
+          .login(dt)
           .then(() => {
             notifStore.success('Connexion réussie')
             router.push('/Board')
           })
           .catch(() => {
-            store.dispatch('auth/authError')
+            authStore.authError()
           })
       })
       .catch(() => {
-        store.dispatch('auth/authError')
+        authStore.authError()
       })
   }
 }

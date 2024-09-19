@@ -199,12 +199,14 @@
 <script setup>
 import Axios from 'axios'
 import { ref, onMounted, computed } from 'vue'
-import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { FormNameRules, FormEmailRules, FormPhoneRules, FormRequiredRules } from '@/utilities/constantes'
 import { useNotificationStore } from '../store/notification'
+import { useUserStore } from '../store/user'
+import { useAffairStore } from '../store/affair'
 
-const store = useStore()
+const userStore = useUserStore()
+const affairStore = useAffairStore()
 const notifStore = useNotificationStore()
 const route = useRoute()
 
@@ -308,8 +310,8 @@ const defaultItem = {
 const formTitle = computed(() => {
   return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
 })
-const affairName = computed(() => store.getters['affair/name'])
-const userId = computed(() => store.getters['user/userId'])
+const affairName = computed(() => affairStore.affair.name)
+const userId = computed(() => userStore.user.userId)
 
 onMounted(() => {
   pvId.value = route.params.id

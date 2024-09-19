@@ -127,14 +127,14 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useDate } from 'vuetify'
-import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import Axios from 'axios'
 
 import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes'
 import { PV_DATA } from '@/utilities/types'
+import { useUserStore } from '../store/user'
 
-const store = useStore()
+const userStore = useUserStore()
 const date = useDate()
 const router = useRouter()
 const route = useRoute()
@@ -221,20 +221,17 @@ onMounted(() => {
   }
   const dtAffairs = {
     params: {
-      userId: store.state.user.userId
+      userId: userStore.user.userId
     }
   }
-  if (typeof userId != undefined) {
-    Axios.get('affairs/userId', dtAffairs)
-      .then(function (response) {
-        affairs.value = response.data
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-  } else {
-    store.dispatch('auth/authLogout')
-  }
+  Axios.get('affairs/userId', dtAffairs)
+    .then(function (response) {
+      affairs.value = response.data
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+
   if (props.affairId) {
     pvData.value.affairId = props.affairId
   }
