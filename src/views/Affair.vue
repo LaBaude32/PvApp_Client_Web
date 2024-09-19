@@ -370,40 +370,6 @@ function createPv() {
   dialog.value = true
 }
 
-function pvModifySave() {
-  let data = {
-    pvId: pvData.value.pvId,
-    meetingDate: pvData.value.meetingDateDate + '  ' + pvData.value.meetingDateTime + ':00',
-    meetingPlace: pvData.value.meetingPlace,
-    meetingNextPlace: pvData.value.meetingNextPlace,
-    state: pvData.value.state,
-    affairId: route.params.id,
-    userId: userId.value
-  }
-  if (pvData.value.meetingNextDate != '') {
-    data = { meetingNextDate: pvData.value.meetingNextDate + ':00', ...data }
-  }
-  let apiRoute
-  let apiMethode
-  pvModifyingType.value ? ((apiRoute = 'pvs/pvId'), (apiMethode = 'put')) : ((apiRoute = '/pvs'), (apiMethode = 'post'))
-  Axios({ method: apiMethode, url: apiRoute, data: data })
-    .then((response) => {
-      if (response.status == 200 || response.status == 201) {
-        dialog.value = false
-        pvModifyDialog.value = false
-        if (!pvModifyingType.value) {
-          // pvData.pvId = response.data.pv.pvId;
-          // pvData.pvNumber = response.data.pv.pvNumber;
-          pvs.value.push(response.data)
-        }
-        notifStore.success('Pv correctement enregistré')
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
 function closePvDialog(isSaved) {
   const index = pvs.value.findIndex((el) => el.pvId === pvData.value.pvId)
   if (isSaved) {

@@ -218,6 +218,8 @@ onMounted(() => {
       pvData.value.meetingNextDateDate = date.parseISO(pvData.value.meetingNextDate.slice(0, 10))
       pvData.value.meetingNextDateTime = pvData.value.meetingNextDate.slice(-8)
     }
+  } else {
+    pvData.value = PV_DATA
   }
   const dtAffairs = {
     params: {
