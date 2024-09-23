@@ -114,7 +114,7 @@ async function getPvData() {
     }
   }
   pvDetails.value = res.data.pv
-  pvUsers.value = res.data.users
+  pvUsers.value = res.data.participants
   meetingType.value = res.data.pv.affairMeetingType
   owner.value = res.data.owner
   if (meetingType.value == 'Chantier') {

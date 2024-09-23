@@ -138,6 +138,7 @@ onMounted(() => {
         notifStore.error('Erreur réseau : ' + error.message)
       }
       return Promise.reject(error)
+      router.push('Login')
     }
   )
   //verification de nouvelle version

@@ -174,15 +174,39 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      <template v-slot:item.fullName="{ item }">
+        <div>{{ item.firstName }} {{ item.lastName }}</div>
+      </template>
       <template v-slot:item.statusPAE="{ item }">
         <v-select
           v-model="item.statusPAE"
           :items="defaultItem.statusPAE"
-          @update:modelValue="statusChange(item)"
+          @update:modelValue="statusChange(item, 'PAE')"
         ></v-select>
       </template>
-      <template v-slot:item.fullName="{ item }">
-        <div>{{ item.firstName }} {{ item.lastName }}</div>
+      <template v-slot:item.invitedCurrentMeeting="{ item }">
+        <v-checkbox
+          v-model="item.invitedCurrentMeeting"
+          :indeterminate="item.invitedCurrentMeeting == null"
+          :color="item.invitedCurrentMeeting ? 'success' : ''"
+          @update:modelValue="statusChange(item, 'invitedCurrentMeeting')"
+        />
+      </template>
+      <template v-slot:item.invitedNextMeeting="{ item }">
+        <v-checkbox
+          v-model="item.invitedNextMeeting"
+          :indeterminate="item.invitedNextMeeting == null"
+          :color="item.invitedNextMeeting ? 'success' : ''"
+          @update:modelValue="statusChange(item, 'invitedNextMeeting')"
+        />
+      </template>
+      <template v-slot:item.distribution="{ item }">
+        <v-checkbox
+          v-model="item.distribution"
+          :indeterminate="item.distribution == null"
+          :color="item.distribution ? 'success' : ''"
+          @update:modelValue="statusChange(item, 'distribution')"
+        />
       </template>
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
@@ -268,6 +292,9 @@ const headers = [
   { title: 'Mail', value: 'email', sortable: false },
   { title: 'Téléphone', value: 'phone', sortable: false },
   { title: 'Statut', value: 'statusPAE' },
+  { title: 'C1', value: 'invitedCurrentMeeting' },
+  { title: 'C2', value: 'invitedNextMeeting' },
+  { title: 'Diffusion', value: 'distribution' },
   { title: 'Modifier', value: 'actions', sortable: false }
 ]
 const editedIndex = ref(-1)
@@ -400,7 +427,7 @@ function saveExistingUser() {
   }
   closeExistingUser()
 }
-function statusChange(item) {
+function statusChange(item, typeOfChange) {
   let statusData = {}
   statusData.pvId = pvId.value
   statusData.userId = item.userId
@@ -414,5 +441,9 @@ function statusChange(item) {
     .catch((error) => {
       console.log(error)
     })
+}
+
+function distributionChange(item) {
+  console.log(item)
 }
 </script>

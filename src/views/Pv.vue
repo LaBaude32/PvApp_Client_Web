@@ -133,7 +133,7 @@ async function getData() {
     element.visible == 1 ? (element.visible = true) : false
   })
   pvDetails.value = res.data.pv
-  pvUsers.value = res.data.users
+  pvUsers.value = res.data.participants
   pvConnectedParticipants.value = res.data.connectedParticipants
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
