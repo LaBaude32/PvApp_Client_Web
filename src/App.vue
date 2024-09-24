@@ -133,12 +133,13 @@ onMounted(() => {
     function (error) {
       if ([401, 403].includes(error.response.status)) {
         authStore.authError()
+        userStore.logout()
         notifStore.error("Erreur d'authentification : " + error.message)
+        router.push('Login')
       } else {
         notifStore.error('Erreur réseau : ' + error.message)
       }
       return Promise.reject(error)
-      router.push('Login')
     }
   )
   //verification de nouvelle version
