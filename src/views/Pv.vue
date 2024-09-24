@@ -134,6 +134,11 @@ async function getData() {
   })
   pvDetails.value = res.data.pv
   pvUsers.value = res.data.participants
+  pvUsers.value.forEach((element) => {
+    element.distribution == 1 ? (element.distribution = true) : false
+    element.invitedCurrentMeeting == 1 ? (element.invitedCurrentMeeting = true) : false
+    element.invitedNextMeeting == 1 ? (element.invitedNextMeeting = true) : false
+  })
   pvConnectedParticipants.value = res.data.connectedParticipants
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {

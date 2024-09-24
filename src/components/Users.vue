@@ -432,6 +432,9 @@ function statusChange(item, typeOfChange) {
   statusData.pvId = pvId.value
   statusData.userId = item.userId
   statusData.statusPAE = item.statusPAE
+  statusData.invitedCurrentMeeting = item.invitedCurrentMeeting
+  statusData.invitedNextMeeting = item.invitedNextMeeting
+  statusData.distribution = item.distribution
   Axios.put('participants/userId/updateStatus', statusData)
     .then((response) => {
       if (response.status == 200) {
