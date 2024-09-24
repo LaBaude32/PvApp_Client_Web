@@ -312,7 +312,7 @@ async function downloadPDF() {
       pvId: pvDetails.value.pvId
     }
   })
-  const fileName = `Affaire-${pvDetails.affairName}_Pv-n${pvDetails.pvNumber}`
+  const fileName = `Affaire-${pvDetails.value.affairName}_Pv-n${pvDetails.value.pvNumber}`
   const url = window.URL.createObjectURL(new Blob([res.data]))
   const link = document.createElement('a')
   link.href = url
