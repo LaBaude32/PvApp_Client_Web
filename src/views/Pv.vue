@@ -185,8 +185,7 @@ async function save() {
   let message
   if (editedIndex.value > -1) {
     //EXISTING ITEM
-    //FIXME: erreur sur les lots ici qui sont mis en plusieurs fois
-    //FIXME: si on a une image, elle disparait !
+    //FIXME: si on a une image, elle disparait et les lots aussi
     const itemUpdated = await updateItem(itemToBeSend)
     itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false)
     Object.assign(items.value[editedIndex.value], itemUpdated)
@@ -294,12 +293,12 @@ function formatItemToBeSend() {
   delete itemToBeSend.completionToReturn
   delete itemToBeSend.lotsToReturn
 
-  if (meetingType.value == 'Chantier' && editedItem.value.lotsToReturn) {
+  if (meetingType.value == 'Chantier' && typeof itemToBeSend.lots[0] == 'object') {
     let lotTransit = []
     editedItem.value.lotsToReturn.forEach((element) => {
       lotTransit.push(element.lotId)
     })
-    itemToBeSend.lotsIds = lotTransit
+    itemToBeSend.lots = lotTransit
   }
 
   return itemToBeSend
