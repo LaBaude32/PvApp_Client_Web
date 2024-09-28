@@ -285,15 +285,16 @@ function formatItemToBeSend() {
   editedItem.value.completion = editedItem.value.completionToReturn
   let itemToBeSend = { ...editedItem.value }
   itemToBeSend.pvId = pvId.value
-  delete itemToBeSend.image
-  delete itemToBeSend.thumbnail
   delete itemToBeSend.isImageChange
   delete itemToBeSend.completionDateDate
   delete itemToBeSend.completionDateTime
   delete itemToBeSend.completionToReturn
   delete itemToBeSend.lotsToReturn
-
-  if (meetingType.value == 'Chantier' && typeof itemToBeSend.lots[0] == 'object') {
+  if (typeof itemToBeSend.image != 'string') {
+    delete itemToBeSend.image
+    delete itemToBeSend.thumbnail
+  }
+  if (meetingType.value == 'Chantier' && itemToBeSend.lots && typeof itemToBeSend.lots[0] == 'object') {
     let lotTransit = []
     editedItem.value.lotsToReturn.forEach((element) => {
       lotTransit.push(element.lotId)
