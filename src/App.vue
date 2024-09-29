@@ -131,7 +131,7 @@ onMounted(() => {
       return response
     },
     function (error) {
-      if ([401, 403].includes(error.response.status)) {
+      if ([401, 403].includes(error.status)) {
         authStore.authError()
         userStore.logout()
         notifStore.error("Erreur d'authentification : " + error.message)
