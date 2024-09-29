@@ -185,7 +185,6 @@ async function save() {
   let message
   if (editedIndex.value > -1) {
     //EXISTING ITEM
-    //FIXME: si on a une image, elle disparait et les lots aussi
     const itemUpdated = await updateItem(itemToBeSend)
     itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false)
     Object.assign(items.value[editedIndex.value], itemUpdated)
