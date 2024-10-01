@@ -9,9 +9,7 @@
     <v-card prepend-icon="mdi-heart" title="Nouveautés" color="blue-darken-2" class="mx-auto mt-5" max-width="600">
       <v-card-text class="ml-5">
         <ul>
-          <li><b>Ajout de la prise en charge des images dans les Pvs</b></li>
-          <li>42 commits pour le backend</li>
-          <li>49 commits pour le frontend</li>
+          <li><b>Mise en place des statuts Convié et Diffusion</b></li>
         </ul>
       </v-card-text>
     </v-card>
@@ -24,16 +22,16 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li>UX: Simplification de la page A propos</li>
-          <li>Documentation</li>
+          <li>Mise en place de Vue3</li>
+          <li>Amélioration des performances +50%</li>
+          <li>Amélioration l'interface</li>
         </ul>
       </v-card-text>
     </v-card>
     <v-card prepend-icon="mdi-wrench" title="Corrections" color="blue-darken-2" class="mx-auto mt-5" max-width="600">
       <v-card-text class="ml-5">
         <ul>
-          <li>Beaucoup de corrections</li>
-          <li>Bug sur l'authentificaiton</li>
+          <li>Beaucoup de corrections de bugs</li>
         </ul>
       </v-card-text>
     </v-card>

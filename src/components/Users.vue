@@ -12,7 +12,7 @@
             single-line
             hide-details
           ></v-text-field>
-          <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="600px">
+          <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="80%">
             <template v-slot:activator="{ props }">
               <v-btn color="primary" dark class="mb-2" v-bind="props">Créer une personne</v-btn>
             </template>
@@ -59,7 +59,6 @@
                           label="Fonction"
                           clearable
                           counter="30"
-                          :rules="FormNameRules"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -68,7 +67,6 @@
                           label="Organisme"
                           clearable
                           counter="30"
-                          :rules="FormNameRules"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -80,7 +78,7 @@
                           counter="10"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="editedItem.email"
                           label="Mail"
@@ -91,12 +89,32 @@
                       <v-col cols="12" sm="6">
                         <v-select
                           v-model="editedItem.statusPAE"
-                          :items="defaultItem.statusPAE"
+                          :items="defaultItem.statusPAEOptions"
                           label="Status"
                           clearable
                           :rules="FormRequiredRules"
                         ></v-select>
                       </v-col>
+                      <v-row justify="space-around">
+                        <v-checkbox
+                          v-model="editedItem.invitedCurrentMeeting"
+                          label="Convié à la réunion"
+                          :indeterminate="editedItem.invitedCurrentMeeting == null"
+                          :color="editedItem.invitedCurrentMeeting ? 'success' : ''"
+                        />
+                        <v-checkbox
+                          v-model="editedItem.invitedNextMeeting"
+                          label="Convié à la prochaine réunion"
+                          :indeterminate="editedItem.invitedNextMeeting == null"
+                          :color="editedItem.invitedNextMeeting ? 'success' : ''"
+                        />
+                        <v-checkbox
+                          v-model="editedItem.distribution"
+                          label="Diffusion"
+                          :indeterminate="editedItem.distribution == null"
+                          :color="editedItem.distribution ? 'success' : ''"
+                        />
+                      </v-row>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -104,7 +122,12 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="red darken-1" text @click="closeNewOrModifiedUser">Annuler</v-btn>
-                  <v-btn :disabled="!valid1" color="green darken-1" text @click="saveNewOrModifiedUser">
+                  <v-btn
+                    :disabled="!valid1"
+                    color="green darken-1"
+                    text
+                    @click="saveNewOrModifiedUser"
+                  >
                     Enregistrer
                   </v-btn>
                 </v-card-actions>
@@ -113,7 +136,9 @@
           </v-dialog>
           <v-dialog v-model="dialogExistingUser" max-width="500px">
             <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" color="green" dark class="mb-2 ml-2">Ajouter de votre répertoire</v-btn>
+              <v-btn v-bind="props" color="green" dark class="mb-2 ml-2">
+                Ajouter de votre répertoire
+              </v-btn>
             </template>
             <v-card>
               <v-form v-model="valid2">
@@ -167,7 +192,9 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="red darken-1" text @click="closeExistingUser">Annuler</v-btn>
-                  <v-btn :disabled="!valid2" color="green darken-1" text @click="saveExistingUser">Enregistrer</v-btn>
+                  <v-btn :disabled="!valid2" color="green darken-1" text @click="saveExistingUser">
+                    Enregistrer
+                  </v-btn>
                 </v-card-actions>
               </v-form>
             </v-card>
@@ -224,7 +251,12 @@
 import Axios from 'axios'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { FormNameRules, FormEmailRules, FormPhoneRules, FormRequiredRules } from '@/utilities/constantes'
+import {
+  FormNameRules,
+  FormEmailRules,
+  FormPhoneRules,
+  FormRequiredRules
+} from '@/utilities/constantes'
 import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'
@@ -307,7 +339,10 @@ const editedItem = ref({
   organism: '',
   email: '',
   phone: '',
-  statusPAE: '',
+  statusPAE: undefined,
+  invitedCurrentMeeting: undefined,
+  invitedNextMeeting: undefined,
+  distribution: undefined,
   firstName: '',
   lastName: ''
 })
@@ -329,7 +364,11 @@ const defaultItem = {
   organism: '',
   email: '',
   phone: '',
-  statusPAE: ['Présent', 'Absent', 'Excusé'],
+  statusPAE: undefined,
+  statusPAEOptions: ['Présent', 'Absent', 'Excusé'],
+  invitedCurrentMeeting: undefined,
+  invitedNextMeeting: undefined,
+  distribution: undefined,
   firstName: '',
   lastName: ''
 }
@@ -444,9 +483,5 @@ function statusChange(item, typeOfChange) {
     .catch((error) => {
       console.log(error)
     })
-}
-
-function distributionChange(item) {
-  console.log(item)
 }
 </script>
