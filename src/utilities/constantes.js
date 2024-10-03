@@ -11,6 +11,10 @@ const routesCONST = {
     path: "/users",
     name: "Users"
   },
+  settings: {
+    path: "/settings",
+    name: "Settings"
+  },
   about: {
     path: "/about",
     name: "About"

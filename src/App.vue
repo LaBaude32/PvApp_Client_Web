@@ -20,7 +20,9 @@
         </template>
         <v-list>
           <v-list-item v-for="(item, index) in items" :key="index" :value="index">
-            <v-list-item-title @click.prevent="action(item.path)">{{ item.title }}</v-list-item-title>
+            <v-list-item-title @click.prevent="action(item.path)">
+              {{ item.title }}
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -41,7 +43,15 @@
 
     <v-main>
       <div v-if="versionNotif" id="app-version-notif" class="mt-10">
-        <v-banner class="mx-auto" max-width="800px" dark color="green" icon="mdi-information" lines="1" stacked="false">
+        <v-banner
+          class="mx-auto"
+          max-width="800px"
+          dark
+          color="green"
+          icon="mdi-information"
+          lines="1"
+          stacked="false"
+        >
           <v-banner-text>
             Une nouvelle version est disponnible :
             <v-chip class="ma-3" color="green" text-color="white">
@@ -50,7 +60,9 @@
           </v-banner-text>
 
           <template v-slot:actions>
-            <v-btn color="green" variant="outlined" dark @click.prevent="action('About')">Voir les nouveautés</v-btn>
+            <v-btn color="green" variant="outlined" dark @click.prevent="action('About')">
+              Voir les nouveautés
+            </v-btn>
           </template>
         </v-banner>
       </div>
@@ -80,6 +92,7 @@ const versionNotif = ref(false)
 const drawerMain = ref(false)
 const items = [
   { path: 'MyAccount', title: 'Mon Compte' },
+  { path: 'Settings', title: 'Paramètres' },
   { path: 'Logout', title: 'Se deconnecter' }
 ]
 const mainMenuItems = [

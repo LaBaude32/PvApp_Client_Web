@@ -25,6 +25,11 @@ const routes = [
     component: () => import('../views/Users.vue')
   },
   {
+    path: routesCONST.settings.path,
+    name: routesCONST.settings.name,
+    component: () => import('../views/Settings.vue')
+  },
+  {
     path: routesCONST.board.path,
     name: routesCONST.board.name,
     component: () => import('../views/BoardPage.vue')
