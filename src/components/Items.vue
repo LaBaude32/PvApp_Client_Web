@@ -1,10 +1,17 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="items" :sort-by="[{ key: 'position', order: 'desc' }]" :search="search">
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :sort-by="[{ key: 'position', order: 'desc' }]"
+        :search="search"
+      >
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title v-if="pvDetails">Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}</v-toolbar-title>
+            <v-toolbar-title v-if="pvDetails">
+              Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}
+            </v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-text-field
               v-model="search"
@@ -56,7 +63,13 @@
                           ></v-switch>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-textarea v-model="editedItem.note" label="Note" counter auto-grow filled></v-textarea>
+                          <v-textarea
+                            v-model="editedItem.note"
+                            label="Note"
+                            counter
+                            auto-grow
+                            filled
+                          ></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-textarea
@@ -68,7 +81,10 @@
                           ></v-textarea>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.resources" label="Ressources"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.resources"
+                            label="Ressources"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
@@ -136,7 +152,11 @@
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </p>
-                            <v-img max-height="300" max-width="700" :src="MyThumbnail(editedItem.image)"></v-img>
+                            <v-img
+                              max-height="300"
+                              max-width="700"
+                              :src="MyThumbnail(editedItem.image)"
+                            ></v-img>
                           </div>
                         </v-col>
                       </v-row>
@@ -199,7 +219,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useDate } from 'vuetify'
 import { DEFAULT_ITEM } from '../utilities/types'
 import { FormRequiredRules } from '../utilities/constantes'
@@ -242,7 +262,9 @@ const MyDialog = computed({
 
 watch(MyDialog, (val) => {
   if (editedIndex.value === -1) {
-    maxPosition.value > 0 ? (defaultItem.value.position = maxPosition.value) : (defaultItem.value.position = 1)
+    maxPosition.value > 0
+      ? (defaultItem.value.position = maxPosition.value)
+      : (defaultItem.value.position = 1)
     editedItem.value = Object.assign({}, defaultItem.value)
   }
   val || close()
@@ -271,6 +293,8 @@ const maxPosition = computed(() => {
 })
 
 const displayDateFormattedCompletion = computed(() => {
-  return editedItem.value.completionDate ? date.format(editedItem.value.completionDate, 'fullDate') : null
+  return editedItem.value.completionDate
+    ? date.format(editedItem.value.completionDate, 'fullDate')
+    : null
 })
 </script>

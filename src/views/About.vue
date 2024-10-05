@@ -6,10 +6,17 @@
         Version : {{ appVersion }}
       </v-chip>
     </div>
-    <v-card prepend-icon="mdi-heart" title="Nouveautés" color="blue-darken-2" class="mx-auto mt-5" max-width="600">
+    <v-card
+      prepend-icon="mdi-heart"
+      title="Nouveautés"
+      color="blue-darken-2"
+      class="mx-auto mt-5"
+      max-width="600"
+    >
       <v-card-text class="ml-5">
         <ul>
           <li><b>Mise en place des statuts Convié et Diffusion</b></li>
+          <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li>
         </ul>
       </v-card-text>
     </v-card>
@@ -28,7 +35,13 @@
         </ul>
       </v-card-text>
     </v-card>
-    <v-card prepend-icon="mdi-wrench" title="Corrections" color="blue-darken-2" class="mx-auto mt-5" max-width="600">
+    <v-card
+      prepend-icon="mdi-wrench"
+      title="Corrections"
+      color="blue-darken-2"
+      class="mx-auto mt-5"
+      max-width="600"
+    >
       <v-card-text class="ml-5">
         <ul>
           <li>Beaucoup de corrections de bugs</li>
