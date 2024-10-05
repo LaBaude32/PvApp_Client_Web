@@ -49,8 +49,8 @@
           dark
           color="green"
           icon="mdi-information"
-          lines="1"
-          stacked="false"
+          lines="one"
+          :stacked="false"
         >
           <v-banner-text>
             Une nouvelle version est disponnible :
@@ -72,7 +72,7 @@
   </v-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Axios from 'axios'
 import { getRouteName } from '@/utilities/constantes'
 import Notification from '@/components/Notification.vue'
@@ -122,10 +122,10 @@ const mainMenuItems = [
 const isLogged = computed(() => userStore.isLogged)
 const fullName = computed(() => userStore.fullName)
 
-function actionMainMenu(path) {
+function actionMainMenu(path: string) {
   router.push({ name: path })
 }
-function action(path) {
+function action(path: string) {
   if (path == 'Logout') {
     authStore.authLogout().then(() => {
       router.push('Login')

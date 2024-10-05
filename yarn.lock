@@ -996,6 +996,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/md5@npm:^2.3.5":
+  version: 2.3.5
+  resolution: "@types/md5@npm:2.3.5"
+  checksum: 10c0/aef9c40ab0ec61f1ae2acb04ee04e55b99eeec64af58176ef36d4feaf6aac335f32caca07eca0e3a1813fc362bf0b8663423250e24b39ebcfdc24c6ca4abe1cf
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^22.7.4":
   version: 22.7.4
   resolution: "@types/node@npm:22.7.4"
@@ -3868,6 +3875,7 @@ __metadata:
     "@rushstack/eslint-patch": "npm:^1.10.4"
     "@tsconfig/node20": "npm:^20.1.4"
     "@types/luxon": "npm:^3.4.2"
+    "@types/md5": "npm:^2.3.5"
     "@types/node": "npm:^22.7.4"
     "@vitejs/plugin-vue": "npm:^5.1.4"
     "@vue/eslint-config-prettier": "npm:^9.0.0"

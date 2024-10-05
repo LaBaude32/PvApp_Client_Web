@@ -17,8 +17,8 @@
   </v-container>
 </template>
 
-<script setup>
-import { getRouteName } from '../utilities/constantes.ts'
+<script setup lang="ts">
+import { getRouteName } from '../utilities/constantes'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useUserStore } from '../store/user'

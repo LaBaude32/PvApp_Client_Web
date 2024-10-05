@@ -5,6 +5,6 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ReOpenPv from '@/components/ReOpenPv.vue'
 </script>

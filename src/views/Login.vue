@@ -48,11 +48,11 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import md5 from 'md5'
-import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes.ts'
+import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
 import { useNotificationStore } from '../store/notification'
 import { useAuthStore } from '../store/auth'
 import { useUserStore } from '../store/user'
@@ -64,8 +64,8 @@ const router = useRouter()
 
 const valid = ref(false)
 const showPassword = ref(false)
-const email = ref(null)
-const password = ref(null)
+const email = ref('')
+const password = ref('')
 
 const resultConnetion = computed(() => userStore.resultCo)
 
