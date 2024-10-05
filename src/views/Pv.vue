@@ -40,7 +40,11 @@
 
     <v-divider class="my-10"></v-divider>
 
-    <Users v-if="pvUsers" v-model:users="pvUsers" :allConnectedParticipants="pvConnectedParticipants" />
+    <Users
+      v-if="pvUsers"
+      v-model:users="pvUsers"
+      :allConnectedParticipants="pvConnectedParticipants"
+    />
 
     <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
   </div>
@@ -52,9 +56,9 @@ import Items from '@/components/Items.vue'
 import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
 import Axios from 'axios'
-import { getRouteName } from '@/utilities/constantes'
+import { getRouteName } from '@/utilities/constantes.ts'
 import { useRoute, useRouter } from 'vue-router'
-import { DEFAULT_ITEM } from '@/utilities/types.js'
+import { DEFAULT_ITEM } from '@/utilities/dataConst.ts'
 import { useNotificationStore } from '@/store/notification'
 import { useAffairStore } from '@/store/affair'
 import { useUserStore } from '@/store/user'
@@ -293,7 +297,11 @@ function formatItemToBeSend() {
     delete itemToBeSend.image
     delete itemToBeSend.thumbnail
   }
-  if (meetingType.value == 'Chantier' && itemToBeSend.lots && typeof itemToBeSend.lots[0] == 'object') {
+  if (
+    meetingType.value == 'Chantier' &&
+    itemToBeSend.lots &&
+    typeof itemToBeSend.lots[0] == 'object'
+  ) {
     let lotTransit = []
     editedItem.value.lotsToReturn.forEach((element) => {
       lotTransit.push(element.lotId)

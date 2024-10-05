@@ -41,7 +41,13 @@
                   />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Nom" type="text" v-model="user.lastName" :rules="FormNameRules" counter="35" />
+                  <v-text-field
+                    label="Nom"
+                    type="text"
+                    v-model="user.lastName"
+                    :rules="FormNameRules"
+                    counter="35"
+                  />
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
@@ -62,10 +68,20 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Fonction" type="text" v-model="user.userFunction" counter="35" />
+                  <v-text-field
+                    label="Fonction"
+                    type="text"
+                    v-model="user.userFunction"
+                    counter="35"
+                  />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field label="Organisme" type="text" v-model="user.organism" counter="35" />
+                  <v-text-field
+                    label="Organisme"
+                    type="text"
+                    v-model="user.organism"
+                    counter="35"
+                  />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -92,8 +108,8 @@ import {
   FormPhoneRules,
   FormPasswordRules,
   FormRequiredRules
-} from '@/utilities/constantes'
-import { USER_GROUPE_ITEMS } from '@/utilities/types'
+} from '@/utilities/constantes.ts'
+import { USER_GROUPE_ITEMS } from '@/utilities/dataConst.ts'
 import md5 from 'md5'
 import { useRouter } from 'vue-router'
 

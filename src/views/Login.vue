@@ -2,7 +2,9 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-alert type="error" v-if="resultConnetion === 'ErrorId'">Erreur sur l'email ou le mot de passe</v-alert>
+        <v-alert type="error" v-if="resultConnetion === 'ErrorId'"
+          >Erreur sur l'email ou le mot de passe</v-alert
+        >
         <!-- <v-alert type="error" v-if="resultConnetion === 'ErrorConnection'">
           TODO:cette possibilité n'existe pas dans les actions du store
           Erreur de connexion au serveur, veuillez vérifier votre connexion internet
@@ -50,7 +52,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import md5 from 'md5'
-import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
+import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes.ts'
 import { useNotificationStore } from '../store/notification'
 import { useAuthStore } from '../store/auth'
 import { useUserStore } from '../store/user'

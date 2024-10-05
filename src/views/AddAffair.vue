@@ -8,7 +8,7 @@
 import { ref, onMounted, computed } from 'vue'
 import Axios from 'axios'
 import { useRouter } from 'vue-router'
-import routesCONST from '../utilities/constantes'
+import routesCONST from '../utilities/constantes.ts'
 import ModifyAffair from '@/components/ModifyAffair.vue'
 import { useUserStore } from '../store/user'
 

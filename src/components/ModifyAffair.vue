@@ -54,7 +54,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { FormAddressRules, FormNameRules, FormDescriptionRules, FormMeetingRules } from '@/utilities/constantes'
+import {
+  FormAddressRules,
+  FormNameRules,
+  FormDescriptionRules,
+  FormMeetingRules
+} from '@/utilities/constantes.ts'
 
 defineProps({
   validate: Function

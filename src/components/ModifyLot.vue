@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { FormStandardRules } from '@/utilities/constantes'
+import { FormStandardRules } from '@/utilities/constantes.ts'
 import { ref } from 'vue'
 
 defineProps({

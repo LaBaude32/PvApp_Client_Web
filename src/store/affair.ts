@@ -16,7 +16,7 @@ export const useAffairStore = defineStore('affair', () => {
   const affair = ref<affair>()
   const notifStore = useNotificationStore()
 
-  function getAffairById(affairId) {
+  function getAffairById(affairId: Number) {
     Axios.get('affairs/affairId', {
       params: {
         affairId: affairId
@@ -41,8 +41,6 @@ export const useAffairStore = defineStore('affair', () => {
   return { affair, getAffairById, registerAffair, registerLotOnAffair }
 })
 
-// @ts-expect-error
 if (import.meta.hot) {
-  // @ts-expect-error
   import.meta.hot.accept(acceptHMRUpdate(useAffairStore, import.meta.hot))
 }

@@ -5,7 +5,9 @@
     <v-container>
       <v-row class="grey lighten-3 mx-1">
         <v-col>
-          <v-btn class="mx-auto my-3" color="primary" @click="createAffair">Creer une affaire</v-btn>
+          <v-btn class="mx-auto my-3" color="primary" @click="createAffair"
+            >Creer une affaire</v-btn
+          >
         </v-col>
         <v-col v-if="pvs != ''">
           <v-btn class="mx-auto my-3" color="primary" @click="createPv">Ajouter un Pv</v-btn>
@@ -39,7 +41,9 @@
                     {{ pv.state }}
                     <v-icon right>mdi-autorenew</v-icon>
                   </v-btn>
-                  <div v-if="pv.meetingNextDate">Prochaine réunion : {{ $filters.formatDate(pv.meetingNextDate) }}</div>
+                  <div v-if="pv.meetingNextDate">
+                    Prochaine réunion : {{ $filters.formatDate(pv.meetingNextDate) }}
+                  </div>
                 </v-card-text>
               </v-list-item>
             </v-list-item>
@@ -60,7 +64,12 @@
                 <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
                 <v-card-text class="text--primary">
                   <div class="text-center">
-                    <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">
+                    <v-progress-circular
+                      :value="affair.progress"
+                      color="deep-orange lighten-2"
+                      size="80"
+                      width="8"
+                    >
                       {{ affair.progress }} %
                     </v-progress-circular>
                   </div>
@@ -87,7 +96,7 @@
 
 <script setup>
 import Axios from 'axios'
-import routesCONST, { getRouteName } from '../utilities/constantes'
+import routesCONST, { getRouteName } from '../utilities/constantes.ts'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../store/user'

@@ -30,8 +30,6 @@ export const useNotificationStore = defineStore('notification', () => {
   return { success, close, timeout, state, color, text, error }
 })
 
-// @ts-expect-error
 if (import.meta.hot) {
-  // @ts-expect-error
   import.meta.hot.accept(acceptHMRUpdate(useNotificationStore, import.meta.hot))
 }

@@ -5,6 +5,5 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "none",
-  "bracketSpacing": true,
-  "htmlWhitespaceSensitivity": "ignore"
+  "bracketSpacing": true
 }

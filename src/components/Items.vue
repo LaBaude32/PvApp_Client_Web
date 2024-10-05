@@ -221,8 +221,8 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { useDate } from 'vuetify'
-import { DEFAULT_ITEM } from '../utilities/types'
-import { FormRequiredRules } from '../utilities/constantes'
+import { DEFAULT_ITEM } from '../utilities/dataConst'
+import { FormRequiredRules } from '../utilities/constantes.ts'
 
 const date = useDate()
 

@@ -256,7 +256,7 @@ import {
   FormEmailRules,
   FormPhoneRules,
   FormRequiredRules
-} from '@/utilities/constantes'
+} from '@/utilities/constantes.ts'
 import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'

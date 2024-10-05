@@ -37,7 +37,12 @@
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
       <p>Progression :</p>
       <div class="text-center">
-        <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">
+        <v-progress-circular
+          :value="affair.progress"
+          color="deep-orange lighten-2"
+          size="80"
+          width="8"
+        >
           {{ affair.progress }} %
         </v-progress-circular>
       </div>
@@ -69,7 +74,12 @@
         ></v-text-field>
         <v-btn dark color="primary" class="ml-5" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
-      <v-data-table :headers="headers" :items="pvs" :search="search" :sort-by="[{ key: 'pvNumber', order: 'desc' }]">
+      <v-data-table
+        :headers="headers"
+        :items="pvs"
+        :search="search"
+        :sort-by="[{ key: 'pvNumber', order: 'desc' }]"
+      >
         <template v-slot:item.meetingDate="{ item }">
           <div>{{ $filters.formatDateWithA(item.meetingDate) }}</div>
         </template>
@@ -91,7 +101,13 @@
           <v-btn v-else @click="openInProgressPv(item)" small color="warning">
             <v-icon class="ma-2">{{ 'mdi-file-edit' }}</v-icon>
           </v-btn>
-          <v-btn v-if="item.state == 'Terminé'" @click="downloadPvPdf(item)" color="success" small class="ma-2">
+          <v-btn
+            v-if="item.state == 'Terminé'"
+            @click="downloadPvPdf(item)"
+            color="success"
+            small
+            class="ma-2"
+          >
             <v-icon dark class="ma-2">{{ 'mdi-file-download' }}</v-icon>
           </v-btn>
           <v-btn v-else @click="modifyPv(item)" color="error" small class="ma-2">
@@ -117,7 +133,7 @@
 
 <script setup>
 import Axios from 'axios'
-import routesCONST, { getRouteName } from '../utilities/constantes'
+import routesCONST, { getRouteName } from '../utilities/constantes.ts'
 import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifyAffair from '@/components/ModifyAffair.vue'
 import ModifyPv from '@/components/ModifyPv.vue'
@@ -126,7 +142,7 @@ import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 Settings.defaultLocale = 'fr'
-import { PV_DATA } from '@/utilities/types'
+import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useNotificationStore } from '../store/notification'
 import { useAffairStore } from '../store/affair'
 import { useUserStore } from '../store/user'

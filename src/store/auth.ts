@@ -2,8 +2,8 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import Axios from 'axios'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from './user.ts'
-import { userDataForLogin } from '../utilities/types.ts'
+import { useUserStore } from './user'
+import type { userDataForLogin } from '../utilities/types'
 
 export const useAuthStore = defineStore(
   'auth',
@@ -60,8 +60,7 @@ export const useAuthStore = defineStore(
   },
   { persist: true }
 )
-// @ts-expect-error
+
 if (import.meta.hot) {
-  // @ts-expect-error
   import.meta.hot.accept(acceptHMRUpdate(useAuthStore, import.meta.hot))
 }

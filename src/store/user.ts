@@ -2,7 +2,7 @@ import Axios from 'axios'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { userDataForLogin } from '../utilities/types.ts'
+import type { userDataForLogin } from '../utilities/types'
 
 interface user {
   firstName: string
@@ -55,8 +55,6 @@ export const useUserStore = defineStore(
   { persist: true }
 )
 
-// @ts-expect-error
 if (import.meta.hot) {
-  // @ts-expect-error
   import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
 }

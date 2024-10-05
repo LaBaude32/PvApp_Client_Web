@@ -6,15 +6,19 @@
         <p>La PvApp est une application de suivi de chantier</p>
       </v-col>
       <v-col cols="12">
-        <v-btn v-if="isLogged" color="primary" dark class="mb-2" @click="goToDashboard">Dashboard</v-btn>
-        <v-btn v-else color="primary" dark class="mb-2" @click="goToLoginPage">Connectez-vous</v-btn>
+        <v-btn v-if="isLogged" color="primary" dark class="mb-2" @click="goToDashboard"
+          >Dashboard</v-btn
+        >
+        <v-btn v-else color="primary" dark class="mb-2" @click="goToLoginPage"
+          >Connectez-vous</v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { getRouteName } from '../utilities/constantes'
+import { getRouteName } from '../utilities/constantes.ts'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useUserStore } from '../store/user'
