@@ -4,11 +4,11 @@
   </v-dialog>
 </template>
 
-<script setup>
-import { ref, onMounted, computed } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import Axios from 'axios'
 import { useRouter } from 'vue-router'
-import routesCONST from '../utilities/constantes.ts'
+import routesCONST from '../utilities/constantes'
 import ModifyAffair from '@/components/ModifyAffair.vue'
 import { useUserStore } from '../store/user'
 

@@ -4,6 +4,7 @@ export interface userDataForLogin {
 }
 
 export interface User {
+  userId?: Number
   email: string
   password: string
   firstName: string
@@ -12,5 +13,4 @@ export interface User {
   userGroup?: string
   userFunction?: string
   organism?: string
-  userId: Number
 }

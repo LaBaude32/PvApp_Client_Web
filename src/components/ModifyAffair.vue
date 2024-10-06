@@ -52,14 +52,14 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import {
   FormAddressRules,
   FormNameRules,
   FormDescriptionRules,
   FormMeetingRules
-} from '@/utilities/constantes.ts'
+} from '@/utilities/constantes'
 
 defineProps({
   validate: Function

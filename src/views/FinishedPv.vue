@@ -4,7 +4,9 @@
       <v-row>
         <v-col v-if="!isPrinted" cols="12" class="d-flex">
           <v-spacer />
-          <v-btn class="mr-16" color="success" x-large @click.prevent="downloadPdf">Telecharger</v-btn>
+          <v-btn class="mr-16" color="success" x-large @click.prevent="downloadPdf"
+            >Telecharger</v-btn
+          >
         </v-col>
         <v-col cols="12" class="text-center">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -61,8 +63,12 @@
     <v-container class="text-center">
       <v-divider class="my-10" />
       <div v-if="pvDetails.meetingNextDate">
-        <p class="text-uppercase">Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }}</p>
-        <p class="font-italic body-2">Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.</p>
+        <p class="text-uppercase">
+          Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }}
+        </p>
+        <p class="font-italic body-2">
+          Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.
+        </p>
       </div>
       <p>Fait et diffusé le {{ $filters.formatDateWithA(pvDetails.releaseDate) }}</p>
       <p>{{ owner.firstName }} {{ owner.lastName }}</p>
@@ -77,7 +83,7 @@ import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { USER_HEADERS, ITEM_HEADERS } from '../utilities/types.js'
+import { USER_HEADERS, ITEM_HEADERS } from '../utilities/dataConst.ts'
 Settings.defaultLocale = 'fr'
 
 const route = useRoute()

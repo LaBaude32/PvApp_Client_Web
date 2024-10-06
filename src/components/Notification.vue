@@ -15,7 +15,7 @@
   </v-snackbar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useNotificationStore } from '../store/notification'
 const store = useNotificationStore()
 </script>

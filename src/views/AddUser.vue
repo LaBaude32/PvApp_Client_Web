@@ -98,7 +98,7 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import Axios from 'axios'
 import {
@@ -108,19 +108,20 @@ import {
   FormPhoneRules,
   FormPasswordRules,
   FormRequiredRules
-} from '@/utilities/constantes.ts'
-import { USER_GROUPE_ITEMS } from '@/utilities/dataConst.ts'
+} from '@/utilities/constantes'
+import { USER_GROUPE_ITEMS } from '@/utilities/dataConst'
 import md5 from 'md5'
 import { useRouter } from 'vue-router'
+import type { User } from '@/utilities/types'
 
 const router = useRouter()
 
 const valid = ref(false)
 const showPassword = ref(false)
-const user = ref({})
+const user = ref<User>()
 
 function validate() {
-  user.value.password = md5(user.value.password)
+  user.value!.password = md5(user.value!.password)
   Axios.post('users', user.value)
     .then((response) => {
       router.push(getRouteName('board'))
