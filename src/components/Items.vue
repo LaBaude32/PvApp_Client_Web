@@ -95,25 +95,6 @@
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <!-- <v-text-field
-                            v-bind="props"
-                            id="date-picker-activator"
-                            :value="computedDateFormattedCompletion"
-                            label="Date de l'echéance"
-                            readonly
-                            clearable
-                            @click:clear="formatedCompletionDate = null"
-                            prepend-inner-icon="mdi-calendar"
-                          ></v-text-field>
-                          <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
-                            <template v-slot:activator="{ props }"></template>
-                            <v-date-picker
-                              v-model="formatedCompletionDate"
-                              @change="ItemModelDatePicker = false"
-                              locale="fr-fr"
-                              show-current
-                            ></v-date-picker>
-                          </v-menu> -->
                           <v-menu>
                             <template v-slot:activator="{ props }">
                               <v-text-field

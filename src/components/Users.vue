@@ -86,35 +86,7 @@
                           clearable
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-select
-                          v-model="editedItem.statusPAE"
-                          :items="defaultItem.statusPAEOptions"
-                          label="Status"
-                          clearable
-                          :rules="FormRequiredRules"
-                        ></v-select>
-                      </v-col>
-                      <v-row justify="space-around">
-                        <v-checkbox
-                          v-model="editedItem.invitedCurrentMeeting"
-                          label="Convié à la réunion"
-                          :indeterminate="editedItem.invitedCurrentMeeting == null"
-                          :color="editedItem.invitedCurrentMeeting ? 'success' : ''"
-                        />
-                        <v-checkbox
-                          v-model="editedItem.invitedNextMeeting"
-                          label="Convié à la prochaine réunion"
-                          :indeterminate="editedItem.invitedNextMeeting == null"
-                          :color="editedItem.invitedNextMeeting ? 'success' : ''"
-                        />
-                        <v-checkbox
-                          v-model="editedItem.distribution"
-                          label="Diffusion"
-                          :indeterminate="editedItem.distribution == null"
-                          :color="editedItem.distribution ? 'success' : ''"
-                        />
-                      </v-row>
+                      <UserFormStatus v-model:editedItem="editedItem" />
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -134,7 +106,7 @@
               </v-form>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogExistingUser" max-width="500px">
+          <v-dialog v-model="dialogExistingUser" max-width="80%">
             <template v-slot:activator="{ props }">
               <v-btn v-bind="props" color="green" dark class="mb-2 ml-2">
                 Ajouter de votre répertoire
@@ -149,41 +121,44 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12">
-                        <v-select
+                        <v-autocomplete
                           v-model="connectedParticipant"
-                          :items="connectedUsers"
-                          item-title="fullName"
+                          :items="allConnectedParticipants"
+                          :item-props="participantItemProps"
                           :rules="FormRequiredRules"
-                          return-object
-                        ></v-select>
+                          no-data-text="Tous les participants avec lesquels vous avez déjà travaillé sont déjà ici"
+                        ></v-autocomplete>
                       </v-col>
                       <v-row v-if="connectedParticipant">
-                        <v-col class="ml-3">
-                          <p>
-                            <b>Prénom :</b>
-                            {{ connectedParticipant.firstName }}
-                          </p>
-                          <p>
-                            <b>Nom :</b>
-                            {{ connectedParticipant.lastName }}
-                          </p>
-                          <p>
-                            <b>Email :</b>
-                            {{ connectedParticipant.email }}
-                          </p>
-                          <p>
-                            <b>Téléphone :</b>
-                            {{ connectedParticipant.phone }}
-                          </p>
-                          <p>
-                            <b>Fonction :</b>
-                            {{ connectedParticipant.userFunction }}
-                          </p>
-                          <p>
-                            <b>Organisme :</b>
-                            {{ connectedParticipant.organism }}
-                          </p>
-                        </v-col>
+                        <v-container>
+                          <v-col cols="12">
+                            <p>
+                              <b>Prénom :</b>
+                              {{ connectedParticipant.firstName }}
+                            </p>
+                            <p>
+                              <b>Nom :</b>
+                              {{ connectedParticipant.lastName }}
+                            </p>
+                            <p>
+                              <b>Email :</b>
+                              {{ connectedParticipant.email }}
+                            </p>
+                            <p>
+                              <b>Téléphone :</b>
+                              {{ connectedParticipant.phone }}
+                            </p>
+                            <p>
+                              <b>Fonction :</b>
+                              {{ connectedParticipant.userFunction }}
+                            </p>
+                            <p>
+                              <b>Organisme :</b>
+                              {{ connectedParticipant.organism }}
+                            </p>
+                          </v-col>
+                          <UserFormStatus v-model:editedItem="connectedParticipant" />
+                        </v-container>
                       </v-row>
                     </v-row>
                   </v-container>
@@ -207,7 +182,7 @@
       <template v-slot:item.statusPAE="{ item }">
         <v-select
           v-model="item.statusPAE"
-          :items="defaultItem.statusPAE"
+          :items="PARTICIPANT_STATUS_PAE"
           @update:modelValue="statusChange(item, 'PAE')"
         ></v-select>
       </template>
@@ -260,20 +235,22 @@ import {
 import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'
+import UserFormStatus from './UserFormStatus.vue'
+import { PARTICIPANT_STATUS_PAE } from '@/utilities/types.js'
 
 const userStore = useUserStore()
 const affairStore = useAffairStore()
 const notifStore = useNotificationStore()
 const route = useRoute()
 
-//TODO: Plutôt que faire deux boutons avec 2 modals pour ajouter une personne, faire un seul modal avec un bouton dedans pour choisir une personne existante dans une liste
-
-//TODO: A utiliser pour l'annuaire des participants
+const users = defineModel('users', { type: Array, required: true })
 // defineProps({
 //   allConnectedParticipants: Array
 // })
-
-const users = defineModel('users', { type: Array, required: true })
+const allConnectedParticipants = defineModel('allConnectedParticipants', {
+  type: Array,
+  required: true
+})
 
 const pvId = ref(Number)
 const valid1 = ref(false)
@@ -283,31 +260,7 @@ const search = ref('')
 const dialogNewOrModifiedUser = ref(false)
 const dialogExistingUser = ref(false)
 const connectedParticipant = ref()
-//TODO: récuperer les connected User via l'API
-const connectedUsers = [
-  {
-    userId: 1,
-    fullName: 'Baud Coup',
-    firstName: 'Baud',
-    lastName: 'Coup',
-    email: 'baud@baud.fr',
-    phone: '0675',
-    userFunction: 'dev',
-    organism: 'SAS'
-  },
-  {
-    userId: 2,
-    fullName: 'Omb Bollo',
-    firstName: 'Omb',
-    lastName: 'Bollo'
-  },
-  {
-    userId: 3,
-    fullName: 'Sam Coup',
-    firstName: 'Sam',
-    lastName: 'Coup'
-  }
-]
+
 const headers = [
   {
     title: 'Prénom Nom',
@@ -365,7 +318,6 @@ const defaultItem = {
   email: '',
   phone: '',
   statusPAE: undefined,
-  statusPAEOptions: ['Présent', 'Absent', 'Excusé'],
   invitedCurrentMeeting: undefined,
   invitedNextMeeting: undefined,
   distribution: undefined,
@@ -458,12 +410,20 @@ function closeExistingUser() {
 }
 
 function saveExistingUser() {
-  if (editedIndex.value > -1) {
-    Object.assign(users[editedIndex], editedItem.value)
-  } else {
-    users.value.push(connectedParticipant.value)
-    //TODO: mettre en place l'API pour cette fontion
-  }
+  let data = { ...connectedParticipant.value }
+  data.pvId = pvId.value
+  Axios.post('participants', data).then((response) => {
+    if (response.status == 201) {
+      users.value.push(response.data)
+      const indexToRemove = allConnectedParticipants.value.findIndex(
+        (obj) => obj.userId === response.data.userId
+      )
+      if (indexToRemove !== -1) {
+        allConnectedParticipants.value.splice(indexToRemove, 1)
+      }
+      notifStore.success('Le participant à bien été ajouté')
+    }
+  })
   closeExistingUser()
 }
 function statusChange(item, typeOfChange) {
@@ -483,5 +443,12 @@ function statusChange(item, typeOfChange) {
     .catch((error) => {
       console.log(error)
     })
+}
+
+function participantItemProps(params) {
+  return {
+    title: `${params.firstName} ${params.lastName}`,
+    subtitle: `${params.organism} - ${params.userFunction}`
+  }
 }
 </script>
