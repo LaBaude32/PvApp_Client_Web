@@ -15,12 +15,12 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li><b>Mise en place des statuts Convié et Diffusion</b></li>
-          <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li>
+          <li><b>Mise en place du répertoire des participants avec lesquel vous avez déjà travailé</b></li>
+          <!-- <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li> -->
         </ul>
       </v-card-text>
     </v-card>
-    <v-card
+    <!-- <v-card
       prepend-icon="mdi-rocket-launch"
       title="Améliorations"
       color="blue-darken-2"
@@ -34,7 +34,7 @@
           <li>Amélioration l'interface</li>
         </ul>
       </v-card-text>
-    </v-card>
+    </v-card> -->
     <v-card
       prepend-icon="mdi-wrench"
       title="Corrections"
@@ -44,7 +44,8 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li>Beaucoup de corrections de bugs</li>
+          <li>Correction du sélécteur des statuts PAE</li>
+          <li>Correction du bug empéchant la création d'items</li>
         </ul>
       </v-card-text>
     </v-card>
