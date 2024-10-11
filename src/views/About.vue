@@ -6,7 +6,7 @@
         Version : {{ appVersion }}
       </v-chip>
     </div>
-    <v-card
+    <!-- <v-card
       prepend-icon="mdi-heart"
       title="Nouveautés"
       color="blue-darken-2"
@@ -16,11 +16,11 @@
       <v-card-text class="ml-5">
         <ul>
           <li><b>Mise en place du répertoire des participants avec lesquel vous avez déjà travailé</b></li>
-          <!-- <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li> -->
+          <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li>
         </ul>
       </v-card-text>
-    </v-card>
-    <!-- <v-card
+    </v-card> -->
+    <v-card
       prepend-icon="mdi-rocket-launch"
       title="Améliorations"
       color="blue-darken-2"
@@ -29,12 +29,11 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li>Mise en place de Vue3</li>
-          <li>Amélioration des performances +50%</li>
-          <li>Amélioration l'interface</li>
+          <li>Tri des participant par ordre alphabétique sur le groupe dans le PDF</li>
+          <li>Amélioration de la mise en page de PDF</li>
         </ul>
       </v-card-text>
-    </v-card> -->
+    </v-card>
     <v-card
       prepend-icon="mdi-wrench"
       title="Corrections"
@@ -44,8 +43,7 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li>Correction du sélécteur des statuts PAE</li>
-          <li>Correction du bug empéchant la création d'items</li>
+          <li>Corrections de bugs sur les dates dans les items (pdf et app)</li>
         </ul>
       </v-card-text>
     </v-card>
