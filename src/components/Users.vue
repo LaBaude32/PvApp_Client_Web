@@ -236,7 +236,7 @@ import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'
 import UserFormStatus from './UserFormStatus.vue'
-import { PARTICIPANT_STATUS_PAE } from '@/utilities/types.js'
+import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
 
 const userStore = useUserStore()
 const affairStore = useAffairStore()

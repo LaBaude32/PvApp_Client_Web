@@ -31,8 +31,8 @@
 </template>
 
 <script setup>
-import { FormRequiredRules } from '@/utilities/constantes.js'
-import { PARTICIPANT_STATUS_PAE } from '@/utilities/types.js'
+import { FormRequiredRules } from '@/utilities/constantes'
+import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
 
 const editedItem = defineModel('editedItem', { type: Object, required: true })
 </script>
