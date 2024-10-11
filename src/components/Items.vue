@@ -154,6 +154,12 @@
             </v-dialog>
           </v-toolbar>
         </template>
+        <template v-slot:item.note="{ item }">
+          <div style="white-space: pre-wrap">{{ item.note }}</div>
+        </template>
+        <template v-slot:item.followUp="{ item }">
+          <div style="white-space: pre-wrap">{{ item.followUp }}</div>
+        </template>
         <template v-slot:item.lots="{ item }">
           <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
             {{ lot.name }}
