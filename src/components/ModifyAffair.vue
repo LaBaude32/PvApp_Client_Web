@@ -46,7 +46,7 @@
       <v-card-actions>
         <v-btn color="error" class="mr-4" @click="$emit('closeDialog')">Annuler</v-btn>
         <v-spacer />
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Enregistrer</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -54,7 +54,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { FormAddressRules, FormNameRules, FormDescriptionRules, FormMeetingRules } from '@/utilities/constantes'
+import {
+  FormAddressRules,
+  FormNameRules,
+  FormDescriptionRules,
+  FormMeetingRules
+} from '@/utilities/constantes'
 
 defineProps({
   validate: Function

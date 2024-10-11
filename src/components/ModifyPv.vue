@@ -1,7 +1,9 @@
 <template>
   <v-card class="pa-2 pb-3">
     <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
-    <v-card-title v-else>Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title>
+    <v-card-title v-else>
+      Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}
+    </v-card-title>
     <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
       <p>Chargement des données</p>
       <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
@@ -99,7 +101,11 @@
           </v-col>
 
           <v-col cols="12">
-            <v-text-field v-model="pvData.meetingNextPlace" counter label="Lieu de la prochaine réunion"></v-text-field>
+            <v-text-field
+              v-model="pvData.meetingNextPlace"
+              counter
+              label="Lieu de la prochaine réunion"
+            ></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-select
@@ -116,9 +122,11 @@
       </v-card-text>
       <v-card-actions>
         <!-- TODO:Ajouter un bouton pour supprimer un PV -->
-        <v-spacer />
         <v-btn color="error" @click="cancelForm">Annuler</v-btn>
-        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">Enregistrer</v-btn>
+        <v-spacer />
+        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">
+          Enregistrer
+        </v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -154,13 +162,17 @@ const existingPvData = defineModel('pvData', { type: Object })
 const emit = defineEmits(['closeDialog'])
 
 const displayMeetingDate = computed({
-  get: () => (pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null),
+  get: () =>
+    pvData.value.meetingDateDate ? date.format(pvData.value.meetingDateDate, 'fullDate') : null,
   set: (val) => {
     pvData.value.meetingDateDate = val
   }
 })
 const displayNextMeetingDate = computed({
-  get: () => (pvData.value.meetingNextDateDate ? date.format(pvData.value.meetingNextDateDate, 'fullDate') : null),
+  get: () =>
+    pvData.value.meetingNextDateDate
+      ? date.format(pvData.value.meetingNextDateDate, 'fullDate')
+      : null,
   set: (val) => {
     pvData.value.meetingNextDateDate = val
   }
