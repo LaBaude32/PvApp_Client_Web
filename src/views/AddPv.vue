@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="80%">
+  <v-dialog v-model="dialog" max-width="80%" persistent>
     <ModifyPv v-model="isNewPv" @close-dialog="dialog = false" />
   </v-dialog>
 </template>

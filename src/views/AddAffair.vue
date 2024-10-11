@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="70%">
+  <v-dialog v-model="dialog" max-width="70%" persistent>
     <ModifyAffair v-model:affairDatas="affair" :validate="validate" @close-dialog="cancelDialog" />
   </v-dialog>
 </template>

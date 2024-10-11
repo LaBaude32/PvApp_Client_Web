@@ -43,7 +43,7 @@
     <Users
       v-if="pvUsers"
       v-model:users="pvUsers"
-      :allConnectedParticipants="pvConnectedParticipants"
+      v-model:allConnectedParticipants="pvConnectedParticipants"
     />
 
     <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
@@ -62,12 +62,14 @@ import { DEFAULT_ITEM } from '@/utilities/dataConst.ts'
 import { useNotificationStore } from '@/store/notification'
 import { useAffairStore } from '@/store/affair'
 import { useUserStore } from '@/store/user'
+import { useDate } from 'vuetify'
 
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
 const affairStore = useAffairStore()
 const route = useRoute()
 const router = useRouter()
+const date = useDate()
 
 const pvId = ref(Number)
 const dialog = ref(false)
@@ -77,7 +79,6 @@ const pvDetails = ref({})
 const pvUsers = ref([])
 const pvConnectedParticipants = ref([])
 const items = ref([])
-const newImage = ref('')
 const headers = ref([
   {
     title: 'Position',
@@ -104,8 +105,6 @@ const editedItem = ref({
   completion: '',
   completionToReturn: null,
   completionDate: '',
-  completionDateDate: '',
-  completionDateTime: '',
   image: null,
   visible: '',
   isImageChange: false
@@ -138,11 +137,6 @@ async function getData() {
   })
   pvDetails.value = res.data.pv
   pvUsers.value = res.data.participants
-  pvUsers.value.forEach((element) => {
-    element.distribution == 1 ? (element.distribution = true) : false
-    element.invitedCurrentMeeting == 1 ? (element.invitedCurrentMeeting = true) : false
-    element.invitedNextMeeting == 1 ? (element.invitedNextMeeting = true) : false
-  })
   pvConnectedParticipants.value = res.data.connectedParticipants
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
@@ -159,6 +153,9 @@ function editItem(item) {
   pvDetails.value.lots ? (editedItem.value.lots = pvDetails.value.lots) : null
   editedItem.value.completionToReturn = item.completion
   editedItem.value.completion = [defaultItem.value.completion]
+  editedItem.value.completionDate
+    ? (editedItem.value.completionDate = new Date(editedItem.value.completionDate))
+    : ''
   editedItem.value.isImageChange = false
   dialog.value = true
 }
@@ -281,16 +278,20 @@ function returnToAffair() {
 }
 
 function formatItemToBeSend() {
-  if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
+  if (
+    editedItem.value.completionDate == '' ||
+    editedItem.value.completionDate == 'Invalid date' ||
+    editedItem.value.completionDate === null
+  ) {
     editedItem.value.completionDate = null
+  } else {
+    editedItem.value.completionDate = date.toISO(editedItem.value.completionDate)
   }
   editedItem.value.lots = editedItem.value.lotsToReturn
   editedItem.value.completion = editedItem.value.completionToReturn
   let itemToBeSend = { ...editedItem.value }
   itemToBeSend.pvId = pvId.value
   delete itemToBeSend.isImageChange
-  delete itemToBeSend.completionDateDate
-  delete itemToBeSend.completionDateTime
   delete itemToBeSend.completionToReturn
   delete itemToBeSend.lotsToReturn
   if (typeof itemToBeSend.image != 'string') {

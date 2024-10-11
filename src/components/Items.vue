@@ -95,43 +95,22 @@
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <!-- <v-text-field
-                            v-bind="props"
-                            id="date-picker-activator"
-                            :value="computedDateFormattedCompletion"
+                          <v-text-field
+                            v-model="displayDateFormattedCompletion"
                             label="Date de l'echéance"
                             readonly
                             clearable
-                            @click:clear="formatedCompletionDate = null"
+                            @click:clear="editedItem.completionDate = null"
+                            @click:control="completionDateDialog = true"
                             prepend-inner-icon="mdi-calendar"
                           ></v-text-field>
-                          <v-menu v-model="ItemModelDatePicker" :close-on-content-click="false" max-width="290">
-                            <template v-slot:activator="{ props }"></template>
-                            <v-date-picker
-                              v-model="formatedCompletionDate"
-                              @change="ItemModelDatePicker = false"
-                              locale="fr-fr"
-                              show-current
-                            ></v-date-picker>
-                          </v-menu> -->
-                          <v-menu>
-                            <template v-slot:activator="{ props }">
-                              <v-text-field
-                                v-bind="props"
-                                v-model="displayDateFormattedCompletion"
-                                label="Date de l'echéance"
-                                readonly
-                                clearable
-                                @click:clear="editedItem.completionDate = null"
-                                prepend-inner-icon="mdi-calendar"
-                              ></v-text-field>
-                            </template>
+                          <v-dialog v-model="completionDateDialog" width="auto">
                             <v-date-picker
                               title="Selectionner une date"
                               header="Nouvelle date"
                               v-model="editedItem.completionDate"
                             ></v-date-picker>
-                          </v-menu>
+                          </v-dialog>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -172,6 +151,12 @@
               </v-card>
             </v-dialog>
           </v-toolbar>
+        </template>
+        <template v-slot:item.note="{ item }">
+          <div style="white-space: pre-wrap">{{ item.note }}</div>
+        </template>
+        <template v-slot:item.followUp="{ item }">
+          <div style="white-space: pre-wrap">{{ item.followUp }}</div>
         </template>
         <template v-slot:item.lots="{ item }">
           <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
@@ -250,6 +235,8 @@ const search = ref()
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
 const defaultItem = ref(DEFAULT_ITEM)
+
+const completionDateDialog = ref(false)
 
 const MyDialog = computed({
   get() {

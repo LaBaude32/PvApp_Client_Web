@@ -1,9 +1,9 @@
 <template>
   <v-card class="pa-2 pb-3">
     <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
-    <v-card-title v-else
-      >Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}</v-card-title
-    >
+    <v-card-title v-else>
+      Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}
+    </v-card-title>
     <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
       <p>Chargement des données</p>
       <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
@@ -12,24 +12,22 @@
       <v-card-text>
         <v-row>
           <v-col cols="6" lg="6">
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  label="Date de la réunion"
-                  readonly
-                  clearable
-                  @click:clear="pvData.meetingDateDate = null"
-                  prepend-inner-icon="mdi-calendar"
-                  v-model="displayMeetingDate"
-                ></v-text-field>
-              </template>
+            <v-text-field
+              label="Date de la réunion"
+              readonly
+              clearable
+              @click:clear="pvData.meetingDateDate = null"
+              @click:control="meetingDateDateDialog = true"
+              prepend-inner-icon="mdi-calendar"
+              v-model="displayMeetingDate"
+            ></v-text-field>
+            <v-dialog v-model="meetingDateDateDialog" width="auto">
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
                 v-model="pvData.meetingDateDate"
               ></v-date-picker>
-            </v-menu>
+            </v-dialog>
           </v-col>
           <v-col cols="6" sm="6">
             <v-menu :close-on-content-click="false">
@@ -60,24 +58,22 @@
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  v-model="displayNextMeetingDate"
-                  label="Date de la réunion"
-                  readonly
-                  clearable
-                  @click:clear="pvData.meetingNextDateDate = null"
-                  prepend-inner-icon="mdi-calendar"
-                ></v-text-field>
-              </template>
+            <v-text-field
+              v-model="displayNextMeetingDate"
+              label="Date de la réunion"
+              readonly
+              clearable
+              @click:clear="pvData.meetingNextDateDate = null"
+              @click:control="meetingNextDateDialog = true"
+              prepend-inner-icon="mdi-calendar"
+            ></v-text-field>
+            <v-dialog v-model="meetingNextDateDialog" width="auto">
               <v-date-picker
                 title="Selectionner une date"
                 header="Nouvelle date"
                 v-model="pvData.meetingNextDateDate"
               ></v-date-picker>
-            </v-menu>
+            </v-dialog>
           </v-col>
           <v-col cols="6" sm="6">
             <v-menu :close-on-content-click="false">
@@ -122,11 +118,17 @@
       </v-card-text>
       <v-card-actions>
         <!-- TODO:Ajouter un bouton pour supprimer un PV -->
-        <v-spacer />
         <v-btn color="error" @click="cancelForm">Annuler</v-btn>
+        <<<<<<< HEAD
         <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm"
           >Enregistrer</v-btn
         >
+        =======
+        <v-spacer />
+        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">
+          Enregistrer
+        </v-btn>
+        >>>>>>> vue-3
       </v-card-actions>
     </v-form>
   </v-card>
@@ -153,6 +155,8 @@ const state = ref('En cours')
 const pvData = ref(PV_DATA)
 const datasIsLoading = ref(true)
 const isSaved = ref(false)
+const meetingDateDateDialog = ref(false)
+const meetingNextDateDialog = ref(false)
 
 const props = defineProps({
   affairId: { type: Number }

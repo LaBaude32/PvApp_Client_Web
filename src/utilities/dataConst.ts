@@ -66,3 +66,5 @@ export const PV_DATA = {
     affairId: null,
     state: 'En cours'
 }
+
+export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé']
