@@ -13,7 +13,6 @@
         <v-row>
           <v-col cols="6" lg="6">
             <v-text-field
-              v-bind="props"
               label="Date de la réunion"
               readonly
               clearable
@@ -60,7 +59,6 @@
           </v-col>
           <v-col cols="6" lg="6">
             <v-text-field
-              v-bind="props"
               v-model="displayNextMeetingDate"
               label="Date de la réunion"
               readonly
