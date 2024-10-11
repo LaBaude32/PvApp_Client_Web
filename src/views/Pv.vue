@@ -278,7 +278,11 @@ function returnToAffair() {
 }
 
 function formatItemToBeSend() {
-  if (editedItem.value.completionDate == '' || editedItem.value.completionDate == 'Invalid date') {
+  if (
+    editedItem.value.completionDate == '' ||
+    editedItem.value.completionDate == 'Invalid date' ||
+    editedItem.value.completionDate === null
+  ) {
     editedItem.value.completionDate = null
   } else {
     editedItem.value.completionDate = date.toISO(editedItem.value.completionDate)
