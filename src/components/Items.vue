@@ -95,24 +95,23 @@
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-menu>
-                            <template v-slot:activator="{ props }">
-                              <v-text-field
-                                v-bind="props"
-                                v-model="displayDateFormattedCompletion"
-                                label="Date de l'echéance"
-                                readonly
-                                clearable
-                                @click:clear="editedItem.completionDate = null"
-                                prepend-inner-icon="mdi-calendar"
-                              ></v-text-field>
-                            </template>
+                          <v-text-field
+                            v-bind="props"
+                            v-model="displayDateFormattedCompletion"
+                            label="Date de l'echéance"
+                            readonly
+                            clearable
+                            @click:clear="editedItem.completionDate = null"
+                            @click:control="completionDateDialog = true"
+                            prepend-inner-icon="mdi-calendar"
+                          ></v-text-field>
+                          <v-dialog v-model="completionDateDialog" width="auto">
                             <v-date-picker
                               title="Selectionner une date"
                               header="Nouvelle date"
                               v-model="editedItem.completionDate"
                             ></v-date-picker>
-                          </v-menu>
+                          </v-dialog>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -237,6 +236,8 @@ const search = ref()
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
 const defaultItem = ref(DEFAULT_ITEM)
+
+const completionDateDialog = ref(false)
 
 const MyDialog = computed({
   get() {
