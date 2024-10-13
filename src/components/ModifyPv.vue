@@ -119,16 +119,10 @@
       <v-card-actions>
         <!-- TODO:Ajouter un bouton pour supprimer un PV -->
         <v-btn color="error" @click="cancelForm">Annuler</v-btn>
-        <<<<<<< HEAD
-        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm"
-          >Enregistrer</v-btn
-        >
-        =======
         <v-spacer />
         <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">
           Enregistrer
         </v-btn>
-        >>>>>>> vue-3
       </v-card-actions>
     </v-form>
   </v-card>

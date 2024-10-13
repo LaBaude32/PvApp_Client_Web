@@ -1,10 +1,12 @@
 <template>
   <div v-if="affair" class="mb-10 text-center">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="80%">
       <ModifyProgress
         v-if="progressDialog"
-        v-model:progressValue="affair.progress"
+        v-model:lots="lots"
+        :initialLots="initialLots"
         :modifyProgressSave="modifyProgressSave"
+        @close-dialog="dialog = false"
       />
       <ModifyAffair
         v-if="affairDialog"
@@ -35,28 +37,25 @@
       <p>Adresse : {{ affair.address }}</p>
       <p>Phase : {{ affair.meetingType }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
-      <p>Progression :</p>
-      <div class="text-center">
-        <v-progress-circular
-          :value="affair.progress"
-          color="deep-orange lighten-2"
-          size="80"
-          width="8"
-        >
-          {{ affair.progress }} %
-        </v-progress-circular>
-      </div>
-      <v-row>
-        <v-col cols="12" v-if="affair.meetingType == 'Chantier'">
-          <h3 class="mt-5">Lots :</h3>
-          <div v-if="lots">
-            <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">
+      <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
+        <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
+          <v-row justify="center">
+            <v-chip dense class="mx-5 mt-5" color="primary">
               {{ lot.name }}
             </v-chip>
-          </div>
-          <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
-          <!-- TODO:ajouter un bouton pour ajouter des lots ici -->
+          </v-row>
+          <v-row justify="center" class="mt-5">
+            <v-progress-circular
+              :model-value="lot.progress"
+              color="deep-orange lighten-2"
+              size="50"
+              width="5"
+            >
+              {{ lot.progress }} %
+            </v-progress-circular></v-row
+          >
         </v-col>
+        <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
       </v-row>
     </v-container>
 
@@ -157,7 +156,6 @@ const progressDialog = ref(false)
 const affairDialog = ref(false)
 const pvModifyDialog = ref(false)
 const lotModifyDialog = ref(false)
-const pvModifyingType = ref(true)
 const lotModifyCancelable = ref(false)
 const pvData = ref({})
 const dialog = ref(false)
@@ -169,6 +167,7 @@ const oldNumberLots = ref(Number)
 const search = ref('')
 const pvs = ref([])
 const isNewPv = ref(true)
+const initialLots = ref([])
 const headers = [
   { title: 'Numéro', align: 'center', value: 'pvNumber' },
   {
@@ -312,23 +311,24 @@ function ModifyLotCancel() {
 }
 
 function modifyProgress() {
+  initialLots.value = JSON.parse(JSON.stringify(lots.value))
   dialog.value = true
   progressDialog.value = true
 }
 
 function modifyProgressSave() {
-  let data = {
-    ...affair.value
-  }
-  Axios.put('affairs/affairId', data)
-    .then((response) => {
-      if (response.status == 200) {
-        notifStore.success("La progession de l'affaire à correctement été mise à jour")
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
+  lots.value.forEach((lot) => {
+    Axios.put('lots/lotId', lot)
+      .then((response) => {
+        if (response.status == 200) {
+          notifStore.success('La progession à correctement été mise à jour')
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  })
   progressDialog.value = false
   dialog.value = false
 }

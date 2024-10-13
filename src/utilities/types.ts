@@ -4,7 +4,7 @@ export interface userDataForLogin {
 }
 
 export interface User {
-  userId?: Number
+  userId?: number
   email: string
   password: string
   firstName: string
@@ -13,4 +13,10 @@ export interface User {
   userGroup?: string
   userFunction?: string
   organism?: string
+}
+
+export interface Lot {
+  lotId?: number
+  name: string
+  progress?: number
 }
