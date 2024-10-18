@@ -18,5 +18,16 @@ export interface User {
 export interface Lot {
   lotId?: number
   name: string
-  progress?: number
+  progress: number
+  alreadyDone?: string
+  affairId?: number
+}
+
+export interface Affair {
+  affairId: number
+  name: string
+  meetingType: 'Chantier' | 'Etude'
+  adresse: string
+  progress: number
+  lots?: Lot[]
 }

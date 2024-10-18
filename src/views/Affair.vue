@@ -1,13 +1,6 @@
 <template>
   <div v-if="affair" class="mb-10 text-center">
     <v-dialog v-model="dialog" persistent max-width="80%">
-      <ModifyProgress
-        v-if="progressDialog"
-        v-model:lots="lots"
-        :initialLots="initialLots"
-        :modifyProgressSave="modifyProgressSave"
-        @close-dialog="dialog = false"
-      />
       <ModifyAffair
         v-if="affairDialog"
         v-model:affairDatas="affair"
@@ -37,6 +30,7 @@
       <p>Adresse : {{ affair.address }}</p>
       <p>Phase : {{ affair.meetingType }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
+      <!-- FIXME:ici il faudra récuperer la progression du Pv -->
       <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
         <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
           <v-row justify="center">
@@ -119,11 +113,12 @@
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="error" @click.prevent="modifyProgress">Modifier la progression</v-btn>
           <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">
             Modifier les lots
           </v-btn>
-          <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
+          <v-btn dark color="error" @click.prevent="(affairDialog = true), (dialog = true)"
+            >Modifier l'affaire</v-btn
+          >
         </v-card-actions>
       </v-container>
     </v-card>
@@ -133,7 +128,6 @@
 <script setup>
 import Axios from 'axios'
 import routesCONST, { getRouteName } from '../utilities/constantes.ts'
-import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifyAffair from '@/components/ModifyAffair.vue'
 import ModifyPv from '@/components/ModifyPv.vue'
 import ModifyLot from '@/components/ModifyLot.vue'
@@ -152,7 +146,6 @@ const affairStore = useAffairStore()
 const router = useRouter()
 const route = useRoute()
 
-const progressDialog = ref(false)
 const affairDialog = ref(false)
 const pvModifyDialog = ref(false)
 const lotModifyDialog = ref(false)
@@ -167,7 +160,6 @@ const oldNumberLots = ref(Number)
 const search = ref('')
 const pvs = ref([])
 const isNewPv = ref(true)
-const initialLots = ref([])
 const headers = [
   { title: 'Numéro', align: 'center', value: 'pvNumber' },
   {
@@ -188,14 +180,14 @@ const userId = computed(() => {
 
 onMounted(() => {
   const affairId = route.params.id
-  Axios.get('affairs/affairId', {
+  Axios.get('affairs/full/affairId', {
     params: {
       affairId: affairId
     }
   })
     .then((response) => {
-      affair.value = response.data.affairInfos
-      affairStore.registerAffair(response.data.affairInfos)
+      affair.value = response.data
+      affairStore.registerAffair(response.data)
       if (response.data.lots) {
         lots.value = response.data.lots
         affairStore.registerLotOnAffair(response.data.lots)
@@ -308,34 +300,6 @@ function ModifyLotCancel() {
       lots.value = undefined
     }
   })
-}
-
-function modifyProgress() {
-  initialLots.value = JSON.parse(JSON.stringify(lots.value))
-  dialog.value = true
-  progressDialog.value = true
-}
-
-function modifyProgressSave() {
-  //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
-  lots.value.forEach((lot) => {
-    Axios.put('lots/lotId', lot)
-      .then((response) => {
-        if (response.status == 200) {
-          notifStore.success('La progession à correctement été mise à jour')
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  })
-  progressDialog.value = false
-  dialog.value = false
-}
-
-function modifyAffair() {
-  dialog.value = true
-  affairDialog.value = true
 }
 
 function ModifyAffairSave() {

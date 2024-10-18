@@ -6,11 +6,16 @@
         <v-col cols="12" class="d-flex justify-space-between">
           <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
           <div>
-            <v-btn color="warning" @click.prevent="downloadPDF">
+            <v-btn color="success" @click.prevent="modifyProgress">
+              <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
+              Editer l'avancement du Pv
+            </v-btn>
+            <v-btn class="ml-5" color="warning" @click.prevent="downloadPDF">
               <v-icon icon="mdi-file-download" class="mr-2" />
               un PDF provisoire
             </v-btn>
             <v-btn class="ml-5" color="primary" @click="ModalValidationDialog = true">
+              <v-icon icon="mdi-check-all" class="mr-2" />
               Finaliser et diffuser le PV
             </v-btn>
           </div>
@@ -47,6 +52,14 @@
     />
 
     <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
+
+    <v-dialog v-model="progressDialog" persistent max-width="80%">
+      <ModifyProgress
+        v-model:lots="pvDetails.lots"
+        :initialLots="initialLots"
+        @close-progress-dialog="progressDialog = false"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -55,6 +68,7 @@ import { ref, computed, onMounted } from 'vue'
 import Items from '@/components/Items.vue'
 import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
+import ModifyProgress from '@/components/ModifyProgress.vue'
 import Axios from 'axios'
 import { getRouteName } from '@/utilities/constantes.ts'
 import { useRoute, useRouter } from 'vue-router'
@@ -73,7 +87,9 @@ const date = useDate()
 
 const pvId = ref(Number)
 const dialog = ref(false)
+const progressDialog = ref(false)
 const ModalValidationDialog = ref(false)
+const initialLots = ref([])
 const meetingType = ref(null)
 const pvDetails = ref({})
 const pvUsers = ref([])
@@ -328,5 +344,10 @@ async function downloadPDF() {
   link.setAttribute('download', `${fileName}.pdf`)
   document.body.appendChild(link)
   link.click()
+}
+
+function modifyProgress() {
+  initialLots.value = JSON.parse(JSON.stringify(pvDetails.value.lots))
+  progressDialog.value = true
 }
 </script>

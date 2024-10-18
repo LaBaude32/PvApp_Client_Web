@@ -2,18 +2,10 @@ import Axios from 'axios'
 import { ref } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useNotificationStore } from './notification'
-
-interface affair {
-  affairId: number
-  name: string
-  meetingType: 'Chantier' | 'Etude'
-  adresse: string
-  progress: number
-  lots?: [string]
-}
+import type { Lot, Affair } from '@/utilities/types'
 
 export const useAffairStore = defineStore('affair', () => {
-  const affair = ref<affair>()
+  const affair = ref<Affair>()
   const notifStore = useNotificationStore()
 
   function getAffairById(affairId: Number) {
@@ -30,11 +22,11 @@ export const useAffairStore = defineStore('affair', () => {
       })
   }
 
-  function registerAffair(gettedAffair: affair) {
+  function registerAffair(gettedAffair: Affair) {
     affair.value = gettedAffair
   }
 
-  function registerLotOnAffair(gettedLots: [string]) {
+  function registerLotOnAffair(gettedLots: Lot[]) {
     affair.value!.lots = gettedLots
   }
 

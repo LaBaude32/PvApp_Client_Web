@@ -32,24 +32,45 @@
     <v-card-actions>
       <v-btn color="blue darken-1" variant="text" @click="cancel">Annuler</v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" variant="text" @click="modifyProgressSave">Enregistrer</v-btn>
+      <v-btn color="blue darken-1" variant="text" @click="save">Enregistrer</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { Lot } from '@/utilities/types'
+import { useNotificationStore } from '@/store/notification'
+import type { Lot } from '@/utilities/types'
+import Axios from 'axios'
 
-const emit = defineEmits(['closeDialog'])
+const notifStore = useNotificationStore()
+
+const emit = defineEmits(['closeDialog', 'closeProgressDialog'])
 const props = defineProps<{
-  modifyProgressSave: Function
   initialLots: Lot[]
 }>()
 
 const lots = defineModel<Lot[]>('lots', { required: true })
 
+function save() {
+  //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
+  lots.value.forEach((lot) => {
+    Axios.put('lots/progress', lot)
+      .then((response) => {
+        if (response.status == 200) {
+          notifStore.success('La progession à correctement été mise à jour')
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  })
+  emit('closeProgressDialog')
+  emit('closeDialog')
+}
+
 function cancel() {
   lots.value = props.initialLots
+  emit('closeProgressDialog')
   emit('closeDialog')
 }
 </script>
