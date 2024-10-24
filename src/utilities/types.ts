@@ -17,6 +17,7 @@ export interface User {
 
 export interface Lot {
   lotId?: number
+  pvId?: number
   name: string
   progress: number
   alreadyDone?: string

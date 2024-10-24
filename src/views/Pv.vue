@@ -6,7 +6,11 @@
         <v-col cols="12" class="d-flex justify-space-between">
           <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
           <div>
-            <v-btn color="success" @click.prevent="modifyProgress">
+            <v-btn
+              v-if="pvDetails.affairMeetingType == 'Chantier'"
+              color="success"
+              @click.prevent="modifyProgress"
+            >
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
               Editer l'avancement du Pv
             </v-btn>
@@ -57,6 +61,7 @@
       <ModifyProgress
         v-model:lots="pvDetails.lots"
         :initialLots="initialLots"
+        :pvId="pvId"
         @close-progress-dialog="progressDialog = false"
       />
     </v-dialog>
@@ -151,13 +156,14 @@ async function getData() {
   items.value.forEach((element) => {
     element.visible == 1 ? (element.visible = true) : false
   })
+  //FIXME:ici il faut récup les lots avec l'API
   pvDetails.value = res.data.pv
   pvUsers.value = res.data.participants
   pvConnectedParticipants.value = res.data.connectedParticipants
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })
-    defaultItem.value.lots = pvDetails.lots
+    defaultItem.value.lots = pvDetails.value.lots
   }
   affairStore.getAffairById(pvDetails.value.affairId)
 }
@@ -347,6 +353,9 @@ async function downloadPDF() {
 }
 
 function modifyProgress() {
+  // if (pvDetails.value.lots == null) {
+  //   pvDetails.value.lots = affairStore.affair.lots
+  // }
   initialLots.value = JSON.parse(JSON.stringify(pvDetails.value.lots))
   progressDialog.value = true
 }

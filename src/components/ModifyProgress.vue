@@ -47,13 +47,16 @@ const notifStore = useNotificationStore()
 const emit = defineEmits(['closeDialog', 'closeProgressDialog'])
 const props = defineProps<{
   initialLots: Lot[]
+  pvId: number
 }>()
 
 const lots = defineModel<Lot[]>('lots', { required: true })
 
 function save() {
   //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
+  const pvId = Number(props.pvId)
   lots.value.forEach((lot) => {
+    lot.pvId = lot.pvId || pvId
     Axios.put('lots/progress', lot)
       .then((response) => {
         if (response.status == 200) {
