@@ -38,7 +38,7 @@
               {{ lot.name }}
             </v-chip>
           </v-row>
-          <v-row v-if="lot.progress" justify="center" class="mt-5">
+          <v-row v-if="lot.progress != null" justify="center" class="mt-5">
             <v-progress-circular
               :model-value="lot.progress"
               color="deep-orange lighten-2"
@@ -181,36 +181,33 @@ const userId = computed(() => {
 onMounted(() => {
   const affairId = route.params.id
 
-  let query
-
   Axios.get('affairs/affairId', {
     params: {
       affairId: affairId
     }
   }).then((res) => {
-    //FIXME:débile ça parce qu'on fait deux fois le même call
     //FIXME:ne fonctionne pas parce qu'on ne récupère pas les lots dans le call précédent donc ils sont toujours à null et la deuxième condition n'est jamais vraie
-    query =
-      res.data.meetingType == 'Chantier' && res.data.lots != null
-        ? 'affairs/full/affairId'
-        : 'affairs/affairId'
-
-    Axios.get(query, {
-      params: {
-        affairId: affairId
-      }
-    })
-      .then((response) => {
-        affair.value = response.data
-        affairStore.registerAffair(response.data)
-        if (response.data.lots) {
-          lots.value = response.data.lots
-          affairStore.registerLotOnAffair(response.data.lots)
+    if (res.data.meetingType == 'Chantier') {
+      Axios.get('affairs/full/affairId', {
+        params: {
+          affairId: affairId
         }
       })
-      .catch((error) => {
-        console.log(error)
-      })
+        .then((response) => {
+          affair.value = response.data
+          affairStore.registerAffair(response.data)
+          if (response.data.lots) {
+            lots.value = response.data.lots
+            affairStore.registerLotOnAffair(response.data.lots)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    } else {
+      affair.value = res.data
+      affairStore.registerAffair(res.data)
+    }
   })
 
   Axios.get('pvs/affairId', {
