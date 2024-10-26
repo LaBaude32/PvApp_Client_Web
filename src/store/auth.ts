@@ -49,7 +49,9 @@ export const useAuthStore = defineStore(
       })
     }
     function authError() {
+      authLogout()
       userStore.errorId()
+      userStore.logout()
     }
 
     function setAxios() {
