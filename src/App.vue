@@ -144,13 +144,15 @@ onMounted(() => {
       return response
     },
     function (error) {
-      if ([401, 403].includes(error.status)) {
+      if (error.code == 'ERR_NETWORK') {
+        notifStore.error('Serveur injoignable')
+      } else if (error.status == 500) {
+        notifStore.error('Erreur de traitement au niveau du serveur')
+      } else if ([401, 403].includes(error.status)) {
         authStore.authError()
-        userStore.logout()
         notifStore.error("Erreur d'authentification : " + error.message)
-        router.push('Login')
       } else {
-        notifStore.error('Erreur réseau : ' + error.message)
+        notifStore.error(error.message)
       }
       return Promise.reject(error)
     }
