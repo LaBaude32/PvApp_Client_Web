@@ -2,9 +2,9 @@
   <v-card>
     <v-card-title>Modifier la progression des lots de l'affaire</v-card-title>
     <v-card-text>
-      <v-row align="center" v-for="lot in lots">
+      <v-row align="center" v-for="lot in lots" class="mb-5 bg-blue-grey-lighten-5 rounded px-5">
         <v-col>
-          <v-chip>{{ lot.name }}</v-chip>
+          <v-chip color="orange-darken-3" size="x-large">{{ lot.name }}</v-chip>
         </v-col>
         <v-col>
           <v-progress-circular
@@ -17,15 +17,23 @@
           </v-progress-circular>
         </v-col>
         <v-col cols="8">
-          <v-slider
-            v-model="lot.progress"
-            color="orange"
-            thumb-label
-            step="5"
-            show-ticks="always"
-            tick-size="2"
-            class="mt-10"
-          />
+          <v-row>
+            <v-slider
+              v-model="lot.progress"
+              color="orange"
+              thumb-label
+              step="5"
+              show-ticks="always"
+              tick-size="2"
+              class="mt-10"
+            />
+          </v-row>
+          <v-row
+            ><v-text-field
+              clearable
+              v-model="lot.alreadyDone"
+              label="Accompli depuis la dernière réunion"
+          /></v-row>
         </v-col>
       </v-row>
     </v-card-text>
