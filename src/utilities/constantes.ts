@@ -57,9 +57,9 @@ const routesCONST = {
   }
 }
 
-export const FormAddressRules = [
+export const FormRequiredRulesMin3 = [
   (v: string) => !!v || 'Requis',
-  (v: string) => (v && v.length >= 10) || 'Doit être supérieur à 10 caractères'
+  (v: string) => (v && v.length >= 3) || 'Doit être supérieur à 3 caractères'
 ]
 export const FormNameRules = [
   (v: string) => !!v || 'Requis',

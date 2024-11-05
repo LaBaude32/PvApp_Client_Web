@@ -32,3 +32,10 @@ export interface Affair {
   progress: number
   lots?: Lot[]
 }
+
+export interface Agenda {
+  agendaId: number
+  position: number
+  title: string
+  pvId: number
+}

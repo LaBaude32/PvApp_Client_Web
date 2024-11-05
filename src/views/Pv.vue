@@ -3,9 +3,11 @@
     <ModalValidation v-model:dialog="ModalValidationDialog" :validate="pvValidation" />
     <v-container class="pt-0">
       <v-row>
-        <v-col cols="12" class="d-flex justify-space-between">
+        <v-col class="d-flex justify-center align-center">
           <v-btn @click="returnToAffair">Revenir à l'affaire</v-btn>
-          <div>
+        </v-col>
+        <v-col class="d-flex">
+          <v-col class="d-flex flex-column ga-2" align-self="center">
             <v-btn
               v-if="pvDetails.affairMeetingType == 'Chantier'"
               color="success"
@@ -14,6 +16,12 @@
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
               Editer l'avancement du Pv
             </v-btn>
+            <v-btn color="success" @click.prevent="modifyAgenda">
+              <v-icon icon="mdi-calendar-edit " class="mr-2" />
+              Editer l'ordre du jour
+            </v-btn>
+          </v-col>
+          <v-col class="d-flex flex-column ga-2">
             <v-btn class="ml-5" color="warning" @click.prevent="downloadPDF">
               <v-icon icon="mdi-file-download" class="mr-2" />
               un PDF provisoire
@@ -22,7 +30,7 @@
               <v-icon icon="mdi-check-all" class="mr-2" />
               Finaliser et diffuser le PV
             </v-btn>
-          </div>
+          </v-col>
         </v-col>
       </v-row>
     </v-container>
@@ -65,6 +73,13 @@
         @close-progress-dialog="progressDialog = false"
       />
     </v-dialog>
+    <v-dialog v-model="agendaDialog" persistent max-width="80%">
+      <ModifyAgenda
+        v-model:agendas="agendas"
+        :pv-id="pvId"
+        @close-agenda-dialog="agendaDialog = false"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -74,6 +89,7 @@ import Items from '@/components/Items.vue'
 import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
 import ModifyProgress from '@/components/ModifyProgress.vue'
+import ModifyAgenda from '@/components/ModifyAgenda.vue'
 import Axios from 'axios'
 import { getRouteName } from '@/utilities/constantes.ts'
 import { useRoute, useRouter } from 'vue-router'
@@ -93,6 +109,7 @@ const date = useDate()
 const pvId = ref(Number)
 const dialog = ref(false)
 const progressDialog = ref(false)
+const agendaDialog = ref(false)
 const ModalValidationDialog = ref(false)
 const initialLots = ref([])
 const meetingType = ref(null)
@@ -130,6 +147,7 @@ const editedItem = ref({
   visible: '',
   isImageChange: false
 })
+const agendas = ref([])
 const defaultItem = ref(DEFAULT_ITEM)
 
 const userId = computed(() => {
@@ -142,7 +160,7 @@ onMounted(() => {
 })
 
 async function getData() {
-  pvId.value = route.params.id
+  pvId.value = Number(route.params.id)
   let dt = {
     params: {
       pvId: pvId.value,
@@ -160,6 +178,7 @@ async function getData() {
   pvDetails.value = res.data.pv
   pvUsers.value = res.data.participants
   pvConnectedParticipants.value = res.data.connectedParticipants
+  agendas.value = res.data.pv.agendas
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })
@@ -358,5 +377,9 @@ function modifyProgress() {
   // }
   initialLots.value = JSON.parse(JSON.stringify(pvDetails.value.lots))
   progressDialog.value = true
+}
+
+function modifyAgenda() {
+  agendaDialog.value = true
 }
 </script>
