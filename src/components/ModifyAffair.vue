@@ -18,7 +18,7 @@
                 v-model="affairDatas.address"
                 counter
                 label="Adresse de l'affaire"
-                :rules="FormAddressRules"
+                :rules="FormRequiredRulesMin3"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  FormAddressRules,
+  FormRequiredRulesMin3,
   FormNameRules,
   FormDescriptionRules,
   FormMeetingRules

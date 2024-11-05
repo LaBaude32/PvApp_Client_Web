@@ -54,7 +54,7 @@
               v-model="pvData.meetingPlace"
               counter
               label="Lieu de la réunion"
-              :rules="FormAddressRules"
+              :rules="FormRequiredRulesMin3"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
@@ -134,7 +134,7 @@ import { useDate } from 'vuetify'
 import { useRoute, useRouter } from 'vue-router'
 import Axios from 'axios'
 
-import routesCONST, { FormAddressRules, FormAffairRules } from '@/utilities/constantes.ts'
+import routesCONST, { FormRequiredRulesMin3, FormAffairRules } from '@/utilities/constantes.ts'
 import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useUserStore } from '../store/user'
 

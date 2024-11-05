@@ -22,7 +22,7 @@
             ></v-text-field>
             <v-dialog v-model="MyDialog" max-width="80%">
               <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" color="primary" dark class="mb-2">Nouvel item</v-btn>
+                <v-btn v-bind="props" color="warning" dark class="mb-2">Nouvel item</v-btn>
               </template>
               <v-card>
                 <v-form>

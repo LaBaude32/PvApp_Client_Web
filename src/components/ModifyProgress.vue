@@ -38,9 +38,9 @@
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="blue darken-1" variant="text" @click="cancel">Annuler</v-btn>
+      <v-btn color="error" variant="text" @click="cancel">Annuler</v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" variant="text" @click="save">Enregistrer</v-btn>
+      <v-btn color="success" variant="text" @click="save">Enregistrer</v-btn>
     </v-card-actions>
   </v-card>
 </template>
