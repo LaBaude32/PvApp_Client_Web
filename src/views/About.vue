@@ -6,7 +6,7 @@
         Version : {{ appVersion }}
       </v-chip>
     </div>
-    <!-- <v-card
+    <v-card
       prepend-icon="mdi-heart"
       title="Nouveautés"
       color="blue-darken-2"
@@ -15,12 +15,12 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li><b>Mise en place du répertoire des participants avec lesquel vous avez déjà travailé</b></li>
-          <li><b>Débloquage des Pv déjà diffusé dans les paramètres</b></li>
+          <li><b>Ajout des ordre du jours</b></li>
+          <li><b>Ajout des avancements par lots</b></li>
         </ul>
       </v-card-text>
-    </v-card> -->
-    <v-card
+    </v-card>
+    <!-- <v-card
       prepend-icon="mdi-rocket-launch"
       title="Améliorations"
       color="blue-darken-2"
@@ -33,7 +33,7 @@
           <li>Amélioration de la mise en page de PDF</li>
         </ul>
       </v-card-text>
-    </v-card>
+    </v-card> -->
     <v-card
       prepend-icon="mdi-wrench"
       title="Corrections"
@@ -43,7 +43,7 @@
     >
       <v-card-text class="ml-5">
         <ul>
-          <li>Corrections de bugs sur les dates dans les items (pdf et app)</li>
+          <li>Corrections de bugs sur l'agenda dans les items</li>
         </ul>
       </v-card-text>
     </v-card>
