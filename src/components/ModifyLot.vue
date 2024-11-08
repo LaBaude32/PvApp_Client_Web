@@ -27,7 +27,7 @@
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-actions v-if="numberLots !== 0">
+      <v-card-actions>
         <v-btn @click="addLot" color="primary">Ajouter un lot</v-btn>
         <v-spacer />
         <v-btn v-if="isCancelable" color="error" @click.prevent="cancel">Annuler</v-btn>
