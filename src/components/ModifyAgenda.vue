@@ -2,8 +2,8 @@
   <v-card>
     <v-card-title>Modifier l'ordre du jour de la réunion</v-card-title>
     <v-card-text>
-      <VueDraggable v-model="agendas">
-        <v-form v-model="valid">
+      <v-form v-model="valid">
+        <VueDraggable v-model="agendas">
           <v-text-field
             v-for="(agenda, index) in agendas"
             :key="agenda.position"
@@ -25,8 +25,8 @@
               ></v-btn>
             </template>
           </v-text-field>
-        </v-form>
-      </VueDraggable>
+        </VueDraggable>
+      </v-form>
       <div class="d-flex mt-5">
         <v-btn icon="mdi-plus" color="blue-lighten-5" class="mx-auto" @click="addAgenda"></v-btn>
       </div>
