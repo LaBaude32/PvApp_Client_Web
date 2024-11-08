@@ -244,9 +244,7 @@ const notifStore = useNotificationStore()
 const route = useRoute()
 
 const users = defineModel('users', { type: Array, required: true })
-// defineProps({
-//   allConnectedParticipants: Array
-// })
+//On utilise un model parce qu'on retire les éléments quand ils sont ajouté dans les users
 const allConnectedParticipants = defineModel('allConnectedParticipants', {
   type: Array,
   required: true
