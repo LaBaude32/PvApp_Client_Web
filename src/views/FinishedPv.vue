@@ -1,12 +1,19 @@
 <template>
   <div class="mb-10">
     <v-container>
+      <v-row class="text-center">
+        <v-col>
+          <h2 class="text-red">
+            La mise en page de cette vue n'est pas à jour. <br />Il est préférable de télécharger le
+            PDF
+          </h2>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container>
       <v-row>
-        <v-col v-if="!isPrinted" cols="12" class="d-flex">
-          <v-spacer />
-          <v-btn class="mr-16" color="success" x-large @click.prevent="downloadPdf"
-            >Telecharger</v-btn
-          >
+        <v-col cols="12" class="text-center">
+          <v-btn color="success" x-large @click.prevent="downloadPdf">Telecharger le PDF</v-btn>
         </v-col>
         <v-col cols="12" class="text-center">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -89,7 +96,6 @@ Settings.defaultLocale = 'fr'
 const route = useRoute()
 
 const itemHeaders = ref(ITEM_HEADERS)
-const isPrinted = ref(false)
 const affairInfos = ref({})
 const items = ref([])
 const pvDetails = ref({})
@@ -127,7 +133,7 @@ async function getPvData() {
     itemHeaders.value.splice(1, 0, { text: 'Lot', value: 'lots' })
     itemHeaders.value.push({ text: 'Photo', value: 'image', sortable: false })
   }
-  affairInfos.value = res.data.affair.affairInfos
+  affairInfos.value = res.data.affair
 
   pvUsers.value.forEach((element) => {
     if (element.userGroup == "Maîtrise d'oeuvre") {

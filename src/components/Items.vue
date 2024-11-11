@@ -44,7 +44,7 @@
                         </v-col>
                         <v-col cols="12" sm="4" md="4" v-if="meetingType == 'Chantier'">
                           <v-select
-                            v-if="pvDetails.affairMeetingType == 'Chantier'"
+                            v-if="pvDetails.affairMeetingType == 'Chantier' && pvDetails.lots"
                             v-model="editedItem.lotsToReturn"
                             :items="pvDetails.lots"
                             item-title="name"

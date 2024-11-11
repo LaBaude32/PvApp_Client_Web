@@ -9,7 +9,7 @@
         <v-col class="d-flex">
           <v-col class="d-flex flex-column ga-2" align-self="center">
             <v-btn
-              v-if="pvDetails.affairMeetingType == 'Chantier'"
+              v-if="pvDetails.affairMeetingType == 'Chantier' && pvDetails.lots"
               color="success"
               @click.prevent="modifyProgress"
             >
