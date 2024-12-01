@@ -105,8 +105,8 @@ const owner = ref({})
 const maitresDOeuvre = ref('')
 const maitreDOuvrage = ref('')
 
-const releaseDate = computed(() => {
-  return DateTime.fromSQL(pvDetails.value.releaseDate).toISODate()
+const meetingDate = computed(() => {
+  return DateTime.fromSQL(pvDetails.value.meetingDate).toISODate()
 })
 
 onMounted(() => {
@@ -162,7 +162,7 @@ async function downloadPdf() {
     }
   })
 
-  const fileName = `${releaseDate.value}_Affaire-${affairInfos.value.name}_Pv-n${pvDetails.value.pvNumber}`
+  const fileName = `${meetingDate.value}_Affaire ${affairInfos.value.name}_Pv-n${pvDetails.value.pvNumber}`
   const url = window.URL.createObjectURL(new Blob([res.data]))
   const link = document.createElement('a')
   link.href = url

@@ -98,6 +98,8 @@ import { useNotificationStore } from '@/store/notification'
 import { useAffairStore } from '@/store/affair'
 import { useUserStore } from '@/store/user'
 import { useDate } from 'vuetify'
+import { DateTime, Settings } from 'luxon'
+Settings.defaultLocale = 'fr'
 
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
@@ -362,7 +364,8 @@ async function downloadPDF() {
       pvId: pvDetails.value.pvId
     }
   })
-  const fileName = `Affaire-${pvDetails.value.affairName}_Pv-n${pvDetails.value.pvNumber}`
+  const meetingDate = DateTime.fromSQL(pvDetails.value.meetingDate).toISODate()
+  const fileName = `${meetingDate}_Affaire ${pvDetails.value.affairName}_Pv-n${pvDetails.value.pvNumber}`
   const url = window.URL.createObjectURL(new Blob([res.data]))
   const link = document.createElement('a')
   link.href = url

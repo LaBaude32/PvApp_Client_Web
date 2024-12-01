@@ -346,8 +346,8 @@ async function downloadPvPdf(pv) {
       pvId: pv.pvId
     }
   })
-  const releaseDate = DateTime.fromSQL(pv.releaseDate).toISODate()
-  const fileName = `${releaseDate}_Affaire-${affair.value.name}_Pv-n${pv.pvNumber}`
+  const meetingDate = DateTime.fromSQL(pv.meetingDate).toISODate()
+  const fileName = `${meetingDate}_Affaire ${affair.value.name}_Pv-n${pv.pvNumber}`
 
   const url = window.URL.createObjectURL(new Blob([res.data]))
   const link = document.createElement('a')
