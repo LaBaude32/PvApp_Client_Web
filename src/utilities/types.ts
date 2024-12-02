@@ -28,8 +28,9 @@ export interface Affair {
   affairId: number
   name: string
   meetingType: 'Chantier' | 'Etude'
-  adresse: string
+  address: string
   progress: number
+  description: string
   lots?: Lot[]
 }
 

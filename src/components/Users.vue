@@ -366,11 +366,11 @@ function closeNewOrModifiedUser() {
 
 function saveNewOrModifiedUser() {
   let data = { ...editedItem.value }
-  data.pvId = pvId.value
+  data.pvId = Number(pvId.value)
   data.userGroup = data.userGroupToReturn
   if (editedIndex.value > -1) {
     //Exisiting User
-    Axios.put('participants/userId', data)
+    Axios.put('/participants/userId/updateStatus', data)
       .then((response) => {
         if (response.status == 200) {
           Object.assign(users.value[editedIndex.value], editedItem.value)
@@ -383,6 +383,7 @@ function saveNewOrModifiedUser() {
   } else {
     //New User
     data.password = affairName.value
+    //FIXME: Problème ici parce qu'on créé un user mais pas un participant -> donc on sauvegarde pas les status
     Axios.post('users', data)
       .then((response) => {
         if (response.status == 201) {

@@ -15,7 +15,7 @@ export const useAffairStore = defineStore('affair', () => {
       }
     })
       .then((response) => {
-        affair.value = response.data.affairInfos
+        affair.value = response.data
       })
       .catch((error) => {
         notifStore.error('Erreur sur la récueration des données : ' + error.response)
