@@ -364,37 +364,56 @@ function closeNewOrModifiedUser() {
   }, 300)
 }
 
+function registerUser(user) {
+  return new Promise((resolve, reject) => {
+    Axios.post('users', user)
+      .then((response) => {
+        if (response.status == 201) {
+          user.userId = response.data.userId
+          users.value.push(user)
+          resolve(user)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        reject(error)
+      })
+  })
+}
+
+function saveParticipant(participant) {
+  Axios.put('/participants/userId/updateStatus', participant)
+    .then((response) => {
+      if (response.status == 200) {
+        Object.assign(users.value[editedIndex.value], response.data)
+        notifStore.success('Le participant à bien été ajouté')
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
 function saveNewOrModifiedUser() {
   let data = { ...editedItem.value }
   data.pvId = Number(pvId.value)
   data.userGroup = data.userGroupToReturn
   if (editedIndex.value > -1) {
-    //Exisiting User
-    Axios.put('/participants/userId/updateStatus', data)
-      .then((response) => {
-        if (response.status == 200) {
-          Object.assign(users.value[editedIndex.value], editedItem.value)
-          notifStore.success('Le participant à bien été mis à jour')
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    saveParticipant(data)
   } else {
-    //New User
+    //l'utilisateur n'existe pas, il faut le creer
     data.password = affairName.value
-    //FIXME: Problème ici parce qu'on créé un user mais pas un participant -> donc on sauvegarde pas les status
-    Axios.post('users', data)
-      .then((response) => {
-        if (response.status == 201) {
-          data.userId = response.data.userId
-          users.value.push(data)
-          notifStore.success('Le participant à bien été ajouté')
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    registerUser(data).then((newUser) => {
+      newUser.statusPAE = data.statusPAE
+      data.invitedCurrentMeeting
+        ? (newUser.invitedCurrentMeeting = data.invitedCurrentMeeting)
+        : (newUser.invitedCurrentMeeting = null)
+      data.invitedNextMeeting
+        ? (newUser.invitedNextMeeting = data.invitedNextMeeting)
+        : (newUser.invitedNextMeeting = null)
+      data.distribution ? (newUser.distribution = data.distribution) : (newUser.distribution = null)
+      saveParticipant(newUser)
+    })
   }
   closeNewOrModifiedUser()
 }
