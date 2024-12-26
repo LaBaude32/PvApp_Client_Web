@@ -118,7 +118,7 @@ const router = useRouter()
 
 const valid = ref(false)
 const showPassword = ref(false)
-const user = ref<User>()
+const user = ref<User>({ firstName: '', lastName: '', email: '', password: '', phone: '' })
 
 function validate() {
   user.value!.password = md5(user.value!.password)
