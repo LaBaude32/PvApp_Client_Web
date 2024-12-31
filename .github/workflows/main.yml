@@ -1,7 +1,7 @@
 name: buider et publier une version static sur Hostinger
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ 'master' ]
 
 jobs: 
   build:
