@@ -1,32 +1,18 @@
 <template>
-  <div v-if="affair" class="mb-10">
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <ModifyProgress
-        v-if="progressDialog"
-        :progressValue.sync="affair.progress"
-        :dialog.sync="progressDialog"
-        :modifyProgressSave="modifyProgressSave"
-      />
+  <div v-if="affair" class="mb-10 text-center">
+    <v-dialog v-model="dialog" persistent max-width="80%">
       <ModifyAffair
         v-if="affairDialog"
-        :dialog.sync="affairDialog"
-        :affairDatas.sync="affair"
+        v-model:affairDatas="affair"
         :validate="ModifyAffairSave"
-        :enableVider="enableVider"
+        @close-dialog="cancelAffairDialog"
       />
       <ModifyPv
+        v-model:isNewPv="isNewPv"
+        v-model:pvData="pvData"
         v-if="pvModifyDialog"
-        :data.sync="pvData"
-        :meetingDate="computedDateFormattedMeetingDate"
-        :meetingNextDate="computedDateFormattedMeetingNextDate"
-        :meetingDateDate.sync="meetingDateDate"
-        :meetingDateTime.sync="meetingDateTime"
-        :meetingNextDateDate.sync="meetingNextDateDate"
-        :meetingNextDateTime.sync="meetingNextDateTime"
-        :affairs="affairsForPv"
-        :modifyingType="pvModifyingType"
-        :validate="pvModifySave"
-        :cancel="cancelPvModify"
+        :affairId="affair.affairId"
+        @close-dialog="closePvDialog"
       />
       <ModifyLot
         v-if="lotModifyDialog"
@@ -39,48 +25,59 @@
         :cancel="ModifyLotCancel"
       />
     </v-dialog>
-    <v-container>
-      <v-row>
-        <v-col class="d-flex mx-16">
-          <v-btn @click.prevent="goToDashboard"> Revenir au bashboard </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
       <p>Phase : {{ affair.meetingType }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
-      <p>Progression :</p>
-      <div class="text-center">
-        <v-progress-circular :value="affair.progress" color="deep-orange lighten-2" size="80" width="8">{{ affair.progress }} %</v-progress-circular>
-      </div>
-      <v-row class="d-flex align-end">
-        <v-col cols="8" v-if="affair.meetingType == 'Chantier'">
-          <h3 class="mt-5">Lots :</h3>
-          <div v-if="lots">
-            <v-chip v-for="lot in lots" v-bind:key="lot.id" dense class="mx-5 mt-5" color="primary">{{ lot.name }}</v-chip>
-          </div>
-          <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
-          <!-- TODO:ajouter un bouton pour ajouter des lots ici -->
+      <!-- FIXME:ici il faudra récuperer la progression du Pv -->
+      <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
+        <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
+          <v-row justify="center">
+            <v-chip dense class="mx-5 mt-5" color="primary">
+              {{ lot.name }}
+            </v-chip>
+          </v-row>
+          <v-row v-if="lot.progress != null" justify="center" class="mt-5">
+            <v-progress-circular
+              :model-value="lot.progress"
+              color="deep-orange lighten-2"
+              size="50"
+              width="5"
+            >
+              {{ lot.progress }} %
+            </v-progress-circular></v-row
+          >
         </v-col>
+        <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
       </v-row>
     </v-container>
 
     <v-card max-width="80%" class="mx-auto">
-      <v-card-title>
+      <v-card-title class="d-flex align-center pe-2">
         Les procès verbaux :
         <v-spacer></v-spacer>
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche" single-line hide-details></v-text-field>
-        <v-spacer></v-spacer>
-        <v-btn dark color="primary" @click.prevent="createPv">Ajouter un pv</v-btn>
+        <v-text-field
+          v-model="search"
+          density="compact"
+          prepend-inner-icon="mdi-magnify"
+          label="Recherche"
+          single-line
+          hide-details
+        ></v-text-field>
+        <v-btn dark color="primary" class="ml-5" @click.prevent="createPv">Ajouter un pv</v-btn>
       </v-card-title>
-      <v-data-table :headers="headers" :items="pvs" :search="search" sort-by="pvNumber" sort-desc>
+      <v-data-table
+        :headers="headers"
+        :items="pvs"
+        :search="search"
+        :sort-by="[{ key: 'pvNumber', order: 'desc' }]"
+      >
         <template v-slot:item.meetingDate="{ item }">
-          <div>{{ item.meetingDate | formatDateWithA }}</div>
+          <div>{{ $filters.formatDateWithA(item.meetingDate) }}</div>
         </template>
         <template v-slot:item.meetingNextDate="{ item }">
-          <div>{{ item.meetingNextDate | formatDateWithA }}</div>
+          <div>{{ $filters.formatDateWithA(item.meetingNextDate) }}</div>
         </template>
         <template v-slot:item.state="{ item }">
           <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
@@ -91,379 +88,292 @@
           </v-chip>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn small @click="openPv(item)" :color="item.state == 'Terminé' ? 'primary' : 'warning'"
-            ><v-icon class="ma-2">{{ item.state == "Terminé" ? "mdi-eye" : "mdi-file-edit" }}</v-icon>
+          <v-btn v-if="item.state == 'Terminé'" @click="openFinishedPv(item)" small color="primary">
+            <v-icon class="ma-2">{{ 'mdi-eye' }}</v-icon>
           </v-btn>
-          <v-btn small class="ma-2" @click="modifyPv(item)" :color="item.state == 'Terminé' ? 'success' : 'error'">
-            <v-icon dark class="ma-2">{{ item.state == "Terminé" ? "mdi-file-download" : "mdi-information" }}</v-icon>
+          <v-btn v-else @click="openInProgressPv(item)" small color="warning">
+            <v-icon class="ma-2">{{ 'mdi-file-edit' }}</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="item.state == 'Terminé'"
+            @click="downloadPvPdf(item)"
+            color="success"
+            small
+            class="ma-2"
+          >
+            <v-icon dark class="ma-2">{{ 'mdi-file-download' }}</v-icon>
+          </v-btn>
+          <v-btn v-else @click="modifyPv(item)" color="error" small class="ma-2">
+            <v-icon dark class="ma-2">{{ 'mdi-information' }}</v-icon>
           </v-btn>
         </template>
       </v-data-table>
     </v-card>
     <v-card max-width="80%" class="mx-auto mt-10">
-      <v-app-bar dark color="primary">
-        <v-toolbar-title>Modifications</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-app-bar>
       <v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="error" @click.prevent="modifyProgress">Modifier la progression</v-btn>
-          <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">Modifier les lots</v-btn>
-          <v-btn dark color="error" @click.prevent="modifyAffair">Modifier l'affaire</v-btn>
+          <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">
+            Modifier les lots
+          </v-btn>
+          <v-btn dark color="error" @click.prevent="(affairDialog = true), (dialog = true)"
+            >Modifier l'affaire</v-btn
+          >
         </v-card-actions>
       </v-container>
     </v-card>
   </div>
 </template>
 
-<script>
-import Axios from "axios";
-import routesCONST, { getRouteName } from "../utilities/constantes";
-import ModifyProgress from "@/components/ModifyProgress.vue";
-import ModifyAffair from "@/components/ModifyAffair.vue";
-import ModifyPv from "@/components/ModifyPv.vue";
-import ModifyLot from "@/components/ModifyLot.vue";
-import { mapGetters } from "vuex";
-import { DateTime, Settings } from "luxon";
-Settings.defaultLocale = "fr";
+<script setup>
+import Axios from 'axios'
+import routesCONST, { getRouteName } from '../utilities/constantes.ts'
+import ModifyAffair from '@/components/ModifyAffair.vue'
+import ModifyPv from '@/components/ModifyPv.vue'
+import ModifyLot from '@/components/ModifyLot.vue'
+import { DateTime, Settings } from 'luxon'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+Settings.defaultLocale = 'fr'
+import { PV_DATA } from '@/utilities/dataConst.ts'
+import { useNotificationStore } from '../store/notification'
+import { useAffairStore } from '../store/affair'
+import { useUserStore } from '../store/user'
 
-export default {
-  components: {
-    ModifyProgress,
-    ModifyAffair,
-    ModifyPv,
-    ModifyLot
+const userStore = useUserStore()
+const notifStore = useNotificationStore()
+const affairStore = useAffairStore()
+const router = useRouter()
+const route = useRoute()
+
+const affairDialog = ref(false)
+const pvModifyDialog = ref(false)
+const lotModifyDialog = ref(false)
+const lotModifyCancelable = ref(false)
+const pvData = ref({})
+const dialog = ref(false)
+const affair = ref({})
+const lots = ref([])
+const numberLots = ref(Number)
+const oldLots = ref([])
+const oldNumberLots = ref(Number)
+const search = ref('')
+const pvs = ref([])
+const isNewPv = ref(true)
+const headers = [
+  { title: 'Numéro', align: 'center', value: 'pvNumber' },
+  {
+    title: 'Date',
+    align: 'center',
+    value: 'meetingDate',
+    sortable: false
   },
-  data() {
-    return {
-      progressDialog: false,
-      affairDialog: false,
-      pvModifyDialog: false,
-      lotModifyDialog: false,
-      pvModifyingType: true,
-      lotModifyCancelable: false,
-      pvData: {},
-      dialog: false,
-      dialogType: "",
-      enableVider: false,
-      affair: {},
-      affairsForPv: [],
-      lots: [],
-      numberLots: Number,
-      oldLots: [],
-      oldNumberLots: Number,
-      search: "",
-      pvs: [],
-      headers: [
-        { text: "Numéro", align: "center", value: "pvNumber" },
-        {
-          text: "Date",
-          align: "start",
-          value: "meetingDate",
-          sortable: false
-        },
-        { text: "Etat", align: "center", value: "state", sortable: true },
-        { text: "Lieu", value: "meetingPlace", sortable: false },
-        { text: "Prochaine date", value: "meetingNextDate", sortable: false },
-        { text: "Prochain lieu", value: "meetingNextPlace", sortable: false },
-        { text: "Action", value: "actions", align: "center", sortable: false }
-      ]
-    };
-  },
-  computed: {
-    ...mapGetters("user", {
-      userId: "userId"
-    }),
-    computedDateFormattedMeetingDate() {
-      return this.meetingDateDate ? DateTime.fromSQL(this.meetingDateDate).toFormat("DDDD") : "";
-    },
-    computedDateFormattedMeetingNextDate() {
-      return this.meetingNextDateDate ? DateTime.fromSQL(this.meetingNextDateDate).toFormat("DDDD") : "";
-    },
-    meetingDateDate: {
-      get() {
-        return this.pvData.meetingDate.substr(0, 10);
-      },
-      set(val) {
-        this.pvData.meetingDate = val + " " + this.pvData.meetingDateTime;
-        this.pvData.meetingDateDate = val;
-      }
-    },
-    meetingDateTime: {
-      get() {
-        return this.pvData.meetingDate.substr(11, 5);
-      },
-      set(val) {
-        this.pvData.meetingDate = this.pvData.meetingDateDate + " " + val;
-        this.pvData.meetingDateTime = val;
-      }
-    },
-    meetingNextDateDate: {
-      get() {
-        return this.pvData.meetingNextDate.substr(0, 10);
-      },
-      set(val) {
-        this.pvData.meetingNextDateTime
-          ? (this.pvData.meetingNextDate = val + " " + this.pvData.meetingNextDateTime)
-          : (this.pvData.meetingNextDate = val);
-        this.pvData.meetingNextDateDate = val;
-      }
-    },
-    meetingNextDateTime: {
-      get() {
-        return this.pvData.meetingNextDate.substr(11, 5);
-      },
-      set(val) {
-        this.pvData.meetingNextDate = this.pvData.meetingNextDateDate + " " + val;
-        this.pvData.meetingNextDateTime = val;
-      }
+  { title: 'Etat', align: 'center', value: 'state', sortable: true },
+  { title: 'Lieu', align: 'center', value: 'meetingPlace', sortable: false },
+  { title: 'Prochaine date', align: 'center', value: 'meetingNextDate', sortable: false },
+  { title: 'Prochain lieu', align: 'center', value: 'meetingNextPlace', sortable: false },
+  { title: 'Action', value: 'actions', align: 'center', sortable: false }
+]
+const userId = computed(() => {
+  return userStore.user.userId
+})
+
+onMounted(() => {
+  const affairId = route.params.id
+
+  Axios.get('affairs/affairId', {
+    params: {
+      affairId: affairId
     }
-  },
-  mounted() {
-    let affairId = this.$route.params.id;
-    Axios.get("affairs/affairId", {
-      params: {
-        affairId: affairId
-      }
-    })
-      .then((response) => {
-        this.affair = response.data.affairInfos;
-        this.lots = response.data.lots;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    Axios.get("pvs/affairId", {
-      params: {
-        affairId: affairId
-      }
-    })
-      .then((response) => {
-        this.pvs = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
-  methods: {
-    goToDashboard() {
-      this.$router.push({ name: getRouteName("board") });
-    },
-    openPv(pv) {
-      let pvId = pv.pvId;
-      if (pv.state == "En cours") {
-        this.$router.push({
-          name: routesCONST.pv.name,
-          params: { id: pvId }
-        });
-      } else {
-        this.$router.push({ name: getRouteName("finishedPv"), params: { id: pvId } });
-      }
-    },
-    modifyLot() {
-      if (this.lots == undefined) {
-        this.lots = [];
-        this.lots.push({ name: "", lotId: undefined, affairId: undefined });
-        this.lotModifyCancelable = true;
-      }
-      this.lots.forEach((element) => {
-        this.oldLots.push({ ...element });
-      });
-      this.oldNumberLots = parseInt(this.lots.length);
-      this.numberLots = this.lots.length;
-      this.dialog = true;
-      this.lotModifyDialog = true;
-    },
-    modifyLotSave() {
-      this.lots.forEach((element) => {
-        if (element.lotId == undefined) {
-          let dataToSend = {
-            affairId: this.$route.params.id,
-            name: element.name
-          };
-          Axios.post("lots", dataToSend).then((response) => {
-            element.lotId = response.data.lotId;
-          });
-        } else {
-          this.oldLots.forEach((oldEl) => {
-            if (element.lotId == oldEl.lotId && element.name != oldEl.name) {
-              let dataToSend = {
-                name: element.name,
-                lotId: element.lotId
-              };
-              Axios.put("lots", dataToSend)
-                .then((response) => {
-                  console.log(response);
-
-                  if (response.data.affairId != "") {
-                    this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            }
-          });
-        }
-      });
-      this.lotModifyCancelable = false;
-      this.dialog = false;
-      this.lotModifyDialog = false;
-    },
-    modifyLotsAdd() {
-      this.numberLots++;
-      this.lots.push({ name: "", lotId: undefined, affairId: undefined });
-    },
-    ModifyLotDelete(lot, index) {
-      Axios.delete("deleteLot", { params: { lotId: lot.lotId } })
-        .then((response) => {
-          if (response.data == "success") {
-            this.numberLots--;
-            this.lots.splice(index, 1);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    ModifyLotCancel() {
-      this.lotModifyCancelable = false;
-      this.dialog = false;
-      this.lotModifyDialog = false;
-      this.lots.forEach((element) => {
-        if (element.name == "") {
-          this.lots = undefined;
-        }
-      });
-    },
-    modifyProgress() {
-      this.dialog = true;
-      this.progressDialog = true;
-    },
-    modifyProgressSave() {
-      let data = {
-        ...this.affair
-      };
-      Axios.put("affairs/affairId", data)
-        .then((response) => {
-          if (response.status == 200) {
-            this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.progressDialog = false;
-      this.dialog = false;
-    },
-    modifyAffair() {
-      this.dialog = true;
-      this.affairDialog = true;
-    },
-    ModifyAffairSave() {
-      Axios.put("affairs/affairId", this.affair)
-        .then((response) => {
-          if (response.status == 200) {
-            this.$store.dispatch("notification/success", "La progession de l'affaire à correctement été mise à jour");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.dialog = false;
-      this.affairDialog = false;
-    },
-    modifyPv(pvDatas) {
-      if (pvDatas.state == "Terminé") {
-        this.downloadPvPdf(pvDatas);
-      } else {
-        this.pvModifyingType = true;
-        this.affairsForPv = [{ ...this.affair }];
-        this.pvData = pvDatas;
-
-        this.pvData.meetingDateDate = this.pvData.meetingDate.substr(0, 10);
-        this.pvData.meetingDateTime = this.pvData.meetingDate.substr(11, 5);
-        this.pvData.meetingNextDateDate = this.pvData.meetingNextDate.substr(0, 10);
-        this.pvData.meetingNextDateTime = this.pvData.meetingNextDate.substr(11, 5);
-
-        this.dialog = true;
-        this.pvModifyDialog = true;
-      }
-    },
-    async downloadPvPdf(pv) {
-      const res = await Axios({
-        responseType: "blob",
-        url: "pvs/pvId/released/pdf",
+  }).then((res) => {
+    //FIXME:ne fonctionne pas parce qu'on ne récupère pas les lots dans le call précédent donc ils sont toujours à null et la deuxième condition n'est jamais vraie
+    if (res.data.meetingType == 'Chantier') {
+      Axios.get('affairs/full/affairId', {
         params: {
-          pvId: pv.pvId
+          affairId: affairId
         }
-      });
-
-      const fileName = `${pv.releaseDate}_Affaire-${this.affair.name}_Pv-n${pv.pvNumber}`;
-
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${fileName}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    },
-    createPv() {
-      this.pvModifyingType = false;
-      this.affairsForPv = [{ ...this.affair }];
-      this.pvData = {
-        meetingDateDate: new Date().toISOString().substr(0, 10),
-        meetingDateTime: DateTime.now().toFormat("T").substr(0, 2) + ":00",
-        meetingNextDateDate: undefined,
-        meetingNextDateTime: undefined,
-        meetingDate: DateTime.now().toFormat("yyyy-LL-dd HH:mm"),
-        meetingNextDate: "",
-        state: "En cours",
-        meetingPlace: "",
-        meetingNextPlace: "",
-        affairId: this.$route.params.id
-      };
-      this.dialog = true;
-      this.pvModifyDialog = true;
-    },
-    cancelPvModify() {
-      this.dialog = false;
-      this.pvModifyDialog = false;
-    },
-    pvModifySave() {
-      let data = {
-        pvId: this.pvData.pvId,
-        meetingDate: this.pvData.meetingDateDate + " " + this.pvData.meetingDateTime + ":00",
-        meetingPlace: this.pvData.meetingPlace,
-        meetingNextPlace: this.pvData.meetingNextPlace,
-        state: this.pvData.state,
-        affairId: this.$route.params.id,
-        userId: this.userId
-      };
-      if (this.pvData.meetingNextDate != "") {
-        data = { meetingNextDate: this.pvData.meetingNextDate + ":00", ...data };
-      }
-      let apiRoute;
-      let apiMethode;
-      this.pvModifyingType ? ((apiRoute = "pvs/pvId"), (apiMethode = "put")) : ((apiRoute = "/pvs"), (apiMethode = "post"));
-      Axios({ method: apiMethode, url: apiRoute, data: data })
+      })
         .then((response) => {
-          if (response.status == 200 || response.status == 201) {
-            this.dialog = false;
-            this.pvModifyDialog = false;
-            if (!this.pvModifyingType) {
-              // pvData.pvId = response.data.pv.pvId;
-              // pvData.pvNumber = response.data.pv.pvNumber;
-              this.pvs.push(response.data);
-            }
-            this.$store.dispatch("notification/success", "Pv correctement enregistré");
+          affair.value = response.data
+          affairStore.registerAffair(response.data)
+          if (response.data.lots) {
+            lots.value = response.data.lots
+            affairStore.registerLotOnAffair(response.data.lots)
           }
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
+    } else {
+      affair.value = res.data
+      affairStore.registerAffair(res.data)
     }
+  })
+
+  Axios.get('pvs/affairId', {
+    params: {
+      affairId: affairId
+    }
+  })
+    .then((response) => {
+      pvs.value = response.data
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+
+function openInProgressPv(pv) {
+  const pvId = pv.pvId
+  router.push({
+    name: routesCONST.pv.name,
+    params: { id: pvId }
+  })
+}
+
+function openFinishedPv(pv) {
+  const pvId = pv.pvId
+  router.push({ name: getRouteName('finishedPv'), params: { id: pvId } })
+}
+
+function modifyLot() {
+  if (lots.value == undefined) {
+    lots.value = []
+    lots.value.push({ name: '', lotId: undefined, affairId: undefined })
+    lotModifyCancelable.value = true
   }
-};
+  lots.value.forEach((element) => {
+    oldLots.value.push({ ...element })
+  })
+  oldNumberLots.value = parseInt(lots.value.length)
+  numberLots.value = lots.value.length
+  dialog.value = true
+  lotModifyDialog.value = true
+}
+
+function modifyLotSave() {
+  lots.value.forEach((element) => {
+    if (element.lotId == undefined) {
+      let dataToSend = {
+        affairId: route.params.id,
+        name: element.name
+      }
+      Axios.post('lots', dataToSend).then((response) => {
+        element.lotId = response.data.lotId
+      })
+    } else {
+      oldLots.value.forEach((oldEl) => {
+        if (element.lotId == oldEl.lotId && element.name != oldEl.name) {
+          let dataToSend = {
+            name: element.name,
+            lotId: element.lotId
+          }
+          Axios.put('lots', dataToSend)
+            .then((response) => {
+              if (response.data.affairId != '') {
+                notifStore.success("La progession de l'affaire à correctement été mise à jour")
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      })
+    }
+  })
+  lotModifyCancelable.value = false
+  dialog.value = false
+  lotModifyDialog.value = false
+}
+
+function modifyLotsAdd() {
+  numberLots.value++
+  lots.value.push({ name: '', lotId: undefined, affairId: undefined })
+}
+
+function ModifyLotDelete(lot, index) {
+  Axios.delete('lots/lotId', { params: { lotId: lot.lotId } })
+    .then((response) => {
+      if (response.data == 'success') {
+        numberLots.value--
+        lots.value.splice(index, 1)
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+function ModifyLotCancel() {
+  lotModifyCancelable.value = false
+  dialog.value = false
+  lotModifyDialog.value = false
+  lots.value.forEach((element) => {
+    if (element.name == '') {
+      lots.value = undefined
+    }
+  })
+}
+
+function ModifyAffairSave() {
+  Axios.put('affairs/affairId', affair.value)
+    .then((response) => {
+      if (response.status == 200) {
+        notifStore.success("La progession de l'affaire à correctement été mise à jour")
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  dialog.value = false
+  affairDialog.value = false
+}
+
+function modifyPv(pvDatas) {
+  // pvModifyingType.value = true
+  isNewPv.value = false
+  pvData.value = pvDatas
+
+  dialog.value = true
+  pvModifyDialog.value = true
+}
+
+async function downloadPvPdf(pv) {
+  const res = await Axios({
+    responseType: 'blob',
+    url: 'pvs/pvId/released/pdf',
+    params: {
+      pvId: pv.pvId
+    }
+  })
+  const meetingDate = DateTime.fromSQL(pv.meetingDate).toISODate()
+  const fileName = `${meetingDate}_Affaire ${affair.value.name}_Pv-n${pv.pvNumber}`
+
+  const url = window.URL.createObjectURL(new Blob([res.data]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', `${fileName}.pdf`)
+  document.body.appendChild(link)
+  link.click()
+}
+
+function createPv() {
+  isNewPv.value = true
+  pvModifyDialog.value = true
+  dialog.value = true
+}
+
+function closePvDialog(isSaved) {
+  const index = pvs.value.findIndex((el) => el.pvId === pvData.value.pvId)
+  if (isSaved) {
+    Object.assign(pvs.value[index], pvData.value)
+  }
+
+  pvData.value = PV_DATA
+  dialog.value = false
+}
+
+function cancelAffairDialog() {
+  dialog.value = false
+}
 </script>

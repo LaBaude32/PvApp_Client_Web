@@ -20,57 +20,37 @@
               :label="'Lot ' + lot"
               clearable
               counter="45"
-              append-outer-icon="mdi-delete"
-              @click:append-outer="deleteLot(myLots[lot - 1], lot - 1)"
-              :rules="standardRules"
+              append-icon="mdi-delete"
+              @click:append="deleteLot(myLots[lot - 1], lot - 1)"
+              :rules="FormStandardRules"
             ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-actions v-if="numberLots !== 0">
+      <v-card-actions>
         <v-btn @click="addLot" color="primary">Ajouter un lot</v-btn>
         <v-spacer />
-        <v-btn v-if="isCancelable" color="error" @click.prevent="cancel">
-          Annuler
-        </v-btn>
+        <v-btn v-if="isCancelable" color="error" @click.prevent="cancel">Annuler</v-btn>
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Valider</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
 </template>
 
-<script>
-export default {
-  name: "AddLot",
-  props: {
-    lotData: Array,
-    addLot: Function,
-    deleteLot: Function,
-    numberLots: Number,
-    validate: Function,
-    isCancelable: Boolean,
-    cancel: Function
-  },
-  data() {
-    return {
-      valid: false,
-      standardRules: [
-        v => !!v || "Requis",
-        v => (v && v.length >= 3) || "Doit être au moins de 3 caractères",
-        v => (v && v.length <= 45) || "Doit être au max 45 caractères"
-      ],
-      affairRules: [v => !!v || "Requis"]
-    };
-  },
-  computed: {
-    myLots: {
-      get() {
-        return this.lotData;
-      },
-      set(val) {
-        this.$emit("update:lotData", val);
-      }
-    }
-  }
-};
+<script setup>
+import { FormStandardRules } from '@/utilities/constantes.ts'
+import { ref } from 'vue'
+
+defineProps({
+  addLot: Function,
+  deleteLot: Function,
+  numberLots: Number,
+  validate: Function,
+  isCancelable: Boolean, //FIXME: logique étrange
+  cancel: Function
+})
+
+const myLots = defineModel('lotData', { type: Array, required: true })
+
+const valid = ref(false)
 </script>

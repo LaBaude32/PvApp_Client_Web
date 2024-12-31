@@ -1,229 +1,175 @@
 <template>
-  <v-app id="inspire">
-    <!-- <v-navigation-drawer v-model="drawerRight" app clipped right>
-      <v-list dense>
-        <v-list-item @click.stop="invertRight">
-          <v-list-item-action>
-            <v-icon>mdi-exit-to-app</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Open Temporary Drawer</v-list-item-title>
-          </v-list-item-content> 
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer> -->
-
-    <v-app-bar app color="primary darken-1" clipped-right dark class="d-print-none">
+  <v-layout>
+    <v-app-bar color="primary darken-1" dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
-      <v-toolbar-title class="diableOnMobile">Menu</v-toolbar-title>
-      <v-spacer />
-      <!-- TODO: Comment detecter qu'on est en mobile ou pas ? -->
-      <div class="d-flex align-center">
-        <h2>PvApp</h2>
-      </div>
-      <v-spacer />
-      <v-btn class="mr-6" color="primary" @click="action('Board')"><v-icon class="mr-3">mdi-view-dashboard</v-icon>Dashboard</v-btn>
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" v-on="on" v-if="isLogged" class="diableOnMobile">
+      <v-app-bar-title>PvApp</v-app-bar-title>
+      <v-btn class="mr-6" @click="action('Board')">
+        <v-icon class="mr-3">mdi-view-dashboard</v-icon>
+        Dashboard
+      </v-btn>
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn color="primary" v-on="on" v-else @click="action('Login')" class="diableOnMobile">
+          <v-btn v-bind="props" v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
         </template>
-        <v-list v-if="isLogged">
-          <v-list-item v-for="item in items" :key="item.title" @click="action(item.path)">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-list>
+          <v-list-item v-for="(item, index) in items" :key="index" :value="index">
+            <v-list-item-title @click.prevent="action(item.path)">
+              {{ item.title }}
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-      <!-- <v-app-bar-nav-icon @click.stop="invertDrawerRight" /> -->
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawerMain" app>
+    <v-navigation-drawer v-model="drawerMain">
       <v-list nav>
-        <v-list-item v-for="item in mainMenuItems" :key="item.title" @click.prevent="actionMainMenu(item.path)" link>
-          <v-list-item-icon>
-            <v-icon medium :color="item.color">{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              {{ item.title }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-list-item
+          v-for="item in mainMenuItems"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          @click.prevent="actionMainMenu(item.path)"
+          link
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-main>
-      <div id="app" class="mt-10">
-        <v-alert
+      <div v-if="versionNotif" id="app-version-notif" class="mt-10">
+        <v-banner
           class="mx-auto"
           max-width="800px"
-          v-model="versionNotif"
-          dismissible
+          dark
           color="green"
-          border="left"
-          elevation="2"
-          colored-border
           icon="mdi-information"
-          prominent
+          lines="one"
+          :stacked="false"
         >
-          <v-row align="center">
-            <v-col class="grow"> Une nouvelle version est disponnible. </v-col>
-            <v-col class="shrink">
-              <v-chip class="ma-3" color="green" text-color="white">
-                {{ appVersion }}
-              </v-chip>
-            </v-col>
-            <v-col class="shrink">
-              <v-btn color="green" dark @click.prevent="action('About')">Voir les nouveautés</v-btn>
-            </v-col>
-          </v-row>
-        </v-alert>
-        <router-view />
+          <v-banner-text>
+            Une nouvelle version est disponnible :
+            <v-chip class="ma-3" color="green" text-color="white">
+              {{ version }}
+            </v-chip>
+          </v-banner-text>
+
+          <template v-slot:actions>
+            <v-btn color="green" variant="outlined" dark @click.prevent="action('About')">
+              Voir les nouveautés
+            </v-btn>
+          </template>
+        </v-banner>
       </div>
+      <router-view class="mt-5" />
     </v-main>
     <Notification />
-  </v-app>
+  </v-layout>
 </template>
 
-<script>
-import Axios from "axios";
-import { mapGetters } from "vuex";
-// import routesCONST from "./utilities/constantes";
-import { getRouteName } from "./utilities/constantes";
-import Notification from "@/components/Notification.vue";
-import { version } from "../package";
+<script setup lang="ts">
+import Axios from 'axios'
+import { getRouteName } from '@/utilities/constantes'
+import Notification from '@/components/Notification.vue'
+import { version } from '../package.json'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useNotificationStore } from './store/notification'
+import { useAuthStore } from './store/auth'
+import { useUserStore } from './store/user'
 
-export default {
-  components: {
-    Notification
+const router = useRouter()
+const userStore = useUserStore()
+const notifStore = useNotificationStore()
+const authStore = useAuthStore()
+
+const versionNotif = ref(false)
+const drawerMain = ref(false)
+const items = [
+  { path: 'MyAccount', title: 'Mon Compte' },
+  { path: 'Settings', title: 'Paramètres' },
+  { path: 'Logout', title: 'Se deconnecter' }
+]
+const mainMenuItems = [
+  {
+    path: getRouteName('home'),
+    title: 'Pv App',
+    icon: 'mdi-home'
   },
-  data() {
-    return {
-      appVersion: version,
-      right: false,
-      versionNotif: false,
-      drawerMain: false,
-      drawerRight: false,
-      items: [
-        { path: "MyAccount", title: "Mon Compte" },
-        // { path: getRouteName("board"), title: "Board" },
-        { path: "Logout", title: "Se deconnecter" }
-      ],
-      mainMenuItems: [
-        {
-          path: getRouteName("home"),
-          title: "Pv App",
-          icon: "mdi-home",
-          color: "blue darken-2"
-        },
-        {
-          path: getRouteName("board"),
-          title: "Dashboard",
-          icon: "mdi-view-dashboard"
-        },
-        // {
-        //   path: getRouteName("user"),
-        //   title: "Personnes",
-        //   icon: "mdi-account",
-        //   color: ""
-        // },
-        {
-          path: getRouteName("addUser"),
-          title: "Créer un compte",
-          icon: "mdi-account-plus",
-          color: ""
-        },
-        // {
-        //   path: getRouteName("addLot"),
-        //   title: "Créer un lot",
-        //   icon: "mdi-account",
-        //   color: ""
-        // },
-        {
-          path: getRouteName("about"),
-          title: "A propos",
-          icon: "mdi-information",
-          color: ""
-          // },
-          // {
-          //   path: getRouteName("test"),
-          //   title: "page TEST",
-          //   icon: "mdi-alert",
-          //   color: "orange"
-        }
-      ]
-    };
+  {
+    path: getRouteName('board'),
+    title: 'Dashboard',
+    icon: 'mdi-view-dashboard'
   },
-  computed: {
-    ...mapGetters("user", {
-      isLogged: "logged",
-      fullName: "fullName"
-    })
+  {
+    path: getRouteName('addUser'),
+    title: 'Créer un compte',
+    icon: 'mdi-account-plus',
+    color: ''
   },
-  methods: {
-    actionMainMenu(path) {
-      this.$router.push({ name: path });
-    },
-    action(path) {
-      if (path == "Logout") {
-        this.$store.dispatch("auth/authLogout").then(() => {
-          this.$router.push("Login");
-        });
-      } else {
-        this.$router.push({ name: path });
-      }
-    },
-    invertRight() {
-      this.right = !this.right;
-    },
-    invertDrawerMain() {
-      this.drawerMain = !this.drawerMain;
-    },
-    invertDrawerRight() {
-      this.drawerRight = !this.drawerRight;
-    }
-  },
-  created: function () {
-    const self = this;
-    Axios.interceptors.response.use(
-      function (response) {
-        return response;
-      },
-      function (error) {
-        self.$store.dispatch("notification/error", "Erreur d'authentification");
-        if (error.response.status == 401) {
-          if (error.config.url == "tokens") {
-            self.$store.dispatch("auth/authError");
-          } else {
-            // if you ever get an unauthorized, logout the user
-            self.$store.dispatch("auth/authLogout");
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
-    //verification de nouvelle version
-    let oldVersion = localStorage.getItem("appVersion");
-    if (oldVersion != this.appVersion) {
-      this.versionNotif = true;
-      localStorage.setItem("appVersion", this.appVersion);
-    }
+  {
+    path: getRouteName('about'),
+    title: 'A propos',
+    icon: 'mdi-information',
+    color: ''
   }
-};
+]
+const isLogged = computed(() => userStore.isLogged)
+const fullName = computed(() => userStore.fullName)
+
+function actionMainMenu(path: string) {
+  router.push({ name: path })
+}
+function action(path: string) {
+  if (path == 'Logout') {
+    authStore.authLogout().then(() => {
+      router.push('Login')
+    })
+  } else {
+    router.push({ name: path })
+  }
+}
+function invertDrawerMain() {
+  drawerMain.value = !drawerMain.value
+}
+onMounted(() => {
+  authStore.setAxios()
+  Axios.interceptors.response.use(
+    function (response) {
+      return response
+    },
+    function (error) {
+      if (error.code == 'ERR_NETWORK') {
+        notifStore.error('Serveur injoignable')
+      } else if (error.status == 500) {
+        notifStore.error('Erreur de traitement au niveau du serveur')
+      } else if ([401, 403].includes(error.status)) {
+        authStore.authError()
+        notifStore.error("Erreur d'authentification : " + error.message)
+      } else {
+        notifStore.error(error.message)
+      }
+      return Promise.reject(error)
+    }
+  )
+  //verification de nouvelle version
+  if (localStorage.getItem('appVersion') != version) {
+    versionNotif.value = true
+    localStorage.setItem('appVersion', version)
+  }
+})
 </script>
 
 <style>
-#app {
+#app-version-notif {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 

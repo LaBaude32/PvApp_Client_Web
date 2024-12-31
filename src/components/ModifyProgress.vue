@@ -1,47 +1,87 @@
 <template>
   <v-card>
-    <v-card-title>Modifier la progression de l'affaire</v-card-title>
+    <v-card-title>Modifier la progression des lots de l'affaire</v-card-title>
     <v-card-text>
-      <div class="text-center mt-10">
-        <v-progress-circular :value="myProgressValue" color="deep-orange lighten-2" size="80" width="8">{{ myProgressValue }} %</v-progress-circular>
-      </div>
-      <v-slider v-model="myProgressValue" thumb-label step="5" ticks="always" tick-size="4" class="mt-10"></v-slider>
+      <v-row align="center" v-for="lot in lots" class="mb-5 bg-blue-grey-lighten-5 rounded px-5">
+        <v-col>
+          <v-chip color="orange-darken-3" size="x-large">{{ lot.name }}</v-chip>
+        </v-col>
+        <v-col>
+          <v-progress-circular
+            :model-value="lot.progress"
+            color="deep-orange lighten-2"
+            size="80"
+            width="8"
+          >
+            {{ lot.progress }} %
+          </v-progress-circular>
+        </v-col>
+        <v-col cols="8">
+          <v-row>
+            <v-slider
+              v-model="lot.progress"
+              color="orange"
+              thumb-label
+              step="5"
+              show-ticks="always"
+              tick-size="2"
+              class="mt-10"
+            />
+          </v-row>
+          <v-row
+            ><v-text-field
+              clearable
+              v-model="lot.alreadyDone"
+              label="Accompli depuis la dernière réunion"
+          /></v-row>
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-card-actions>
+      <v-btn color="error" variant="text" @click="cancel">Annuler</v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text @click="modifyProgressSave">Enregistrer</v-btn>
+      <v-btn color="success" variant="text" @click="save">Enregistrer</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
-<script>
-export default {
-  name: "ModifyProgress",
-  props: {
-    progressValue: Number,
-    dialog: Boolean,
-    modifyProgressSave: Function
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    myProgressValue: {
-      get() {
-        return this.progressValue;
-      },
-      set(val) {
-        this.$emit("update:progressValue", val);
-      }
-    },
-    myDialog: {
-      get() {
-        return this.dialog;
-      },
-      set(val) {
-        this.$emit("update:dialog", val);
-      }
-    }
-  }
-};
+<script setup lang="ts">
+import { useNotificationStore } from '@/store/notification'
+import type { Lot } from '@/utilities/types'
+import Axios from 'axios'
+
+const notifStore = useNotificationStore()
+
+const emit = defineEmits(['closeDialog', 'closeProgressDialog'])
+const props = defineProps<{
+  initialLots: Lot[]
+  pvId: number
+}>()
+
+const lots = defineModel<Lot[]>('lots', { required: true })
+
+function save() {
+  //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
+  const pvId = Number(props.pvId)
+  lots.value.forEach((lot) => {
+    lot.pvId = lot.pvId || pvId
+    Axios.put('lots/progress', lot)
+      .then((response) => {
+        if (response.status == 200) {
+          notifStore.success('La progession à correctement été mise à jour')
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  })
+  emit('closeProgressDialog')
+  emit('closeDialog')
+}
+
+function cancel() {
+  lots.value = props.initialLots
+  emit('closeProgressDialog')
+  emit('closeDialog')
+}
 </script>

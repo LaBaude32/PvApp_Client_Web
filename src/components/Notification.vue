@@ -1,30 +1,21 @@
 <template>
-  <v-snackbar :value="state" top right :color="type" app>
-    <v-icon :color="btnColor" :dark="isDark" @click="close">mdi-close-circle</v-icon>
-    {{ text }}
-    <v-btn v-if="type == 'error'" class="ml-2" target="_blank" href="https://github.com/LaBaude32/PvApp_Client_Web/issues">Signaler un bug</v-btn>
+  <v-snackbar v-model="store.state" :color="store.color" :timeout="store.timeout">
+    {{ store.text }}
+    <template v-slot:actions>
+      <v-btn
+        v-if="store.color == 'red'"
+        class="ml-2"
+        target="_blank"
+        href="https://gitlab.com/LaBaude32/PvApp_Core/-/issues"
+      >
+        Signaler un bug
+      </v-btn>
+      <v-icon @click="store.close">mdi-close-circle</v-icon>
+    </template>
   </v-snackbar>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
-export default {
-  name: "Notification",
-  computed: {
-    ...mapGetters("notification", {
-      state: "state",
-      text: "text",
-      type: "type",
-      btnColor: "btnColor",
-      isDark: "isDark"
-    })
-  },
-
-  methods: {
-    close() {
-      // this.$emit("update:snackbar", false);
-      this.$store.dispatch("notification/close");
-    }
-  }
-};
+<script setup lang="ts">
+import { useNotificationStore } from '../store/notification'
+const store = useNotificationStore()
 </script>
