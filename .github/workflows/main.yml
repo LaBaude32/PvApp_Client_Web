@@ -22,7 +22,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Copy .htaccess to build directory
-        run: cp .htaccess ./build/
+        run: cp .htaccess ./dist/
         
   deploy:
     needs: build
@@ -35,5 +35,5 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         port: ${{ secrets.FTP_PORT }}
-        local-dir: ./build/
+        local-dir: ./dist/
         server-dir: /public_html/
