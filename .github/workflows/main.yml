@@ -21,7 +21,19 @@ jobs:
           yarn install
       - name: Build
         run: yarn build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: my-artifact
-          path: ./dist
+      - name: Copy .htaccess to build directory
+        run: cp .htaccess ./build/
+        
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Hostinger
+      uses: SamKirkland/FTP-Deploy-Action@4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        port: ${{ secrets.FTP_PORT }}
+        local-dir: ./build/
+        server-dir: /public_html/
