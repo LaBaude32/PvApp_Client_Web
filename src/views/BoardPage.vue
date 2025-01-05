@@ -54,6 +54,9 @@
 
     <v-container v-if="affairs != ''">
       <h2>Vos affaires en cours :</h2>
+      <v-row>
+        
+      </v-row>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.affairId">
           <v-card class="mx-auto" color="blue-grey-lighten-5" outlined>
