@@ -40,6 +40,8 @@ jobs:
       with:
         name: build
         path: ./dist/
+    - name: Verify .htaccess is copied
+      run: ls -la ./dist/
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
