@@ -20,6 +20,9 @@ jobs:
           yarn set version stable
           yarn install
       - name: Build
+        env:
+          VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
+          VITE_BACKEND_IMAGE_URL: ${{ vars.VITE_BACKEND_IMAGE_URL }}
         run: yarn build
       - name: Copy .htaccess to build directory
         run: cp .htaccess ./dist/
