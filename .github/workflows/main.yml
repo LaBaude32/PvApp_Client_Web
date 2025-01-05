@@ -6,7 +6,10 @@ on:
 jobs: 
   build:
     runs-on: ubuntu-latest
-    name: Build
+    name: Build 
+    env:
+      VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
+      VITE_BACKEND_IMAGE_URL: ${{ vars.VITE_BACKEND_IMAGE_URL }}
     steps:
       - name: git-checkout
         uses: actions/checkout@v4
@@ -19,10 +22,9 @@ jobs:
           corepack enable
           yarn set version stable
           yarn install
+      - name: Verify environment variables
+        run: echo "VITE_BACKEND_API_URL=$VITE_BACKEND_API_URL" && echo "VITE_BACKEND_IMAGE_URL=$VITE_BACKEND_IMAGE_URL"
       - name: Build
-        env:
-          VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
-          VITE_BACKEND_IMAGE_URL: ${{ vars.VITE_BACKEND_IMAGE_URL }}
         run: yarn build
       - name: Copy .htaccess to build directory
         run: cp .htaccess ./dist/
