@@ -23,8 +23,6 @@ jobs:
         run: yarn build
       - name: Copy .htaccess to build directory
         run: cp .htaccess ./dist/
-      - name: Verify .htaccess is copied
-        run: ls -la ./dist/
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -41,8 +39,6 @@ jobs:
       with:
         name: build
         path: ./dist/
-    - name: Verify .htaccess is copied
-      run: ls -la ./dist/
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
