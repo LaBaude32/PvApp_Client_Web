@@ -19,7 +19,7 @@
       <h2>Vos 2 derniers procès verbaux :</h2>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
-          <v-card class="mx-auto" color="blue-grey-lighten-5" min-height="185">
+          <v-card class="mx-auto align-center pt-4" color="primary" variant="tonal">
             <v-list-item three-line>
               <v-list-item>
                 <v-list-item-title class="text-h6 mb-1">
@@ -31,13 +31,13 @@
                   <v-btn
                     v-if="pv.state == 'Terminé'"
                     class="ma-2"
-                    color="green darken-2"
+                    color="green"
                     @click="openFinishedPv(pv.pvId)"
                   >
                     {{ pv.state }}
                     <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
-                  <v-btn v-else class="ma-2" color="orange darken-3" @click="openPv(pv.pvId)">
+                  <v-btn v-else class="ma-2" color="primary" @click="openPv(pv.pvId)">
                     {{ pv.state }}
                     <v-icon right>mdi-autorenew</v-icon>
                   </v-btn>
@@ -53,40 +53,29 @@
     </v-container>
 
     <v-container v-if="affairs != ''">
-      <h2>Vos affaires en cours :</h2>
-      <v-row>
-        
-      </v-row>
-      <v-row justify="center" class="mt-3">
-        <v-col cols="12" md="6" v-for="affair in affairs" v-bind:key="affair.affairId">
-          <v-card class="mx-auto" color="blue-grey-lighten-5" outlined>
-            <v-list-item three-line>
-              <v-list-item>
-                <v-list-item-title class="text-h6 mb-1">{{ affair.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ affair.meetingType }}</v-list-item-subtitle>
-                <v-list-item-subtitle>{{ affair.address }}</v-list-item-subtitle>
-                <v-card-text class="text--primary">
-                  <div class="text-center">
-                    <v-progress-circular
-                      :value="affair.progress"
-                      color="deep-orange lighten-2"
-                      size="80"
-                      width="8"
-                    >
-                      {{ affair.progress }} %
-                    </v-progress-circular>
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer>
-                    <v-btn color="success" @click="openAffair(affair.affairId)">Ouvrir</v-btn>
-                  </v-spacer>
-                </v-card-actions>
-              </v-list-item>
-            </v-list-item>
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-card title="Vos affaires en cours :" variant="tonal" color="primary">
+        <template v-slot:text>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            single-line
+          ></v-text-field>
+        </template>
+
+        <v-data-table :headers="headers" :items="affairs" :search="search">
+          <template v-slot:item.progress="{ item }">
+            <v-progress-linear v-model="item.progress" color="primary" height="25"
+              ><strong>{{ item.progress }} %</strong></v-progress-linear
+            >
+          </template>
+          <template v-slot:item.action="{ item }">
+            <v-btn color="primary" variant="text" @click="openAffair(item.affairId)">Ouvrir</v-btn>
+          </template>
+        </v-data-table>
+      </v-card>
     </v-container>
     <v-container v-else class="px-10">
       <v-alert type="info" outlined>
@@ -108,6 +97,19 @@ const router = useRouter()
 
 const pvs = ref([])
 const affairs = ref([])
+const search = ref('')
+const headers = [
+  {
+    align: 'center',
+    key: 'name',
+    sortable: true,
+    title: 'Nom'
+  },
+  { align: 'center', key: 'address', title: 'Adresse', sortable: false },
+  { align: 'center', key: 'progress', title: 'Progression' },
+  { align: 'center', key: 'meetingType', title: "Type d'affaire" },
+  { align: 'center', key: 'action', sortable: false }
+]
 
 const userId = computed(() => {
   return userStore.user.userId
