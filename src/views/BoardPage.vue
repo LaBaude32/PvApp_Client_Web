@@ -1,33 +1,29 @@
 <template>
   <div class="text-center">
-    <h1>Votre dashboard :</h1>
-    <v-spacer></v-spacer>
     <v-container>
-      <v-row class="grey lighten-3 mx-1">
+      <v-row>
         <v-col>
-          <v-btn class="mx-auto my-3" color="primary" @click="createAffair"
-            >Creer une affaire</v-btn
-          >
+          <v-btn color="primary" @click="createAffair" size="x-large">Créer une affaire</v-btn>
         </v-col>
         <v-col v-if="pvs != ''">
-          <v-btn class="mx-auto my-3" color="primary" @click="createPv">Ajouter un Pv</v-btn>
+          <v-btn color="primary" @click="createPv" size="x-large">Ajouter un Pv</v-btn>
         </v-col>
       </v-row>
     </v-container>
 
     <v-container v-if="pvs != ''">
-      <h2>Vos 2 derniers procès verbaux :</h2>
+      <h1 class="text-primary">Vos 2 derniers procès verbaux :</h1>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
           <v-card class="mx-auto align-center pt-4" color="primary" variant="tonal">
-            <v-list-item three-line>
+            <v-list-item>
               <v-list-item>
-                <v-list-item-title class="text-h6 mb-1">
+                <v-list-item-title class="text-h6 font-weight-medium mb-1">
                   Réunion du :
                   {{ $filters.formatDate(pv.meetingDate) }}
                 </v-list-item-title>
                 <v-list-item-subtitle>Affaire : {{ pv.affairName }}</v-list-item-subtitle>
-                <v-card-text class="text--primary">
+                <v-card-text>
                   <v-btn
                     v-if="pv.state == 'Terminé'"
                     class="ma-2"
