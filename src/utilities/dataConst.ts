@@ -5,7 +5,7 @@ export const DEFAULT_ITEM = {
   note: null,
   followUp: null,
   resources: null,
-  completion: ['A faire', 'Urgent', 'Fait'],
+  completion: ['A faire', 'Urgent', 'Fait', 'En cours'], //TODO: A mettre en Enum dans la BDD ?
   completionDate: null,
   image: null,
   visible: true,
