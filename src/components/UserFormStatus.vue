@@ -8,7 +8,6 @@
       :items="PARTICIPANT_STATUS_PAE"
       label="Statuts"
       clearable
-      :rules="FormRequiredRules"
     ></v-select>
   </v-col>
   <v-row justify="space-around">
@@ -30,8 +29,7 @@
   </v-row>
 </template>
 
-<script setup>
-import { FormRequiredRules } from '@/utilities/constantes'
+<script setup lang="ts">
 import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
 
 const editedItem = defineModel('editedItem', { type: Object, required: true })
