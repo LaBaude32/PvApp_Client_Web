@@ -65,4 +65,20 @@ export const PV_DATA = {
   state: 'En cours'
 }
 
+export const EDITED_ITEM = {
+  fullName: '',
+  userGroupToReturn: '',
+  userGroup: [],
+  userFunction: '',
+  organism: '',
+  email: '',
+  phone: '',
+  statusPAE: undefined,
+  invitedCurrentMeeting: undefined,
+  invitedNextMeeting: undefined,
+  distribution: undefined,
+  firstName: '',
+  lastName: ''
+}
+
 export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', null]

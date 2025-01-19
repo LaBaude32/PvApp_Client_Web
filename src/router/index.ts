@@ -65,9 +65,14 @@ const routes = [
     component: () => import('../views/AddLot.vue')
   },
   {
-    path: getRoutePath('finishedPv') + '/:id',
-    name: getRouteName('finishedPv'),
-    component: () => import('../views/FinishedPv.vue')
+    path: getRoutePath('addHimSelfParticipant'),
+    name: getRouteName('addHimSelfParticipant'),
+    component: () => import('../views/AddHimSelfParticipant.vue')
+  },
+  {
+    path: routesCONST.test.path,
+    name: routesCONST.test.name,
+    component: () => import('../views/Test.vue')
   },
   {
     path: routesCONST.test.path,

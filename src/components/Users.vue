@@ -174,6 +174,9 @@
               </v-form>
             </v-card>
           </v-dialog>
+          <v-btn class="mb-2" prepend-icon="mdi-qrcode-scan" @click="dialogQrCode = true"
+            >Qr-code</v-btn
+          >
         </v-toolbar>
       </template>
       <template v-slot:item.fullName="{ item }">
@@ -220,6 +223,16 @@
       </template>
     </v-data-table>
   </v-card>
+  <v-dialog v-model="dialogQrCode" class="mx-auto text-center" max-width="70%">
+    <v-card class="" title="Ajout de participant à la réunion">
+      <v-card-text>
+        <div>
+          <img :src="qrcode" alt="QR Code" />
+        </div>
+        <p>Code :</p>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -237,6 +250,9 @@ import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'
 import UserFormStatus from './UserFormStatus.vue'
 import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
+import { useQRCode } from '@vueuse/integrations/useQRCode'
+
+const qrcode = useQRCode(`${window.location.hostname}/addHimSelfParticipant`, { scale: 30 })
 
 const userStore = useUserStore()
 const affairStore = useAffairStore()
@@ -257,6 +273,7 @@ const valid2 = ref(false)
 const search = ref('')
 const dialogNewOrModifiedUser = ref(false)
 const dialogExistingUser = ref(false)
+const dialogQrCode = ref(false)
 const connectedParticipant = ref()
 
 const headers = [
