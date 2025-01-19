@@ -252,7 +252,7 @@ import UserFormStatus from './UserFormStatus.vue'
 import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 
-const qrcode = useQRCode(`${window.location.hostname}/addHimSelfParticipant`, { scale: 30 })
+const qrcode = useQRCode(`${window.location.hostname}/addHimSelfParticipant`, { scale: 20 })
 
 const userStore = useUserStore()
 const affairStore = useAffairStore()
