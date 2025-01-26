@@ -174,9 +174,7 @@
               </v-form>
             </v-card>
           </v-dialog>
-          <v-btn class="mb-2" prepend-icon="mdi-qrcode-scan" @click="dialogQrCode = true"
-            >Qr-code</v-btn
-          >
+          <v-btn class="mb-2" prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.fullName="{ item }">
@@ -252,8 +250,6 @@ import UserFormStatus from './UserFormStatus.vue'
 import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 
-const qrcode = useQRCode(`${window.location.hostname}/addHimSelfParticipant`, { scale: 20 })
-
 const userStore = useUserStore()
 const affairStore = useAffairStore()
 const notifStore = useNotificationStore()
@@ -269,6 +265,9 @@ const allConnectedParticipants = defineModel('allConnectedParticipants', {
 const pvId = ref(Number)
 const valid1 = ref(false)
 const valid2 = ref(false)
+
+const text = ref('text-to-encode')
+const qrcode = useQRCode(text, { scale: 15 })
 
 const search = ref('')
 const dialogNewOrModifiedUser = ref(false)
@@ -485,5 +484,10 @@ function participantItemProps(params) {
     title: `${params.firstName} ${params.lastName}`,
     subtitle: `${params.organism} - ${params.userFunction}`
   }
+}
+
+function generateQrCode() {
+  text.value = `${window.location.hostname}/addHimSelfParticipant/:${pvId.value}`
+  dialogQrCode.value = true
 }
 </script>

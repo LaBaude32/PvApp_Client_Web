@@ -65,9 +65,10 @@ const routes = [
     component: () => import('../views/AddLot.vue')
   },
   {
-    path: getRoutePath('addHimSelfParticipant'),
+    path: getRoutePath('addHimSelfParticipant') + '/:id',
     name: getRouteName('addHimSelfParticipant'),
-    component: () => import('../views/AddHimSelfParticipant.vue')
+    component: () => import('../views/AddHimSelfParticipant.vue'),
+    props: true
   },
   {
     path: routesCONST.test.path,

@@ -65,7 +65,14 @@
               clearable
             ></v-text-field>
           </v-col>
-          <!-- <UserFormStatus v-model:editedItem="editedItem" /> -->
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="validationCode"
+              label="Code de validation"
+              :rules="FormRequiredRules"
+              clearable
+            ></v-text-field>
+          </v-col>
         </v-row>
         <v-row class="mb-12">
           <v-btn color="primary" class="mx-auto" :disabled="!valid" @click="saveUser"
@@ -93,17 +100,24 @@ import {
   FormPhoneRules,
   FormRequiredRules
 } from '@/utilities/constantes.ts'
+import md5 from 'md5'
 
 const notifStore = useNotificationStore()
 
 const editedItem = ref(EDITED_ITEM)
+const validationCode = ref('')
 const valid = ref(false)
 const userAdded = ref(false)
+
+defineProps({
+  pvId: Number,
+  affairName: String
+})
 
 function saveUser() {
   let data = { ...editedItem.value }
   data.pvId = Number(pvId.value)
-  data.password = affairName.value
+  data.password = md5(`${data.email}${data.lastName}${data.firstName}`)
   Axios.post('users', data)
     .then((response) => {
       if (response.status == 201) {
