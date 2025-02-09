@@ -24,6 +24,23 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="editedItem.phone"
+              label="Téléphone"
+              :rules="FormPhoneRules"
+              clearable
+              counter="10"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="editedItem.email"
+              label="Mail"
+              :rules="FormEmailRules"
+              clearable
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6">
             <v-select
               v-model="editedItem.userGroup"
               :items="USER_GROUPE_ITEMS"
@@ -48,28 +65,12 @@
               counter="30"
             ></v-text-field>
           </v-col>
+
           <v-col cols="12" sm="6">
             <v-text-field
-              v-model="editedItem.phone"
-              label="Téléphone"
-              :rules="FormPhoneRules"
-              clearable
-              counter="10"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-text-field
-              v-model="editedItem.email"
-              label="Mail"
-              :rules="FormEmailRules"
-              clearable
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-text-field
-              v-model="validationCode"
+              v-model="otp"
               label="Code de validation"
-              :rules="FormRequiredRules"
+              :rules="FormOTPRules"
               clearable
             ></v-text-field>
           </v-col>
@@ -98,27 +99,26 @@ import {
   FormNameRules,
   FormEmailRules,
   FormPhoneRules,
-  FormRequiredRules
+  FormRequiredRules,
+  FormOTPRules
 } from '@/utilities/constantes.ts'
-import md5 from 'md5'
 
 const notifStore = useNotificationStore()
 
 const editedItem = ref(EDITED_ITEM)
-const validationCode = ref('')
+const otp = ref('')
 const valid = ref(false)
 const userAdded = ref(false)
 
-defineProps({
-  pvId: Number,
-  affairName: String
+const props = defineProps({
+  pvId: String
 })
 
 function saveUser() {
   let data = { ...editedItem.value }
-  data.pvId = Number(pvId.value)
-  data.password = md5(`${data.email}${data.lastName}${data.firstName}`)
-  Axios.post('users', data)
+  data.otp = Number(otp.value)
+  data.pvId = Number(props.pvId)
+  Axios.post('/participants/selfCreate', data)
     .then((response) => {
       if (response.status == 201) {
         notifStore.success('Vous avez bien été ajouté !')
@@ -126,6 +126,9 @@ function saveUser() {
       }
     })
     .catch((error) => {
+      if (error.status == 406) {
+        notifStore.error('Code de validation incorrecte')
+      }
       console.log(error)
     })
 }

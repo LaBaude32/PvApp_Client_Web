@@ -227,7 +227,8 @@
         <div>
           <img :src="qrcode" alt="QR Code" />
         </div>
-        <p>Code :</p>
+        <p>Code : {{ otp.otp }}</p>
+        <p>Expiration : {{ otpTimeRemaining }}</p>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -268,6 +269,8 @@ const valid2 = ref(false)
 
 const text = ref('text-to-encode')
 const qrcode = useQRCode(text, { scale: 15 })
+const otp = ref({})
+const otpTimeRemaining = ref('')
 
 const search = ref('')
 const dialogNewOrModifiedUser = ref(false)
@@ -488,6 +491,46 @@ function participantItemProps(params) {
 
 function generateQrCode() {
   text.value = `${window.location.hostname}/addHimSelfParticipant/:${pvId.value}`
+  getParticipantOtp().then(() => {
+    startOtpCountdows()
+  })
   dialogQrCode.value = true
+}
+
+function getParticipantOtp() {
+  return new Promise((resolve, reject) => {
+    Axios.get('/participants/otp/pvId', { params: { pvId: pvId.value } })
+      .then((res) => {
+        if (res.status == 201) {
+          otp.value = res.data
+          resolve()
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        reject(error)
+      })
+  })
+}
+
+function startOtpCountdows() {
+  console.log(otp.value)
+
+  // Ajoutez 10 minutes au timestamp de base
+  const endTime = otp.value.createdAtTimeStamp * 1000 + 10 * 60 * 1000
+  const updateCountdown = () => {
+    const now = new Date().getTime()
+    const distance = endTime - now
+
+    if (distance > 0) {
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+      otpTimeRemaining.value = `${minutes}m ${seconds}s`
+      setTimeout(updateCountdown, 1000)
+    } else {
+      getParticipantOtp()
+    }
+  }
+  updateCountdown()
 }
 </script>

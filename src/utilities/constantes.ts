@@ -99,6 +99,10 @@ export const FormPasswordRules = [
   (v: string) => /(?=.*\d)/.test(v) || 'Il faut un nombre',
   (v: string) => /([!@#$%])/.test(v) || 'Il faut un charactère spécial [!@#$%]'
 ]
+export const FormOTPRules = [
+  (v: string) => !!v || 'Requis',
+  (v: string) => /\d/.test(v) || 'Doit être un code valide'
+]
 export const getRouteName = (name: string) => {
   return routesCONST[name].name
 }

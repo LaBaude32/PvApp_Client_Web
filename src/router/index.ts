@@ -1,9 +1,9 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
 import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
 import { useAuthStore } from '@/store/auth'
 import { useNotificationStore } from '@/store/notification'
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: routesCONST.home.path,
     name: routesCONST.home.name,
@@ -22,50 +22,59 @@ const routes = [
   {
     path: routesCONST.users.path,
     name: routesCONST.users.name,
-    component: () => import('../views/Users.vue')
+    component: () => import('../views/Users.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.settings.path,
     name: routesCONST.settings.name,
-    component: () => import('../views/Settings.vue')
+    component: () => import('../views/Settings.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.board.path,
     name: routesCONST.board.name,
-    component: () => import('../views/BoardPage.vue')
+    component: () => import('../views/BoardPage.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.affair.path + '/:id',
     name: routesCONST.affair.name,
-    component: () => import('../views/Affair.vue')
+    component: () => import('../views/Affair.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.pv.path + '/:id',
     name: routesCONST.pv.name,
-    component: () => import('../views/Pv.vue')
+    component: () => import('../views/Pv.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.addAffair.path,
     name: routesCONST.addAffair.name,
-    component: () => import('../views/AddAffair.vue')
+    component: () => import('../views/AddAffair.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: getRoutePath('addPv'),
     name: getRouteName('addPv'),
-    component: () => import('../views/AddPv.vue')
+    component: () => import('../views/AddPv.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: getRoutePath('addUser'),
     name: getRouteName('addUser'),
-    component: () => import('../views/AddUser.vue')
+    component: () => import('../views/AddUser.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: getRoutePath('addLot'),
     name: getRouteName('addLot'),
-    component: () => import('../views/AddLot.vue')
+    component: () => import('../views/AddLot.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: getRoutePath('addHimSelfParticipant') + '/:id',
+    path: getRoutePath('addHimSelfParticipant') + '/:pvId',
     name: getRouteName('addHimSelfParticipant'),
     component: () => import('../views/AddHimSelfParticipant.vue'),
     props: true
@@ -73,13 +82,15 @@ const routes = [
   {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
-    component: () => import('../views/Test.vue')
+    component: () => import('../views/Test.vue'),
+    meta: { requiresAuth: true }
   },
-  {
-    path: routesCONST.test.path,
-    name: routesCONST.test.name,
-    component: () => import('../views/Test.vue')
-  },
+  // {
+  //   path: routesCONST.test.path,
+  //   name: routesCONST.test.name,
+  //   component: () => import('../views/Test.vue'),
+  //  meta :{requiresAuth : true}
+  // },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
@@ -94,20 +105,30 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = [
-    getRoutePath('login'),
-    getRoutePath('addUser'),
-    getRoutePath('home'),
-    getRoutePath('finishedPv'),
-    getRoutePath('about')
-  ]
-  const authRequired = !publicPages.includes(to.path)
+  // const publicPages = [
+  //   getRoutePath('login'),
+  //   getRoutePath('addUser'),
+  //   getRoutePath('home'),
+  //   getRoutePath('finishedPv'),
+  //   getRoutePath('about'),
+  //   getRoutePath('addHimSelfParticipant')
+  // ]
+  // const authRequired = !publicPages.includes(to.path)
   const authStore = useAuthStore()
   const notifStore = useNotificationStore()
 
-  if (authRequired && !authStore.isAuthenticated) {
-    notifStore.error('Veuillez vous connecter')
-    return '/login'
+  // if (authRequired && !authStore.isAuthenticated) {
+  //   notifStore.error('Veuillez vous connecter')
+  //   return '/login'
+  // }
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // La route nécessite une authentification
+    if (!authStore.isAuthenticated) {
+      // L'utilisateur n'est pas authentifié, rediriger vers la page de connexion
+      notifStore.error('Veuillez vous connecter')
+      return '/login'
+    }
   }
 })
 
