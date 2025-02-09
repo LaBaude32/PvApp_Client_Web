@@ -80,6 +80,11 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
+    path: getRoutePath('finishedPv') + '/:id',
+    name: getRouteName('finishedPv'),
+    component: () => import('../views/FinishedPv.vue')
+  },
+  {
     path: routesCONST.test.path,
     name: routesCONST.test.name,
     component: () => import('../views/Test.vue'),
