@@ -15,17 +15,19 @@
             ></v-combobox>
           </v-col> -->
           <v-col cols="12" v-for="lot in numberLots" :key="lot.id">
-            <v-text-field
+            <v-combobox
               v-model="myLots[lot - 1].name"
-              :label="'Lot ' + lot"
+              :label="getLabel(lot)"
+              :items="LOT_DEFAULT"
               clearable
               counter="45"
               append-icon="mdi-delete"
               @click:append="deleteLot(myLots[lot - 1], lot - 1)"
               :rules="FormStandardRules"
-            ></v-text-field>
+            ></v-combobox>
           </v-col>
         </v-row>
+        <v-combobox placeholder="test" label="lala"> </v-combobox>
       </v-card-text>
       <v-card-actions>
         <v-btn @click="addLot" color="primary">Ajouter un lot</v-btn>
@@ -39,6 +41,7 @@
 
 <script setup>
 import { FormStandardRules } from '@/utilities/constantes.ts'
+import { LOT_DEFAULT } from '@/utilities/dataConst.ts'
 import { ref } from 'vue'
 
 defineProps({
@@ -53,4 +56,9 @@ defineProps({
 const myLots = defineModel('lotData', { type: Array, required: true })
 
 const valid = ref(false)
+
+function getLabel(lot) {
+  console.log(myLots.value[lot - 1])
+  return 'Lot ' + lot
+}
 </script>

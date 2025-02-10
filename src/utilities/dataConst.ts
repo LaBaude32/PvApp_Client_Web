@@ -82,3 +82,5 @@ export const EDITED_ITEM = {
 }
 
 export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', null]
+
+export const LOT_DEFAULT = ['MOA', 'AMO', 'MOE', 'PPA', 'SPS']
