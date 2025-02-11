@@ -27,7 +27,6 @@
             ></v-combobox>
           </v-col>
         </v-row>
-        <v-combobox placeholder="test" label="lala"> </v-combobox>
       </v-card-text>
       <v-card-actions>
         <v-btn @click="addLot" color="primary">Ajouter un lot</v-btn>
@@ -58,7 +57,10 @@ const myLots = defineModel('lotData', { type: Array, required: true })
 const valid = ref(false)
 
 function getLabel(lot) {
-  console.log(myLots.value[lot - 1])
-  return 'Lot ' + lot
+  if (!!myLots.value[lot - 1].name) {
+    return 'Lot ' + lot
+  } else {
+    return 'Choisiez ou créer un lot'
+  }
 }
 </script>
