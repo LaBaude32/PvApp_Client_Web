@@ -60,7 +60,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="displayNextMeetingDate"
-              label="Date de la réunion"
+              label="Date de la prochaine réunion"
               readonly
               clearable
               @click:clear="pvData.meetingNextDateDate = null"
@@ -80,7 +80,7 @@
               <template v-slot:activator="{ props }">
                 <v-text-field
                   v-bind="props"
-                  label="Heure de la réunion"
+                  label="Heure de la prochaine réunion"
                   readonly
                   clearable
                   @click:clear="pvData.meetingNextDateTime = null"
