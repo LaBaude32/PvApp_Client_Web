@@ -3,28 +3,23 @@
     <v-card-title>Modifier l'ordre du jour de la réunion</v-card-title>
     <v-card-text>
       <v-form v-model="valid">
-        <VueDraggable v-model="agendas">
-          <v-text-field
+        <VueDraggable v-model="agendas" handle=".handle">
+          <div
             v-for="(agenda, index) in agendas"
             :key="agenda.position"
-            v-model="agenda.title"
-            class="bg-blue-lighten-5 rounded mb-2 px-5 pt-4"
-            variant="underlined"
-            :label="`Ordre du jour n°${index + 1}`"
-            :rules="FormRequiredRulesMin3"
-            clearable
+            class="d-flex align-center bg-blue-lighten-5 rounded mb-2"
           >
-            <template v-slot:prepend>
-              <v-icon icon="mdi-menu-swap" size="x-large" class="grabbing"></v-icon>
-            </template>
-            <template v-slot:append>
-              <v-btn
-                icon="mdi-delete"
-                variant="text"
-                @click="deleteAgenda(agenda.agendaId)"
-              ></v-btn>
-            </template>
-          </v-text-field>
+            <v-icon icon="mdi-menu-swap" size="x-large" class="handle cursor-move"></v-icon>
+            <v-text-field
+              v-model="agenda.title"
+              class="px-5 pt-4"
+              variant="underlined"
+              :label="`Ordre du jour n°${index + 1}`"
+              :rules="FormRequiredRulesMin3"
+              clearable
+            />
+            <v-btn icon="mdi-delete" variant="text" @click="deleteAgenda(agenda.agendaId)"></v-btn>
+          </div>
         </VueDraggable>
       </v-form>
       <div class="d-flex mt-5">
