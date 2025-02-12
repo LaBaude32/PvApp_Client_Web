@@ -14,17 +14,21 @@
               @click.prevent="modifyProgress"
             >
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
-              Editer l'avancement du Pv
+              Avancement du Pv
             </v-btn>
             <v-btn color="success" @click.prevent="modifyAgenda">
               <v-icon icon="mdi-calendar-edit " class="mr-2" />
-              Editer l'ordre du jour
+              Ordre du jour
+            </v-btn>
+            <v-btn color="success" @click.prevent="modifySchedule">
+              <v-icon icon="mdi-calendar-plus" class="mr-2" />
+              Prévisionnel
             </v-btn>
           </v-col>
           <v-col class="d-flex flex-column ga-2">
             <v-btn class="ml-5" color="warning" @click.prevent="downloadPDF">
               <v-icon icon="mdi-file-download" class="mr-2" />
-              un PDF provisoire
+              PDF provisoire
             </v-btn>
             <v-btn class="ml-5" color="primary" @click="ModalValidationDialog = true">
               <v-icon icon="mdi-check-all" class="mr-2" />
@@ -384,5 +388,12 @@ function modifyProgress() {
 
 function modifyAgenda() {
   agendaDialog.value = true
+}
+
+function modifySchedule() {
+  // id
+  // description - string
+  // deadline - string
+  //TODO: la question a se poser (comme pour l'avancement) c'est de savoir le numéro du lot est purement informatif ou si c'est une donnée qu'on pourrait avoir besoin de remonter dans l'autre sens
 }
 </script>
