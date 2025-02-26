@@ -116,7 +116,7 @@
           <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">
             Modifier les lots
           </v-btn>
-          <v-btn dark color="error" @click.prevent="(affairDialog = true), (dialog = true)"
+          <v-btn dark color="error" @click.prevent="((affairDialog = true), (dialog = true))"
             >Modifier l'affaire</v-btn
           >
         </v-card-actions>
@@ -358,6 +358,13 @@ async function downloadPvPdf(pv) {
 }
 
 function createPv() {
+  if (pvs.value.length > 0) {
+    pvData.value = PV_DATA
+    const previousPv = pvs.value.reduce((acc, actuel) => {
+      return actuel.pvId > acc.pvId ? actuel : acc
+    }, pvs.value[0])
+    pvData.value.meetingDate = previousPv.meetingDate //FIXME: ICI
+  }
   isNewPv.value = true
   pvModifyDialog.value = true
   dialog.value = true

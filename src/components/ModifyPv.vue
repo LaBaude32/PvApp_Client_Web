@@ -229,7 +229,11 @@ onMounted(() => {
       pvData.value.meetingNextDateTime = pvData.value.meetingNextDate.slice(-8)
     }
   } else {
-    pvData.value = PV_DATA
+    console.log(pvData.value)
+
+    if (!pvData.value.pvId) {
+      pvData.value = PV_DATA
+    }
   }
   const dtAffairs = {
     params: {
