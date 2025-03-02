@@ -1,3 +1,5 @@
+import type { DateInstance } from 'vuetify/dist/vuetify.js'
+
 export interface userDataForLogin {
   email: string
   password: string
@@ -39,4 +41,15 @@ export interface Agenda {
   position: number
   title: string
   pvId: number
+}
+
+export interface Pv {
+  meetingDateDate: DateInstance
+  meetingDateTime: string
+  meetingNextDateDate: DateInstance | string
+  meetingNextDateTime: null | string
+  meetingPlace: string
+  meetingNextPlace: null | string
+  affairId: number
+  state: string
 }

@@ -137,6 +137,7 @@ import Axios from 'axios'
 import routesCONST, { FormRequiredRulesMin3, FormAffairRules } from '@/utilities/constantes.ts'
 import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useUserStore } from '../store/user'
+import { useMeetingDateFormater } from '@/composables/useMeetingDateFormater'
 
 const userStore = useUserStore()
 const date = useDate()
@@ -222,16 +223,27 @@ function cancelForm() {
 onMounted(() => {
   if (!isNewPv.value) {
     pvData.value = { ...existingPvData.value }
-    pvData.value.meetingDateDate = date.parseISO(pvData.value.meetingDate.slice(0, 10))
-    pvData.value.meetingDateTime = pvData.value.meetingDate.slice(-8)
+    pvData.value.meetingDateDate = useMeetingDateFormater(pvData.value.meetingDate).meetingDateDate
+    pvData.value.meetingDateTime = useMeetingDateFormater(pvData.value.meetingDate).meetingDateTime
     if (pvData.value.meetingNextDate) {
-      pvData.value.meetingNextDateDate = date.parseISO(pvData.value.meetingNextDate.slice(0, 10))
-      pvData.value.meetingNextDateTime = pvData.value.meetingNextDate.slice(-8)
+      pvData.value.meetingNextDateDate = useMeetingDateFormater(
+        pvData.value.meetingNextDate
+      ).meetingDateDate
+      pvData.value.meetingNextDateTime = useMeetingDateFormater(
+        pvData.value.meetingNextDate
+      ).meetingDateTime
     }
   } else {
-    console.log(pvData.value)
-
+    if (pvData.value.meetingDate) {
+      pvData.value.meetingDateDate = useMeetingDateFormater(
+        pvData.value.meetingDate
+      ).meetingDateDate
+      pvData.value.meetingDateTime = useMeetingDateFormater(
+        pvData.value.meetingDate
+      ).meetingDateTime
+    }
     if (!pvData.value.pvId) {
+      //TODO: Je sais pas trop pourquoi j'ai ça
       pvData.value = PV_DATA
     }
   }

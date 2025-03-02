@@ -363,7 +363,12 @@ function createPv() {
     const previousPv = pvs.value.reduce((acc, actuel) => {
       return actuel.pvId > acc.pvId ? actuel : acc
     }, pvs.value[0])
-    pvData.value.meetingDate = previousPv.meetingDate //FIXME: ICI
+    if (previousPv.meetingNextDate) {
+      pvData.value.meetingDate = previousPv.meetingNextDate
+    }
+    if (previousPv.meetingNextPlace) {
+      pvData.value.meetingPlace = previousPv.meetingNextPlace
+    }
   }
   isNewPv.value = true
   pvModifyDialog.value = true
