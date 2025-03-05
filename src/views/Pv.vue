@@ -84,6 +84,10 @@
         @close-agenda-dialog="agendaDialog = false"
       />
     </v-dialog>
+
+    <v-dialog v-model="scheduleDialog" persistent max-width="80%">
+      <ModifySchedule @close-schedule-dialog="scheduleDialog = false" />
+    </v-dialog>
   </div>
 </template>
 
@@ -94,6 +98,7 @@ import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
 import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifyAgenda from '@/components/ModifyAgenda.vue'
+import ModifySchedule from '@/components/ModifySchedule.vue'
 import Axios from 'axios'
 import { getRouteName } from '@/utilities/constantes.ts'
 import { useRoute, useRouter } from 'vue-router'
@@ -116,6 +121,7 @@ const pvId = ref(Number)
 const dialog = ref(false)
 const progressDialog = ref(false)
 const agendaDialog = ref(false)
+const scheduleDialog = ref(false)
 const ModalValidationDialog = ref(false)
 const initialLots = ref([])
 const meetingType = ref(null)
@@ -391,9 +397,10 @@ function modifyAgenda() {
 }
 
 function modifySchedule() {
-  // id
-  // description - string
-  // deadline - string
-  //TODO: la question a se poser (comme pour l'avancement) c'est de savoir le numéro du lot est purement informatif ou si c'est une donnée qu'on pourrait avoir besoin de remonter dans l'autre sens
+  scheduleDialog.value = true
 }
+// id
+// description - string
+// deadline - string
+//TODO: la question a se poser (comme pour l'avancement) c'est de savoir le numéro du lot est purement informatif ou si c'est une donnée qu'on pourrait avoir besoin de remonter dans l'autre sens
 </script>

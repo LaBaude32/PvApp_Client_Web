@@ -47,9 +47,16 @@ export interface Pv {
   meetingDateDate: DateInstance
   meetingDateTime: string
   meetingNextDateDate: DateInstance | string
-  meetingNextDateTime: null | string
+  meetingNextDateTime?: string
   meetingPlace: string
-  meetingNextPlace: null | string
+  meetingNextPlace?: string
   affairId: number
   state: string
+}
+
+export interface Schedule {
+  scheduleId?: number
+  position: number
+  description: string
+  deadline: string
 }
