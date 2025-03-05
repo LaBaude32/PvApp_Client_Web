@@ -86,7 +86,10 @@
     </v-dialog>
 
     <v-dialog v-model="scheduleDialog" persistent max-width="80%">
-      <ModifySchedule @close-schedule-dialog="scheduleDialog = false" />
+      <ModifySchedule
+        @close-schedule-dialog="scheduleDialog = false"
+        v-model:schedules="schedules"
+      />
     </v-dialog>
   </div>
 </template>
@@ -160,6 +163,7 @@ const editedItem = ref({
   isImageChange: false
 })
 const agendas = ref([])
+const schedules = ref([])
 const defaultItem = ref(DEFAULT_ITEM)
 
 const userId = computed(() => {

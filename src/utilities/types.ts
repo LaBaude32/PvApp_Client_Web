@@ -55,7 +55,7 @@ export interface Pv {
 }
 
 export interface Schedule {
-  scheduleId?: number
+  scheduleId: number
   position: number
   description: string
   deadline: string
