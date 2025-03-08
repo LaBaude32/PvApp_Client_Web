@@ -59,4 +59,6 @@ export interface Schedule {
   position: number
   description: string
   deadline: string
+  pvId: number
+  lotId: number
 }

@@ -89,6 +89,9 @@
       <ModifySchedule
         @close-schedule-dialog="scheduleDialog = false"
         v-model:schedules="schedules"
+        :is-chantier="pvDetails.affairMeetingType == 'Chantier'"
+        :lots="pvDetails.lots"
+        :pv-id="pvId"
       />
     </v-dialog>
   </div>
@@ -195,6 +198,7 @@ async function getData() {
   pvUsers.value = res.data.participants
   pvConnectedParticipants.value = res.data.connectedParticipants
   agendas.value = res.data.pv.agendas
+  schedules.value = res.data.pv.schedules
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })

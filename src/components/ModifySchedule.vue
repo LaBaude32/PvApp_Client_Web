@@ -22,10 +22,20 @@
               v-model="schedule.deadline"
               class="px-5 pt-4"
               variant="underlined"
-              label="Date limite"
+              label="Échéance"
               :rules="FormRequiredRulesMin3"
-              clearablesd
+              clearable
             />
+            <v-select
+              v-if="isChantier && props.lots"
+              v-model="schedule.lotId"
+              :items="props.lots"
+              item-title="name"
+              item-value="lotId"
+              label="Lot"
+              variant="underlined"
+              :rules="FormRequiredRules"
+            ></v-select>
             <v-btn
               icon="mdi-delete"
               variant="text"
@@ -47,8 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import { FormRequiredRulesMin3 } from '@/utilities/constantes'
-import type { Schedule } from '@/utilities/types'
+import { FormRequiredRulesMin3, FormRequiredRules } from '@/utilities/constantes'
+import type { Lot, Schedule } from '@/utilities/types'
 import Axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
@@ -57,9 +67,11 @@ const emit = defineEmits(['closeScheduleDialog'])
 
 const valid = ref(false)
 
-// const props = defineProps<{
-//   pvId: number
-// }>()
+const props = defineProps<{
+  pvId: number
+  lots?: Lot[]
+  isChantier: boolean
+}>()
 
 const schedules = defineModel('schedules', { type: Array<Schedule>, default: [] })
 
@@ -87,19 +99,22 @@ function addSchedule() {
   if (!schedules.value) {
     schedules.value = [
       {
-        position: 0,
         scheduleId: -1,
+        position: 0,
         description: '',
-        deadline: ''
+        deadline: '',
+        pvId: props.pvId,
+        lotId: null
       }
     ]
   } else {
     schedules.value.push({
-      // pvId: props.pvId,
+      pvId: props.pvId,
       position: schedules.value.length + 1,
       description: '',
       deadline: '',
-      scheduleId: -schedules.value.length - 1
+      scheduleId: -schedules.value.length - 1,
+      lotId: null
     })
   }
 }
