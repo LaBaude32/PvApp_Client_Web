@@ -14,7 +14,7 @@
               @click.prevent="modifyProgress"
             >
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
-              Avancement du Pv
+              Avancement du chantier s-1
             </v-btn>
             <v-btn color="success" @click.prevent="modifyAgenda">
               <v-icon icon="mdi-calendar-edit " class="mr-2" />
