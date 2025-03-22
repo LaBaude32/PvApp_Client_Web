@@ -71,10 +71,11 @@
 
     <v-dialog v-model="progressDialog" persistent max-width="80%">
       <ModifyProgress
-        v-model:lots="pvDetails.lots"
-        :initialLots="initialLots"
+        v-model:progresses="progresses"
+        :lots="pvDetails.lots"
+        :is-chantier="pvDetails.affairMeetingType == 'Chantier'"
         :pvId="pvId"
-        @close-progress-dialog="progressDialog = false"
+        @close-progresses-dialog="progressDialog = false"
       />
     </v-dialog>
     <v-dialog v-model="agendaDialog" persistent max-width="80%">
@@ -167,6 +168,7 @@ const editedItem = ref({
 })
 const agendas = ref([])
 const schedules = ref([])
+const progresses = ref([])
 const defaultItem = ref(DEFAULT_ITEM)
 
 const userId = computed(() => {
@@ -199,6 +201,7 @@ async function getData() {
   pvConnectedParticipants.value = res.data.connectedParticipants
   agendas.value = res.data.pv.agendas
   schedules.value = res.data.pv.schedules
+  progresses.value = res.data.pv.progresses
   meetingType.value = res.data.pv.affairMeetingType
   if (meetingType.value == 'Chantier') {
     headers.value.splice(1, 0, { title: 'Lot', value: 'lots' })

@@ -1,8 +1,8 @@
 <template>
   <v-card>
-    <v-card-title>Modifier la progression des lots de l'affaire</v-card-title>
+    <v-card-title>Modifier la progression du chantier</v-card-title>
     <v-card-text>
-      <v-row align="center" v-for="lot in lots" class="mb-5 bg-blue-grey-lighten-5 rounded px-5">
+      <!-- <v-row align="center" v-for="lot in lots" class="mb-5 bg-blue-grey-lighten-5 rounded px-5">
         <v-col>
           <v-chip color="orange-darken-3" size="x-large">{{ lot.name }}</v-chip>
         </v-col>
@@ -35,7 +35,52 @@
               label="Accompli depuis la dernière réunion"
           /></v-row>
         </v-col>
-      </v-row>
+      </v-row> -->
+      <v-form v-model="valid">
+        <VueDraggable v-model="progresses" handle=".handle">
+          <div
+            v-for="(progress, index) in progresses"
+            :key="progress.position"
+            class="d-flex align-center bg-blue-lighten-5 rounded mb-2"
+          >
+            <v-icon icon="mdi-menu-swap" size="x-large" class="handle cursor-move"></v-icon>
+            <v-text-field
+              v-model="progress.description"
+              class="px-5 pt-4"
+              variant="underlined"
+              :label="`Avancement n°${index + 1}`"
+              :rules="FormRequiredRulesMin3"
+              clearable
+            />
+            <v-text-field
+              v-model="progress.progress"
+              class="px-5 pt-4"
+              variant="underlined"
+              label="Progression"
+              :rules="FormRequiredRulesMin3"
+              clearable
+            />
+            <v-select
+              v-if="isChantier && props.lots"
+              v-model="progress.lotId"
+              :items="props.lots"
+              item-title="name"
+              item-value="lotId"
+              label="Lot"
+              variant="underlined"
+              :rules="FormRequiredRules"
+            ></v-select>
+            <v-btn
+              icon="mdi-delete"
+              variant="text"
+              @click="deleteProgress(progress.progressId)"
+            ></v-btn>
+          </div>
+        </VueDraggable>
+      </v-form>
+      <div class="d-flex mt-5">
+        <v-btn icon="mdi-plus" color="blue-lighten-5" class="mx-auto" @click="addProgress"></v-btn>
+      </div>
     </v-card-text>
     <v-card-actions>
       <v-btn color="error" variant="text" @click="cancel">Annuler</v-btn>
@@ -47,41 +92,81 @@
 
 <script setup lang="ts">
 import { useNotificationStore } from '@/store/notification'
-import type { Lot } from '@/utilities/types'
+import { FormRequiredRules, FormRequiredRulesMin3 } from '@/utilities/constantes'
+import type { Lot, Progress } from '@/utilities/types'
 import Axios from 'axios'
+import { onMounted, ref } from 'vue'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const notifStore = useNotificationStore()
 
-const emit = defineEmits(['closeDialog', 'closeProgressDialog'])
+const emit = defineEmits(['closeProgressesDialog'])
+
+const valid = ref(false)
+
 const props = defineProps<{
-  initialLots: Lot[]
   pvId: number
+  lots?: Lot[]
+  isChantier: boolean
 }>()
 
-const lots = defineModel<Lot[]>('lots', { required: true })
+const progresses = defineModel('progresses', { type: Array<Progress>, default: [] })
 
-function save() {
-  //TODO: a opti un peu, là ça fait un call API par lot même si y'a pas de modif
-  const pvId = Number(props.pvId)
-  lots.value.forEach((lot) => {
-    lot.pvId = lot.pvId || pvId
-    Axios.put('lots/progress', lot)
-      .then((response) => {
-        if (response.status == 200) {
-          notifStore.success('La progession à correctement été mise à jour')
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  })
-  emit('closeProgressDialog')
-  emit('closeDialog')
-}
+onMounted(() => {
+  if (progresses.value) {
+    progresses.value = progresses.value.sort((a, b) => a.position - b.position)
+  }
+})
 
 function cancel() {
-  lots.value = props.initialLots
-  emit('closeProgressDialog')
-  emit('closeDialog')
+  emit('closeProgressesDialog')
+}
+
+function save() {
+  progresses.value!.forEach((progress, index) => {
+    progress.position = index
+  })
+  Axios.put('progresses/progressId', progresses.value).then((res) => {
+    if (res.status == 200) {
+      progresses.value = res.data.sort((a: Progress, b: Progress) => a.position - b.position)
+      notifStore.success('La progession à correctement été mise à jour')
+      emit('closeProgressesDialog')
+    }
+  })
+}
+function addProgress() {
+  if (progresses.value.length === 0) {
+    progresses.value = [
+      {
+        progressId: -1,
+        position: 0,
+        description: '',
+        progress: '',
+        pvId: props.pvId,
+        lotId: null
+      }
+    ]
+  } else {
+    progresses.value.push({
+      pvId: props.pvId,
+      position: progresses.value.length + 1,
+      description: '',
+      progress: '',
+      progressId: -progresses.value.length - 1,
+      lotId: null
+    })
+  }
+}
+
+function deleteProgress(progressId: number) {
+  const index = progresses.value!.findIndex((element) => element.progressId === progressId)
+  if (index !== -1 && progressId < 0) {
+    progresses.value!.splice(index, 1)
+  }
+  if (index !== -1 && progressId >= 0) {
+    Axios.delete('progresses/progressId', { params: { progressId: progressId } }).then((res) => {
+      progresses.value!.splice(index, 1)
+    })
+  }
 }
 </script>

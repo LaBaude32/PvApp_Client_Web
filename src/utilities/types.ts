@@ -62,3 +62,12 @@ export interface Schedule {
   pvId: number
   lotId: number
 }
+
+export interface Progress {
+  progressId: number
+  position: number
+  description: string
+  progress: string
+  pvId: number
+  lotId: number
+}
