@@ -28,9 +28,8 @@
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
-      <p>Phase : {{ affair.meetingType }}</p>
+      <p>Type d'opération : {{ affair.meetingType }}</p>
       <p v-if="affair.description" class="font-italic">{{ affair.description }}</p>
-      <!-- FIXME:ici il faudra récuperer la progression du Pv -->
       <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
         <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
           <v-row justify="center">
@@ -38,16 +37,6 @@
               {{ lot.name }}
             </v-chip>
           </v-row>
-          <v-row v-if="lot.progress != null" justify="center" class="mt-5">
-            <v-progress-circular
-              :model-value="lot.progress"
-              color="deep-orange lighten-2"
-              size="50"
-              width="5"
-            >
-              {{ lot.progress }} %
-            </v-progress-circular></v-row
-          >
         </v-col>
         <p v-else class="font-italic">Il n'y a pas de lots pour cette affaire</p>
       </v-row>
@@ -168,15 +157,12 @@ const headers = [
     value: 'meetingDate',
     sortable: false
   },
-  { title: 'Etat', align: 'center', value: 'state', sortable: true },
+  { title: 'État', align: 'center', value: 'state', sortable: true },
   { title: 'Lieu', align: 'center', value: 'meetingPlace', sortable: false },
   { title: 'Prochaine date', align: 'center', value: 'meetingNextDate', sortable: false },
   { title: 'Prochain lieu', align: 'center', value: 'meetingNextPlace', sortable: false },
   { title: 'Action', value: 'actions', align: 'center', sortable: false }
 ]
-const userId = computed(() => {
-  return userStore.user.userId
-})
 
 onMounted(() => {
   const affairId = route.params.id
@@ -185,30 +171,23 @@ onMounted(() => {
     params: {
       affairId: affairId
     }
-  }).then((res) => {
-    //FIXME:ne fonctionne pas parce qu'on ne récupère pas les lots dans le call précédent donc ils sont toujours à null et la deuxième condition n'est jamais vraie
-    if (res.data.meetingType == 'Chantier') {
-      Axios.get('affairs/full/affairId', {
-        params: {
-          affairId: affairId
-        }
-      })
-        .then((response) => {
-          affair.value = response.data
-          affairStore.registerAffair(response.data)
-          if (response.data.lots) {
-            lots.value = response.data.lots
-            affairStore.registerLotOnAffair(response.data.lots)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    } else {
+  })
+    .then((res) => {
       affair.value = res.data
       affairStore.registerAffair(res.data)
-    }
-  })
+      if (res.data.lots) {
+        lots.value = res.data.lots
+        if (res.data.meetingType == 'Chantier') {
+          affairStore.registerLotOnAffair(res.data.lots)
+        } else {
+          affairStore.registerAffair(res.data)
+        }
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+      notifStore.error('Une erreur est survenue lors de la récupération des données')
+    })
 
   Axios.get('pvs/affairId', {
     params: {
@@ -271,7 +250,7 @@ function modifyLotSave() {
           Axios.put('lots', dataToSend)
             .then((response) => {
               if (response.data.affairId != '') {
-                notifStore.success("La progession de l'affaire à correctement été mise à jour")
+                notifStore.success("La progression de l'affaire à correctement été mise à jour")
               }
             })
             .catch((error) => {
@@ -319,7 +298,7 @@ function ModifyAffairSave() {
   Axios.put('affairs/affairId', affair.value)
     .then((response) => {
       if (response.status == 200) {
-        notifStore.success("La progession de l'affaire à correctement été mise à jour")
+        notifStore.success("La progression de l'affaire à correctement été mise à jour")
       }
     })
     .catch((error) => {

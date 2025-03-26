@@ -8,13 +8,11 @@
         </v-col>
         <v-col class="d-flex">
           <v-col class="d-flex flex-column ga-2" align-self="center">
-            <v-btn
-              v-if="pvDetails.affairMeetingType == 'Chantier' && pvDetails.lots"
-              color="success"
-              @click.prevent="modifyProgress"
-            >
+            <v-btn color="success" @click.prevent="modifyProgress">
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
-              Avancement du chantier s-1
+              Avancement
+              {{ pvDetails.affairMeetingType == 'Chantier' ? 'du chantier' : "de l'étude" }}
+              s-1
             </v-btn>
             <v-btn color="success" @click.prevent="modifyAgenda">
               <v-icon icon="mdi-calendar-edit " class="mr-2" />
@@ -81,7 +79,7 @@
     <v-dialog v-model="agendaDialog" persistent max-width="80%">
       <ModifyAgenda
         v-model:agendas="agendas"
-        :pv-id="pvId"
+        :pvId="pvId"
         @close-agenda-dialog="agendaDialog = false"
       />
     </v-dialog>
@@ -145,8 +143,8 @@ const headers = ref([
   { title: 'Note', value: 'note', sortable: false },
   { title: 'Suite à donner', value: 'followUp', sortable: false },
   { title: 'Ressource', value: 'resources', sortable: false },
-  { title: 'Echeance', value: 'completion', sortable: false },
-  { title: "Date d'echéance", value: 'completionDate' },
+  { title: 'Échéance', value: 'completion', sortable: false },
+  { title: "Date d’échéance", value: 'completionDate' },
   { title: 'Visible', value: 'visible' },
   { title: 'Photo', value: 'image' },
   { title: 'Actions', value: 'actions', sortable: false }
@@ -226,7 +224,7 @@ function editItem(item) {
 
 function deleteItem(item) {
   const index = items.value.indexOf(item)
-  confirm('Etes-vous sûr de vouloir supprimer cet item?') &&
+  confirm('Êtes-vous sûr de vouloir supprimer cet item?') &&
     Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {

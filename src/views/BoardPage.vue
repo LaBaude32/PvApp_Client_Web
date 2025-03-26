@@ -102,7 +102,6 @@ const headers = [
     title: 'Nom'
   },
   { align: 'center', key: 'address', title: 'Adresse', sortable: false },
-  { align: 'center', key: 'progress', title: 'Progression' },
   { align: 'center', key: 'meetingType', title: "Type d'affaire" },
   { align: 'center', key: 'action', sortable: false }
 ]

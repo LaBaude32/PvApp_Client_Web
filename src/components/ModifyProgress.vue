@@ -2,40 +2,6 @@
   <v-card>
     <v-card-title>Modifier la progression du chantier</v-card-title>
     <v-card-text>
-      <!-- <v-row align="center" v-for="lot in lots" class="mb-5 bg-blue-grey-lighten-5 rounded px-5">
-        <v-col>
-          <v-chip color="orange-darken-3" size="x-large">{{ lot.name }}</v-chip>
-        </v-col>
-        <v-col>
-          <v-progress-circular
-            :model-value="lot.progress"
-            color="deep-orange lighten-2"
-            size="80"
-            width="8"
-          >
-            {{ lot.progress }} %
-          </v-progress-circular>
-        </v-col>
-        <v-col cols="8">
-          <v-row>
-            <v-slider
-              v-model="lot.progress"
-              color="orange"
-              thumb-label
-              step="5"
-              show-ticks="always"
-              tick-size="2"
-              class="mt-10"
-            />
-          </v-row>
-          <v-row
-            ><v-text-field
-              clearable
-              v-model="lot.alreadyDone"
-              label="Accompli depuis la dernière réunion"
-          /></v-row>
-        </v-col>
-      </v-row> -->
       <v-form v-model="valid">
         <VueDraggable v-model="progresses" handle=".handle">
           <div
@@ -85,7 +51,13 @@
     <v-card-actions>
       <v-btn color="error" variant="text" @click="cancel">Annuler</v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="success" variant="text" @click="save">Enregistrer</v-btn>
+      <v-btn
+        :disabled="!valid || progresses.length === 0"
+        color="success"
+        variant="text"
+        @click="save"
+        >Enregistrer</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>
@@ -135,7 +107,7 @@ function save() {
   })
 }
 function addProgress() {
-  if (progresses.value.length === 0) {
+  if (progresses.value === null || progresses.value.length === 0) {
     progresses.value = [
       {
         progressId: -1,

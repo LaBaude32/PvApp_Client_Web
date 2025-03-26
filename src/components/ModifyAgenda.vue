@@ -29,7 +29,9 @@
     <v-card-actions>
       <v-btn color="error" variant="text" @click="cancel">Annuler</v-btn>
       <v-spacer></v-spacer>
-      <v-btn :disabled="!valid" color="success" variant="text" @click="save">Enregistrer</v-btn>
+      <v-btn :disabled="!valid || agendas.length === 0" color="success" variant="text" @click="save"
+        >Enregistrer</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>

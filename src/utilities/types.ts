@@ -21,8 +21,6 @@ export interface Lot {
   lotId?: number
   pvId?: number
   name: string
-  progress: number
-  alreadyDone?: string
   affairId?: number
 }
 
@@ -31,7 +29,6 @@ export interface Affair {
   name: string
   meetingType: 'Chantier' | 'Etude'
   address: string
-  progress: number
   description: string
   lots?: Lot[]
 }
