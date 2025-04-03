@@ -25,6 +25,11 @@
         :cancel="ModifyLotCancel"
       />
     </v-dialog>
+    <ValidationDialog
+      v-model:dialog="ModalValidationDialog"
+      @validation="archiveAffair()"
+      actionText="archiver l'affaire"
+    />
     <v-container class="mb-5">
       <h3>Affaire : {{ affair.name }}</h3>
       <p>Adresse : {{ affair.address }}</p>
@@ -101,6 +106,9 @@
     <v-card max-width="80%" class="mx-auto mt-10">
       <v-container>
         <v-card-actions>
+          <v-btn color="success" @click.prevent="ModalValidationDialog = true">
+            Archiver l'affaire
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">
             Modifier les lots
@@ -128,6 +136,7 @@ import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useNotificationStore } from '../store/notification'
 import { useAffairStore } from '../store/affair'
 import { useUserStore } from '../store/user'
+import ValidationDialog from '@/components/ValidationDialog.vue'
 
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
@@ -135,6 +144,7 @@ const affairStore = useAffairStore()
 const router = useRouter()
 const route = useRoute()
 
+const ModalValidationDialog = ref(false)
 const affairDialog = ref(false)
 const pvModifyDialog = ref(false)
 const lotModifyDialog = ref(false)
@@ -366,5 +376,11 @@ function closePvDialog(isSaved) {
 
 function cancelAffairDialog() {
   dialog.value = false
+}
+
+function archiveAffair() {
+  Axios.put(`/affairs/archive/affairId`, { affairId: affair.value.affairId }).then(() => {
+    router.push({ name: 'Board' })
+  })
 }
 </script>
