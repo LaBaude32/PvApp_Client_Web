@@ -6,7 +6,7 @@
         :headers="headers"
         :items="data"
         :search="search"
-        :sort-by="[{ key: 'releaseDate', order: 'desc' }]"
+        :sort-by="[{ key: 'meetingDate', order: 'desc' }]"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -28,7 +28,7 @@
           {{ $filters.formatDateWithA(item.meetingDate) }}
         </template>
         <template v-slot:item.actionReOpen="{ item }">
-          <v-btn small class="mr-2" color="warning" @click="showReOpen(item)">Débloquer</v-btn>
+          <v-btn v-if="item.releaseDate" small class="mr-2" color="warning" @click="showReOpen(item)">Débloquer</v-btn>
         </template>
         <template v-slot:item.actionDelete="{ item }">
           <v-btn small class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
@@ -74,7 +74,7 @@ import type { Pv } from '@/utilities/types'
 const userStore = useUserStore()
 const router = useRouter()
 
-const { data } = useAxios('/pvs/userId/released', {
+const { data } = useAxios('/pvs/userId', {
   params: {
     userId: userStore.user.userId
   }
