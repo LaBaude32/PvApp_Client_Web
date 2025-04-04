@@ -34,7 +34,7 @@
               item-value="lotId"
               label="Lot"
               variant="underlined"
-              :rules="FormRequiredRules"
+              clearable
             ></v-select>
             <v-btn
               icon="mdi-delete"
