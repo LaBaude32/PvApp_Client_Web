@@ -25,7 +25,10 @@
                 <v-btn v-bind="props" color="warning" dark class="mb-2">Nouvel item</v-btn>
               </template>
               <v-card>
-                <v-form>
+                <div v-if="isSavingForm">
+                  <SavingLoader></SavingLoader>
+                </div>
+                <v-form v-else>
                   <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
                   </v-card-title>
@@ -208,6 +211,7 @@ import { ref, watch, computed } from 'vue'
 import { useDate } from 'vuetify'
 import { DEFAULT_ITEM } from '../utilities/dataConst'
 import { FormRequiredRules } from '../utilities/constantes.ts'
+import SavingLoader from './SavingLoader.vue'
 
 const date = useDate()
 
@@ -223,7 +227,8 @@ defineProps({
   deleteItem: Function,
   close: Function,
   save: Function,
-  changeVisible: Function
+  changeVisible: Function,
+  isSavingForm: Boolean
 })
 const dialog = defineModel('dialog', { type: Boolean, required: true, default: false })
 const items = defineModel('items', { type: Array, required: true })

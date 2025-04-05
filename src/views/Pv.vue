@@ -54,6 +54,7 @@
       :close="close"
       :save="save"
       :changeVisible="changeVisible"
+      :isSavingForm="isSavingForm"
     />
     <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
 
@@ -144,7 +145,7 @@ const headers = ref([
   { title: 'Suite à donner', value: 'followUp', sortable: false },
   { title: 'Ressource', value: 'resources', sortable: false },
   { title: 'Échéance', value: 'completion', sortable: false },
-  { title: "Date d’échéance", value: 'completionDate' },
+  { title: 'Date d’échéance', value: 'completionDate' },
   { title: 'Visible', value: 'visible' },
   { title: 'Photo', value: 'image' },
   { title: 'Actions', value: 'actions', sortable: false }
@@ -243,7 +244,10 @@ function close() {
   editedIndex.value = -1
 }
 
+const isSavingForm = ref(false)
+
 async function save() {
+  isSavingForm.value = true
   const itemToBeSend = formatItemToBeSend()
   let message
   if (editedIndex.value > -1) {
@@ -262,6 +266,7 @@ async function save() {
     items.value.push(item)
     message = "Ajout de l'item effectué"
   }
+  isSavingForm.value = false
   close()
   editedItem.value = { ...defaultItem.value }
   notifStore.success(message)

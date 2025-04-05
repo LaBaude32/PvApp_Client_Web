@@ -1,130 +1,135 @@
 <template>
   <v-card class="pa-2 pb-3">
-    <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
-    <v-card-title v-else>
-      Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}
-    </v-card-title>
-    <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
-      <p>Chargement des données</p>
-      <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
-    </v-card-text>
-    <v-form v-else ref="my-form" v-model="isFormValid">
-      <v-card-text>
-        <v-row>
-          <v-col cols="6" lg="6">
-            <v-text-field
-              label="Date de la réunion"
-              readonly
-              clearable
-              @click:clear="pvData.meetingDateDate = null"
-              @click:control="meetingDateDateDialog = true"
-              prepend-inner-icon="mdi-calendar"
-              v-model="displayMeetingDate"
-            ></v-text-field>
-            <v-dialog v-model="meetingDateDateDialog" width="auto">
-              <v-date-picker
-                title="Selectionner une date"
-                header="Nouvelle date"
-                v-model="pvData.meetingDateDate"
-              ></v-date-picker>
-            </v-dialog>
-          </v-col>
-          <v-col cols="6" sm="6">
-            <v-menu :close-on-content-click="false">
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  label="Heure de la réunion"
-                  readonly
-                  clearable
-                  @click:clear="pvData.meetingDateTime = null"
-                  prepend-inner-icon="mdi-clock-outline"
-                  v-model="pvData.meetingDateTime"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                title="Selectionner l'heure"
-                format="24hr"
-                v-model="pvData.meetingDateTime"
-              ></v-time-picker>
-            </v-menu>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              v-model="pvData.meetingPlace"
-              counter
-              label="Lieu de la réunion"
-              :rules="FormRequiredRulesMin3"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6" lg="6">
-            <v-text-field
-              v-model="displayNextMeetingDate"
-              label="Date de la prochaine réunion"
-              readonly
-              clearable
-              @click:clear="pvData.meetingNextDateDate = null"
-              @click:control="meetingNextDateDialog = true"
-              prepend-inner-icon="mdi-calendar"
-            ></v-text-field>
-            <v-dialog v-model="meetingNextDateDialog" width="auto">
-              <v-date-picker
-                title="Selectionner une date"
-                header="Nouvelle date"
-                v-model="pvData.meetingNextDateDate"
-              ></v-date-picker>
-            </v-dialog>
-          </v-col>
-          <v-col cols="6" sm="6">
-            <v-menu :close-on-content-click="false">
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  label="Heure de la prochaine réunion"
-                  readonly
-                  clearable
-                  @click:clear="pvData.meetingNextDateTime = null"
-                  prepend-inner-icon="mdi-clock-outline"
-                  v-model="pvData.meetingNextDateTime"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                title="Selectionner l'heure"
-                format="24hr"
-                v-model="pvData.meetingNextDateTime"
-              ></v-time-picker>
-            </v-menu>
-          </v-col>
-
-          <v-col cols="12">
-            <v-text-field
-              v-model="pvData.meetingNextPlace"
-              counter
-              label="Lieu de la prochaine réunion"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-select
-              v-model="pvData.affairId"
-              :items="affairs"
-              item-title="name"
-              item-value="affairId"
-              label="Affaire"
-              :rules="FormAffairRules"
-              :disabled="props.affairId != undefined"
-            ></v-select>
-          </v-col>
-        </v-row>
+    <div v-if="isSavingForm">
+      <SavingLoader></SavingLoader>
+    </div>
+    <div v-else>
+      <v-card-title v-if="isNewPv">Nouveau procès verbal</v-card-title>
+      <v-card-title v-else>
+        Modifier le PV du {{ $filters.formatDateWithA(pvData.meetingDate) }}
+      </v-card-title>
+      <v-card-text v-if="datasIsLoading" class="pa-4 text-center">
+        <p>Chargement des données</p>
+        <v-progress-circular color="primary" indeterminate="disable-shrink" size="70" width="5" />
       </v-card-text>
-      <v-card-actions>
-        <!-- TODO:Ajouter un bouton pour supprimer un PV -->
-        <v-btn color="error" @click="cancelForm">Annuler</v-btn>
-        <v-spacer />
-        <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">
-          Enregistrer
-        </v-btn>
-      </v-card-actions>
-    </v-form>
+      <v-form v-else ref="my-form" v-model="isFormValid">
+        <v-card-text>
+          <v-row>
+            <v-col cols="6" lg="6">
+              <v-text-field
+                label="Date de la réunion"
+                readonly
+                clearable
+                @click:clear="pvData.meetingDateDate = null"
+                @click:control="meetingDateDateDialog = true"
+                prepend-inner-icon="mdi-calendar"
+                v-model="displayMeetingDate"
+              ></v-text-field>
+              <v-dialog v-model="meetingDateDateDialog" width="auto">
+                <v-date-picker
+                  title="Selectionner une date"
+                  header="Nouvelle date"
+                  v-model="pvData.meetingDateDate"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="6" sm="6">
+              <v-menu :close-on-content-click="false">
+                <template v-slot:activator="{ props }">
+                  <v-text-field
+                    v-bind="props"
+                    label="Heure de la réunion"
+                    readonly
+                    clearable
+                    @click:clear="pvData.meetingDateTime = null"
+                    prepend-inner-icon="mdi-clock-outline"
+                    v-model="pvData.meetingDateTime"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  title="Selectionner l'heure"
+                  format="24hr"
+                  v-model="pvData.meetingDateTime"
+                ></v-time-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="pvData.meetingPlace"
+                counter
+                label="Lieu de la réunion"
+                :rules="FormRequiredRulesMin3"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6" lg="6">
+              <v-text-field
+                v-model="displayNextMeetingDate"
+                label="Date de la prochaine réunion"
+                readonly
+                clearable
+                @click:clear="pvData.meetingNextDateDate = null"
+                @click:control="meetingNextDateDialog = true"
+                prepend-inner-icon="mdi-calendar"
+              ></v-text-field>
+              <v-dialog v-model="meetingNextDateDialog" width="auto">
+                <v-date-picker
+                  title="Selectionner une date"
+                  header="Nouvelle date"
+                  v-model="pvData.meetingNextDateDate"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="6" sm="6">
+              <v-menu :close-on-content-click="false">
+                <template v-slot:activator="{ props }">
+                  <v-text-field
+                    v-bind="props"
+                    label="Heure de la prochaine réunion"
+                    readonly
+                    clearable
+                    @click:clear="pvData.meetingNextDateTime = null"
+                    prepend-inner-icon="mdi-clock-outline"
+                    v-model="pvData.meetingNextDateTime"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  title="Selectionner l'heure"
+                  format="24hr"
+                  v-model="pvData.meetingNextDateTime"
+                ></v-time-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12">
+              <v-text-field
+                v-model="pvData.meetingNextPlace"
+                counter
+                label="Lieu de la prochaine réunion"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-select
+                v-model="pvData.affairId"
+                :items="affairs"
+                item-title="name"
+                item-value="affairId"
+                label="Affaire"
+                :rules="FormAffairRules"
+                :disabled="props.affairId != undefined"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <!-- TODO:Ajouter un bouton pour supprimer un PV -->
+          <v-btn color="error" @click="cancelForm">Annuler</v-btn>
+          <v-spacer />
+          <v-btn :disabled="!isFormValid" color="success" class="mr-4" @click="saveForm">
+            Enregistrer
+          </v-btn>
+        </v-card-actions>
+      </v-form>
+    </div>
   </v-card>
 </template>
 
@@ -138,6 +143,7 @@ import routesCONST, { FormRequiredRulesMin3, FormAffairRules } from '@/utilities
 import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useUserStore } from '../store/user'
 import { useMeetingDateFormater } from '@/composables/useMeetingDateFormater'
+import SavingLoader from './SavingLoader.vue'
 
 const userStore = useUserStore()
 const date = useDate()
@@ -177,7 +183,10 @@ const displayNextMeetingDate = computed({
   }
 })
 
+const isSavingForm = ref(false)
+
 function saveForm() {
+  isSavingForm.value = true
   const data = {
     meetingDate: date.toISO(pvData.value.meetingDateDate) + 'T' + pvData.value.meetingDateTime,
     meetingPlace: pvData.value.meetingPlace,
@@ -192,6 +201,7 @@ function saveForm() {
     Axios.post('pvs', data)
       .then((response) => {
         const pvId = response.data.pvId
+        isSavingForm.value = false
         router.push({
           name: routesCONST.pv.name,
           params: { id: pvId }
@@ -207,6 +217,7 @@ function saveForm() {
       existingPvData.value = res.data
       isNewPv.value = false
       isSaved.value = true
+      isSavingForm.value = false
       emit('closeDialog', isSaved.value)
     })
   }
