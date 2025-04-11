@@ -15,6 +15,7 @@
             ></v-combobox>
           </v-col> -->
           <v-col cols="12" v-for="lot in numberLots" :key="lot.id">
+            <!-- FIXME: la suppression de lot ne fonctionne pas si des lots sont utilisé dans un item ou agenda ou schedule  -->
             <v-combobox
               v-model="myLots[lot - 1].name"
               :label="getLabel(lot)"

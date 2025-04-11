@@ -84,3 +84,40 @@ export const EDITED_ITEM = {
 export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', null]
 
 export const LOT_DEFAULT = ['MOA', 'AMO', 'MOE', 'PPA', 'SPS', 'CONCES']
+
+export const AGENDA_HEARDERS = [
+  {
+    title: 'Ordre du jour',
+    value: 'title'
+  }
+]
+
+export const SCHEDULE_HEARDERS = [
+  {
+    title: 'Lot',
+    value: 'lotName'
+  },
+  {
+    title: 'Prévisionnel',
+    value: 'description'
+  },
+  {
+    title: 'Echéance',
+    value: 'deadline'
+  }
+]
+
+export const PROGRESS_HEARDERS = [
+  {
+    title: 'Lot',
+    value: 'lotName'
+  },
+  {
+    title: 'Descriptif',
+    value: 'description'
+  },
+  {
+    title: 'Avancement',
+    value: 'progress'
+  },
+]

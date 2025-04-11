@@ -10,18 +10,18 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@vueuse/integrations": "^13.0.0",
+    "@vueuse/integrations": "^13.1.0",
     "axios": "^1.8.4",
     "luxon": "^3.6.1",
     "md5": "^2.3.0",
-    "pinia": "^3.0.1",
+    "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.2.0",
     "qrcode": "^1.5.4",
     "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.13",
     "vue-draggable-plus": "^0.6.0",
     "vue-router": "^4.5.0",
-    "vuetify": "^3.8.0"
+    "vuetify": "^3.8.1"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
@@ -61,5 +61,5 @@
     "> 1%",
     "last 2 versions"
   ],
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "yarn@4.9.0"
 }

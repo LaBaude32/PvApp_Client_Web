@@ -1,6 +1,6 @@
 <template>
   <div class="mb-10">
-    <v-container>
+    <!-- <v-container>
       <v-row class="text-center">
         <v-col>
           <h2 class="text-red">
@@ -9,7 +9,7 @@
           </h2>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
     <v-container>
       <v-row>
         <v-col cols="12" class="text-center">
@@ -19,8 +19,6 @@
           <p class="text-uppercase text-h4">Opération :</p>
           <v-divider />
           <p class="mt-2 text-h5">{{ affairInfos.name }}</p>
-          <v-divider />
-          <p class="mt-2 text-h7">Avancement : {{ affairInfos.progress }}%</p>
           <v-divider />
           <p class="mt-2 text-subtitle-1-1">{{ affairInfos.description }}</p>
           <v-row v-if="maitreDOuvrage">
@@ -45,7 +43,7 @@
             {{ $filters.formatDateWithA(pvDetails.meetingDate) }}
             <span v-if="pvDetails.meetingPlace">, {{ pvDetails.meetingPlace }}</span>
           </p>
-          <p v-if="pvDetails.meetingNextDate" class="red--text text-h6">
+          <p v-if="pvDetails.meetingNextDate" class="red--text text-h7">
             Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }},
             {{ pvDetails.meetingNextPlace }}
           </p>
@@ -58,6 +56,11 @@
       :headers="USER_HEADERS"
       :sortBy="[{ key: 'userGroup', order: 'asc' }]"
     />
+    <v-container>
+      <v-divider class="my-10" />
+    </v-container>
+    <finishedPvAgenda v-if="pvDetails.agendas" :agendas="pvDetails.agendas"></finishedPvAgenda>
+    <finishedPvSchedule></finishedPvSchedule>
     <v-container>
       <v-divider class="my-10" />
     </v-container>
@@ -86,6 +89,8 @@
 <script setup>
 import finishedPvItems from '@/components/FinishedPvItems.vue'
 import finishedPvUsers from '@/components/FinishedPvUsers.vue'
+import finishedPvAgenda from '@/components/FinishedPv/FinichedPvAgenda.vue'
+import finishedPvSchedule from '@/components/FinishedPv/FinichedPvSchedule.vue'
 import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
