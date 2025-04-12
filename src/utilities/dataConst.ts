@@ -51,7 +51,8 @@ export const ITEM_HEADERS = [
   { title: 'Suite à donner', value: 'followUp', sortable: false },
   { title: 'Ressource', value: 'resources', sortable: false },
   { title: 'Echeance', value: 'completion', sortable: false },
-  { title: "Date d'echéance", value: 'completionDate' }
+  { title: "Date d'echéance", value: 'completionDate' },
+  { title: 'Photo', value: 'image' }
 ]
 
 export const PV_DATA = {
@@ -119,5 +120,5 @@ export const PROGRESS_HEARDERS = [
   {
     title: 'Avancement',
     value: 'progress'
-  },
+  }
 ]

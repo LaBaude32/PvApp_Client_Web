@@ -1206,12 +1206,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.14.0":
-  version: 22.14.0
-  resolution: "@types/node@npm:22.14.0"
+"@types/node@npm:^22.14.1":
+  version: 22.14.1
+  resolution: "@types/node@npm:22.14.1"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/9d79f3fa1af9c2c869514f419c4a4905b34c10e12915582fd1784868ac4e74c6d306cf5eb47ef889b6750ab85a31be96618227b86739c4a3e0b1c15063f384c6
+  checksum: 10c0/d49c4d00403b1c2348cf0701b505fd636d80aabe18102105998dc62fdd36dcaf911e73c7a868c48c21c1022b825c67b475b65b1222d84b704d8244d152bb7f86
   languageName: node
   linkType: hard
 
@@ -4415,7 +4415,7 @@ __metadata:
     "@tsconfig/node20": "npm:^20.1.5"
     "@types/luxon": "npm:^3.6.2"
     "@types/md5": "npm:^2.3.5"
-    "@types/node": "npm:^22.14.0"
+    "@types/node": "npm:^22.14.1"
     "@types/qrcode": "npm:^1.5.5"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^10.2.0"
@@ -4434,7 +4434,7 @@ __metadata:
     qrcode: "npm:^1.5.4"
     sass: "npm:~1.86.3"
     typescript: "npm:^5.8.3"
-    vite: "npm:^6.2.5"
+    vite: "npm:^6.2.6"
     vite-plugin-vue-devtools: "npm:^7.7.2"
     vite-plugin-vuetify: "npm:^2.1.1"
     vue: "npm:^3.5.13"
@@ -5236,9 +5236,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.5":
-  version: 6.2.5
-  resolution: "vite@npm:6.2.5"
+"vite@npm:^6.2.6":
+  version: 6.2.6
+  resolution: "vite@npm:6.2.6"
   dependencies:
     esbuild: "npm:^0.25.0"
     fsevents: "npm:~2.3.3"
@@ -5284,7 +5284,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/226bb3c1875e1982559007007580e8d083b81f5289f18e28841d622ba030599e1bd9926adccc8264879e319e9f9e4f48a38a0dc52a5dfcdf2a9cb7313bfc1816
+  checksum: 10c0/68a2ed3e61bdd654c59b817b4f3203065241c66d1739faa707499130f3007bc3a666c7a8320a4198e275e62b5e4d34d9b78a6533f69e321d366e76f5093b2071
   languageName: node
   linkType: hard
 

@@ -60,10 +60,14 @@
       <v-divider class="my-10" />
     </v-container>
     <finishedPvAgenda v-if="pvDetails.agendas" :agendas="pvDetails.agendas"></finishedPvAgenda>
-    <finishedPvSchedule></finishedPvSchedule>
-    <v-container>
-      <v-divider class="my-10" />
-    </v-container>
+    <finishedPvSchedule
+      v-if="pvDetails.schedules"
+      :schedules="pvDetails.schedules"
+    ></finishedPvSchedule>
+    <finishedPvProgress
+      v-if="pvDetails.progress"
+      :progress="pvDetails.progress"
+    ></finishedPvProgress>
     <finishedPvItems
       v-if="meetingType"
       :items="items"
@@ -87,10 +91,11 @@
 </template>
 
 <script setup>
-import finishedPvItems from '@/components/FinishedPvItems.vue'
-import finishedPvUsers from '@/components/FinishedPvUsers.vue'
+import finishedPvItems from '@/components/FinishedPv/FinishedPvItems.vue'
+import finishedPvUsers from '@/components/FinishedPv/FinishedPvUsers.vue'
 import finishedPvAgenda from '@/components/FinishedPv/FinichedPvAgenda.vue'
 import finishedPvSchedule from '@/components/FinishedPv/FinichedPvSchedule.vue'
+import finishedPvProgress from '@/components/FinishedPv/FinichedPvProgress.vue'
 import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
