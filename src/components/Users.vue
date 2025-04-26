@@ -401,9 +401,10 @@ function registerUser(user) {
 }
 
 function saveParticipant(participant) {
-  Axios.put('/participants/userId/updateStatus', participant)
+  Axios.put('/participants/userId', participant)
     .then((response) => {
       if (response.status == 200) {
+        //FIXME: pas correctement mis à jour sur les champs spéciaux (status)
         Object.assign(users.value[editedIndex.value], response.data)
         notifStore.success('Le participant à bien été ajouté')
       }
@@ -418,9 +419,10 @@ function saveNewOrModifiedUser() {
   data.pvId = Number(pvId.value)
   data.userGroup = data.userGroupToReturn
   if (editedIndex.value > -1) {
+    //l'utilisateur existe, il faut le modifier
     saveParticipant(data)
   } else {
-    //l'utilisateur n'existe pas, il faut le creer
+    //l'utilisateur n'existe pas, il faut le créer
     data.password = affairName.value
     registerUser(data).then((newUser) => {
       newUser.statusPAE = data.statusPAE
