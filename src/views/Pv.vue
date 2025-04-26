@@ -147,6 +147,7 @@ const headers = ref([
   { title: 'Ressource', value: 'resources', sortable: false },
   { title: 'Échéance', value: 'completion', sortable: false },
   { title: 'Date d’échéance', value: 'completionDate' },
+  { title: 'Rappel', value: 'reminder', sortable: false },
   { title: 'Visible', value: 'visible' },
   { title: 'Photo', value: 'image' },
   { title: 'Actions', value: 'actions', sortable: false }
@@ -162,6 +163,7 @@ const editedItem = ref({
   completion: '',
   completionToReturn: null,
   completionDate: '',
+  reminder: '',
   image: null,
   visible: '',
   isImageChange: false

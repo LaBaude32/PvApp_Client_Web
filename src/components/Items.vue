@@ -58,7 +58,7 @@
                             deletable-chips
                           ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="4" md="4">
+                        <v-col cols="12" sm="4" md="4" class="d-flex justify-center">
                           <v-switch
                             v-model="editedItem.visible"
                             label="Visible"
@@ -114,6 +114,11 @@
                               v-model="editedItem.completionDate"
                             ></v-date-picker>
                           </v-dialog>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field v-model="editedItem.reminder" label="Rappel" clearable />
                         </v-col>
                       </v-row>
                       <v-row>
