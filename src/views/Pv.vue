@@ -114,6 +114,7 @@ import { useAffairStore } from '@/store/affair'
 import { useUserStore } from '@/store/user'
 import { useDate } from 'vuetify'
 import { DateTime, Settings } from 'luxon'
+import Compressor from 'compressorjs'
 Settings.defaultLocale = 'fr'
 
 const userStore = useUserStore()
@@ -282,14 +283,38 @@ async function postItem(itemWithoutImage) {
 }
 
 async function uploadImage(itemId) {
-  const fdImage = new FormData()
-  fdImage.append('itemId', itemId)
-  fdImage.append('image', editedItem.value.image)
+  if (!editedItem.value.image) {
+    return Promise.reject(new Error("Aucune image n'est sélectionnée"))
+  }
+
+  const promisfiedCompressor = (file, quality = 0.8, maxHeight = 1080, maxWidth = 1920) => {
+    return new Promise((resolve, reject) => {
+      new Compressor(file, {
+        quality: quality,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        success(blob) {
+          resolve(blob) // Promise succeeded
+        },
+        error(err) {
+          reject(err) // abort the Promise
+        }
+      })
+    })
+  }
   try {
-    const res = await Axios.post('items/uploadImage', fdImage)
-    return res.data
-  } catch (error) {
-    throw new Error('erreur: ' + error)
+    const compressedImage = await promisfiedCompressor(editedItem.value.image)
+    const fdImage = new FormData()
+    fdImage.append('itemId', itemId)
+    fdImage.append('image', compressedImage)
+    try {
+      const res = await Axios.post('items/uploadImage', fdImage)
+      return res.data
+    } catch (error) {
+      console.log('Upload failed:', error)
+    }
+  } catch (err) {
+    console.error('Compression failed:', err)
   }
 }
 
