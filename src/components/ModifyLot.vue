@@ -4,18 +4,7 @@
     <v-form v-model="valid" ref="form">
       <v-card-text>
         <v-row>
-          <!-- <v-col cols="12">
-            <v-combobox
-              v-model="affair_id"
-              :items="affairs"
-              item-text="name"
-              item-value="id_affair"
-              label="Affaire"
-              :rules="affairRules"
-            ></v-combobox>
-          </v-col> -->
-          <v-col cols="12" v-for="lot in numberLots" :key="lot.id">
-            <!-- FIXME: la suppression de lot ne fonctionne pas si des lots sont utilisé dans un item ou agenda ou schedule  -->
+          <v-col cols="12" v-for="lot in numberOfLots">
             <v-combobox
               v-model="myLots[lot - 1].name"
               :label="getLabel(lot)"
@@ -39,29 +28,30 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { FormStandardRules } from '@/utilities/constantes.ts'
 import { LOT_DEFAULT } from '@/utilities/dataConst.ts'
+import type { Lot } from '@/utilities/types'
 import { ref } from 'vue'
 
 defineProps({
   addLot: Function,
-  deleteLot: Function,
-  numberLots: Number,
+  deleteLot: { type: Function, required: true },
+  numberOfLots: Number,
   validate: Function,
-  isCancelable: Boolean, //FIXME: logique étrange
+  isCancelable: Boolean, //FIXME: logique à revoir ça ne fonctionne pas
   cancel: Function
 })
 
-const myLots = defineModel('lotData', { type: Array, required: true })
+const myLots = defineModel('lotData', { type: Array<Lot>, required: true })
 
 const valid = ref(false)
 
-function getLabel(lot) {
+function getLabel(lot: number) {
   if (!!myLots.value[lot - 1].name) {
     return 'Lot ' + lot
   } else {
-    return 'Choisiez ou créer un lot'
+    return 'Choisir ou créer un lot'
   }
 }
 </script>

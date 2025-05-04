@@ -289,7 +289,7 @@ async function uploadImage(itemId) {
     return Promise.reject(new Error("Aucune image n'est sélectionnée"))
   }
 
-  const promisfiedCompressor = (file, quality = 0.8, maxHeight = 1080, maxWidth = 1920) => {
+  const promisfiedCompressor = (file, quality = 0.7, maxHeight = 1080, maxWidth = 1920) => {
     return new Promise((resolve, reject) => {
       new Compressor(file, {
         quality: quality,

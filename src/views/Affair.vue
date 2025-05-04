@@ -19,7 +19,7 @@
         :lotData.sync="lots"
         :addLot="modifyLotsAdd"
         :deleteLot="ModifyLotDelete"
-        :numberLots="numberLots"
+        :numberOfLots="numberOfLots"
         :validate="modifyLotSave"
         :isCancelable="lotModifyCancelable"
         :cancel="ModifyLotCancel"
@@ -153,9 +153,9 @@ const pvData = ref({})
 const dialog = ref(false)
 const affair = ref({})
 const lots = ref([])
-const numberLots = ref(Number)
+const numberOfLots = ref(Number)
 const oldLots = ref([])
-const oldNumberLots = ref(Number)
+const oldNumberOfLots = ref(Number)
 const search = ref('')
 const pvs = ref([])
 const isNewPv = ref(true)
@@ -234,8 +234,8 @@ function modifyLot() {
   lots.value.forEach((element) => {
     oldLots.value.push({ ...element })
   })
-  oldNumberLots.value = parseInt(lots.value.length)
-  numberLots.value = lots.value.length
+  oldNumberOfLots.value = parseInt(lots.value.length)
+  numberOfLots.value = lots.value.length
   dialog.value = true
   lotModifyDialog.value = true
 }
@@ -243,24 +243,27 @@ function modifyLot() {
 function modifyLotSave() {
   lots.value.forEach((element) => {
     if (element.lotId == undefined) {
+      // Nouveau lot
       let dataToSend = {
         affairId: route.params.id,
         name: element.name
       }
       Axios.post('lots', dataToSend).then((response) => {
         element.lotId = response.data.lotId
+        notifStore.success('Le lot à correctement été créé')
       })
     } else {
+      // MAJ
       oldLots.value.forEach((oldEl) => {
         if (element.lotId == oldEl.lotId && element.name != oldEl.name) {
           let dataToSend = {
             name: element.name,
             lotId: element.lotId
           }
-          Axios.put('lots', dataToSend)
+          Axios.put('lots/lotId', dataToSend)
             .then((response) => {
               if (response.data.affairId != '') {
-                notifStore.success("La progression de l'affaire à correctement été mise à jour")
+                notifStore.success('Le lot à correctement été mis à jour')
               }
             })
             .catch((error) => {
@@ -276,20 +279,27 @@ function modifyLotSave() {
 }
 
 function modifyLotsAdd() {
-  numberLots.value++
+  numberOfLots.value++
   lots.value.push({ name: '', lotId: undefined, affairId: undefined })
 }
 
 function ModifyLotDelete(lot, index) {
   Axios.delete('lots/lotId', { params: { lotId: lot.lotId } })
     .then((response) => {
-      if (response.data == 'success') {
-        numberLots.value--
+      if (response.status == 204) {
+        numberOfLots.value--
         lots.value.splice(index, 1)
+        notifStore.success('Le lot a été correctement supprimé')
       }
     })
     .catch((error) => {
-      console.log(error)
+      if (error.response.data.exception[0].code == 23000) {
+        notifStore.error(
+          'Le lot est lié à des éléments déjà saisis et ne peut donc pas être supprimé'
+        )
+      } else {
+        console.log(error)
+      }
     })
 }
 
