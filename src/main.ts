@@ -9,15 +9,13 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { VTimePicker } from 'vuetify/labs/VTimePicker'
 import { fr } from 'vuetify/locale'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const vuetify = createVuetify({
   components: {
-    ...components,
-    VTimePicker
+    ...components
   },
   directives,
   locale: {
