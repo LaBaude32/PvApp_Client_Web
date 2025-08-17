@@ -1,7 +1,7 @@
-import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
-import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
 import { useAuthStore } from '@/store/auth'
 import { useNotificationStore } from '@/store/notification'
+import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -82,6 +82,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: getRoutePath('finishedPv') + '/:id',
     name: getRouteName('finishedPv'),
+    component: () => import('../views/FinishedPv.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: getRoutePath('publicReleased') + '/:id',
+    name: getRouteName('publicReleased'),
     component: () => import('../views/FinishedPv.vue')
   },
   {
@@ -90,12 +96,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Test.vue'),
     meta: { requiresAuth: true }
   },
-  // {
-  //   path: routesCONST.test.path,
-  //   name: routesCONST.test.name,
-  //   component: () => import('../views/Test.vue'),
-  //  meta :{requiresAuth : true}
-  // },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

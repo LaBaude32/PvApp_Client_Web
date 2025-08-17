@@ -13,7 +13,12 @@
     <v-container>
       <v-row>
         <v-col cols="12" class="text-center">
-          <v-btn color="success" x-large @click.prevent="downloadPdf">Telecharger le PDF</v-btn>
+          <v-row class="d-flex ga-5 justify-center">
+            <v-btn color="success" x-large @click.prevent="downloadPdf">Télécharger le PDF</v-btn>
+            <v-btn v-if="displaySendPdfButton" color="primary" x-large @click.prevent="sendByEmail"
+              >Diffuser par mail</v-btn
+            >
+          </v-row>
         </v-col>
         <v-col cols="12" class="text-center">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -91,19 +96,26 @@
 </template>
 
 <script setup>
+import finishedPvAgenda from '@/components/FinishedPv/FinishedPvAgenda.vue'
 import finishedPvItems from '@/components/FinishedPv/FinishedPvItems.vue'
+import finishedPvProgress from '@/components/FinishedPv/FinishedPvProgress.vue'
+import finishedPvSchedule from '@/components/FinishedPv/FinishedPvSchedule.vue'
 import finishedPvUsers from '@/components/FinishedPv/FinishedPvUsers.vue'
-import finishedPvAgenda from '@/components/FinishedPv/FinichedPvAgenda.vue'
-import finishedPvSchedule from '@/components/FinishedPv/FinichedPvSchedule.vue'
-import finishedPvProgress from '@/components/FinishedPv/FinichedPvProgress.vue'
+import { useNotificationStore } from '@/store/notification.ts'
+import { useUserStore } from '@/store/user.ts'
 import Axios from 'axios'
 import { DateTime, Settings } from 'luxon'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { USER_HEADERS, ITEM_HEADERS } from '../utilities/dataConst.ts'
+import { ITEM_HEADERS, USER_HEADERS } from '../utilities/dataConst.ts'
 Settings.defaultLocale = 'fr'
 
 const route = useRoute()
+const userStore = useUserStore()
+const notifStore = useNotificationStore()
+
+const isLogged = computed(() => userStore.isLogged)
+const user = computed(() => userStore.user)
 
 const itemHeaders = ref(ITEM_HEADERS)
 const affairInfos = ref({})
@@ -129,7 +141,10 @@ async function getPvData() {
       pvId: route.params.id
     }
   }
-  let res = await Axios.get('pvs/pvId/released', dt)
+  const fetchDataRoute =
+    route.name == 'PublicReleased' ? 'pvs/pvId/publicReleased' : 'pvs/pvId/released'
+
+  let res = await Axios.get(fetchDataRoute, dt)
   if (res.status == 200) {
     if (res.data.items) {
       items.value = [...res.data.items]
@@ -163,6 +178,9 @@ async function getPvData() {
   })
 }
 
+const isOwner = computed(() => user.value?.userId === owner.value?.userId)
+const displaySendPdfButton = computed(() => isLogged.value && isOwner.value)
+
 async function downloadPdf() {
   const res = await Axios({
     responseType: 'blob',
@@ -179,5 +197,11 @@ async function downloadPdf() {
   link.setAttribute('download', `${fileName}.pdf`)
   document.body.appendChild(link)
   link.click()
+}
+
+function sendByEmail() {
+  Axios.post('pvs/pvId/sendPdfByMail', { pvId: route.params.id, user: user.value }).then(() => {
+    notifStore.success('Le mail a bien été envoyé aux participants')
+  })
 }
 </script>

@@ -51,6 +51,10 @@ const routesCONST = {
     path: '/finishedPv',
     name: 'FinishedPv'
   },
+  publicReleased: {
+    path: '/publicReleased',
+    name: 'PublicReleased'
+  },
   addHimSelfParticipant: {
     path: '/addHimSelfParticipant',
     name: 'AddHimSelfParticipant'
