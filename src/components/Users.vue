@@ -492,7 +492,7 @@ function participantItemProps(params) {
 }
 
 function generateQrCode() {
-  text.value = `${window.location.hostname}/addHimSelfParticipant/:${pvId.value}`
+  text.value = `${window.location.hostname}/addHimSelfParticipant/pvId/${pvId.value}`
   getParticipantOtp().then(() => {
     startOtpCountdows()
   })
