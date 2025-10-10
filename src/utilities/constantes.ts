@@ -52,7 +52,7 @@ const routesCONST = {
     name: 'FinishedPv'
   },
   addHimSelfParticipant: {
-    path: '/addHimSelfParticipant',
+    path: '/addHimSelfParticipant/pvId',
     name: 'AddHimSelfParticipant'
   },
   test: {
