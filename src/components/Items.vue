@@ -6,6 +6,7 @@
         :items="items"
         :sort-by="[{ key: 'position', order: 'desc' }]"
         :search="search"
+        items-per-page="-1"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">

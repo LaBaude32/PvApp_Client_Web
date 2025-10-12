@@ -1,13 +1,13 @@
 <template>
   <v-card max-width="95%" class="mx-auto mb-10">
-    <v-data-table :headers="headers" :items="users" :search="search">
+    <v-data-table :headers="headers" :items="users" :search="search" items-per-page="-1">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Participants</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-text-field
             v-model="search"
-            prepend-inner-icon="mdi-magnify"
+            prepend-inner-icon="mdi-magnify"  
             label="Chercher"
             single-line
             hide-details
