@@ -57,7 +57,16 @@
                             chips
                             multiple
                             deletable-chips
-                          ></v-select>
+                          >
+                            <template v-slot:chip="{ props, item }">
+                              <v-chip
+                                v-bind="props"
+                                :text="item.raw.name"
+                                :value="item.raw.lotId"
+                                :color="item.raw.color"
+                              ></v-chip>
+                            </template>
+                          </v-select>
                         </v-col>
                         <v-col cols="12" sm="4" md="4" class="d-flex justify-center">
                           <v-switch
@@ -168,7 +177,7 @@
           <div style="white-space: pre-wrap">{{ item.followUp }}</div>
         </template>
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" :color="lot.color" dark>
             {{ lot.name }}
           </v-chip>
         </template>

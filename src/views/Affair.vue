@@ -38,7 +38,7 @@
       <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
         <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
           <v-row justify="center">
-            <v-chip dense class="mx-5 mt-5" color="primary">
+            <v-chip dense class="mx-5 mt-5" :color="lot.color">
               {{ lot.name }}
             </v-chip>
           </v-row>
@@ -123,20 +123,20 @@
 </template>
 
 <script setup>
-import Axios from 'axios'
-import routesCONST, { getRouteName } from '../utilities/constantes.ts'
 import ModifyAffair from '@/components/ModifyAffair.vue'
-import ModifyPv from '@/components/ModifyPv.vue'
 import ModifyLot from '@/components/ModifyLot.vue'
-import { DateTime, Settings } from 'luxon'
-import { computed, onMounted, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-Settings.defaultLocale = 'fr'
-import { PV_DATA } from '@/utilities/dataConst.ts'
-import { useNotificationStore } from '../store/notification'
-import { useAffairStore } from '../store/affair'
-import { useUserStore } from '../store/user'
+import ModifyPv from '@/components/ModifyPv.vue'
 import ValidationDialog from '@/components/ValidationDialog.vue'
+import { PV_DATA } from '@/utilities/dataConst.ts'
+import Axios from 'axios'
+import { DateTime, Settings } from 'luxon'
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAffairStore } from '../store/affair'
+import { useNotificationStore } from '../store/notification'
+import { useUserStore } from '../store/user'
+import routesCONST, { getRouteName } from '../utilities/constantes.ts'
+Settings.defaultLocale = 'fr'
 
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
@@ -228,7 +228,7 @@ function openFinishedPv(pv) {
 function modifyLot() {
   if (lots.value == undefined) {
     lots.value = []
-    lots.value.push({ name: '', lotId: undefined, affairId: undefined })
+    lots.value.push({ name: '', lotId: undefined, affairId: undefined, color: undefined })
     lotModifyCancelable.value = true
   }
   lots.value.forEach((element) => {

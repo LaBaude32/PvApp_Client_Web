@@ -22,6 +22,7 @@ export interface Lot {
   pvId?: number
   name: string
   affairId?: number
+  color?: string
 }
 
 export interface Affair {
