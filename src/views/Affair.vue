@@ -24,6 +24,12 @@
         :isCancelable="lotModifyCancelable"
         :cancel="ModifyLotCancel"
       />
+      <ModifyAssignedLots
+        v-if="assignedLotsDialog"
+        :lots="lots"
+        :businesses="businesses"
+        @cancel-form="cancelAssignedLotsForm"
+      />
     </v-dialog>
     <ValidationDialog
       v-model:dialog="ModalValidationDialog"
@@ -113,6 +119,13 @@
           <v-btn v-if="affair.meetingType == 'Chantier'" color="error" @click.prevent="modifyLot">
             Modifier les lots
           </v-btn>
+          <v-btn
+            v-if="affair.meetingType == 'Chantier'"
+            color="error"
+            @click.prevent="modifyAssignedLots"
+          >
+            Modifier les attributions des lots
+          </v-btn>
           <v-btn dark color="error" @click.prevent="((affairDialog = true), (dialog = true))"
             >Modifier l'affaire</v-btn
           >
@@ -124,6 +137,7 @@
 
 <script setup>
 import ModifyAffair from '@/components/ModifyAffair.vue'
+import ModifyAssignedLots from '@/components/ModifyAssignedLots.vue'
 import ModifyLot from '@/components/ModifyLot.vue'
 import ModifyPv from '@/components/ModifyPv.vue'
 import ValidationDialog from '@/components/ValidationDialog.vue'
@@ -148,10 +162,12 @@ const ModalValidationDialog = ref(false)
 const affairDialog = ref(false)
 const pvModifyDialog = ref(false)
 const lotModifyDialog = ref(false)
+const assignedLotsDialog = ref(false)
 const lotModifyCancelable = ref(false)
 const pvData = ref({})
 const dialog = ref(false)
 const affair = ref({})
+const businesses = ref([])
 const lots = ref([])
 const numberOfLots = ref(Number)
 const oldLots = ref([])
@@ -238,6 +254,21 @@ function modifyLot() {
   numberOfLots.value = lots.value.length
   dialog.value = true
   lotModifyDialog.value = true
+}
+
+function modifyAssignedLots() {
+  businesses.value = [
+    { name: 'Agence Casals', id_organisme: 1, assignedLots: [74, 75] },
+    { name: 'Castera', id_organisme: 2, assignedLots: [76, 77] },
+    { name: 'INGC', id_organisme: 3, assignedLots: [] }
+  ]
+  assignedLotsDialog.value = true
+  dialog.value = true
+}
+
+function cancelAssignedLotsForm() {
+  assignedLotsDialog.value = false
+  dialog.value = false
 }
 
 function modifyLotSave() {
