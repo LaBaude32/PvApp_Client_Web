@@ -60,7 +60,7 @@ const props = defineProps({
 const myBusinesses = ref(props.businesses)
 
 function validate() {
-  Axios.post('assignLotsToBusinesses', myBusinesses.value)
+  Axios.put('organisations/assignLotsToBusinesses', myBusinesses.value)
     .then((res) => {
       console.log(res)
     })
