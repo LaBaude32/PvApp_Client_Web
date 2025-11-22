@@ -7,7 +7,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-text-field
             v-model="search"
-            prepend-inner-icon="mdi-magnify"  
+            prepend-inner-icon="mdi-magnify"
             label="Chercher"
             single-line
             hide-details
@@ -230,6 +230,11 @@
         <p>Code : {{ otp.otp }}</p>
         <p>Expiration : {{ otpTimeRemaining }}</p>
       </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text @click="printQrCode">Imprimer</v-btn>
+        <v-btn color="red darken-1" text @click="dialogQrCode = false">Fermer</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -518,21 +523,140 @@ function getParticipantOtp() {
 function startOtpCountdows() {
   console.log(otp.value)
 
-  // Ajoutez 10 minutes au timestamp de base
-  const endTime = otp.value.createdAtTimeStamp * 1000 + 10 * 60 * 1000
+  // Ajoutez 24 heures au timestamp de base
+  const endTime = otp.value.createdAtTimeStamp * 1000 + 24 * 60 * 60 * 1000
   const updateCountdown = () => {
     const now = new Date().getTime()
     const distance = endTime - now
 
     if (distance > 0) {
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-      otpTimeRemaining.value = `${minutes}m ${seconds}s`
+      otpTimeRemaining.value = `${hours}h ${minutes}m ${seconds}s`
       setTimeout(updateCountdown, 1000)
     } else {
       getParticipantOtp()
     }
   }
   updateCountdown()
+}
+
+function printQrCode() {
+  // Force a small delay to ensure the QR code is updated and rendered
+  setTimeout(() => {
+    // Create a clean print DOM structure that isolates the content properly
+    const printWindow = window.open('', '_blank')
+
+    if (printWindow) {
+      // Create the print content with proper HTML structure
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>QR Code - Print</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: white;
+              }
+              .print-container {
+                text-align: center;
+                max-width: 500px;
+                margin: auto;
+              }
+              .qr-code-container {
+                padding: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+              }
+              .qr-image {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 20px;
+              }
+              .info-section {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 4px;
+                font-size: 14px;
+                margin-top: 20px;
+              }
+              .affair-name {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 15px;
+                margin-top: 25px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-container">
+              <h2>QR Code</h2>
+              ${
+                qrcode.value && qrcode.value.startsWith('data:image')
+                  ? `<div class="qr-code-container">
+                    <img src="${qrcode.value}" alt="QR Code" class="qr-image" />
+                  </div>`
+                  : '<p>QR Code not available</p>'
+              }
+              <div class="affair-name">${affairName.value || 'N/A'}</div>
+              <div class="info-section">
+                <p><strong>Code:</strong> ${otp.value.otp || 'N/A'}</p>
+                <p><strong>Expiration:</strong> ${formatExpiryDate(otp.value.createdAtTimeStamp) || 'N/A'}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+
+      printWindow.document.write(htmlContent)
+      printWindow.document.close()
+
+      // Wait a bit before printing to ensure content is ready
+      setTimeout(() => {
+        printWindow.print()
+
+        // Close the window after a delay to prevent hanging
+        setTimeout(() => {
+          printWindow.close()
+        }, 1000)
+      }, 300)
+    } else {
+      console.error('Could not open print window')
+    }
+  }, 100)
+}
+
+// Helper function to format the expiration date
+function formatExpiryDate(timestamp) {
+  if (!timestamp) return 'N/A'
+
+  // Convert timestamp (in seconds) to milliseconds and add 24 hours
+  const expiryTime = new Date(timestamp * 1000 + 24 * 60 * 60 * 1000)
+
+  // Format as "lundi 4 decembre 14:30" style in French
+  const dateOptions = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }
+  
+  // Format the date part in French
+  const formattedDate = expiryTime.toLocaleDateString('fr-FR', dateOptions)
+  
+  // Capitalize first letter of the weekday
+  const formattedDateWithCap = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+  
+  // Get time part (hours and minutes in 24h format)
+  const hours = expiryTime.getHours().toString().padStart(2, '0')
+  const minutes = expiryTime.getMinutes().toString().padStart(2, '0')
+  
+  // Combine date and time
+  return `${formattedDateWithCap} ${hours}:${minutes}`
 }
 </script>
