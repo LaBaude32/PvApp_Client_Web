@@ -2,7 +2,7 @@
   <v-layout>
     <v-app-bar color="primary darken-1" dark class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
-      <v-app-bar-title>PvApp</v-app-bar-title>
+      <v-app-bar-title><strong>Castera</strong></v-app-bar-title>
       <v-btn class="mr-6" @click="action('Board')">
         <v-icon class="mr-3">mdi-view-dashboard</v-icon>
         Dashboard
@@ -41,7 +41,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-main>
+    <v-main class="d-flex flex-column align-center justify-center" style="min-height: 100vh">
       <div v-if="versionNotif" id="app-version-notif" class="mt-10">
         <v-banner
           class="mx-auto"
@@ -73,14 +73,14 @@
 </template>
 
 <script setup lang="ts">
-import Axios from 'axios'
-import { getRouteName } from '@/utilities/constantes'
 import Notification from '@/components/Notification.vue'
-import { version } from '../package.json'
-import { ref, computed, onMounted } from 'vue'
+import { getRouteName } from '@/utilities/constantes'
+import Axios from 'axios'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useNotificationStore } from './store/notification'
+import { version } from '../package.json'
 import { useAuthStore } from './store/auth'
+import { useNotificationStore } from './store/notification'
 import { useUserStore } from './store/user'
 
 const router = useRouter()
@@ -98,7 +98,7 @@ const items = [
 const mainMenuItems = [
   {
     path: getRouteName('home'),
-    title: 'Pv App',
+    title: 'Accueil',
     icon: 'mdi-home'
   },
   {
