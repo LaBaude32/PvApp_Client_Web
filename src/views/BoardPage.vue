@@ -27,15 +27,15 @@
                   <v-btn
                     v-if="pv.state == 'Terminé'"
                     class="ma-2"
-                    color="green"
+                    color="tertiary"
                     @click="openFinishedPv(pv.pvId)"
                   >
+                    <v-icon class="mr-2">mdi-checkbox-marked-circle</v-icon>
                     {{ pv.state }}
-                    <v-icon right>mdi-checkbox-marked-circle</v-icon>
                   </v-btn>
                   <v-btn v-else class="ma-2" color="primary" @click="openPv(pv.pvId)">
+                    <v-icon class="mr-2">mdi-autorenew</v-icon>
                     {{ pv.state }}
-                    <v-icon right>mdi-autorenew</v-icon>
                   </v-btn>
                   <div v-if="pv.meetingNextDate">
                     Prochaine réunion : {{ $filters.formatDate(pv.meetingNextDate) }}
@@ -74,7 +74,7 @@
       </v-card>
     </v-container>
     <v-container v-else class="px-10">
-      <v-alert type="info" outlined>
+      <v-alert type="info" outlined color="tertiary-container">
         <p class="text-h6">Vous n'avez pas encore d'affaires.</p>
         <p>Veuillez commencer par en créer une en cliquant sur le bouton ci-dessus</p>
       </v-alert>
@@ -84,10 +84,10 @@
 
 <script setup>
 import Axios from 'axios'
-import routesCONST, { getRouteName } from '../utilities/constantes.ts'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../store/user'
+import routesCONST, { getRouteName } from '../utilities/constantes.ts'
 const userStore = useUserStore()
 const router = useRouter()
 

@@ -1,15 +1,16 @@
 <template>
   <v-layout>
-    <v-app-bar color="primary darken-1" dark class="d-print-none">
+    <v-app-bar color="surfaceVariant" class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
-      <v-app-bar-title><strong>Castera</strong></v-app-bar-title>
+      <v-app-bar-title><strong class="text-secondary">Castera</strong></v-app-bar-title>
       <v-btn class="mr-6" @click="action('Board')">
         <v-icon class="mr-3">mdi-view-dashboard</v-icon>
         Dashboard
       </v-btn>
-      <v-menu>
+      <v-menu
+        >s
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile">
+          <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile mr-6">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
@@ -66,7 +67,7 @@
           </template>
         </v-banner>
       </div>
-      <router-view class="mt-5" />
+      <router-view class="mt-5 w-100" />
     </v-main>
     <Notification />
   </v-layout>

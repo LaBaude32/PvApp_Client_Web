@@ -82,7 +82,12 @@
           </v-chip>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn v-if="item.state == 'Terminé'" @click="openFinishedPv(item)" small color="primary">
+          <v-btn
+            v-if="item.state == 'Terminé'"
+            @click="openFinishedPv(item)"
+            small
+            color="tertiaryContainer"
+          >
             <v-icon class="ma-2">{{ 'mdi-eye' }}</v-icon>
           </v-btn>
           <v-btn v-else @click="openInProgressPv(item)" small color="warning">
@@ -91,7 +96,7 @@
           <v-btn
             v-if="item.state == 'Terminé'"
             @click="downloadPvPdf(item)"
-            color="success"
+            color="primaryContainer"
             small
             class="ma-2"
           >
