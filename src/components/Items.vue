@@ -9,7 +9,7 @@
         items-per-page="-1"
       >
         <template v-slot:top>
-          <v-toolbar class="py-3" color="surfaceVariant">
+          <v-toolbar class="py-3">
             <v-toolbar-title v-if="pvDetails">
               Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}
             </v-toolbar-title>

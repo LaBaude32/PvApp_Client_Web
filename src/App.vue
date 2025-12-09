@@ -3,6 +3,18 @@
     <v-app-bar color="surfaceVariant" class="d-print-none">
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-app-bar-title><strong class="text-secondary">Castera</strong></v-app-bar-title>
+      <v-btn
+        v-if="theme.name.value == 'myCustomLightTheme'"
+        icon="mdi-weather-night"
+        variant="text"
+        @click="theme.change('myCustomDarkTheme')"
+      ></v-btn>
+      <v-btn
+        v-if="theme.name.value == 'myCustomDarkTheme'"
+        icon="mdi-weather-sunny"
+        variant="text"
+        @click="theme.change('myCustomLightTheme')"
+      ></v-btn>
       <v-btn class="mr-6" @click="action('Board')">
         <v-icon class="mr-3">mdi-view-dashboard</v-icon>
         Dashboard
@@ -79,6 +91,7 @@ import { getRouteName } from '@/utilities/constantes'
 import Axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTheme } from 'vuetify'
 import { version } from '../package.json'
 import { useAuthStore } from './store/auth'
 import { useNotificationStore } from './store/notification'
@@ -88,6 +101,9 @@ const router = useRouter()
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
 const authStore = useAuthStore()
+
+const theme = useTheme()
+//TODO: stocker le theme actuel dans le store
 
 const versionNotif = ref(false)
 const drawerMain = ref(false)

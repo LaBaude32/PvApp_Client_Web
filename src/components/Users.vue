@@ -2,10 +2,11 @@
   <v-card max-width="95%" class="mx-auto mb-10">
     <v-data-table :headers="headers" :items="users" :search="search" items-per-page="-1">
       <template v-slot:top>
-        <v-toolbar flat color="white">
+        <v-toolbar class="py-3">
           <v-toolbar-title>Participants</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-text-field
+            class="mr-5"
             v-model="search"
             prepend-inner-icon="mdi-magnify"
             label="Chercher"
@@ -14,7 +15,7 @@
           ></v-text-field>
           <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="80%">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" dark class="mb-2" v-bind="props">Créer une personne</v-btn>
+              <v-btn color="primary" v-bind="props">Créer une personne</v-btn>
             </template>
 
             <v-card>
@@ -108,9 +109,7 @@
           </v-dialog>
           <v-dialog v-model="dialogExistingUser" max-width="80%">
             <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" color="green" dark class="mb-2 ml-2">
-                Ajouter de votre répertoire
-              </v-btn>
+              <v-btn v-bind="props" color="green"> Ajouter de votre répertoire </v-btn>
             </template>
             <v-card>
               <v-form v-model="valid2">
@@ -174,7 +173,7 @@
               </v-form>
             </v-card>
           </v-dialog>
-          <v-btn class="mb-2" prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
+          <v-btn prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.fullName="{ item }">
@@ -645,17 +644,17 @@ function formatExpiryDate(timestamp) {
     month: 'long',
     year: 'numeric'
   }
-  
+
   // Format the date part in French
   const formattedDate = expiryTime.toLocaleDateString('fr-FR', dateOptions)
-  
+
   // Capitalize first letter of the weekday
   const formattedDateWithCap = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
-  
+
   // Get time part (hours and minutes in 24h format)
   const hours = expiryTime.getHours().toString().padStart(2, '0')
   const minutes = expiryTime.getMinutes().toString().padStart(2, '0')
-  
+
   // Combine date and time
   return `${formattedDateWithCap} ${hours}:${minutes}`
 }

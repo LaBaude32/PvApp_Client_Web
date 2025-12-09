@@ -53,7 +53,7 @@
         <template v-slot:text>
           <v-text-field
             v-model="search"
-            label="Search"
+            label="Rechercher"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             hide-details
@@ -62,11 +62,6 @@
         </template>
 
         <v-data-table :headers="headers" :items="affairs" :search="search">
-          <template v-slot:item.progress="{ item }">
-            <v-progress-linear v-model="item.progress" color="primary" height="25"
-              ><strong>{{ item.progress }} %</strong></v-progress-linear
-            >
-          </template>
           <template v-slot:item.action="{ item }">
             <v-btn color="primary" variant="text" @click="openAffair(item.affairId)">Ouvrir</v-btn>
           </template>

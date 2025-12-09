@@ -5,7 +5,7 @@ import router from './router/index'
 import filters from './utilities/filters.js'
 
 // Vuetify
-import { myCustomLightTheme } from '@/assets/theme.ts'
+import { myCustomDarkTheme, myCustomLightTheme } from '@/assets/theme.ts'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createVuetify } from 'vuetify'
@@ -26,7 +26,8 @@ const vuetify = createVuetify({
   theme: {
     defaultTheme: 'myCustomLightTheme',
     themes: {
-      myCustomLightTheme
+      myCustomLightTheme,
+      myCustomDarkTheme
     }
   }
   // date: {
