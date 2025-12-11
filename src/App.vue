@@ -4,23 +4,22 @@
       <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-app-bar-title><strong class="text-secondary">Castera</strong></v-app-bar-title>
       <v-btn
-        v-if="theme.name.value == 'myCustomLightTheme'"
+        v-if="userSettingsStore.currentTheme == 'myCustomLightTheme'"
         icon="mdi-weather-night"
         variant="text"
-        @click="theme.change('myCustomDarkTheme')"
+        @click="userSettingsStore.toggleTheme()"
       ></v-btn>
       <v-btn
-        v-if="theme.name.value == 'myCustomDarkTheme'"
+        v-if="userSettingsStore.currentTheme == 'myCustomDarkTheme'"
         icon="mdi-weather-sunny"
         variant="text"
-        @click="theme.change('myCustomLightTheme')"
+        @click="userSettingsStore.toggleTheme()"
       ></v-btn>
       <v-btn class="mr-6" @click="action('Board')">
         <v-icon class="mr-3">mdi-view-dashboard</v-icon>
         Dashboard
       </v-btn>
-      <v-menu
-        >s
+      <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile mr-6">
             <v-icon class="mr-3">mdi-account</v-icon>
@@ -31,7 +30,7 @@
             Se connecter
           </v-btn>
         </template>
-        <v-list>
+        <v-list class="mt-2">
           <v-list-item v-for="(item, index) in items" :key="index" :value="index">
             <v-list-item-title @click.prevent="action(item.path)">
               {{ item.title }}
@@ -89,21 +88,22 @@
 import Notification from '@/components/Notification.vue'
 import { getRouteName } from '@/utilities/constantes'
 import Axios from 'axios'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
 import { version } from '../package.json'
 import { useAuthStore } from './store/auth'
 import { useNotificationStore } from './store/notification'
 import { useUserStore } from './store/user'
+import { useUserSettingsStore } from './store/userSettings'
 
 const router = useRouter()
 const userStore = useUserStore()
 const notifStore = useNotificationStore()
 const authStore = useAuthStore()
+const userSettingsStore = useUserSettingsStore()
 
 const theme = useTheme()
-//TODO: stocker le theme actuel dans le store
 
 const versionNotif = ref(false)
 const drawerMain = ref(false)
@@ -179,7 +179,20 @@ onMounted(() => {
     versionNotif.value = true
     localStorage.setItem('appVersion', version)
   }
+
+  // Initialiser le thème à partir du store
+  if (userSettingsStore.currentTheme) {
+    theme.change(userSettingsStore.currentTheme)
+  }
 })
+
+//Mise à jour thème dynamiquement
+watch(
+  () => userSettingsStore.currentTheme,
+  (newTheme) => {
+    theme.change(newTheme)
+  }
+)
 </script>
 
 <style>
