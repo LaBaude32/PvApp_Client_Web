@@ -44,19 +44,27 @@
         </v-col>
       </v-row>
 
+      <v-text-field v-model="formData.country" label="Pays"></v-text-field>
+
       <v-text-field
         v-model="formData.vatNumber"
         label="Numéro de TVA intracommunautaire"
         :rules="vatNumberRules"
       ></v-text-field>
 
-      <div class="text-subtitle-1 mb-4">Contact principal</div>
+      <v-select
+        v-model="formData.companyType"
+        label="Type de structure"
+        :items="['Entreprise', 'Collectivité publique']"
+      ></v-select>
+
+      <div class="text-subtitle-1 mb-4">Contact de facturation</div>
 
       <v-row>
         <v-col cols="12" sm="6">
           <v-text-field
             v-model="formData.contactFirstName"
-            label="Prénom du contact"
+            label="Prénom du contact de facturation"
             required
             :rules="contactFirstNameRules"
           ></v-text-field>
@@ -65,7 +73,7 @@
         <v-col cols="12" sm="6">
           <v-text-field
             v-model="formData.contactLastName"
-            label="Nom du contact"
+            label="Nom du contact de facturation"
             required
             :rules="contactLastNameRules"
           ></v-text-field>
@@ -74,7 +82,7 @@
 
       <v-text-field
         v-model="formData.contactEmail"
-        label="Adresse email du contact"
+        label="Adresse email du contact de facturation"
         type="email"
         required
         :rules="contactEmailRules"
@@ -82,8 +90,13 @@
 
       <v-text-field
         v-model="formData.contactPhone"
-        label="Numéro de téléphone du contact"
+        label="Numéro de téléphone du contact de facturation"
         :rules="contactPhoneRules"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="formData.contactPosition"
+        label="Poste du contact de facturation"
       ></v-text-field>
     </v-form>
   </div>
@@ -153,10 +166,13 @@ const formData = ref({
   siret: props.companyData.siret || '',
   address: props.companyData.address || '',
   vatNumber: props.companyData.vatNumber || '',
+  companyType: '',
+  country: '',
   contactFirstName: '',
   contactLastName: '',
   contactEmail: '',
-  contactPhone: ''
+  contactPhone: '',
+  contactPosition: ''
 })
 
 // Watcher pour synchroniser les données de l'entreprise avec le formulaire
