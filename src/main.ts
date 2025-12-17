@@ -1,17 +1,18 @@
 import axios from 'axios'
 import { createApp } from 'vue'
+import App from './App.vue'
 import router from './router/index'
 import filters from './utilities/filters.js'
-import App from './App.vue'
 
 // Vuetify
-import 'vuetify/styles'
+import { myCustomDarkTheme, myCustomLightTheme } from '@/assets/theme.ts'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { fr } from 'vuetify/locale'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import 'vuetify/styles'
 
 const vuetify = createVuetify({
   components: {
@@ -21,6 +22,13 @@ const vuetify = createVuetify({
   locale: {
     locale: 'fr',
     messages: { fr }
+  },
+  theme: {
+    defaultTheme: 'myCustomLightTheme',
+    themes: {
+      myCustomLightTheme,
+      myCustomDarkTheme
+    }
   }
   // date: {
   //   locale: {

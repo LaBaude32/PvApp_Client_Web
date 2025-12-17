@@ -8,27 +8,27 @@
         </v-col>
         <v-col class="d-flex">
           <v-col class="d-flex flex-column ga-2" align-self="center">
-            <v-btn color="success" @click.prevent="modifyProgress">
+            <v-btn @click.prevent="modifyProgress">
               <v-icon icon="mdi-clock-edit-outline" class="mr-2" />
               Avancement
               {{ pvDetails.affairMeetingType == 'Chantier' ? 'du chantier' : "de l'étude" }}
               s-1
             </v-btn>
-            <v-btn color="success" @click.prevent="modifyAgenda">
+            <v-btn @click.prevent="modifyAgenda">
               <v-icon icon="mdi-calendar-edit " class="mr-2" />
               Ordre du jour
             </v-btn>
-            <v-btn color="success" @click.prevent="modifySchedule">
+            <v-btn @click.prevent="modifySchedule">
               <v-icon icon="mdi-calendar-plus" class="mr-2" />
               Prévisionnel
             </v-btn>
           </v-col>
           <v-col class="d-flex flex-column ga-2">
-            <v-btn class="ml-5" color="warning" @click.prevent="downloadPDF">
+            <v-btn class="ml-5" color="tertiaryContainer" @click.prevent="downloadPDF">
               <v-icon icon="mdi-file-download" class="mr-2" />
               PDF provisoire
             </v-btn>
-            <v-btn class="ml-5" color="primary" @click="ModalValidationDialog = true">
+            <v-btn class="ml-5" color="primaryContainer" @click="ModalValidationDialog = true">
               <v-icon icon="mdi-check-all" class="mr-2" />
               Finaliser et diffuser le PV
             </v-btn>
@@ -98,23 +98,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
 import Items from '@/components/Items.vue'
-import Users from '@/components/Users.vue'
 import ModalValidation from '@/components/ModalValidation.vue'
-import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifyAgenda from '@/components/ModifyAgenda.vue'
+import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifySchedule from '@/components/ModifySchedule.vue'
-import Axios from 'axios'
-import { getRouteName } from '@/utilities/constantes.ts'
-import { useRoute, useRouter } from 'vue-router'
-import { DEFAULT_ITEM } from '@/utilities/dataConst.ts'
-import { useNotificationStore } from '@/store/notification'
+import Users from '@/components/Users.vue'
 import { useAffairStore } from '@/store/affair'
+import { useNotificationStore } from '@/store/notification'
 import { useUserStore } from '@/store/user'
-import { useDate } from 'vuetify'
-import { DateTime, Settings } from 'luxon'
+import { getRouteName } from '@/utilities/constantes.ts'
+import { DEFAULT_ITEM } from '@/utilities/dataConst.ts'
+import Axios from 'axios'
 import Compressor from 'compressorjs'
+import { DateTime, Settings } from 'luxon'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useDate } from 'vuetify'
 Settings.defaultLocale = 'fr'
 
 const userStore = useUserStore()

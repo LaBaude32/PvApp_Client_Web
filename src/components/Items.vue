@@ -9,7 +9,7 @@
         items-per-page="-1"
       >
         <template v-slot:top>
-          <v-toolbar flat color="white">
+          <v-toolbar class="py-3">
             <v-toolbar-title v-if="pvDetails">
               Pv du {{ $filters.formatDate(pvDetails.meetingDate) }}
             </v-toolbar-title>
@@ -23,7 +23,9 @@
             ></v-text-field>
             <v-dialog v-model="MyDialog" max-width="80%">
               <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" color="warning" dark class="mb-2">Nouvel item</v-btn>
+                <v-btn v-bind="props" variant="tonal" color="warning" class="mx-4" size="x-large"
+                  >Nouvel item</v-btn
+                >
               </template>
               <v-card>
                 <div v-if="isSavingForm">
@@ -162,8 +164,8 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                    <v-btn color="blue darken-1" text @click="save">Enregister</v-btn>
+                    <v-btn color="teriary" text @click="close">Annuler</v-btn>
+                    <v-btn color="primary" text @click="save">Enregister</v-btn>
                   </v-card-actions>
                 </v-form>
               </v-card>
