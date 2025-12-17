@@ -58,6 +58,10 @@ const routesCONST = {
   test: {
     path: '/test',
     name: 'Test'
+  },
+  myAccount: {
+    path: '/myAccount',
+    name: 'MyAccount'
   }
 }
 

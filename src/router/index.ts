@@ -90,12 +90,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Test.vue'),
     meta: { requiresAuth: true }
   },
-  // {
-  //   path: routesCONST.test.path,
-  //   name: routesCONST.test.name,
-  //   component: () => import('../views/Test.vue'),
-  //  meta :{requiresAuth : true}
-  // },
+  {
+    path: '/myAccount',
+    name: 'MyAccount',
+    component: () => import('../views/Account.vue'),
+    meta: { requiresAuth: true }
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
