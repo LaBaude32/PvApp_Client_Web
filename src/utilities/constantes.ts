@@ -107,6 +107,69 @@ export const FormOTPRules = [
   (v: string) => !!v || 'Requis',
   (v: string) => /\d/.test(v) || 'Doit être un code valide'
 ]
+
+// Règles de validation pour CompanyInfoTab
+export const FormCompanyNameRules = [
+  (value: string) => !!value || "Le nom de l'entreprise est requis",
+  (value: string) =>
+    (value && value.length >= 2) || "Le nom de l'entreprise doit contenir au moins 2 caractères"
+]
+
+export const FormSiretRules = [
+  (value: string) => !!value || 'Le numéro SIRET est requis',
+  (value: string) => /^\d{14}$/.test(value) || 'Le numéro SIRET doit contenir 14 chiffres'
+]
+
+export const FormAddressRules = [
+  (value: string) => !!value || "L'adresse est requise",
+  (value: string) =>
+    (value && value.length >= 10) || "L'adresse doit contenir au moins 10 caractères"
+]
+
+export const FormVatNumberRules = [
+  (value: string) =>
+    !value ||
+    /^FR[0-9]{2}[0-9]{9}$/.test(value) ||
+    "Le numéro de TVA n'est pas valide (format FRxxXXXXXXXX)"
+]
+
+export const FormContactFirstNameRules = [
+  (value: string) => !!value || 'Le prénom du contact est requis',
+  (value: string) => (value && value.length >= 2) || 'Le prénom doit contenir au moins 2 caractères'
+]
+
+export const FormContactLastNameRules = [
+  (value: string) => !!value || 'Le nom du contact est requis',
+  (value: string) => (value && value.length >= 2) || 'Le nom doit contenir au moins 2 caractères'
+]
+
+export const FormContactEmailRules = [
+  (value: string) => !!value || "L'adresse email du contact est requise",
+  (value: string) => /\S+@\S+\.\S+/.test(value) || "L'adresse email n'est pas valide"
+]
+
+export const FormContactPhoneRules = [
+  (value: string) =>
+    !!value ||
+    /^[\+]?[0-9\s\-\(\)]{10,}$/.test(value) ||
+    "Le numéro de téléphone du contact n'est pas valide"
+]
+
+export const FormCountryRules = [
+  (value: string) => !!value || 'Le pays est requis',
+  (value: string) => value.length >= 2 || 'Le pays doit contenir au moins 2 caractères'
+]
+
+export const FormPostalCodeRules = [
+  (v: string) => !!v || 'Le code postal est requis',
+  (v: string) => /^\d{5}$/.test(v) || 'Le code postal doit contenir 5 chiffres'
+]
+
+export const FormCityRules = [
+  (v: string) => !!v || 'La ville est requise',
+  (v: string) => v.length >= 2 || 'La ville doit contenir au moins 2 caractères'
+]
+
 export const getRouteName = (name: string) => {
   return routesCONST[name].name
 }

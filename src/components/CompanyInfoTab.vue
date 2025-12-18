@@ -7,21 +7,21 @@
         v-model="formData.name"
         label="Nom de l'entreprise"
         required
-        :rules="nameRules"
+        :rules="FormCompanyNameRules"
       ></v-text-field>
 
       <v-text-field
         v-model="formData.siret"
         label="Numéro SIRET"
         required
-        :rules="siretRules"
+        :rules="FormSiretRules"
       ></v-text-field>
 
       <v-text-field
         v-model="formData.street"
         label="Adresse (rue)"
         required
-        :rules="streetRules"
+        :rules="FormAddressRules"
       ></v-text-field>
 
       <v-row>
@@ -30,7 +30,7 @@
             v-model="formData.postalCode"
             label="Code postal"
             required
-            :rules="postalCodeRules"
+            :rules="FormPostalCodeRules"
           ></v-text-field>
         </v-col>
 
@@ -39,23 +39,29 @@
             v-model="formData.city"
             label="Ville"
             required
-            :rules="cityRules"
+            :rules="FormCityRules"
           ></v-text-field>
         </v-col>
       </v-row>
 
-      <v-text-field v-model="formData.country" label="Pays"></v-text-field>
+      <v-text-field
+        v-model="formData.country"
+        label="Pays"
+        required
+        :rules="FormCountryRules"
+      ></v-text-field>
 
       <v-text-field
         v-model="formData.vatNumber"
         label="Numéro de TVA intracommunautaire"
-        :rules="vatNumberRules"
+        :rules="FormVatNumberRules"
       ></v-text-field>
 
       <v-select
         v-model="formData.companyType"
         label="Type de structure"
         :items="['Entreprise', 'Collectivité publique']"
+        :rules="FormRequiredRulesMin3"
       ></v-select>
 
       <div class="text-subtitle-1 mb-4">Contact de facturation</div>
@@ -66,7 +72,7 @@
             v-model="formData.contactFirstName"
             label="Prénom du contact de facturation"
             required
-            :rules="contactFirstNameRules"
+            :rules="FormContactFirstNameRules"
           ></v-text-field>
         </v-col>
 
@@ -75,7 +81,7 @@
             v-model="formData.contactLastName"
             label="Nom du contact de facturation"
             required
-            :rules="contactLastNameRules"
+            :rules="FormContactLastNameRules"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -85,76 +91,43 @@
         label="Adresse email du contact de facturation"
         type="email"
         required
-        :rules="contactEmailRules"
+        :rules="FormContactEmailRules"
       ></v-text-field>
 
       <v-text-field
         v-model="formData.contactPhone"
         label="Numéro de téléphone du contact de facturation"
-        :rules="contactPhoneRules"
+        :rules="FormContactPhoneRules"
       ></v-text-field>
 
       <v-text-field
         v-model="formData.contactPosition"
         label="Poste du contact de facturation"
+        :rules="FormRequiredRulesMin3"
       ></v-text-field>
     </v-form>
   </div>
 </template>
 
 <script setup lang="ts">
+import {
+  FormAddressRules,
+  FormCityRules,
+  FormCompanyNameRules,
+  FormContactEmailRules,
+  FormContactFirstNameRules,
+  FormContactLastNameRules,
+  FormContactPhoneRules,
+  FormCountryRules,
+  FormPostalCodeRules,
+  FormRequiredRulesMin3,
+  FormSiretRules,
+  FormVatNumberRules
+} from '@/utilities/constantes'
 import { ref, watch } from 'vue'
-
-// Définition des règles de validation
-const nameRules = [
-  (value: string) => !!value || "Le nom de l'entreprise est requis",
-  (value: string) =>
-    (value && value.length >= 2) || "Le nom de l'entreprise doit contenir au moins 2 caractères"
-]
-
-const siretRules = [
-  (value: string) => !!value || 'Le numéro SIRET est requis',
-  (value: string) => /^\d{14}$/.test(value) || 'Le numéro SIRET doit contenir 14 chiffres'
-]
-
-const addressRules = [
-  (value: string) => !!value || "L'adresse complète est requise",
-  (value: string) =>
-    (value && value.length >= 10) || "L'adresse doit contenir au moins 10 caractères"
-]
-
-const vatNumberRules = [
-  (value: string) =>
-    !value ||
-    /^FR[0-9]{2}[0-9]{9}$/.test(value) ||
-    "Le numéro de TVA n'est pas valide (format FRxxXXXXXXXX)"
-]
-
-const contactFirstNameRules = [
-  (value: string) => !!value || 'Le prénom du contact est requis',
-  (value: string) => (value && value.length >= 2) || 'Le prénom doit contenir au moins 2 caractères'
-]
-
-const contactLastNameRules = [
-  (value: string) => !!value || 'Le nom du contact est requis',
-  (value: string) => (value && value.length >= 2) || 'Le nom doit contenir au moins 2 caractères'
-]
-
-const contactEmailRules = [
-  (value: string) => !!value || "L'adresse email du contact est requise",
-  (value: string) => /\S+@\S+\.\S+/.test(value) || "L'adresse email n'est pas valide"
-]
-
-const contactPhoneRules = [
-  (value: string) =>
-    !value ||
-    /^[\+]?[0-9\s\-\(\)]{10,}$/.test(value) ||
-    "Le numéro de téléphone du contact n'est pas valide"
-]
 
 // État du formulaire
 const isValid = ref<boolean>(true)
-const form = ref<any>(null)
 
 // Données du formulaire
 const props = defineProps<{
@@ -165,6 +138,9 @@ const formData = ref({
   name: props.companyData.name || '',
   siret: props.companyData.siret || '',
   address: props.companyData.address || '',
+  street: props.companyData.street || '',
+  city: props.companyData.city || '',
+  postalCode: props.companyData.postalCode || '',
   vatNumber: props.companyData.vatNumber || '',
   companyType: '',
   country: '',
