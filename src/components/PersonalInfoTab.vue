@@ -1,5 +1,5 @@
 <template>
-  <div class="personal-info-tab">
+  <div class="personal-info-tab py-5">
     <v-form ref="form" v-model="isValid" lazy-validation>
       <h3 class="text-h6 mb-4">Informations personnelles</h3>
 
@@ -30,7 +30,6 @@
         required
         :rules="emailRules"
         readonly
-        class="locked-field"
         variant="plain"
         hint="Verrouillé, contactez l'administrateur pour modifier le mail"
         persistent-hint
@@ -147,21 +146,8 @@ watch(
 </script>
 
 <style scoped>
-.personal-info-tab {
-  padding: 20px 0;
-}
-
 /* Style pour les champs de formulaire */
 .personal-info-tab .v-text-field {
   margin-bottom: 16px;
-}
-
-/* Style pour les champs verrouillés */
-.locked-field .v-input__slot {
-  background-color: #f5f5f5;
-}
-
-.locked-field .v-text-field__slot {
-  color: #666;
 }
 </style>
