@@ -6,6 +6,7 @@
       <v-tabs v-model="activeTab" class="mb-6">
         <v-tab value="personal">Informations personnelles</v-tab>
         <v-tab value="company">Informations de l'entreprise</v-tab>
+        <v-tab value="licenses">Gestion des licences</v-tab>
       </v-tabs>
 
       <v-card-text>
@@ -18,6 +19,11 @@
           <!-- Onglet Informations de l'entreprise -->
           <v-window-item value="company">
             <CompanyInfoTab :company-data="companyData" />
+          </v-window-item>
+
+          <!-- Onglet Gestion des licences -->
+          <v-window-item value="licenses">
+            <LicenseManagementTab :company-data="companyData" />
           </v-window-item>
         </v-window>
       </v-card-text>
@@ -32,6 +38,7 @@
 <script setup lang="ts">
 import CompanyInfoTab from '@/components/Account/CompanyInfoTab.vue'
 import PersonalInfoTab from '@/components/Account/PersonalInfoTab.vue'
+import LicenseManagementTab from '@/components/Account/LicenseManagementTab.vue'
 import { onMounted, ref } from 'vue'
 
 // États pour les données utilisateur et entreprise
