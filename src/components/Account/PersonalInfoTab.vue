@@ -9,7 +9,7 @@
             v-model="formData.firstName"
             label="Prénom"
             required
-            :rules="firstNameRules"
+            :rules="FormFirstNameRules"
           ></v-text-field>
         </v-col>
 
@@ -18,7 +18,7 @@
             v-model="formData.lastName"
             label="Nom de famille"
             required
-            :rules="lastNameRules"
+            :rules="FormLastNameRules"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -28,7 +28,7 @@
         label="Adresse email"
         type="email"
         required
-        :rules="emailRules"
+        :rules="FormEmailSimpleRules"
         readonly
         variant="plain"
         hint="Verrouillé, contactez l'administrateur pour modifier le mail"
@@ -38,7 +38,7 @@
       <v-text-field
         v-model="formData.phone"
         label="Numéro de téléphone"
-        :rules="phoneRules"
+        :rules="FormPhoneSimpleRules"
       ></v-text-field>
 
       <div class="text-subtitle-1 mb-4">Sécurité</div>
@@ -47,14 +47,14 @@
         v-model="formData.password"
         label="Mot de passe actuel"
         type="password"
-        :rules="passwordRules"
+        :rules="FormPasswordMin8Rules"
       ></v-text-field>
 
       <v-text-field
         v-model="formData.newPassword"
         label="Nouveau mot de passe"
         type="password"
-        :rules="newPasswordRules"
+        :rules="FormPasswordComplexRules"
       ></v-text-field>
 
       <v-text-field
@@ -69,47 +69,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-
-// Définition des règles de validation
-const firstNameRules = [
-  (value: string) => !!value || 'Le prénom est requis',
-  (value: string) => (value && value.length >= 2) || 'Le prénom doit contenir au moins 2 caractères'
-]
-
-const lastNameRules = [
-  (value: string) => !!value || 'Le nom de famille est requis',
-  (value: string) =>
-    (value && value.length >= 2) || 'Le nom de famille doit contenir au moins 2 caractères'
-]
-
-const emailRules = [
-  (value: string) => !!value || "L'adresse email est requise",
-  (value: string) => /\S+@\S+\.\S+/.test(value) || "L'adresse email n'est pas valide"
-]
-
-const phoneRules = [
-  (value: string) =>
-    !value || /^[\+]?[0-9\s\-\(\)]{10,}$/.test(value) || "Le numéro de téléphone n'est pas valide"
-]
-
-const passwordRules = [
-  (value: string) =>
-    !value || value.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères'
-]
-
-const newPasswordRules = [
-  (value: string) =>
-    !value || value.length >= 8 || 'Le nouveau mot de passe doit contenir au moins 8 caractères',
-  (value: string) =>
-    !value ||
-    /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value) ||
-    'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre'
-]
-
-const confirmPasswordRules = [
-  (value: string) =>
-    !value || value === formData.newPassword || 'Les mots de passe ne correspondent pas'
-]
+import {
+  FormFirstNameRules,
+  FormLastNameRules,
+  FormEmailSimpleRules,
+  FormPhoneSimpleRules,
+  FormPasswordMin8Rules,
+  FormPasswordComplexRules
+} from '@/utilities/constantes'
 
 // État du formulaire
 const isValid = ref<boolean>(true)
@@ -129,6 +96,11 @@ const formData = ref({
   newPassword: '',
   confirmPassword: ''
 })
+
+const confirmPasswordRules = [
+  (value: string) =>
+    !value || value === formData.value.newPassword || 'Les mots de passe ne correspondent pas'
+]
 
 // Watcher pour synchroniser les données de l'utilisateur avec le formulaire
 watch(

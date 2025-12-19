@@ -1,7 +1,7 @@
-import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
-import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
 import { useAuthStore } from '@/store/auth'
 import { useNotificationStore } from '@/store/notification'
+import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -91,8 +91,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/myAccount',
-    name: 'MyAccount',
+    path: routesCONST.myAccount.path,
+    name: routesCONST.myAccount.name,
     component: () => import('../views/Account.vue'),
     meta: { requiresAuth: true }
   },

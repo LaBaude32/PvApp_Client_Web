@@ -155,6 +155,48 @@ export const FormContactPhoneRules = [
     "Le numéro de téléphone du contact n'est pas valide"
 ]
 
+// Règles de validation pour PersonalInfoTab
+export const FormNameMin2Rules = [
+  (value: string) => !!value || 'Le nom est requis',
+  (value: string) => (value && value.length >= 2) || 'Le nom doit contenir au moins 2 caractères'
+]
+
+export const FormFirstNameRules = [
+  (value: string) => !!value || 'Le prénom est requis',
+  (value: string) => (value && value.length >= 2) || 'Le prénom doit contenir au moins 2 caractères'
+]
+
+export const FormLastNameRules = [
+  (value: string) => !!value || 'Le nom de famille est requis',
+  (value: string) =>
+    (value && value.length >= 2) || 'Le nom de famille doit contenir au moins 2 caractères'
+]
+
+export const FormEmailSimpleRules = [
+  (value: string) => !!value || "L'adresse email est requise",
+  (value: string) => /\S+@\S+\.\S+/.test(value) || "L'adresse email n'est pas valide"
+]
+
+export const FormPhoneSimpleRules = [
+  (value: string) =>
+    !value || /^[\+]?[0-9\s\-\(\)]{10,}$/.test(value) || "Le numéro de téléphone n'est pas valide"
+]
+
+export const FormPasswordMin8Rules = [
+  (value: string) =>
+    !value || value.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères'
+]
+
+export const FormPasswordComplexRules = [
+  (value: string) =>
+    !value || value.length >= 8 || 'Le nouveau mot de passe doit contenir au moins 8 caractères',
+  (value: string) =>
+    !value ||
+    /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value) ||
+    'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre'
+]
+
+
 export const FormCountryRules = [
   (value: string) => !!value || 'Le pays est requis',
   (value: string) => value.length >= 2 || 'Le pays doit contenir au moins 2 caractères'

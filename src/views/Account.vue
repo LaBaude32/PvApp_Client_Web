@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import CompanyInfoTab from '@/components/CompanyInfoTab.vue'
-import PersonalInfoTab from '@/components/PersonalInfoTab.vue'
+import CompanyInfoTab from '@/components/Account/CompanyInfoTab.vue'
+import PersonalInfoTab from '@/components/Account/PersonalInfoTab.vue'
 import { onMounted, ref } from 'vue'
 
 // États pour les données utilisateur et entreprise
