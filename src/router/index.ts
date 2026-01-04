@@ -91,6 +91,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/test-annotation',
+    name: 'TestAnnotation',
+    component: () => import('../views/TestAnnotation.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: routesCONST.myAccount.path,
     name: routesCONST.myAccount.name,
     component: () => import('../views/Account.vue'),
