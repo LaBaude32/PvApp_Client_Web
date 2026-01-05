@@ -28,12 +28,12 @@ import EditorToolbox from './EditorToolbox.vue'
 const props = defineProps<{
   targetImage: string | File
   annotation?: AnnotationState | null
-  onSave?: (annotation: AnnotationState) => void
+  onSave?: (data: { state: AnnotationState; renderedImage?: File }) => void
 }>()
 
 // Define emitted events
 const emit = defineEmits<{
-  (e: 'save', annotation: AnnotationState): void
+  (e: 'save', data: { state: AnnotationState; renderedImage?: File }): void
 }>()
 
 // References to DOM and MarkerArea
@@ -270,7 +270,26 @@ const handleToolbarAction = (action: string) => {
     }
     case 'save': {
       if (editor.value) {
-        emit('save', editor.value.getState())
+        const state = editor.value.getState()
+        // Récupérer l'image rendue avec les annotations
+        const renderer = new Renderer()
+        renderer.targetImage = editor.value.targetImage
+        renderer.naturalSize = true
+        renderer.imageType = 'image/png'
+
+        renderer.rasterize(state).then((renderedImage) => {
+          // Créer un objet Blob à partir de l'image rendue
+          fetch(renderedImage)
+            .then((res) => res.blob())
+            .then((blob) => {
+              // Créer un objet File à partir du Blob
+              const file = new File([blob], 'annotated-image.png', { type: 'image/png' })
+              emit('save', {
+                state: state,
+                renderedImage: file
+              })
+            })
+        })
       }
       break
     }
