@@ -10,9 +10,6 @@
           <Render :targetImage="sampleImage" :annotation="annotation" />
         </template>
       </v-card-text>
-      <v-card-action>
-        <v-btn color="primary" @click="isSavedImage = !isSavedImage">modifier</v-btn>
-      </v-card-action>
     </v-card>
   </v-container>
 </template>
