@@ -135,7 +135,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12">
-                          <div v-if="editedItem.image == null || editedItem.isImageChange == true">
+                          <div v-if="!editedItem.image || editedItem.isImageChange == true">
                             <v-file-input
                               id="picture"
                               label="Photo"
@@ -157,6 +157,10 @@
                               :src="MyThumbnail(editedItem.image)"
                             ></v-img>
                           </div>
+                          <v-btn color="primary" class="mt-2" @click="openAnnotationEditor">
+                            <v-icon left>mdi-draw</v-icon>
+                            Annoter
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -168,6 +172,31 @@
                     <v-btn color="primary" text @click="save">Enregister</v-btn>
                   </v-card-actions>
                 </v-form>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="annotationDialog" fullscreen>
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="annotationDialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Éditeur d'annotations</v-toolbar-title>
+                </v-toolbar>
+                <v-card-text>
+                  <div v-if="!editedItem.image" class="pa-4">
+                    <v-alert type="error">Aucune image sélectionnée</v-alert>
+                  </div>
+                  <div v-else-if="!MyThumbnail(editedItem.image)" class="pa-4">
+                    <v-alert type="error">URL de l'image invalide</v-alert>
+                  </div>
+                  <Editor
+                    v-else
+                    :targetImage="editedItem.image"
+                    @save="handleEditorSave"
+                    @close="annotationDialog = false"
+                  />
+                </v-card-text>
               </v-card>
             </v-dialog>
           </v-toolbar>
@@ -229,10 +258,13 @@ import { useDate } from 'vuetify'
 import { DEFAULT_ITEM } from '../utilities/dataConst'
 import { FormRequiredRules } from '../utilities/constantes.ts'
 import SavingLoader from './SavingLoader.vue'
+import Editor from './Editor.vue'
 
 const date = useDate()
 
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
+
+const annotationDialog = ref(false)
 
 defineProps({
   pvUsers: Array,
@@ -280,8 +312,7 @@ watch(MyDialog, (val) => {
 })
 
 function onObjectSelected(event) {
-  // objectThumbnailFile.value = event
-  // editedItem.value.image = objectThumbnailFile.value
+  // editedItem.value.image = event.target.files[0]
   editedItem.value.image = document.getElementById('picture').files[0]
   editedItem.value.isImageChange = true
 }
@@ -295,6 +326,42 @@ function OpenImage(imageName) {
 function removeImage(item) {
   item.image = null
   item.isImageChange = true
+}
+
+function getAnnotationImageUrl() {
+  if (editedItem.value && editedItem.image) {
+    if (editedItem.image instanceof File) {
+      // Si c'est un fichier nouvellement téléchargé, créer un URL object
+      return URL.createObjectURL(editedItem.image)
+    } else {
+      // Si c'est un nom de fichier existant, utiliser le thumbnail
+      return MyThumbnail(editedItem.image)
+    }
+  }
+  return ''
+}
+
+function openAnnotationEditor() {
+  // console.log('test')
+  // console.log(editedItem.value)
+  // console.log(editedItem.value.image)
+  // console.log(editedItem.image)
+  if (editedItem.value && editedItem.value.image) {
+    annotationDialog.value = true
+  }
+}
+
+function handleEditorSave(annotationState) {
+  annotationDialog.value = false
+  // Stocker les annotations avec l'item
+  // Cela devra être implémenté côté backend
+  console.log('Annotations sauvegardées:', annotationState)
+}
+
+function saveAnnotations(state) {
+  annotationDialog.value = false
+  // Les annotations sont sauvegardées dans l'état mais pas encore implémentées
+  // à envoyer avec l'item lors de l'enregistrement
 }
 
 const maxPosition = computed(() => {

@@ -93,7 +93,7 @@ const canEditOpacity = computed(() => {
       <input
         type="color"
         :value="strokeColor"
-        @change="updateStrokeColor(($event.target as HTMLInputElement).value)"
+        @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
       />
     </div>
 
@@ -102,7 +102,7 @@ const canEditOpacity = computed(() => {
       <input
         type="color"
         :value="fillColor"
-        @change="updateFillColor(($event.target as HTMLInputElement).value)"
+        @input="updateFillColor(($event.target as HTMLInputElement).value)"
       />
     </div>
 
@@ -113,7 +113,7 @@ const canEditOpacity = computed(() => {
         min="0"
         max="100"
         :value="opacity"
-        @change="updateOpacity(parseInt(($event.target as HTMLInputElement).value))"
+        @input="updateOpacity(parseInt(($event.target as HTMLInputElement).value))"
       />
       <span>{{ opacity }}%</span>
     </div>

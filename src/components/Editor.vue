@@ -26,7 +26,7 @@ import EditorToolbox from './EditorToolbox.vue'
 
 // Define component props
 const props = defineProps<{
-  targetImage: string
+  targetImage: string | File
   annotation?: AnnotationState | null
   onSave?: (annotation: AnnotationState) => void
 }>()
@@ -160,7 +160,12 @@ const markerTypes = [
 onMounted(() => {
   if (editorContainer.value) {
     const targetImg = document.createElement('img')
-    targetImg.src = props.targetImage
+
+    if (props.targetImage instanceof File) {
+      targetImg.src = URL.createObjectURL(props.targetImage)
+    } else {
+      targetImg.src = props.targetImage
+    }
 
     editor.value = new MarkerArea()
     editor.value.targetImage = targetImg
