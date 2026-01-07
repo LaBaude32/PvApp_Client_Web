@@ -15,6 +15,8 @@ onMounted(() => {
   if (viewerContainer.value) {
     const targetImg = document.createElement('img')
     targetImg.src = props.targetImage
+    // Set crossOrigin for same-origin images to avoid CORS issues
+    targetImg.crossOrigin = 'anonymous'
 
     viewer.value = new MarkerView()
     viewer.value.targetImage = targetImg

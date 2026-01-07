@@ -358,21 +358,11 @@ function removeImage(item) {
   item.isImageChange = true
 }
 
-function getAnnotationImageUrl() {
-  if (editedItem.value && editedItem.image) {
-    if (editedItem.image instanceof File) {
-      // Si c'est un fichier nouvellement téléchargé, créer un URL object
-      return URL.createObjectURL(editedItem.image)
-    } else {
-      // Si c'est un nom de fichier existant, utiliser le thumbnail
-      return MyThumbnail(editedItem.image)
-    }
-  }
-  return ''
-}
-
 function openAnnotationEditor() {
-  if (editedItem.value) {
+  if (editedItem.value.image) {
+    if (editedItem.value.itemId) {
+      editedItem.value.image = MyThumbnail(editedItem.value.image)
+    }
     annotationDialog.value = true
   }
 }

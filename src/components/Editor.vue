@@ -158,6 +158,8 @@ const markerTypes = [
 
 // Initialize MarkerArea on component mount
 onMounted(() => {
+  console.log(props.targetImage)
+
   if (editorContainer.value) {
     const targetImg = document.createElement('img')
 
@@ -165,6 +167,8 @@ onMounted(() => {
       targetImg.src = URL.createObjectURL(props.targetImage)
     } else {
       targetImg.src = props.targetImage
+      // Set crossOrigin for same-origin images to avoid CORS issues
+      targetImg.crossOrigin = 'anonymous'
     }
 
     editor.value = new MarkerArea()
