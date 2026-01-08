@@ -1,7 +1,7 @@
-import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
-import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
 import { useAuthStore } from '@/store/auth'
 import { useNotificationStore } from '@/store/notification'
+import routesCONST, { getRouteName, getRoutePath } from '@/utilities/constantes'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,8 +64,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: getRoutePath('addUser'),
     name: getRouteName('addUser'),
-    component: () => import('../views/AddUser.vue'),
-    meta: { requiresAuth: true }
+    component: () => import('../views/AddUser.vue')
+    // meta: { requiresAuth: true }
   },
   {
     path: getRoutePath('addLot'),
