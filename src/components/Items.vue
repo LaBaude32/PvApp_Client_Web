@@ -183,7 +183,7 @@
             <v-dialog v-model="annotationDialog" fullscreen>
               <v-card>
                 <v-toolbar dark color="primary">
-                  <v-btn icon dark @click="annotationDialog = false">
+                  <v-btn icon dark @click="closeAnnotationEditor">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                   <v-toolbar-title>Éditeur d'annotations</v-toolbar-title>
@@ -204,7 +204,7 @@
                     v-else
                     :targetImage="editedItem.image"
                     @save="openConfirmSaveDialog"
-                    @close="annotationDialog = false"
+                    @close="closeAnnotationEditor"
                   />
                 </v-card-text>
               </v-card>
@@ -364,6 +364,27 @@ function openAnnotationEditor() {
       editedItem.value.image = MyThumbnail(editedItem.value.image)
     }
     annotationDialog.value = true
+  }
+}
+
+function handleEditorClose() {
+  annotationDialog.value = false
+}
+
+function closeAnnotationEditor() {
+  // Vérifier si des annotations ont été faites
+  if (window.tempAnnotationData) {
+    // Demander confirmation avant de fermer sans sauvegarder
+    const confirmClose = confirm(
+      'Vous avez des annotations non sauvegardées. Voulez-vous vraiment fermer sans sauvegarder ?'
+    )
+    if (confirmClose) {
+      annotationDialog.value = false
+      // Nettoyer les données temporaires
+      delete window.tempAnnotationData
+    }
+  } else {
+    annotationDialog.value = false
   }
 }
 

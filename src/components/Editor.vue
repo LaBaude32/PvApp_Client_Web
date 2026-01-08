@@ -34,6 +34,7 @@ const props = defineProps<{
 // Define emitted events
 const emit = defineEmits<{
   (e: 'save', data: { state: AnnotationState; renderedImage?: File }): void
+  (e: 'close'): void
 }>()
 
 // References to DOM and MarkerArea
