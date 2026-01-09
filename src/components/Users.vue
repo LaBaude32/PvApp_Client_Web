@@ -48,7 +48,7 @@
                       <v-col cols="12" sm="6">
                         <v-select
                           v-model="editedItem.userGroupToReturn"
-                          :items="defaultItem.userGroup"
+                          :items="DEFAULT_PARTICIPANT.userGroup"
                           label="Groupe"
                           :rules="FormRequiredRules"
                           clearable
@@ -252,7 +252,7 @@ import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import { useAffairStore } from '../store/affair'
 import UserFormStatus from './UserFormStatus.vue'
-import { PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
+import { PARTICIPANT_STATUS_PAE, DEFAULT_PARTICIPANT } from '@/utilities/dataConst'
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 const userStore = useUserStore()
@@ -320,31 +320,6 @@ const editedItem = ref({
   firstName: '',
   lastName: ''
 })
-//TODO: mettre dans types.js
-const defaultItem = {
-  fullName: '',
-  userGroup: [
-    "Maîtrise d'ouvrage",
-    "Assistance à la maîtrise d'ouvrage",
-    "Maîtrise d'oeuvre",
-    'Entreprise',
-    'Concessionnaire',
-    'Personne public associée',
-    'COPIL',
-    'COTEC',
-    'Divers'
-  ],
-  userFunction: '',
-  organism: '',
-  email: '',
-  phone: '',
-  statusPAE: undefined,
-  invitedCurrentMeeting: undefined,
-  invitedNextMeeting: undefined,
-  distribution: undefined,
-  firstName: '',
-  lastName: ''
-}
 
 const formTitle = computed(() => {
   return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
@@ -381,7 +356,7 @@ function deleteItem(item) {
 function closeNewOrModifiedUser() {
   dialogNewOrModifiedUser.value = false
   setTimeout(() => {
-    editedItem.value = Object.assign({}, defaultItem)
+    editedItem.value = Object.assign({}, DEFAULT_PARTICIPANT)
     editedIndex.value = -1
     // formReset()
   }, 300)
@@ -446,7 +421,7 @@ function saveNewOrModifiedUser() {
 function closeExistingUser() {
   dialogExistingUser.value = false
   setTimeout(() => {
-    editedItem.value = Object.assign({}, defaultItem)
+    editedItem.value = Object.assign({}, DEFAULT_PARTICIPANT)
     connectedParticipant.value = null
     editedIndex.value = -1
   }, 300)

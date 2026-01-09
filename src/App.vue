@@ -124,12 +124,6 @@ const mainMenuItems = [
     icon: 'mdi-view-dashboard'
   },
   {
-    path: getRouteName('addUser'),
-    title: 'Créer un compte',
-    icon: 'mdi-account-plus',
-    color: ''
-  },
-  {
     path: getRouteName('about'),
     title: 'A propos',
     icon: 'mdi-information',

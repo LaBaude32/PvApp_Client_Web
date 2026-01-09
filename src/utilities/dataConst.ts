@@ -5,7 +5,7 @@ export const DEFAULT_ITEM = {
   note: null,
   followUp: null,
   resources: null,
-  completion: ['A faire', 'Urgent', 'Fait', 'En cours'], //TODO: A mettre en Enum dans la BDD ?
+  completion: ['A faire', 'Urgent', 'Fait', 'En cours', 'Dès que possible'], //TODO: A mettre en Enum dans la BDD ?
   completionDate: null,
   image: null,
   visible: true,
@@ -38,8 +38,25 @@ export const USER_GROUPE_ITEMS = [
   'Personne public associée',
   'COPIL',
   'COTEC',
-  'Divers'
+  'Divers',
+  'Coordinateur SPS',
+  'BET'
 ]
+
+export const DEFAULT_PARTICIPANT = {
+  fullName: '',
+  userGroup: USER_GROUPE_ITEMS,
+  userFunction: '',
+  organism: '',
+  email: '',
+  phone: '',
+  statusPAE: undefined,
+  invitedCurrentMeeting: undefined,
+  invitedNextMeeting: undefined,
+  distribution: undefined,
+  firstName: '',
+  lastName: ''
+}
 
 export const ITEM_HEADERS = [
   {
@@ -82,7 +99,7 @@ export const EDITED_ITEM = {
   lastName: ''
 }
 
-export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', null]
+export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', 'Représenté', null]
 
 export const LOT_DEFAULT = ['MOA', 'AMO', 'MOE', 'PPA', 'SPS', 'CONCES']
 
