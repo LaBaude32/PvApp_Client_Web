@@ -133,31 +133,52 @@
                           <v-text-field v-model="editedItem.reminder" label="Rappel" clearable />
                         </v-col>
                       </v-row>
-                      <v-row>
-                        <v-col cols="12">
-                          <div v-if="editedItem.image == null || editedItem.isImageChange == true">
+                      <v-row class="align-center text-button">
+                        <v-col>
+                          <v-chip
+                            prepend-icon="mdi-check-decagram"
+                            color="primary"
+                            v-if="editedItem.isAnnotated"
+                            >Image annotée</v-chip
+                          >
+                          <div v-else-if="!editedItem.image || editedItem.isImageChange == true">
                             <v-file-input
                               id="picture"
                               label="Photo"
                               accept="image/*"
                               prepend-icon="mdi-camera"
                               @change="onObjectSelected"
+                              hide-details
                             ></v-file-input>
                           </div>
                           <div v-else>
-                            <p>
+                            <p class="mb-2">
+                              <v-icon>mdi-camera</v-icon>
                               Photo :
-                              <v-btn icon @click="removeImage(editedItem)">
-                                <v-icon>mdi-delete</v-icon>
-                              </v-btn>
+                              <v-chip
+                                class="l-2"
+                                prepend-icon="mdi-delete"
+                                color="red"
+                                @click="removeImage(editedItem)"
+                                >Supprimer l'image</v-chip
+                              >
                             </p>
                             <v-img
+                              v-if="!editedItem.isAnnotated"
                               max-height="300"
                               max-width="700"
                               :src="MyThumbnail(editedItem.image)"
                             ></v-img>
                           </div>
                         </v-col>
+                        <v-btn
+                          v-if="editedItem.image && !editedItem.isAnnotated"
+                          color="primary"
+                          @click="openAnnotationEditor"
+                        >
+                          <v-icon left>mdi-draw</v-icon>
+                          Annoter
+                        </v-btn>
                       </v-row>
                     </v-container>
                   </v-card-text>
@@ -168,6 +189,56 @@
                     <v-btn color="primary" text @click="save">Enregister</v-btn>
                   </v-card-actions>
                 </v-form>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="annotationDialog" fullscreen>
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="closeAnnotationEditor">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Éditeur d'annotations</v-toolbar-title>
+                </v-toolbar>
+                <v-card-text>
+                  <div v-if="!editedItem.image" class="pa-4">
+                    <v-alert type="error">Aucune image sélectionnée</v-alert>
+                  </div>
+                  <div
+                    v-else-if="
+                      typeof editedItem.image === 'string' && !MyThumbnail(editedItem.image)
+                    "
+                    class="pa-4"
+                  >
+                    <v-alert type="error">URL de l'image invalide</v-alert>
+                  </div>
+                  <Editor
+                    v-else
+                    :targetImage="editedItem.image"
+                    @save="openConfirmSaveDialog"
+                    @close="closeAnnotationEditor"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="confirmSaveDialog" max-width="500px">
+              <v-card>
+                <v-card-title class="text-h5"> Confirmer l'enregistrement </v-card-title>
+                <v-card-text>
+                  <v-alert type="warning" class="mb-4">
+                    En enregistrant, l'image sera remplacée par la version annotée et les
+                    annotations ne pourront plus être modifiées.
+                  </v-alert>
+                  <p>Voulez-vous continuer ?</p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="teriary" text @click="confirmSaveDialog = false"> Annuler </v-btn>
+                  <v-btn color="error" text @click="confirmAndSaveAnnotations">
+                    Enregistrer les annotations
+                  </v-btn>
+                </v-card-actions>
               </v-card>
             </v-dialog>
           </v-toolbar>
@@ -229,10 +300,14 @@ import { useDate } from 'vuetify'
 import { DEFAULT_ITEM } from '../utilities/dataConst'
 import { FormRequiredRules } from '../utilities/constantes.ts'
 import SavingLoader from './SavingLoader.vue'
+import Editor from './Editor.vue'
 
 const date = useDate()
 
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
+
+const annotationDialog = ref(false)
+const confirmSaveDialog = ref(false)
 
 defineProps({
   pvUsers: Array,
@@ -280,9 +355,7 @@ watch(MyDialog, (val) => {
 })
 
 function onObjectSelected(event) {
-  // objectThumbnailFile.value = event
-  // editedItem.value.image = objectThumbnailFile.value
-  editedItem.value.image = document.getElementById('picture').files[0]
+  editedItem.value.image = event.target.files[0]
   editedItem.value.isImageChange = true
 }
 function MyThumbnail(imageName) {
@@ -295,6 +368,67 @@ function OpenImage(imageName) {
 function removeImage(item) {
   item.image = null
   item.isImageChange = true
+}
+
+function openAnnotationEditor() {
+  if (editedItem.value.image) {
+    if (editedItem.value.itemId) {
+      editedItem.value.image = MyThumbnail(editedItem.value.image)
+    }
+    annotationDialog.value = true
+  }
+}
+
+function handleEditorClose() {
+  annotationDialog.value = false
+}
+
+function closeAnnotationEditor() {
+  // Vérifier si des annotations ont été faites
+  if (window.tempAnnotationData) {
+    // Demander confirmation avant de fermer sans sauvegarder
+    const confirmClose = confirm(
+      'Vous avez des annotations non sauvegardées. Voulez-vous vraiment fermer sans sauvegarder ?'
+    )
+    if (confirmClose) {
+      annotationDialog.value = false
+      // Nettoyer les données temporaires
+      delete window.tempAnnotationData
+    }
+  } else {
+    annotationDialog.value = false
+  }
+}
+
+function openConfirmSaveDialog(data) {
+  // Stocker temporairement les données pour utilisation après confirmation
+  window.tempAnnotationData = data
+  confirmSaveDialog.value = true
+}
+
+function confirmAndSaveAnnotations() {
+  if (window.tempAnnotationData) {
+    const data = window.tempAnnotationData
+    annotationDialog.value = false
+    confirmSaveDialog.value = false
+
+    // Stocker l'état des annotations et l'image rendue
+    if (data.state) {
+      editedItem.value.annotationState = data.state
+    }
+    if (data.renderedImage) {
+      editedItem.value.image = data.renderedImage
+      editedItem.value.isImageChange = true
+    }
+    // Marquer l'image comme annotée
+    if (data.isAnnotated) {
+      editedItem.value.isAnnotated = data.isAnnotated
+    }
+    console.log('Annotations et image rendue sauvegardées:', data)
+
+    // Nettoyer les données temporaires
+    delete window.tempAnnotationData
+  }
 }
 
 const maxPosition = computed(() => {

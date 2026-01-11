@@ -15,6 +15,7 @@ export interface User {
   userGroup?: string
   userFunction?: string
   organism?: string
+  organisationId: number
 }
 
 export interface Lot {
@@ -68,4 +69,21 @@ export interface Progress {
   progress: string
   pvId: number
   lotId: number
+}
+
+export interface Organisation {
+  organisationId: number
+  name: string
+  type: 'entreprise' | 'collectivite'
+  tvaIntra?: string
+  address: {
+    street?: string
+    postcode?: string
+    city?: string
+    country?: string
+  }
+  billingEmail?: string
+  createdAt?: Date
+  updatedAt?: Date
+  assignedLots?: number[]
 }

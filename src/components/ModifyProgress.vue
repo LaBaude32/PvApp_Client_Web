@@ -9,7 +9,11 @@
             :key="progress.position"
             class="d-flex align-center bg-blue-lighten-5 rounded mb-2"
           >
-            <v-icon icon="mdi-menu-swap" size="x-large" class="handle cursor-move"></v-icon>
+            <v-icon
+              icon="mdi-drag-horizontal-variant"
+              size="x-large"
+              class="handle cursor-move"
+            ></v-icon>
             <v-text-field
               v-model="progress.description"
               class="px-5 pt-4"
@@ -64,7 +68,7 @@
 
 <script setup lang="ts">
 import { useNotificationStore } from '@/store/notification'
-import { FormRequiredRules, FormRequiredRulesMin3 } from '@/utilities/constantes'
+import { FormRequiredRulesMin3 } from '@/utilities/constantes'
 import type { Lot, Progress } from '@/utilities/types'
 import Axios from 'axios'
 import { onMounted, ref } from 'vue'
