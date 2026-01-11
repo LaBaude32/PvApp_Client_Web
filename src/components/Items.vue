@@ -133,9 +133,15 @@
                           <v-text-field v-model="editedItem.reminder" label="Rappel" clearable />
                         </v-col>
                       </v-row>
-                      <v-row class="align-center">
+                      <v-row class="align-center text-button">
                         <v-col>
-                          <div v-if="!editedItem.image || editedItem.isImageChange == true">
+                          <v-chip
+                            prepend-icon="mdi-check-decagram"
+                            color="primary"
+                            v-if="editedItem.isAnnotated"
+                            >Image annotée</v-chip
+                          >
+                          <div v-else-if="!editedItem.image || editedItem.isImageChange == true">
                             <v-file-input
                               id="picture"
                               label="Photo"
@@ -146,13 +152,19 @@
                             ></v-file-input>
                           </div>
                           <div v-else>
-                            <p>
+                            <p class="mb-2">
+                              <v-icon>mdi-camera</v-icon>
                               Photo :
-                              <v-btn icon @click="removeImage(editedItem)">
-                                <v-icon>mdi-delete</v-icon>
-                              </v-btn>
+                              <v-chip
+                                class="l-2"
+                                prepend-icon="mdi-delete"
+                                color="red"
+                                @click="removeImage(editedItem)"
+                                >Supprimer l'image</v-chip
+                              >
                             </p>
                             <v-img
+                              v-if="!editedItem.isAnnotated"
                               max-height="300"
                               max-width="700"
                               :src="MyThumbnail(editedItem.image)"
@@ -160,7 +172,7 @@
                           </div>
                         </v-col>
                         <v-btn
-                          v-if="editedItem.image"
+                          v-if="editedItem.image && !editedItem.isAnnotated"
                           color="primary"
                           @click="openAnnotationEditor"
                         >
@@ -407,6 +419,10 @@ function confirmAndSaveAnnotations() {
     if (data.renderedImage) {
       editedItem.value.image = data.renderedImage
       editedItem.value.isImageChange = true
+    }
+    // Marquer l'image comme annotée
+    if (data.isAnnotated) {
+      editedItem.value.isAnnotated = data.isAnnotated
     }
     console.log('Annotations et image rendue sauvegardées:', data)
 

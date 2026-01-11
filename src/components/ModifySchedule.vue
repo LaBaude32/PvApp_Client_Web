@@ -9,7 +9,11 @@
             :key="schedule.position"
             class="d-flex align-center bg-blue-lighten-5 rounded mb-2"
           >
-            <v-icon icon="mdi-menu-swap" size="x-large" class="handle cursor-move"></v-icon>
+            <v-icon
+              icon="mdi-drag-horizontal-variant"
+              size="x-large"
+              class="handle cursor-move"
+            ></v-icon>
             <v-text-field
               v-model="schedule.description"
               class="px-5 pt-4"
@@ -63,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { FormRequiredRulesMin3, FormRequiredRules } from '@/utilities/constantes'
+import { FormRequiredRulesMin3 } from '@/utilities/constantes'
 import type { Lot, Schedule } from '@/utilities/types'
 import Axios from 'axios'
 import { onMounted, ref } from 'vue'

@@ -28,7 +28,7 @@ import EditorToolbox from './EditorToolbox.vue'
 const props = defineProps<{
   targetImage: string | File
   annotation?: AnnotationState | null
-  onSave?: (data: { state: AnnotationState; renderedImage?: File }) => void
+  onSave?: (data: { state: AnnotationState; renderedImage?: File; isAnnotated: boolean }) => void
 }>()
 
 // Define emitted events
@@ -291,7 +291,8 @@ const handleToolbarAction = (action: string) => {
               const file = new File([blob], 'annotated-image.png', { type: 'image/png' })
               emit('save', {
                 state: state,
-                renderedImage: file
+                renderedImage: file,
+                isAnnotated: true
               })
             })
         })
