@@ -498,7 +498,7 @@ function startOtpCountdows() {
   console.log(otp.value)
 
   // Ajoutez 24 heures au timestamp de base
-  const endTime = otp.value.createdAtTimeStamp * 1000 + 24 * 60 * 60 * 1000
+  const endTime = otp.value.expirationTimestamp
   const updateCountdown = () => {
     const now = new Date().getTime()
     const distance = endTime - now

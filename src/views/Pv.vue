@@ -60,7 +60,7 @@
 
     <v-divider class="my-10"></v-divider>
 
-    <Users
+    <Participants
       v-if="pvUsers"
       v-model:users="pvUsers"
       v-model:allConnectedParticipants="pvConnectedParticipants"
@@ -103,7 +103,7 @@ import ModalValidation from '@/components/ModalValidation.vue'
 import ModifyAgenda from '@/components/ModifyAgenda.vue'
 import ModifyProgress from '@/components/ModifyProgress.vue'
 import ModifySchedule from '@/components/ModifySchedule.vue'
-import Users from '@/components/Users.vue'
+import Participants from '@/components/Participants.vue'
 import { useAffairStore } from '@/store/affair'
 import { useNotificationStore } from '@/store/notification'
 import { useUserStore } from '@/store/user'
