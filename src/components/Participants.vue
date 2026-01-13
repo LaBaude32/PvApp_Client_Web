@@ -473,7 +473,7 @@ function participantItemProps(params) {
 function generateQrCode() {
   text.value = `https://${window.location.hostname}/addHimSelfParticipant/pvId/${pvId.value}`
   getParticipantOtp().then(() => {
-    startOtpCountdows()
+    startOtpCountdowns()
   })
   dialogQrCode.value = true
 }
@@ -494,11 +494,15 @@ function getParticipantOtp() {
   })
 }
 
-function startOtpCountdows() {
-  console.log(otp.value)
+function startOtpCountdowns() {
+  // Vérifier si expirationTimestamp existe et est un nombre valide
+  if (!otp.value.expirationTimestamp) {
+    console.error('expirationTimestamp est manquant ou invalide')
+    return
+  }
 
-  // Ajoutez 24 heures au timestamp de base
-  const endTime = otp.value.expirationTimestamp
+  // Convertir le timestamp de l'API (en secondes) en milliseconds
+  const endTime = otp.value.expirationTimestamp * 1000
   const updateCountdown = () => {
     const now = new Date().getTime()
     const distance = endTime - now
@@ -580,7 +584,7 @@ function printQrCode() {
               <div class="affair-name">${affairName.value || 'N/A'}</div>
               <div class="info-section">
                 <p><strong>Code:</strong> ${otp.value.otp || 'N/A'}</p>
-                <p><strong>Expiration:</strong> ${formatExpiryDate(otp.value.createdAtTimeStamp) || 'N/A'}</p>
+                <p><strong>Expiration:</strong> ${formatExpiryDate(otp.value.expirationTimestamp) || 'N/A'}</p>
               </div>
             </div>
           </body>
@@ -610,7 +614,7 @@ function formatExpiryDate(timestamp) {
   if (!timestamp) return 'N/A'
 
   // Convert timestamp (in seconds) to milliseconds and add 24 hours
-  const expiryTime = new Date(timestamp * 1000 + 24 * 60 * 60 * 1000)
+  const expiryTime = new Date(timestamp * 1000 - 3600000)
 
   // Format as "lundi 4 decembre 14:30" style in French
   const dateOptions = {

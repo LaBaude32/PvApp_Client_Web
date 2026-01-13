@@ -7,7 +7,7 @@ export const useNotificationStore = defineStore('notification', () => {
   const state = ref(false)
   const btnColor = ref('red')
   const isDark = ref(false)
-  const timeout = ref(3000)
+  const timeout = ref(5000)
 
   function close() {
     text.value = ''
