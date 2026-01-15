@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import type { AnnotationState } from '@markerjs/markerjs3'
 import { ref } from 'vue'
-import Editor from '../components/Editor.vue'
+import Editor from '../components/ImageEditor/Editor.vue'
 import Render from '../components/Render.vue'
 
 const isSavedImage = ref(false)

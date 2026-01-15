@@ -300,7 +300,7 @@ import { useDate } from 'vuetify'
 import { DEFAULT_ITEM } from '../utilities/dataConst'
 import { FormRequiredRules } from '../utilities/constantes.ts'
 import SavingLoader from './SavingLoader.vue'
-import Editor from './Editor.vue'
+import Editor from './ImageEditor/Editor.vue'
 
 const date = useDate()
 
