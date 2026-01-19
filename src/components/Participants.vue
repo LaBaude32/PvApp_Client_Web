@@ -1,6 +1,12 @@
 <template>
   <v-card max-width="95%" class="mx-auto mb-10">
-    <v-data-table :headers="headers" :items="users" :search="search" items-per-page="-1">
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      :search="search"
+      items-per-page="-1"
+      v-sortable-data-table
+    >
       <template v-slot:top>
         <v-toolbar class="py-3">
           <v-toolbar-title>Participants</v-toolbar-title>
@@ -176,6 +182,9 @@
           <v-btn prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
         </v-toolbar>
       </template>
+      <template v-slot:item.ordering>
+        <v-icon class="handle">mdi-sort</v-icon>
+      </template>
       <template v-slot:item.fullName="{ item }">
         <div>{{ item.firstName }} {{ item.lastName }}</div>
       </template>
@@ -239,6 +248,8 @@
 </template>
 
 <script setup>
+import Sortable from 'sortablejs'
+
 import Axios from 'axios'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -284,6 +295,10 @@ const connectedParticipant = ref()
 
 const headers = [
   {
+    title: 'Ordre',
+    value: 'ordering'
+  },
+  {
     title: 'Prénom Nom',
     align: 'start',
     value: 'fullName'
@@ -320,6 +335,31 @@ const editedItem = ref({
   firstName: '',
   lastName: ''
 })
+
+const vSortableDataTable = {
+  mounted(el, binding, vnode) {
+    const options = {
+      animation: 150,
+      handle: '.handle',
+      onUpdate: function (event) {
+        const item = users.value[event.oldIndex]
+        users.value.splice(event.oldIndex, 1)
+        users.value.splice(event.newIndex, 0, item)
+      },
+      onEnd: function (event) {
+        const item = users.value[event.newIndex]
+        console.log(event.newIndex) // la nouvelle position
+        saveOrder(item)
+      }
+    }
+    const tbody = el.getElementsByTagName('tbody')[0]
+    Sortable.create(tbody, options)
+  }
+}
+
+function saveOrder(event) {
+  console.log(event)
+}
 
 const formTitle = computed(() => {
   return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
