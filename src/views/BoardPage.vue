@@ -15,7 +15,7 @@
       <h1 class="text-primary">Vos 2 derniers procès verbaux :</h1>
       <v-row justify="center" class="mt-3">
         <v-col cols="12" md="6" v-for="pv in pvs" v-bind:key="pv.id">
-          <v-card class="mx-auto align-center pt-4" color="primary" variant="tonal">
+          <v-card class="mx-auto align-center pt-4" color="primary" variant="tonal" elevation="4">
             <v-list-item>
               <v-list-item>
                 <v-list-item-title class="text-h6 font-weight-medium mb-1">
@@ -49,7 +49,7 @@
     </v-container>
 
     <v-container v-if="affairs != ''">
-      <v-card title="Vos affaires en cours :" variant="tonal" color="primary">
+      <v-card title="Vos affaires en cours :" variant="tonal" color="primary" elevation="4">
         <template v-slot:text>
           <v-text-field
             v-model="search"

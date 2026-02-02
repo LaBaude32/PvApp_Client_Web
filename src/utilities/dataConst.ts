@@ -55,7 +55,8 @@ export const DEFAULT_PARTICIPANT = {
   invitedNextMeeting: undefined,
   distribution: undefined,
   firstName: '',
-  lastName: ''
+  lastName: '',
+  position: undefined
 }
 
 export const ITEM_HEADERS = [

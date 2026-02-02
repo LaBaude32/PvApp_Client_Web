@@ -6,6 +6,7 @@
       :search="search"
       items-per-page="-1"
       v-sortable-data-table
+      :sort-by="[{ key: 'position', order: 'asc' }]"
     >
       <template v-slot:top>
         <v-toolbar class="py-3">
@@ -182,7 +183,7 @@
           <v-btn prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
         </v-toolbar>
       </template>
-      <template v-slot:item.ordering>
+      <template v-slot:item.position>
         <v-icon class="handle">mdi-sort</v-icon>
       </template>
       <template v-slot:item.fullName="{ item }">
@@ -250,21 +251,21 @@
 <script setup>
 import Sortable from 'sortablejs'
 
-import Axios from 'axios'
-import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
 import {
-  FormNameRules,
   FormEmailRules,
+  FormNameRules,
   FormPhoneRules,
   FormRequiredRules
 } from '@/utilities/constantes.ts'
+import { DEFAULT_PARTICIPANT, PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
+import { useQRCode } from '@vueuse/integrations/useQRCode'
+import Axios from 'axios'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useAffairStore } from '../store/affair'
 import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
-import { useAffairStore } from '../store/affair'
 import UserFormStatus from './UserFormStatus.vue'
-import { PARTICIPANT_STATUS_PAE, DEFAULT_PARTICIPANT } from '@/utilities/dataConst'
-import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 const userStore = useUserStore()
 const affairStore = useAffairStore()
@@ -296,7 +297,8 @@ const connectedParticipant = ref()
 const headers = [
   {
     title: 'Ordre',
-    value: 'ordering'
+    value: 'position',
+    sortable: true
   },
   {
     title: 'Prénom Nom',
@@ -305,18 +307,17 @@ const headers = [
   },
   {
     title: 'Groupe',
-    value: 'userGroup',
-    sortable: false
+    value: 'userGroup'
   },
   { title: 'Fonction', value: 'userFunction' },
   { title: 'Organisme', value: 'organism' },
-  { title: 'Mail', value: 'email', sortable: false },
-  { title: 'Téléphone', value: 'phone', sortable: false },
+  { title: 'Mail', value: 'email' },
+  { title: 'Téléphone', value: 'phone' },
   { title: 'Statut', value: 'statusPAE' },
   { title: 'C1', value: 'invitedCurrentMeeting' },
   { title: 'C2', value: 'invitedNextMeeting' },
   { title: 'Diffusion', value: 'distribution' },
-  { title: 'Modifier', value: 'actions', sortable: false }
+  { title: 'Modifier', value: 'actions' }
 ]
 const editedIndex = ref(-1)
 //TODO: mettre dans types.js
@@ -333,7 +334,8 @@ const editedItem = ref({
   invitedNextMeeting: undefined,
   distribution: undefined,
   firstName: '',
-  lastName: ''
+  lastName: '',
+  position: undefined
 })
 
 const vSortableDataTable = {
@@ -347,9 +349,7 @@ const vSortableDataTable = {
         users.value.splice(event.newIndex, 0, item)
       },
       onEnd: function (event) {
-        const item = users.value[event.newIndex]
-        console.log(event.newIndex) // la nouvelle position
-        saveOrder(item)
+        saveOrder()
       }
     }
     const tbody = el.getElementsByTagName('tbody')[0]
@@ -357,8 +357,25 @@ const vSortableDataTable = {
   }
 }
 
-function saveOrder(event) {
-  console.log(event)
+function saveOrder() {
+  if (!pvId.value || users.value.length === 0) return
+
+  const participantsData = users.value.map((user, index) => ({
+    pvId: pvId.value,
+    userId: user.userId,
+    position: index
+  }))
+
+  Axios.put('/participants/updatePositions', participantsData)
+    .then((response) => {
+      if (response.status === 200) {
+        notifStore.success("L'ordre des participants a bien été sauvegardé")
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la sauvegarde des positions:', error)
+      notifStore.error('Erreur lors de la sauvegarde des positions')
+    })
 }
 
 const formTitle = computed(() => {
