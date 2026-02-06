@@ -6,8 +6,8 @@
       :search="search"
       items-per-page="-1"
       v-sortable-data-table
-      :sort-by="[{ key: 'position', order: 'asc' }]"
     >
+      <!-- :sort-by="[{ key: 'position', order: 'asc' }]" -->
       <template v-slot:top>
         <v-toolbar class="py-3">
           <v-toolbar-title>Participants</v-toolbar-title>
@@ -297,8 +297,7 @@ const connectedParticipant = ref()
 const headers = [
   {
     title: 'Ordre',
-    value: 'position',
-    sortable: true
+    value: 'position'
   },
   {
     title: 'Prénom Nom',
@@ -339,17 +338,38 @@ const editedItem = ref({
 })
 
 const vSortableDataTable = {
-  mounted(el, binding, vnode) {
+  mounted(el) {
     const options = {
       animation: 150,
       handle: '.handle',
       onUpdate: function (event) {
+        // console.log(users.value)
+
+        // // Créer une copie du tableau pour éviter les problèmes de réactivité
+        // const newUsers = [...users.value]
+        // const [movedItem] = newUsers.splice(event.oldIndex, 1)
+        // newUsers.splice(event.newIndex, 0, movedItem)
+
+        // // Mettre à jour les positions de tous les éléments après le réarrangement
+        // newUsers.forEach((user, index) => {
+        //   user.position = index
+        // })
+
+        // // Mettre à jour le tableau réactif
+        // users.value = newUsers
+        // console.log(users.value)
+
         const item = users.value[event.oldIndex]
         users.value.splice(event.oldIndex, 1)
         users.value.splice(event.newIndex, 0, item)
+
+        // users.value.forEach((user, index) => {
+        //   user.position = index
+        // })
       },
       onEnd: function (event) {
-        saveOrder()
+        const item = users.value[event.newIndex]
+        saveOrder(item)
       }
     }
     const tbody = el.getElementsByTagName('tbody')[0]
@@ -357,25 +377,27 @@ const vSortableDataTable = {
   }
 }
 
-function saveOrder() {
-  if (!pvId.value || users.value.length === 0) return
+function saveOrder(event) {
+  console.log(event)
 
-  const participantsData = users.value.map((user, index) => ({
-    pvId: pvId.value,
-    userId: user.userId,
-    position: index
-  }))
+  // if (!pvId.value || users.value.length === 0) return
 
-  Axios.put('/participants/updatePositions', participantsData)
-    .then((response) => {
-      if (response.status === 200) {
-        notifStore.success("L'ordre des participants a bien été sauvegardé")
-      }
-    })
-    .catch((error) => {
-      console.error('Erreur lors de la sauvegarde des positions:', error)
-      notifStore.error('Erreur lors de la sauvegarde des positions')
-    })
+  // const participantsData = users.value.map((user) => ({
+  //   pvId: pvId.value,
+  //   userId: user.userId,
+  //   position: user.position
+  // }))
+
+  // Axios.put('/participants/updatePositions', participantsData)
+  //   .then((response) => {
+  //     if (response.status === 200) {
+  //       notifStore.success("L'ordre des participants a bien été sauvegardé")
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.error('Erreur lors de la sauvegarde des positions:', error)
+  //     notifStore.error('Erreur lors de la sauvegarde des positions')
+  //   })
 }
 
 const formTitle = computed(() => {
