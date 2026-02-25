@@ -295,12 +295,12 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useDate } from 'vuetify'
-import { DEFAULT_ITEM } from '../utilities/dataConst'
 import { FormRequiredRules } from '../utilities/constantes.ts'
-import SavingLoader from './SavingLoader.vue'
+import { DEFAULT_ITEM } from '../utilities/dataConst'
 import Editor from './ImageEditor/Editor.vue'
+import SavingLoader from './SavingLoader.vue'
 
 const date = useDate()
 
@@ -310,7 +310,6 @@ const annotationDialog = ref(false)
 const confirmSaveDialog = ref(false)
 
 defineProps({
-  pvUsers: Array,
   pvDetails: Object,
   meetingType: String,
   headers: Array,
@@ -328,7 +327,6 @@ const editedIndex = defineModel('editedIndex', { type: Number, required: true })
 const editedItem = defineModel('editedItem', { type: Object, required: true })
 
 const search = ref()
-// const objectThumbnailFile = ref(null)
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
 const defaultItem = ref(DEFAULT_ITEM)

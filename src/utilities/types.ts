@@ -87,3 +87,14 @@ export interface Organisation {
   updatedAt?: Date
   assignedLots?: number[]
 }
+
+export interface ParticipantStatus {
+  pvId: number
+  statusPAE: string | null
+  invitedCurrentMeeting: boolean
+  invitedNextMeeting: boolean
+  distribution: boolean
+  position: number
+}
+
+export type Participant = User & ParticipantStatus

@@ -3,6 +3,10 @@ node_modules
 /dist
 .yarn/install-state.gz
 
+_bmad
+.clinerules/workflows
+.kilocode/workflows
+
 # local env files
 .env.local
 .env.*.local
@@ -21,3 +25,5 @@ yarn-error.log*
 *.sln
 *.sw?
 .env.production
+.kilocodemodes
+.yarn/install-state.gz

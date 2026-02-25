@@ -1,3 +1,5 @@
+import type { Participant } from './types'
+
 export const DEFAULT_ITEM = {
   position: null,
   lotsToReturn: [],
@@ -43,20 +45,23 @@ export const USER_GROUPE_ITEMS = [
   'BET'
 ]
 
-export const DEFAULT_PARTICIPANT = {
-  fullName: '',
-  userGroup: USER_GROUPE_ITEMS,
-  userFunction: '',
-  organism: '',
-  email: '',
-  phone: '',
-  statusPAE: undefined,
-  invitedCurrentMeeting: undefined,
-  invitedNextMeeting: undefined,
-  distribution: undefined,
+export const DEFAULT_PARTICIPANT: Participant = {
+  userId: undefined,
+  pvId: undefined,
   firstName: '',
   lastName: '',
-  position: undefined
+  password: '',
+  userGroup: '',
+  userFunction: '',
+  organism: '',
+  organisationId: -1,
+  email: '',
+  phone: '',
+  statusPAE: null,
+  invitedCurrentMeeting: false,
+  invitedNextMeeting: false,
+  distribution: false,
+  position: -1
 }
 
 export const ITEM_HEADERS = [
@@ -71,6 +76,31 @@ export const ITEM_HEADERS = [
   { title: 'Echeance', value: 'completion', sortable: false },
   { title: "Date d'echéance", value: 'completionDate' },
   { title: 'Photo', value: 'image' }
+]
+
+export const PARTICIPANT_HEADERS = [
+  {
+    title: 'Ordre',
+    value: 'position'
+  },
+  {
+    title: 'Prénom Nom',
+    align: 'start',
+    value: 'fullName'
+  },
+  {
+    title: 'Groupe',
+    value: 'userGroup'
+  },
+  { title: 'Fonction', value: 'userFunction' },
+  { title: 'Organisme', value: 'organism' },
+  { title: 'Mail', value: 'email' },
+  { title: 'Téléphone', value: 'phone' },
+  { title: 'Statut', value: 'statusPAE' },
+  { title: 'C1', value: 'invitedCurrentMeeting' },
+  { title: 'C2', value: 'invitedNextMeeting' },
+  { title: 'Diffusion', value: 'distribution' },
+  { title: 'Modifier', value: 'actions' }
 ]
 
 export const PV_DATA = {

@@ -1,13 +1,12 @@
 <template>
   <v-card max-width="95%" class="mx-auto mb-10">
     <v-data-table
-      :headers="headers"
-      :items="users"
+      :headers="PARTICIPANT_HEADERS"
+      :items="participants"
       :search="search"
       items-per-page="-1"
-      v-sortable-data-table
+      :sort-by="[{ key: 'position', order: 'asc' }]"
     >
-      <!-- :sort-by="[{ key: 'position', order: 'asc' }]" -->
       <template v-slot:top>
         <v-toolbar class="py-3">
           <v-toolbar-title>Participants</v-toolbar-title>
@@ -54,8 +53,8 @@
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-select
-                          v-model="editedItem.userGroupToReturn"
-                          :items="DEFAULT_PARTICIPANT.userGroup"
+                          v-model="editedItem.userGroup"
+                          :items="USER_GROUPE_ITEMS"
                           label="Groupe"
                           :rules="FormRequiredRules"
                           clearable
@@ -183,8 +182,22 @@
           <v-btn prepend-icon="mdi-qrcode-scan" @click="generateQrCode">Qr-code</v-btn>
         </v-toolbar>
       </template>
-      <template v-slot:item.position>
-        <v-icon class="handle">mdi-sort</v-icon>
+      <template v-slot:item.position="{ item }">
+        <v-btn
+          icon="mdi-arrow-up-drop-circle-outline"
+          variant="plain"
+          v-if="participants?.indexOf(item) > 1"
+          @click="pushUpParticipant(item)"
+        ></v-btn>
+        <v-btn
+          icon="mdi-arrow-down-drop-circle-outline"
+          variant="plain"
+          v-if="
+            participants?.indexOf(item) > 0 &&
+            participants?.indexOf(item) < participants?.length - 1
+          "
+          @click="pushDownParticipant(item)"
+        ></v-btn>
       </template>
       <template v-slot:item.fullName="{ item }">
         <div>{{ item.firstName }} {{ item.lastName }}</div>
@@ -193,7 +206,7 @@
         <v-select
           v-model="item.statusPAE"
           :items="PARTICIPANT_STATUS_PAE"
-          @update:modelValue="statusChange(item, 'PAE')"
+          @update:modelValue="statusChange(item)"
         ></v-select>
       </template>
       <template v-slot:item.invitedCurrentMeeting="{ item }">
@@ -201,7 +214,7 @@
           v-model="item.invitedCurrentMeeting"
           :indeterminate="item.invitedCurrentMeeting == null"
           :color="item.invitedCurrentMeeting ? 'success' : ''"
-          @update:modelValue="statusChange(item, 'invitedCurrentMeeting')"
+          @update:modelValue="statusChange(item)"
         />
       </template>
       <template v-slot:item.invitedNextMeeting="{ item }">
@@ -209,7 +222,7 @@
           v-model="item.invitedNextMeeting"
           :indeterminate="item.invitedNextMeeting == null"
           :color="item.invitedNextMeeting ? 'success' : ''"
-          @update:modelValue="statusChange(item, 'invitedNextMeeting')"
+          @update:modelValue="statusChange(item)"
         />
       </template>
       <template v-slot:item.distribution="{ item }">
@@ -217,7 +230,7 @@
           v-model="item.distribution"
           :indeterminate="item.distribution == null"
           :color="item.distribution ? 'success' : ''"
-          @update:modelValue="statusChange(item, 'distribution')"
+          @update:modelValue="statusChange(item)"
         />
       </template>
       <template v-slot:item.actions="{ item }">
@@ -248,16 +261,19 @@
   </v-dialog>
 </template>
 
-<script setup>
-import Sortable from 'sortablejs'
-
+<script setup lang="ts">
 import {
   FormEmailRules,
   FormNameRules,
   FormPhoneRules,
   FormRequiredRules
 } from '@/utilities/constantes.ts'
-import { DEFAULT_PARTICIPANT, PARTICIPANT_STATUS_PAE } from '@/utilities/dataConst'
+import {
+  DEFAULT_PARTICIPANT,
+  PARTICIPANT_HEADERS,
+  PARTICIPANT_STATUS_PAE,
+  USER_GROUPE_ITEMS
+} from '@/utilities/dataConst'
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 import Axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
@@ -267,138 +283,30 @@ import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 import UserFormStatus from './UserFormStatus.vue'
 
+import type { Participant, ParticipantStatus, User } from '@/utilities/types'
+
 const userStore = useUserStore()
 const affairStore = useAffairStore()
 const notifStore = useNotificationStore()
 const route = useRoute()
 
-const users = defineModel('users', { type: Array, required: true })
-//On utilise un model parce qu'on retire les éléments quand ils sont ajouté dans les users
-const allConnectedParticipants = defineModel('allConnectedParticipants', {
-  type: Array,
-  required: true
-})
+const participants = ref<Participant[]>([])
+const allConnectedParticipants = ref<Participant[]>()
 
-const pvId = ref(Number)
+const pvId = ref<number>(Number(route.params.id))
 const valid1 = ref(false)
 const valid2 = ref(false)
-
 const text = ref('text-to-encode')
 const qrcode = useQRCode(text, { scale: 15 })
 const otp = ref({})
 const otpTimeRemaining = ref('')
-
 const search = ref('')
 const dialogNewOrModifiedUser = ref(false)
 const dialogExistingUser = ref(false)
 const dialogQrCode = ref(false)
 const connectedParticipant = ref()
-
-const headers = [
-  {
-    title: 'Ordre',
-    value: 'position'
-  },
-  {
-    title: 'Prénom Nom',
-    align: 'start',
-    value: 'fullName'
-  },
-  {
-    title: 'Groupe',
-    value: 'userGroup'
-  },
-  { title: 'Fonction', value: 'userFunction' },
-  { title: 'Organisme', value: 'organism' },
-  { title: 'Mail', value: 'email' },
-  { title: 'Téléphone', value: 'phone' },
-  { title: 'Statut', value: 'statusPAE' },
-  { title: 'C1', value: 'invitedCurrentMeeting' },
-  { title: 'C2', value: 'invitedNextMeeting' },
-  { title: 'Diffusion', value: 'distribution' },
-  { title: 'Modifier', value: 'actions' }
-]
 const editedIndex = ref(-1)
-//TODO: mettre dans types.js
-const editedItem = ref({
-  fullName: '',
-  userGroupToReturn: '',
-  userGroup: [],
-  userFunction: '',
-  organism: '',
-  email: '',
-  phone: '',
-  statusPAE: undefined,
-  invitedCurrentMeeting: undefined,
-  invitedNextMeeting: undefined,
-  distribution: undefined,
-  firstName: '',
-  lastName: '',
-  position: undefined
-})
-
-const vSortableDataTable = {
-  mounted(el) {
-    const options = {
-      animation: 150,
-      handle: '.handle',
-      onUpdate: function (event) {
-        // console.log(users.value)
-
-        // // Créer une copie du tableau pour éviter les problèmes de réactivité
-        // const newUsers = [...users.value]
-        // const [movedItem] = newUsers.splice(event.oldIndex, 1)
-        // newUsers.splice(event.newIndex, 0, movedItem)
-
-        // // Mettre à jour les positions de tous les éléments après le réarrangement
-        // newUsers.forEach((user, index) => {
-        //   user.position = index
-        // })
-
-        // // Mettre à jour le tableau réactif
-        // users.value = newUsers
-        // console.log(users.value)
-
-        const item = users.value[event.oldIndex]
-        users.value.splice(event.oldIndex, 1)
-        users.value.splice(event.newIndex, 0, item)
-
-        // users.value.forEach((user, index) => {
-        //   user.position = index
-        // })
-      },
-      onEnd: function (event) {
-        const item = users.value[event.newIndex]
-        saveOrder(item)
-      }
-    }
-    const tbody = el.getElementsByTagName('tbody')[0]
-    Sortable.create(tbody, options)
-  }
-}
-
-function saveOrder(event) {
-  console.log(event)
-
-  // if (!pvId.value || users.value.length === 0) return
-
-  // const participantsData = users.value.map((user) => ({
-  //   pvId: pvId.value,
-  //   userId: user.userId,
-  //   position: user.position
-  // }))
-
-  // Axios.put('/participants/updatePositions', participantsData)
-  //   .then((response) => {
-  //     if (response.status === 200) {
-  //       notifStore.success("L'ordre des participants a bien été sauvegardé")
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error('Erreur lors de la sauvegarde des positions:', error)
-  //     notifStore.error('Erreur lors de la sauvegarde des positions')
-  //   })
-}
+const editedItem = ref<Participant>({ ...DEFAULT_PARTICIPANT })
 
 const formTitle = computed(() => {
   return editedIndex === -1 ? 'Ajouter une personne' : 'Modifier une personne'
@@ -407,24 +315,77 @@ const affairName = computed(() => affairStore.affair.name)
 const userId = computed(() => userStore.user.userId)
 
 onMounted(() => {
-  pvId.value = route.params.id
+  pvId.value = Number(route.params.id)
+  getParticipants()
 })
 
-function editItem(item) {
-  editedIndex.value = users.value.indexOf(item)
+async function getParticipants() {
+  let dt = {
+    params: {
+      pvId: pvId.value,
+      userId: userId.value
+    }
+  }
+  const res = await Axios.get('pvs/pvId', dt)
+  participants.value = res.data.participants
+  allConnectedParticipants.value = res.data.connectedParticipants
+  sortParticipantsByPosition()
+}
+
+function sortParticipantsByPosition() {
+  if (participants.value) {
+    participants.value.sort((a, b) => (a.position || 0) - (b.position || 0))
+  }
+}
+
+function pushUpParticipant(item: Participant) {
+  const oldIndex = participants.value.indexOf(item)
+  const movedItem = participants.value.splice(participants.value?.indexOf(item), 1)[0]
+  participants.value?.splice(oldIndex - 1, 0, movedItem)
+  saveOrder()
+}
+
+function pushDownParticipant(item: Participant) {
+  const oldIndex = participants.value.indexOf(item)
+  const movedItem = participants.value.splice(participants.value?.indexOf(item), 1)[0]
+  participants.value?.splice(oldIndex + 1, 0, movedItem)
+  saveOrder()
+}
+
+function saveOrder() {
+  const participantsData = participants.value.map((user, index) => ({
+    pvId: pvId.value,
+    userId: user.userId,
+    position: index
+  }))
+  Axios.put('/participants/updatePositions', participantsData)
+    .then((response) => {
+      if (response.status === 200) {
+        participants.value = response.data
+        sortParticipantsByPosition()
+        notifStore.success("L'ordre des participants a bien été sauvegardé")
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la sauvegarde des positions:', error)
+      notifStore.error('Erreur lors de la sauvegarde des positions')
+    })
+}
+
+function editItem(item: Participant) {
+  editedIndex.value = participants.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
-  editedItem.value.userGroupToReturn = item.userGroup
   dialogNewOrModifiedUser.value = true
 }
 
-function deleteItem(item) {
-  const index = users.value.indexOf(item)
+function deleteItem(item: Participant) {
+  const index = participants.value.indexOf(item)
   confirm('Etes-vous sûr de vouloir supprimer cette personne?') &&
     Axios.delete('participants/userId', { params: { userId: item.userId, pvId: pvId.value } })
       .then((response) => {
         if (response.status == 204) {
           notifStore.success("L'utilisateur à bien été supprimé")
-          users.value.splice(index, 1)
+          participants.value.splice(index, 1)
         }
       })
       .catch((error) => {
@@ -441,13 +402,12 @@ function closeNewOrModifiedUser() {
   }, 300)
 }
 
-function registerUser(user) {
-  return new Promise((resolve, reject) => {
-    Axios.post('users', user)
+function registerUser(user: Participant) {
+  return new Promise<User>((resolve, reject) => {
+    Axios.post<User>('users', user)
       .then((response) => {
         if (response.status == 201) {
           user.userId = response.data.userId
-          users.value.push(user)
           resolve(user)
         }
       })
@@ -458,40 +418,48 @@ function registerUser(user) {
   })
 }
 
-function saveParticipant(participant) {
-  Axios.put('/participants/userId', participant)
-    .then((response) => {
-      if (response.status == 200) {
-        //FIXME: pas correctement mis à jour sur les champs spéciaux (status)
-        Object.assign(users.value[editedIndex.value], response.data)
-        notifStore.success('Le participant à bien été ajouté')
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+function saveParticipant(participant: Participant) {
+  return new Promise<Participant>((resolve, reject) => {
+    Axios.put<Participant>('/participants/userId', participant)
+      .then((res) => {
+        if (res.status == 200) {
+          resolve(res.data)
+        } else {
+          reject(res.status)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 }
 
 function saveNewOrModifiedUser() {
   let data = { ...editedItem.value }
   data.pvId = Number(pvId.value)
-  data.userGroup = data.userGroupToReturn
   if (editedIndex.value > -1) {
     //l'utilisateur existe, il faut le modifier
-    saveParticipant(data)
+    saveParticipant(data).then((participant: Participant) => {
+      Object.assign(participants.value[editedIndex.value], participant)
+    })
   } else {
     //l'utilisateur n'existe pas, il faut le créer
+
     data.password = affairName.value
-    registerUser(data).then((newUser) => {
-      newUser.statusPAE = data.statusPAE
-      data.invitedCurrentMeeting
-        ? (newUser.invitedCurrentMeeting = data.invitedCurrentMeeting)
-        : (newUser.invitedCurrentMeeting = null)
-      data.invitedNextMeeting
-        ? (newUser.invitedNextMeeting = data.invitedNextMeeting)
-        : (newUser.invitedNextMeeting = null)
-      data.distribution ? (newUser.distribution = data.distribution) : (newUser.distribution = null)
-      saveParticipant(newUser)
+    registerUser(data).then((newUser: User) => {
+      const participant: Participant = {
+        ...newUser,
+        pvId: pvId.value,
+        statusPAE: data.statusPAE,
+        invitedCurrentMeeting: data.invitedCurrentMeeting,
+        invitedNextMeeting: data.invitedNextMeeting,
+        distribution: data.distribution,
+        position: participants.value.length
+      }
+
+      saveParticipant(participant).then((participant: Participant) => {
+        participants.value.push(participant)
+      })
     })
   }
   closeNewOrModifiedUser()
@@ -509,28 +477,32 @@ function closeExistingUser() {
 function saveExistingUser() {
   let data = { ...connectedParticipant.value }
   data.pvId = pvId.value
+  data.position = participants.value?.length
   Axios.post('participants', data).then((response) => {
     if (response.status == 201) {
-      users.value.push(response.data)
-      const indexToRemove = allConnectedParticipants.value.findIndex(
+      participants.value.push(response.data)
+      const indexToRemove = allConnectedParticipants.value!.findIndex(
         (obj) => obj.userId === response.data.userId
       )
       if (indexToRemove !== -1) {
-        allConnectedParticipants.value.splice(indexToRemove, 1)
+        allConnectedParticipants.value!.splice(indexToRemove, 1)
       }
+      sortParticipantsByPosition()
       notifStore.success('Le participant à bien été ajouté')
     }
   })
   closeExistingUser()
 }
-function statusChange(item, typeOfChange) {
-  let statusData = {}
-  statusData.pvId = pvId.value
-  statusData.userId = item.userId
-  statusData.statusPAE = item.statusPAE
-  statusData.invitedCurrentMeeting = item.invitedCurrentMeeting
-  statusData.invitedNextMeeting = item.invitedNextMeeting
-  statusData.distribution = item.distribution
+function statusChange(item: Participant) {
+  let statusData: ParticipantStatus = {
+    pvId: pvId.value,
+    userId: item.userId,
+    statusPAE: item.statusPAE,
+    invitedCurrentMeeting: item.invitedCurrentMeeting,
+    invitedNextMeeting: item.invitedNextMeeting,
+    distribution: item.distribution
+  }
+
   Axios.put('participants/userId/updateStatus', statusData)
     .then((response) => {
       if (response.status == 200) {
@@ -689,7 +661,7 @@ function printQrCode() {
 }
 
 // Helper function to format the expiration date
-function formatExpiryDate(timestamp) {
+function formatExpiryDate(timestamp: number) {
   if (!timestamp) return 'N/A'
 
   // Convert timestamp (in seconds) to milliseconds and add 24 hours

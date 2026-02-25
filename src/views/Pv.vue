@@ -45,7 +45,6 @@
       v-model:editedIndex="editedIndex"
       v-model:editedItem="editedItem"
       :pvDetails="pvDetails"
-      :pvUsers="pvUsers"
       :meetingType="meetingType"
       :headers="headers"
       :formTitle="formTitle"
@@ -60,13 +59,7 @@
 
     <v-divider class="my-10"></v-divider>
 
-    <Participants
-      v-if="pvUsers"
-      v-model:users="pvUsers"
-      v-model:allConnectedParticipants="pvConnectedParticipants"
-    />
-
-    <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
+    <Participants />
 
     <v-dialog v-model="progressDialog" persistent max-width="80%">
       <ModifyProgress
@@ -133,8 +126,6 @@ const ModalValidationDialog = ref(false)
 const initialLots = ref([])
 const meetingType = ref(null)
 const pvDetails = ref({})
-const pvUsers = ref([])
-const pvConnectedParticipants = ref([])
 const items = ref([])
 const headers = ref([
   {
@@ -199,8 +190,6 @@ async function getData() {
   })
   //FIXME:ici il faut récup les lots avec l'API
   pvDetails.value = res.data.pv
-  pvUsers.value = res.data.participants
-  pvConnectedParticipants.value = res.data.connectedParticipants
   agendas.value = res.data.pv.agendas
   schedules.value = res.data.pv.schedules
   progresses.value = res.data.pv.progresses
