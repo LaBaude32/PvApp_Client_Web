@@ -15,10 +15,6 @@ const routesCONST = {
     path: '/settings',
     name: 'Settings'
   },
-  about: {
-    path: '/about',
-    name: 'About'
-  },
   login: {
     path: '/login',
     name: 'Login'
@@ -195,7 +191,6 @@ export const FormPasswordComplexRules = [
     /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value) ||
     'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre'
 ]
-
 
 export const FormCountryRules = [
   (value: string) => !!value || 'Le pays est requis',

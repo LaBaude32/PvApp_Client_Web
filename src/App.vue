@@ -1,7 +1,6 @@
 <template>
   <v-layout>
     <v-app-bar color="surfaceVariant" class="d-print-none">
-      <v-app-bar-nav-icon @click.stop="invertDrawerMain" />
       <v-app-bar-title><strong class="text-secondary">Castera</strong></v-app-bar-title>
       <v-btn
         v-if="userSettingsStore.currentTheme == 'myCustomLightTheme'"
@@ -40,19 +39,6 @@
       </v-menu>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawerMain">
-      <v-list nav>
-        <v-list-item
-          v-for="item in mainMenuItems"
-          :key="item.title"
-          :prepend-icon="item.icon"
-          :title="item.title"
-          @click.prevent="actionMainMenu(item.path)"
-          link
-        ></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
     <v-main class="d-flex flex-column align-center justify-center" style="min-height: 100vh">
       <div v-if="versionNotif" id="app-version-notif" class="mt-10">
         <v-banner
@@ -86,7 +72,6 @@
 
 <script setup lang="ts">
 import Notification from '@/components/Notification.vue'
-import { getRouteName } from '@/utilities/constantes'
 import Axios from 'axios'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -106,36 +91,15 @@ const userSettingsStore = useUserSettingsStore()
 const theme = useTheme()
 
 const versionNotif = ref(false)
-const drawerMain = ref(false)
 const items = [
   { path: 'MyAccount', title: 'Mon Compte' },
   { path: 'Settings', title: 'Paramètres' },
   { path: 'Logout', title: 'Se deconnecter' }
 ]
-const mainMenuItems = [
-  {
-    path: getRouteName('home'),
-    title: 'Accueil',
-    icon: 'mdi-home'
-  },
-  {
-    path: getRouteName('board'),
-    title: 'Dashboard',
-    icon: 'mdi-view-dashboard'
-  },
-  {
-    path: getRouteName('about'),
-    title: 'A propos',
-    icon: 'mdi-information',
-    color: ''
-  }
-]
+
 const isLogged = computed(() => userStore.isLogged)
 const fullName = computed(() => userStore.fullName)
 
-function actionMainMenu(path: string) {
-  router.push({ name: path })
-}
 function action(path: string) {
   if (path == 'Logout') {
     authStore.authLogout().then(() => {
@@ -144,9 +108,6 @@ function action(path: string) {
   } else {
     router.push({ name: path })
   }
-}
-function invertDrawerMain() {
-  drawerMain.value = !drawerMain.value
 }
 onMounted(() => {
   authStore.setAxios()
@@ -195,19 +156,6 @@ watch(
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 
 @media screen and (max-device-width: 460px) {

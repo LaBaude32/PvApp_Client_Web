@@ -10,11 +10,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/HomePage.vue')
   },
   {
-    path: routesCONST.about.path,
-    name: routesCONST.about.name,
-    component: () => import('../views/About.vue')
-  },
-  {
     path: routesCONST.login.path,
     name: routesCONST.login.name,
     component: () => import('../views/Login.vue')
@@ -64,8 +59,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: getRoutePath('addUser'),
     name: getRouteName('addUser'),
-    component: () => import('../views/AddUser.vue')
-    // meta: { requiresAuth: true }
+    component: () => import('../views/AddUser.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: getRoutePath('addLot'),
