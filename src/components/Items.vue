@@ -58,14 +58,14 @@
                             label="Lot"
                             chips
                             multiple
-                            deletable-chips
+                            closable-chips
                           >
                             <template v-slot:chip="{ props, item }">
                               <v-chip
                                 v-bind="props"
-                                :text="item.raw.name"
-                                :value="item.raw.lotId"
-                                :color="item.raw.color"
+                                :text="item.name"
+                                :value="item.lotId"
+                                :color="item.color"
                               ></v-chip>
                             </template>
                           </v-select>

@@ -38,23 +38,10 @@
     </v-container>
 
     <v-divider class="mb-10"></v-divider>
-    <Items
-      v-if="meetingType"
-      v-model:dialog="dialog"
-      v-model:items="items"
-      v-model:editedIndex="editedIndex"
-      v-model:editedItem="editedItem"
-      :pvDetails="pvDetails"
-      :meetingType="meetingType"
-      :headers="headers"
-      :formTitle="formTitle"
-      :editItem="editItem"
-      :deleteItem="deleteItem"
-      :close="close"
-      :save="save"
-      :changeVisible="changeVisible"
-      :isSavingForm="isSavingForm"
-    />
+    <Items v-if="meetingType" v-model:dialog="dialog" v-model:items="items" v-model:editedIndex="editedIndex"
+      v-model:editedItem="editedItem" :pvDetails="pvDetails" :meetingType="meetingType" :headers="headers"
+      :formTitle="formTitle" :editItem="editItem" :deleteItem="deleteItem" :close="close" :save="save"
+      :changeVisible="changeVisible" :isSavingForm="isSavingForm" />
     <v-skeleton-loader v-else class="mx-auto" max-width="1000" type="table"></v-skeleton-loader>
 
     <v-divider class="my-10"></v-divider>
@@ -62,30 +49,17 @@
     <Participants />
 
     <v-dialog v-model="progressDialog" persistent max-width="80%">
-      <ModifyProgress
-        v-model:progresses="progresses"
-        :lots="pvDetails.lots"
-        :is-chantier="pvDetails.affairMeetingType == 'Chantier'"
-        :pvId="pvId"
-        @close-progresses-dialog="progressDialog = false"
-      />
+      <ModifyProgress v-model:progresses="progresses" :lots="pvDetails.lots"
+        :is-chantier="pvDetails.affairMeetingType == 'Chantier'" :pvId="pvId"
+        @close-progresses-dialog="progressDialog = false" />
     </v-dialog>
     <v-dialog v-model="agendaDialog" persistent max-width="80%">
-      <ModifyAgenda
-        v-model:agendas="agendas"
-        :pvId="pvId"
-        @close-agenda-dialog="agendaDialog = false"
-      />
+      <ModifyAgenda v-model:agendas="agendas" :pvId="pvId" @close-agenda-dialog="agendaDialog = false" />
     </v-dialog>
 
     <v-dialog v-model="scheduleDialog" persistent max-width="80%">
-      <ModifySchedule
-        @close-schedule-dialog="scheduleDialog = false"
-        v-model:schedules="schedules"
-        :is-chantier="pvDetails.affairMeetingType == 'Chantier'"
-        :lots="pvDetails.lots"
-        :pv-id="pvId"
-      />
+      <ModifySchedule @close-schedule-dialog="scheduleDialog = false" v-model:schedules="schedules"
+        :is-chantier="pvDetails.affairMeetingType == 'Chantier'" :lots="pvDetails.lots" :pv-id="pvId" />
     </v-dialog>
   </div>
 </template>
@@ -167,7 +141,7 @@ const defaultItem = ref(DEFAULT_ITEM)
 const userId = computed(() => {
   return userStore.user.userId
 })
-const formTitle = computed(() => (editedIndex === -1 ? 'Nouvel item' : "Modifier l'item"))
+const formTitle = computed(() => (editedIndex.value === -1 ? 'Nouvel item' : "Modifier l'item"))
 
 onMounted(() => {
   getData()
