@@ -7,10 +7,6 @@ const routesCONST = {
     path: '/board',
     name: 'Board'
   },
-  users: {
-    path: '/users',
-    name: 'Users'
-  },
   settings: {
     path: '/settings',
     name: 'Settings'

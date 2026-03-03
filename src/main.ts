@@ -9,16 +9,10 @@ import { myCustomDarkTheme, myCustomLightTheme } from '@/assets/theme.ts'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 import { fr } from 'vuetify/locale'
 import 'vuetify/styles'
 
 const vuetify = createVuetify({
-  components: {
-    ...components
-  },
-  directives,
   locale: {
     locale: 'fr',
     messages: { fr }

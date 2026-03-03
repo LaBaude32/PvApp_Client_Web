@@ -1,24 +1,15 @@
 <template>
-  <v-sheet rounded color="red-darken-1" elevation="2" class="justify-center mx-auto pa-5 mt-5">
+  <v-sheet rounded color="error" elevation="2" class="justify-center mx-auto pa-5 mt-5">
     <h2 class="mb-5">Rouvrir un Pv</h2>
     <v-card class="pa-5">
-      <v-data-table
-        :headers="headers"
-        :items="data"
-        :search="search"
-        :sort-by="[{ key: 'meetingDate', order: 'desc' }]"
-      >
+      <v-data-table :headers="headers" :items="data" :search="search"
+        :sort-by="[{ key: 'meetingDate', order: 'desc' }]">
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title>Rouvrir un Pv</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-text-field
-              v-model="search"
-              prepend-inner-icon="mdi-magnify"
-              label="Chercher"
-              single-line
-              hide-details
-            ></v-text-field>
+            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Chercher" single-line
+              hide-details></v-text-field>
           </v-toolbar>
         </template>
         <template v-slot:item.releaseDate="{ item }">
@@ -28,21 +19,20 @@
           {{ $filters.formatDateWithA(item.meetingDate) }}
         </template>
         <template v-slot:item.actionReOpen="{ item }">
-          <v-btn v-if="item.releaseDate" small class="mr-2" color="warning" @click="showReOpen(item)">Débloquer</v-btn>
+          <v-btn v-if="item.releaseDate" size="small" class="mr-2" color="warning"
+            @click="showReOpen(item)">Débloquer</v-btn>
         </template>
         <template v-slot:item.actionDelete="{ item }">
-          <v-btn small class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
+          <v-btn size="small" class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
         </template>
       </v-data-table>
     </v-card>
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
-        <v-card-title
-          >Êtes vous sûr de {{ actionType === 'delete' ? 'supprimer' : 'débloquer' }} ce Pv
-          ?</v-card-title
-        >
+        <v-card-title>Êtes vous sûr de {{ actionType === 'delete' ? 'supprimer' : 'débloquer' }} ce Pv
+          ?</v-card-title>
         <v-card-text>
-          <p v-if="actionType === 'reOpen'" class="text-red-darken-1">
+          <p v-if="actionType === 'reOpen'" class="text-error">
             <b>Attention : La date de diffusion sera supprimé !</b>
           </p>
           <br />
@@ -54,22 +44,22 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="action()"
-            >Supprimer <span v-if="actionType === 'reOpen'">la date de diffusion et rouvrir</span>le
-            Pv</v-btn
-          >
+          <v-btn color="error" @click="action()">
+            <span v-if="actionType === 'reOpen'">Supprimer la date de diffusion et rouvrir le Pv</span>
+            <span v-else> Supprimer le Pv</span>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-sheet>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAxios } from '@vueuse/integrations/useAxios'
-import { useUserStore } from '../store/user'
-import Axios from 'axios'
-import { useRouter } from 'vue-router'
 import type { Pv } from '@/utilities/types'
+import { useAxios } from '@vueuse/integrations/useAxios'
+import Axios from 'axios'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../store/user'
 
 const userStore = useUserStore()
 const router = useRouter()

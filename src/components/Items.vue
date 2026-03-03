@@ -174,9 +174,9 @@
                         <v-btn
                           v-if="editedItem.image && !editedItem.isAnnotated"
                           color="primary"
+                          prepend-icon="mdi-draw"
                           @click="openAnnotationEditor"
                         >
-                          <v-icon left>mdi-draw</v-icon>
                           Annoter
                         </v-btn>
                       </v-row>
@@ -185,8 +185,8 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="teriary" text @click="close">Annuler</v-btn>
-                    <v-btn color="primary" text @click="save">Enregister</v-btn>
+                    <v-btn color="warning" @click="close">Annuler</v-btn>
+                    <v-btn color="primary" @click="save">Enregister</v-btn>
                   </v-card-actions>
                 </v-form>
               </v-card>
@@ -194,8 +194,8 @@
 
             <v-dialog v-model="annotationDialog" fullscreen>
               <v-card>
-                <v-toolbar dark color="primary">
-                  <v-btn icon dark @click="closeAnnotationEditor">
+                <v-toolbar color="primary">
+                  <v-btn icon @click="closeAnnotationEditor">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                   <v-toolbar-title>Éditeur d'annotations</v-toolbar-title>
@@ -234,8 +234,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="teriary" text @click="confirmSaveDialog = false"> Annuler </v-btn>
-                  <v-btn color="error" text @click="confirmAndSaveAnnotations">
+                  <v-btn color="teriary" variant="text" @click="confirmSaveDialog = false"> Annuler </v-btn>
+                  <v-btn color="error" variant="text" @click="confirmAndSaveAnnotations">
                     Enregistrer les annotations
                   </v-btn>
                 </v-card-actions>
@@ -250,7 +250,7 @@
           <div style="white-space: pre-wrap">{{ item.followUp }}</div>
         </template>
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" :color="lot.color" dark>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" :color="lot.color">
             {{ lot.name }}
           </v-chip>
         </template>
@@ -266,8 +266,8 @@
           {{ $filters.formatDateShortDayOnly(item.completionDate) }}
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+          <v-icon size="small" class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.image="{ item }">
           <v-img

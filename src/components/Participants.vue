@@ -21,7 +21,7 @@
           ></v-text-field>
           <v-dialog v-model="dialogNewOrModifiedUser" persistent max-width="80%">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" v-bind="props">Créer une personne</v-btn>
+              <v-btn variant="tonal" color="primary" v-bind="props">Créer une personne</v-btn>
             </template>
 
             <v-card>
@@ -100,11 +100,11 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="red darken-1" text @click="closeNewOrModifiedUser">Annuler</v-btn>
+                  <v-btn color="error" variant="text" @click="closeNewOrModifiedUser">Annuler</v-btn>
                   <v-btn
                     :disabled="!valid1"
-                    color="green darken-1"
-                    text
+                    color="success"
+                    variant="text"
                     @click="saveNewOrModifiedUser"
                   >
                     Enregistrer
@@ -115,7 +115,7 @@
           </v-dialog>
           <v-dialog v-model="dialogExistingUser" max-width="80%">
             <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" color="green"> Ajouter de votre répertoire </v-btn>
+              <v-btn class="ml-2" v-bind="props" variant="tonal" color="tertiary"> Ajouter de votre répertoire </v-btn>
             </template>
             <v-card>
               <v-form v-model="valid2">
@@ -171,8 +171,8 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="red darken-1" text @click="closeExistingUser">Annuler</v-btn>
-                  <v-btn :disabled="!valid2" color="green darken-1" text @click="saveExistingUser">
+                  <v-btn color="error" variant="text" @click="closeExistingUser">Annuler</v-btn>
+                  <v-btn :disabled="!valid2" color="success" variant="text" @click="saveExistingUser">
                     Enregistrer
                   </v-btn>
                 </v-card-actions>
@@ -234,8 +234,8 @@
         />
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-        <v-icon small @click="deleteItem(item)" v-if="!(item.userId == userId)">mdi-delete</v-icon>
+        <v-icon size="small" class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon size="small" @click="deleteItem(item)" v-if="!(item.userId == userId)">mdi-delete</v-icon>
       </template>
       <template v-slot:no-data>
         <p class="text-h5 font-weight-medium mt-3">Il n'y a pas encore d'utilisateurs pour ce PV</p>
@@ -254,8 +254,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="printQrCode">Imprimer</v-btn>
-        <v-btn color="red darken-1" text @click="dialogQrCode = false">Fermer</v-btn>
+        <v-btn color="primary" variant="text" @click="printQrCode">Imprimer</v-btn>
+        <v-btn color="error" variant="text" @click="dialogQrCode = false">Fermer</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

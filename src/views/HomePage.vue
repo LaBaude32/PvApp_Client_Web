@@ -6,10 +6,10 @@
         <p>Une application de suivi de chantier</p>
       </v-col>
       <v-col cols="12">
-        <v-btn v-if="isLogged" color="primary" dark class="mb-2" @click="goToDashboard"
+        <v-btn v-if="isLogged" color="primary" class="mb-2" @click="goToDashboard"
           >Dashboard</v-btn
         >
-        <v-btn v-else color="primary" dark class="mb-2" @click="goToLoginPage"
+        <v-btn v-else color="primary" class="mb-2" @click="goToLoginPage"
           >Connectez-vous</v-btn
         >
       </v-col>

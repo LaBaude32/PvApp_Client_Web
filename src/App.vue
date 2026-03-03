@@ -2,29 +2,21 @@
   <v-layout>
     <v-app-bar color="surfaceVariant" class="d-print-none">
       <v-app-bar-title><strong class="text-secondary">Castera</strong></v-app-bar-title>
-      <v-btn
-        v-if="userSettingsStore.currentTheme == 'myCustomLightTheme'"
-        icon="mdi-weather-night"
-        variant="text"
-        @click="userSettingsStore.toggleTheme()"
-      ></v-btn>
-      <v-btn
-        v-if="userSettingsStore.currentTheme == 'myCustomDarkTheme'"
-        icon="mdi-weather-sunny"
-        variant="text"
-        @click="userSettingsStore.toggleTheme()"
-      ></v-btn>
-      <v-btn class="mr-6" @click="action('Board')">
+      <v-btn v-if="userSettingsStore.currentTheme == 'myCustomLightTheme'" icon="mdi-weather-night" variant="text"
+        color="secondary" @click="userSettingsStore.toggleTheme()"></v-btn>
+      <v-btn v-if="userSettingsStore.currentTheme == 'myCustomDarkTheme'" icon="mdi-weather-sunny" variant="text"
+        color="secondary" @click="userSettingsStore.toggleTheme()"></v-btn>
+      <v-btn class="mr-6" color="secondary" @click="action('Board')">
         <v-icon class="mr-3">mdi-view-dashboard</v-icon>
         Dashboard
       </v-btn>
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" v-if="isLogged" class="diableOnMobile mr-6">
+          <v-btn v-bind="props" color="secondary" v-if="isLogged" class="diableOnMobile mr-6">
             <v-icon class="mr-3">mdi-account</v-icon>
             {{ fullName }}
           </v-btn>
-          <v-btn v-bind="props" v-else @click="action('Login')" class="diableOnMobile">
+          <v-btn v-bind="props" color="secondary" v-else @click="action('Login')" class="diableOnMobile">
             <v-icon class="mr-3">mdi-account</v-icon>
             Se connecter
           </v-btn>
@@ -41,24 +33,16 @@
 
     <v-main class="d-flex flex-column align-center justify-center" style="min-height: 100vh">
       <div v-if="versionNotif" id="app-version-notif" class="mt-10">
-        <v-banner
-          class="mx-auto"
-          max-width="800px"
-          dark
-          color="green"
-          icon="mdi-information"
-          lines="one"
-          :stacked="false"
-        >
+        <v-banner class="mx-auto" max-width="800px" color="green" icon="mdi-information" lines="one" :stacked="false">
           <v-banner-text>
             Une nouvelle version est disponnible :
-            <v-chip class="ma-3" color="green" text-color="white">
+            <v-chip class="ma-3 text-white" color="green">
               {{ version }}
             </v-chip>
           </v-banner-text>
 
           <template v-slot:actions>
-            <v-btn color="green" variant="outlined" dark @click.prevent="action('About')">
+            <v-btn color="green" variant="outlined" @click.prevent="action('About')">
               Voir les nouveautés
             </v-btn>
           </template>

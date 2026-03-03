@@ -15,12 +15,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: routesCONST.users.path,
-    name: routesCONST.users.name,
-    component: () => import('../views/Users.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
     path: routesCONST.settings.path,
     name: routesCONST.settings.name,
     component: () => import('../views/Settings.vue'),

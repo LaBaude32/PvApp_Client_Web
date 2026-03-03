@@ -56,21 +56,21 @@
                 <div v-if="user.userFunction" class="text-caption">{{ user.userFunction }}</div>
               </div>
 
-              <v-chip v-if="user.hasLicense" color="success" small>
+              <v-chip v-if="user.hasLicense" color="success" size="small">
                 Licence attribuée
               </v-chip>
 
               <template v-else-if="availableLicenses > usedLicenses">
                 <v-btn
                   color="primary"
-                  small
+                  size="small"
                   @click="assignLicense(user)"
                 >
                   Attribuer licence
                 </v-btn>
               </template>
 
-              <v-chip v-else color="warning" small>
+              <v-chip v-else color="warning" size="small">
                 Plus de licences disponibles
               </v-chip>
             </div>
@@ -90,7 +90,7 @@
           <template #item.actions="{ item }">
             <v-btn
               color="error"
-              small
+              size="small"
               icon="mdi-close"
               @click="revokeLicense(item)"
             ></v-btn>

@@ -69,7 +69,7 @@
       </v-card>
     </v-container>
     <v-container v-else class="px-10">
-      <v-alert type="info" outlined color="tertiary-container">
+      <v-alert type="info" variant="outlined" color="tertiary-container">
         <p class="text-h6">Vous n'avez pas encore d'affaires.</p>
         <p>Veuillez commencer par en créer une en cliquant sur le bouton ci-dessus</p>
       </v-alert>

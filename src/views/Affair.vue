@@ -44,7 +44,7 @@
       <v-row v-if="affair.meetingType == 'Chantier'" align="center" justify="center">
         <v-col v-if="lots" v-for="lot in lots" v-bind:key="lot.id">
           <v-row justify="center">
-            <v-chip dense class="mx-5 mt-5" :color="lot.color">
+            <v-chip density="compact" class="mx-5 mt-5" :color="lot.color">
               {{ lot.name }}
             </v-chip>
           </v-row>
@@ -65,7 +65,7 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-btn dark color="primary" class="ml-5" @click.prevent="createPv">Ajouter un pv</v-btn>
+        <v-btn color="primary" class="mx-4" @click.prevent="createPv" size="x-large">Ajouter un pv</v-btn>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -80,10 +80,10 @@
           <div>{{ $filters.formatDateWithA(item.meetingNextDate) }}</div>
         </template>
         <template v-slot:item.state="{ item }">
-          <v-chip class="ma-2" color="success" text-color="white" v-if="item.state == 'Terminé'">
+          <v-chip class="ma-2 text-white" color="success" v-if="item.state == 'Terminé'">
             {{ item.state }}
           </v-chip>
-          <v-chip class="ma-2" color="orange" text-color="white" v-else>
+          <v-chip class="ma-2 text-white" color="orange" v-else>
             {{ item.state }}
           </v-chip>
         </template>
@@ -91,25 +91,25 @@
           <v-btn
             v-if="item.state == 'Terminé'"
             @click="openFinishedPv(item)"
-            small
+            size="small"
             color="tertiaryContainer"
           >
             <v-icon class="ma-2">{{ 'mdi-eye' }}</v-icon>
           </v-btn>
-          <v-btn v-else @click="openInProgressPv(item)" small color="warning">
+          <v-btn v-else @click="openInProgressPv(item)" size="small" color="warning">
             <v-icon class="ma-2">{{ 'mdi-file-edit' }}</v-icon>
           </v-btn>
           <v-btn
             v-if="item.state == 'Terminé'"
             @click="downloadPvPdf(item)"
             color="primaryContainer"
-            small
+            size="small"
             class="ma-2"
           >
-            <v-icon dark class="ma-2">{{ 'mdi-file-download' }}</v-icon>
+            <v-icon class="ma-2">{{ 'mdi-file-download' }}</v-icon>
           </v-btn>
-          <v-btn v-else @click="modifyPv(item)" color="error" small class="ma-2">
-            <v-icon dark class="ma-2">{{ 'mdi-information' }}</v-icon>
+          <v-btn v-else @click="modifyPv(item)" color="error" size="small" class="ma-2">
+            <v-icon class="ma-2">{{ 'mdi-information' }}</v-icon>
           </v-btn>
         </template>
       </v-data-table>
@@ -131,7 +131,7 @@
           >
             Modifier les attributions des lots
           </v-btn>
-          <v-btn dark color="error" @click.prevent="((affairDialog = true), (dialog = true))"
+          <v-btn color="error" @click.prevent="((affairDialog = true), (dialog = true))"
             >Modifier l'affaire</v-btn
           >
         </v-card-actions>
