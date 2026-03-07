@@ -250,6 +250,20 @@
             </v-dialog>
           </v-toolbar>
         </template>
+        <template v-slot:item.position="{ item }">
+          <v-btn
+            icon="mdi-arrow-up-drop-circle-outline"
+            variant="plain"
+            v-if="items?.indexOf(item) > 1"
+            @click="pushUpItem(item)"
+          ></v-btn>
+          <v-btn
+            icon="mdi-arrow-down-drop-circle-outline"
+            variant="plain"
+            v-if="items?.indexOf(item) > 0 && items?.indexOf(item) < items?.length - 1"
+            @click="pushDownItem(item)"
+          ></v-btn>
+        </template>
         <template v-slot:item.note="{ item }">
           <div style="white-space: pre-wrap">{{ item.note }}</div>
         </template>
@@ -301,8 +315,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useNotificationStore } from '@/store/notification'
+import type { Item } from '@/utilities/types.ts'
 import Axios from 'axios'
 import Compressor from 'compressorjs'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -558,6 +573,26 @@ function formatItemToBeSend() {
   return itemToBeSend
 }
 
+function saveOrder() {
+  const itemsData = items.value.map((user, index) => ({
+    pvId: pvId.value,
+    userId: user.userId,
+    position: index
+  }))
+  Axios.put('/items/updatePositions', itemsData)
+    .then((response) => {
+      if (response.status === 200) {
+        items.value = response.data
+        sortItemsByPosition()
+        notifStore.success("L'ordre des items a bien été sauvegardé")
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la sauvegarde des positions:', error)
+      notifStore.error('Erreur lors de la sauvegarde des positions')
+    })
+}
+
 // --- Image & Annotation ---
 function onObjectSelected(event) {
   editedItem.value.image = event.target.files[0]
@@ -623,5 +658,27 @@ function confirmAndSaveAnnotations() {
 
     delete window.tempAnnotationData
   }
+}
+
+// --- Manage position ---
+
+function sortItemsByPosition() {
+  if (items.value) {
+    items.value.sort((a, b) => (a.position || 0) - (b.position || 0))
+  }
+}
+
+function pushUpItem(item: Item) {
+  const oldIndex = items.value.indexOf(item)
+  const movedItem = items.value.splice(items.value?.indexOf(item), 1)[0]
+  items.value?.splice(oldIndex - 1, 0, movedItem)
+  saveOrder()
+}
+
+function pushDownItem(item: Item) {
+  const oldIndex = items.value.indexOf(item)
+  const movedItem = items.value.splice(items.value?.indexOf(item), 1)[0]
+  items.value?.splice(oldIndex + 1, 0, movedItem)
+  saveOrder()
 }
 </script>

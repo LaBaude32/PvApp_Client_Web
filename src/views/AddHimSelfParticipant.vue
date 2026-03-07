@@ -111,11 +111,11 @@ import {
   FormPhoneRules,
   FormRequiredRules
 } from '@/utilities/constantes.ts'
-import { EDITED_ITEM, USER_GROUPE_ITEMS } from '@/utilities/dataConst'
+import { EDITED_PARTICIPANT_ITEM, USER_GROUPE_ITEMS } from '@/utilities/dataConst'
 
 const notifStore = useNotificationStore()
 
-const editedItem = ref(EDITED_ITEM)
+const editedItem = ref(EDITED_PARTICIPANT_ITEM)
 const otp = ref('')
 const valid = ref(false)
 const userAdded = ref(false)

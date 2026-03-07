@@ -98,3 +98,17 @@ export interface ParticipantStatus {
 }
 
 export type Participant = User & ParticipantStatus
+
+export type Item = {
+  position: number,
+  lotsToReturn: number[],
+  lots: Lot[],
+  note: string,
+  followUp: string,
+  resources: string,
+  completion: ['A faire', 'Urgent', 'Fait', 'En cours', 'Dès que possible']
+  completionDate: string,
+  image: string,
+  visible: boolean,
+  isImageChange: boolean
+}

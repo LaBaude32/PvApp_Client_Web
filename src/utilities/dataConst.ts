@@ -1,6 +1,6 @@
-import type { Participant } from './types'
+import type { Item, Participant } from './types'
 
-export const DEFAULT_ITEM = {
+export const DEFAULT_ITEM : Item = {
   position: null,
   lotsToReturn: [],
   lots: [],
@@ -117,7 +117,7 @@ export const PV_DATA = {
   state: 'En cours'
 }
 
-export const EDITED_ITEM = {
+export const EDITED_PARTICIPANT_ITEM: Participant = {
   fullName: '',
   userGroupToReturn: '',
   userGroup: [],
