@@ -8,6 +8,7 @@ import filters from './utilities/filters.js'
 import { myCustomDarkTheme, myCustomLightTheme } from '@/assets/theme.ts'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import vue3GoogleLogin from 'vue3-google-login'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
@@ -51,6 +52,9 @@ const app = createApp(App)
 app.use(pinia)
 app.use(vuetify)
 app.use(router)
+app.use(vue3GoogleLogin, {
+  clientId: '35178543002-7661u2ol4839cjpvkgrp7h8uhpu4mp3e.apps.googleusercontent.com'
+})
 
 app.config.globalProperties.$filters = { ...filters }
 
