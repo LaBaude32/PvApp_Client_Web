@@ -21,7 +21,7 @@
               single-line
               hide-details
             ></v-text-field>
-            <v-dialog v-model="MyDialog" max-width="80%">
+            <v-dialog v-model="dialog" max-width="80%">
               <template v-slot:activator="{ props }">
                 <v-btn v-bind="props" variant="tonal" color="warning" class="mx-4" size="x-large"
                   >Nouvel item</v-btn
@@ -48,7 +48,12 @@
                             :rules="FormRequiredRules"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="4" md="4" v-if="meetingType == 'Chantier'">
+                        <v-col
+                          cols="12"
+                          sm="4"
+                          md="4"
+                          v-if="pvDetails.affairMeetingType == 'Chantier'"
+                        >
                           <v-select
                             v-if="pvDetails.affairMeetingType == 'Chantier' && pvDetails.lots"
                             v-model="editedItem.lotsToReturn"
@@ -234,7 +239,9 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="teriary" variant="text" @click="confirmSaveDialog = false"> Annuler </v-btn>
+                  <v-btn color="teriary" variant="text" @click="confirmSaveDialog = false">
+                    Annuler
+                  </v-btn>
                   <v-btn color="error" variant="text" @click="confirmAndSaveAnnotations">
                     Enregistrer les annotations
                   </v-btn>
@@ -295,54 +302,80 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { useNotificationStore } from '@/store/notification'
+import Axios from 'axios'
+import Compressor from 'compressorjs'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useDate } from 'vuetify'
 import { FormRequiredRules } from '../utilities/constantes.ts'
-import { DEFAULT_ITEM } from '../utilities/dataConst'
+import { DEFAULT_ITEM, ITEM_HEADERS } from '../utilities/dataConst'
 import Editor from './ImageEditor/Editor.vue'
 import SavingLoader from './SavingLoader.vue'
 
 const date = useDate()
-
+const notifStore = useNotificationStore()
 const imgURL = import.meta.env.VITE_BACKEND_IMAGE_URL
 
-const annotationDialog = ref(false)
-const confirmSaveDialog = ref(false)
-
-defineProps({
-  pvDetails: Object,
-  meetingType: String,
-  headers: Array,
-  formTitle: String,
-  editItem: Function,
-  deleteItem: Function,
-  close: Function,
-  save: Function,
-  changeVisible: Function,
-  isSavingForm: Boolean
+const props = defineProps({
+  pvDetails: Object
 })
-const dialog = defineModel('dialog', { type: Boolean, required: true, default: false })
-const items = defineModel('items', { type: Array, required: true })
-const editedIndex = defineModel('editedIndex', { type: Number, required: true })
-const editedItem = defineModel('editedItem', { type: Object, required: true })
 
+// --- State ---
+const items = ref([])
+const dialog = ref(false)
+const editedIndex = ref(-1)
+const editedItem = ref({ ...DEFAULT_ITEM })
+const defaultItem = ref({ ...DEFAULT_ITEM })
+const isSavingForm = ref(false)
 const search = ref()
 const MyImageDialog = ref(false)
 const MyImageSrc = ref(String)
-const defaultItem = ref(DEFAULT_ITEM)
-
 const completionDateDialog = ref(false)
+const annotationDialog = ref(false)
+const confirmSaveDialog = ref(false)
 
-const MyDialog = computed({
-  get() {
-    return dialog.value
-  },
-  set(val) {
-    dialog.value = val
+// --- Headers dynamiques ---
+const headers = computed(() => {
+  if (props.pvDetails?.affairMeetingType === 'Chantier') {
+    const h = [...ITEM_HEADERS]
+    h.splice(1, 0, { title: 'Lot', value: 'lots' })
+    return h
+  }
+  return ITEM_HEADERS
+})
+
+// --- Fetch des items ---
+onMounted(async () => {
+  await fetchItems()
+  if (props.pvDetails?.affairMeetingType === 'Chantier' && props.pvDetails?.lots) {
+    defaultItem.value.lots = props.pvDetails.lots
   }
 })
 
-watch(MyDialog, (val) => {
+async function fetchItems() {
+  const res = await Axios.get('items', { params: { pvId: props.pvDetails.pvId } })
+  items.value = (res.data || []).map((el) => ({
+    ...el,
+    visible: el.visible == 1 ? true : el.visible
+  }))
+}
+
+// --- Computed ---
+const formTitle = computed(() => (editedIndex.value === -1 ? 'Nouvel item' : "Modifier l'item"))
+
+const maxPosition = computed(() => {
+  if (items.value.length === 0) return 1
+  return Math.max(...items.value.map((i) => i.position)) + 1
+})
+
+const displayDateFormattedCompletion = computed(() => {
+  return editedItem.value.completionDate
+    ? date.format(editedItem.value.completionDate, 'fullDate')
+    : null
+})
+
+// --- Watch dialog pour initialiser un nouvel item ---
+watch(dialog, (val) => {
   if (editedIndex.value === -1) {
     maxPosition.value > 0
       ? (defaultItem.value.position = maxPosition.value)
@@ -352,6 +385,180 @@ watch(MyDialog, (val) => {
   val || close()
 })
 
+// --- Actions CRUD ---
+function editItem(item) {
+  editedItem.value = { ...item }
+  editedIndex.value = items.value.findIndex((element) => element.itemId === editedItem.value.itemId)
+  editedItem.value.lotsToReturn = item.lots
+  props.pvDetails.lots ? (editedItem.value.lots = props.pvDetails.lots) : null
+  editedItem.value.completionToReturn = item.completion
+  editedItem.value.completion = [defaultItem.value.completion]
+  editedItem.value.completionDate
+    ? (editedItem.value.completionDate = new Date(editedItem.value.completionDate))
+    : ''
+  editedItem.value.isImageChange = false
+  dialog.value = true
+}
+
+function deleteItem(item) {
+  const index = items.value.indexOf(item)
+  confirm('Êtes-vous sûr de vouloir supprimer cet item?') &&
+    Axios.delete('items/itemId', { params: { itemId: item.itemId, pvId: props.pvDetails.pvId } })
+      .then((response) => {
+        if (response.status == 204) {
+          notifStore.success("L'item à bien été supprimé")
+          items.value.splice(index, 1)
+        }
+      })
+      .catch((error) => {
+        notifStore.error(`Erreur : l'item n'a pas été supprimé en base de donnée. ${error}`)
+      })
+}
+
+function close() {
+  dialog.value = false
+  editedItem.value = { ...defaultItem.value }
+  editedIndex.value = -1
+}
+
+async function save() {
+  isSavingForm.value = true
+  const itemToBeSend = formatItemToBeSend()
+  let message
+  if (editedIndex.value > -1) {
+    const itemUpdated = await updateItem(itemToBeSend)
+    itemUpdated.visible == 1 ? (itemUpdated.visible = true) : (itemUpdated.visible = false)
+    Object.assign(items.value[editedIndex.value], itemUpdated)
+    message = "Mise à jour de l'item effectué"
+  } else {
+    let item = await postItem(itemToBeSend)
+    if (editedItem.value.image) {
+      item = await uploadImage(item.itemId)
+    }
+    item.visible == 1 ? (item.visible = true) : (item.visible = false)
+    items.value.push(item)
+    message = "Ajout de l'item effectué"
+  }
+  isSavingForm.value = false
+  close()
+  editedItem.value = { ...defaultItem.value }
+  notifStore.success(message)
+}
+
+async function postItem(itemWithoutImage) {
+  try {
+    const res = await Axios.post('/items', itemWithoutImage)
+    return res.data
+  } catch (error) {
+    throw new Error('Erreur : ' + error)
+  }
+}
+
+async function uploadImage(itemId) {
+  if (!editedItem.value.image) {
+    return Promise.reject(new Error("Aucune image n'est sélectionnée"))
+  }
+
+  const promisfiedCompressor = (file, quality = 0.7, maxHeight = 1080, maxWidth = 1920) => {
+    return new Promise((resolve, reject) => {
+      new Compressor(file, {
+        quality: quality,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        success(blob) {
+          resolve(blob)
+        },
+        error(err) {
+          reject(err)
+        }
+      })
+    })
+  }
+  try {
+    const compressedImage = await promisfiedCompressor(editedItem.value.image)
+    const fdImage = new FormData()
+    fdImage.append('itemId', itemId)
+    fdImage.append('image', compressedImage)
+    try {
+      const res = await Axios.post('items/uploadImage', fdImage)
+      return res.data
+    } catch (error) {
+      console.log('Upload failed:', error)
+    }
+  } catch (err) {
+    console.error('Compression failed:', err)
+  }
+}
+
+async function updateItem(itemWithoutImage) {
+  try {
+    const res = await Axios.put('items/itemId', itemWithoutImage)
+    if (editedItem.value.image !== null && editedItem.value.isImageChange === true) {
+      const fdImage = new FormData()
+      fdImage.append('itemId', editedItem.value.itemId)
+      fdImage.append('image', editedItem.value.image)
+      const res = await Axios.post('items/updateImage', fdImage)
+      return res.data
+    }
+    return res.data
+  } catch (error) {
+    throw new Error('Erreur : ' + error)
+  }
+}
+
+function changeVisible(item) {
+  let data = {
+    itemId: item.itemId,
+    visible: item.visible
+  }
+  Axios.put('items/itemId/visibility', data)
+    .then((response) => {
+      if (response.status == 200) {
+        notifStore.success("L'item a été mis à jour")
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+function formatItemToBeSend() {
+  if (
+    editedItem.value.completionDate == '' ||
+    editedItem.value.completionDate == 'Invalid date' ||
+    editedItem.value.completionDate === null
+  ) {
+    editedItem.value.completionDate = null
+  } else {
+    editedItem.value.completionDate = date.toISO(editedItem.value.completionDate)
+  }
+  editedItem.value.lots = editedItem.value.lotsToReturn
+  editedItem.value.completion = editedItem.value.completionToReturn
+  let itemToBeSend = { ...editedItem.value }
+  itemToBeSend.pvId = props.pvDetails.pvId
+  delete itemToBeSend.isImageChange
+  delete itemToBeSend.completionToReturn
+  delete itemToBeSend.lotsToReturn
+  if (typeof itemToBeSend.image != 'string') {
+    delete itemToBeSend.image
+    delete itemToBeSend.thumbnail
+  }
+  if (
+    props.pvDetails?.affairMeetingType == 'Chantier' &&
+    itemToBeSend.lots &&
+    typeof itemToBeSend.lots[0] == 'object'
+  ) {
+    let lotTransit = []
+    editedItem.value.lotsToReturn.forEach((element) => {
+      lotTransit.push(element.lotId)
+    })
+    itemToBeSend.lots = lotTransit
+  }
+
+  return itemToBeSend
+}
+
+// --- Image & Annotation ---
 function onObjectSelected(event) {
   editedItem.value.image = event.target.files[0]
   editedItem.value.isImageChange = true
@@ -377,20 +584,13 @@ function openAnnotationEditor() {
   }
 }
 
-function handleEditorClose() {
-  annotationDialog.value = false
-}
-
 function closeAnnotationEditor() {
-  // Vérifier si des annotations ont été faites
   if (window.tempAnnotationData) {
-    // Demander confirmation avant de fermer sans sauvegarder
     const confirmClose = confirm(
       'Vous avez des annotations non sauvegardées. Voulez-vous vraiment fermer sans sauvegarder ?'
     )
     if (confirmClose) {
       annotationDialog.value = false
-      // Nettoyer les données temporaires
       delete window.tempAnnotationData
     }
   } else {
@@ -399,7 +599,6 @@ function closeAnnotationEditor() {
 }
 
 function openConfirmSaveDialog(data) {
-  // Stocker temporairement les données pour utilisation après confirmation
   window.tempAnnotationData = data
   confirmSaveDialog.value = true
 }
@@ -410,7 +609,6 @@ function confirmAndSaveAnnotations() {
     annotationDialog.value = false
     confirmSaveDialog.value = false
 
-    // Stocker l'état des annotations et l'image rendue
     if (data.state) {
       editedItem.value.annotationState = data.state
     }
@@ -418,24 +616,12 @@ function confirmAndSaveAnnotations() {
       editedItem.value.image = data.renderedImage
       editedItem.value.isImageChange = true
     }
-    // Marquer l'image comme annotée
     if (data.isAnnotated) {
       editedItem.value.isAnnotated = data.isAnnotated
     }
     console.log('Annotations et image rendue sauvegardées:', data)
 
-    // Nettoyer les données temporaires
     delete window.tempAnnotationData
   }
 }
-
-const maxPosition = computed(() => {
-  return Math.max(...items.value.map((items) => items.position)) + 1
-})
-
-const displayDateFormattedCompletion = computed(() => {
-  return editedItem.value.completionDate
-    ? date.format(editedItem.value.completionDate, 'fullDate')
-    : null
-})
 </script>

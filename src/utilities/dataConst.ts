@@ -41,7 +41,7 @@ export const USER_GROUPE_ITEMS = [
   'COPIL',
   'COTEC',
   'Divers',
-  'Coordinateur SPS',
+  'Coordonnateur SPS',
   'BET'
 ]
 
@@ -75,7 +75,10 @@ export const ITEM_HEADERS = [
   { title: 'Ressource', value: 'resources', sortable: false },
   { title: 'Echeance', value: 'completion', sortable: false },
   { title: "Date d'echéance", value: 'completionDate' },
-  { title: 'Photo', value: 'image' }
+  { title: 'Photo', value: 'image' },
+  { title: 'Rappel', value: 'reminder', sortable: false },
+  { title: 'Visible', value: 'visible' },
+  { title: 'Actions', value: 'actions', sortable: false }
 ]
 
 export const PARTICIPANT_HEADERS = [

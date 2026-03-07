@@ -2,14 +2,23 @@
   <v-sheet rounded color="error" elevation="2" class="justify-center mx-auto pa-5 mt-5">
     <h2 class="mb-5">Rouvrir un Pv</h2>
     <v-card class="pa-5">
-      <v-data-table :headers="headers" :items="data" :search="search"
-        :sort-by="[{ key: 'meetingDate', order: 'desc' }]">
+      <v-data-table
+        :headers="headers"
+        :items="data"
+        :search="search"
+        :sort-by="[{ key: 'meetingDate', order: 'desc' }]"
+      >
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title>Rouvrir un Pv</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Chercher" single-line
-              hide-details></v-text-field>
+            <v-text-field
+              v-model="search"
+              prepend-inner-icon="mdi-magnify"
+              label="Chercher"
+              single-line
+              hide-details
+            ></v-text-field>
           </v-toolbar>
         </template>
         <template v-slot:item.releaseDate="{ item }">
@@ -19,8 +28,14 @@
           {{ $filters.formatDateWithA(item.meetingDate) }}
         </template>
         <template v-slot:item.actionReOpen="{ item }">
-          <v-btn v-if="item.releaseDate" size="small" class="mr-2" color="warning"
-            @click="showReOpen(item)">Débloquer</v-btn>
+          <v-btn
+            v-if="item.releaseDate"
+            size="small"
+            class="mr-2"
+            color="warning"
+            @click="showReOpen(item)"
+            >Débloquer</v-btn
+          >
         </template>
         <template v-slot:item.actionDelete="{ item }">
           <v-btn size="small" class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
@@ -29,8 +44,10 @@
     </v-card>
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
-        <v-card-title>Êtes vous sûr de {{ actionType === 'delete' ? 'supprimer' : 'débloquer' }} ce Pv
-          ?</v-card-title>
+        <v-card-title
+          >Êtes vous sûr de {{ actionType === 'delete' ? 'supprimer' : 'débloquer' }} ce Pv
+          ?</v-card-title
+        >
         <v-card-text>
           <p v-if="actionType === 'reOpen'" class="text-error">
             <b>Attention : La date de diffusion sera supprimé !</b>
@@ -45,7 +62,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="action()">
-            <span v-if="actionType === 'reOpen'">Supprimer la date de diffusion et rouvrir le Pv</span>
+            <span v-if="actionType === 'reOpen'"
+              >Supprimer la date de diffusion et rouvrir le Pv</span
+            >
             <span v-else> Supprimer le Pv</span>
           </v-btn>
         </v-card-actions>
@@ -117,7 +136,7 @@ function action() {
         console.error(err)
       })
   } else if (actionType.value === 'delete') {
-    Axios.delete('/pvs/pvId', { data: { pvId: pvId } })
+    Axios.delete('/pvs', { data: { pvId: pvId } })
       .then(() => {
         router.push({ name: 'Affair', params: { id: pv.value.affairId } })
       })
