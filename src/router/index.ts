@@ -130,6 +130,7 @@ router.beforeEach(async (to) => {
       return '/login'
     }
   }
+  return true
 })
 
 export default router
