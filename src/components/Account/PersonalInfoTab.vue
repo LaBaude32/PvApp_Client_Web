@@ -1,12 +1,8 @@
 <template>
   <div class="personal-info-tab py-5">
-    <v-btn class="mb-6" color="primary" @click="login">Login Using Google</v-btn>
-
-    <Vue3GoogleLogin
-      :clientId="YOUR_CLIENT_ID"
-      @onSuccess="handleSuccess"
-      @onError="handleError"
-    ></Vue3GoogleLogin>
+    <v-btn class="mb-6" color="primary" @click="loginWithGoogle">
+      Connecter mon compte Gmail pour l'envoi de mails
+    </v-btn>
 
     <v-form ref="form" v-model="isValid" lazy-validation>
       <h3 class="text-h6 mb-4">Informations personnelles</h3>
@@ -85,43 +81,29 @@ import {
   FormPhoneSimpleRules
 } from '@/utilities/constantes'
 import { ref, watch } from 'vue'
-import Vue3GoogleLogin, { googleAuthCodeLogin } from 'vue3-google-login'
+import { googleAuthCodeLogin } from 'vue3-google-login'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_BACKEND_API_URL
 
 // État du formulaire
 const isValid = ref<boolean>(true)
 const form = ref<any>(null)
-const login = () => {
-  googleAuthCodeLogin().then((response) => {
-    console.log('Handle the response', response)
+
+// Connexion Google OAuth pour obtenir un authorization code avec le scope Gmail
+const loginWithGoogle = () => {
+  googleAuthCodeLogin({
+    scope: 'https://www.googleapis.com/auth/gmail.send'
+  } as any).then((response) => {
+    // Envoyer l'authorization code au backend qui l'échangera contre des tokens
+    axios.post(`${API_URL}auth/google/gmail`, {
+      code: response.code
+    }).then(() => {
+      console.log('Compte Gmail connecté avec succès')
+    }).catch((error) => {
+      console.error('Erreur lors de la connexion Gmail:', error)
+    })
   })
-}
-
-const YOUR_CLIENT_ID = '635178543002-7661u2ol4839cjpvkgrp7h8uhpu4mp3e.apps.googleusercontent.com'
-
-function handleSuccess(response) {
-  // Récupérez le token d'accès depuis la réponse
-  const accessToken = response.credential
-  console.log('Access Token:', accessToken)
-
-  // Envoyez le token d'accès à votre serveur backend
-  sendTokenToBackend(accessToken)
-}
-function handleError(error) {
-  console.error('Error:', error)
-}
-function sendTokenToBackend(accessToken) {
-  // Envoyez le token d'accès à votre serveur backend via une requête API
-  fetch('http://votre-serveur-backend.com/api/send-email', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    },
-    body: JSON.stringify({ accessToken })
-  })
-    .then((response) => response.json())
-    .then((data) => console.log('Success:', data))
-    .catch((error) => console.error('Error:', error))
 }
 
 // Données du formulaire

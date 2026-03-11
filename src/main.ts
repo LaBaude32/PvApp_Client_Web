@@ -53,7 +53,7 @@ app.use(pinia)
 app.use(vuetify)
 app.use(router)
 app.use(vue3GoogleLogin, {
-  clientId: '35178543002-7661u2ol4839cjpvkgrp7h8uhpu4mp3e.apps.googleusercontent.com'
+  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID
 })
 
 app.config.globalProperties.$filters = { ...filters }
