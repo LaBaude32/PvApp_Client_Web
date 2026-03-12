@@ -25,6 +25,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
+              type="tel"
               v-model="editedItem.phone"
               label="Téléphone"
               :rules="FormPhoneRules"
@@ -34,6 +35,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
+              type="email"
               v-model="editedItem.email"
               label="Mail"
               :rules="FormEmailRules"
@@ -68,6 +70,7 @@
 
           <v-col cols="12" sm="6">
             <v-text-field
+              type="number"
               v-model="otp"
               label="Code de validation"
               :rules="FormOTPRules"
@@ -76,9 +79,16 @@
           </v-col>
         </v-row>
         <v-row class="mb-12">
-          <v-btn color="primary" class="mx-auto" :disabled="!valid" @click="saveUser"
-            >Valider</v-btn
-          >
+          <v-btn color="primary" class="mx-auto" :disabled="!valid || loading" @click="saveUser">
+            <v-progress-circular
+              v-if="loading"
+              color="primary"
+              indeterminate
+              :size="30"
+              :width="5"
+            ></v-progress-circular>
+            <span v-else>Valider</span>
+          </v-btn>
         </v-row>
       </v-form>
     </div>
@@ -89,19 +99,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import Axios from 'axios'
+import { ref } from 'vue'
 
 import { useNotificationStore } from '@/store/notification'
 
-import { USER_GROUPE_ITEMS, EDITED_ITEM } from '@/utilities/dataConst'
 import {
-  FormNameRules,
   FormEmailRules,
+  FormNameRules,
+  FormOTPRules,
   FormPhoneRules,
-  FormRequiredRules,
-  FormOTPRules
+  FormRequiredRules
 } from '@/utilities/constantes.ts'
+import { EDITED_ITEM, USER_GROUPE_ITEMS } from '@/utilities/dataConst'
 
 const notifStore = useNotificationStore()
 
@@ -109,12 +119,14 @@ const editedItem = ref(EDITED_ITEM)
 const otp = ref('')
 const valid = ref(false)
 const userAdded = ref(false)
+const loading = ref(false)
 
 const props = defineProps({
   pvId: String
 })
 
 function saveUser() {
+  loading.value = true
   let data = { ...editedItem.value }
   data.otp = Number(otp.value)
   data.pvId = Number(props.pvId)
@@ -130,6 +142,9 @@ function saveUser() {
         notifStore.error('Code de validation incorrecte')
       }
       console.log(error)
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 </script>

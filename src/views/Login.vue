@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4">
+      <v-col>
         <v-alert type="error" v-if="resultConnetion === 'ErrorId'"
           >Erreur sur l'email ou le mot de passe</v-alert
         >
@@ -12,7 +12,7 @@
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4">
+      <v-col>
         <v-card class="elevation-12">
           <v-toolbar color="primary">
             <v-toolbar-title>Connexion</v-toolbar-title>
@@ -35,6 +35,7 @@
                 @click:append-inner="showPassword = !showPassword"
                 v-model="password"
                 :rules="FormRequiredRules"
+                @keyup.enter="login"
               />
             </v-card-text>
             <v-card-actions>
@@ -49,12 +50,12 @@
 </template>
 
 <script setup lang="ts">
+import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
+import md5 from 'md5'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import md5 from 'md5'
-import { FormEmailRules, FormRequiredRules } from '@/utilities/constantes'
-import { useNotificationStore } from '../store/notification'
 import { useAuthStore } from '../store/auth'
+import { useNotificationStore } from '../store/notification'
 import { useUserStore } from '../store/user'
 
 const userStore = useUserStore()

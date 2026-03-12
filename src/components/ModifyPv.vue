@@ -24,6 +24,7 @@
                 @click:control="meetingDateDateDialog = true"
                 prepend-inner-icon="mdi-calendar"
                 v-model="displayMeetingDate"
+                :rules="FormRequiredRules"
               ></v-text-field>
               <v-dialog v-model="meetingDateDateDialog" width="auto">
                 <v-date-picker
@@ -44,6 +45,7 @@
                     @click:clear="pvData.meetingDateTime = null"
                     prepend-inner-icon="mdi-clock-outline"
                     v-model="pvData.meetingDateTime"
+                    :rules="FormRequiredRules"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -105,6 +107,7 @@
                 v-model="pvData.meetingNextPlace"
                 counter
                 label="Lieu de la prochaine réunion"
+                clearable
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -133,19 +136,25 @@
   </v-card>
 </template>
 
-<script setup>
-import { computed, ref, onMounted } from 'vue'
-import { useDate } from 'vuetify'
-import { useRoute, useRouter } from 'vue-router'
+<script setup lang="ts">
 import Axios from 'axios'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useDate } from 'vuetify'
 
-import routesCONST, { FormRequiredRulesMin3, FormAffairRules } from '@/utilities/constantes.ts'
+import { useMeetingDateFormater } from '@/composables/useMeetingDateFormater'
+import { useNotificationStore } from '@/store/notification'
+import routesCONST, {
+  FormAffairRules,
+  FormRequiredRules,
+  FormRequiredRulesMin3
+} from '@/utilities/constantes.ts'
 import { PV_DATA } from '@/utilities/dataConst.ts'
 import { useUserStore } from '../store/user'
-import { useMeetingDateFormater } from '@/composables/useMeetingDateFormater'
 import SavingLoader from './SavingLoader.vue'
 
 const userStore = useUserStore()
+const useNotification = useNotificationStore()
 const date = useDate()
 const router = useRouter()
 const route = useRoute()
@@ -185,15 +194,59 @@ const displayNextMeetingDate = computed({
 
 const isSavingForm = ref(false)
 
+/**
+ * Formats a date and time into an ISO 8601 string
+ * @param {string|DateInstance|null} date - The date to format
+ * @param {string|null} time - The time to append
+ * @returns {string|null} ISO 8601 formatted datetime string or null if either parameter is missing
+ */
+function formatDateTime(givenDate, time) {
+  if (!givenDate || !time) {
+    return null
+  }
+  try {
+    return date.toISO(givenDate) + 'T' + time
+  } catch (error) {
+    console.error('Error formatting date:', error)
+    return null
+  }
+}
+
+/**
+ * Validates that required fields are present before saving
+ * @returns {boolean} True if all required fields are valid
+ */
+function validateFormData() {
+  let hasMeetingNextDate = true
+  if (pvData.value.meetingNextDateDate) {
+    hasMeetingNextDate = pvData.value.meetingNextDateDate && pvData.value.meetingNextDateTime
+  }
+  if (pvData.value.meetingNextDateTime) {
+    hasMeetingNextDate = pvData.value.meetingNextDateDate && pvData.value.meetingNextDateTime
+  }
+
+  if (!hasMeetingNextDate) {
+    useNotification.error('Date de la prochaine réunion incomplète')
+    return false
+  }
+  return true
+}
+
 function saveForm() {
+  if (!validateFormData()) {
+    isSavingForm.value = false
+    return
+  }
+
   isSavingForm.value = true
   const data = {
-    meetingDate: date.toISO(pvData.value.meetingDateDate) + 'T' + pvData.value.meetingDateTime,
+    meetingDate: formatDateTime(pvData.value.meetingDateDate, pvData.value.meetingDateTime),
     meetingPlace: pvData.value.meetingPlace,
-    meetingNextDate: pvData.value.meetingNextDateDate
-      ? date.toISO(pvData.value.meetingNextDateDate) + 'T' + pvData.value.meetingNextDateTime
-      : null,
-    meetingNextPlace: pvData.value.meetingNextPlace ? pvData.value.meetingNextPlace : null,
+    meetingNextDate: formatDateTime(
+      pvData.value.meetingNextDateDate,
+      pvData.value.meetingNextDateTime
+    ),
+    meetingNextPlace: pvData.value.meetingNextPlace || null,
     state: state.value,
     affairId: pvData.value.affairId
   }
@@ -208,25 +261,31 @@ function saveForm() {
         })
       })
       .catch((error) => {
-        console.log(error)
+        console.error('Error saving new PV:', error)
+        isSavingForm.value = false
       })
   } else {
     data.pvId = pvData.value.pvId
-    Axios.put('pvs/pvId', data).then((res) => {
-      pvData.value = res.data
-      existingPvData.value = res.data
-      isNewPv.value = false
-      isSaved.value = true
-      isSavingForm.value = false
-      emit('closeDialog', isSaved.value)
-    })
+    Axios.put('pvs', data)
+      .then((res) => {
+        pvData.value = res.data
+        existingPvData.value = res.data
+        isNewPv.value = false
+        isSaved.value = true
+        isSavingForm.value = false
+        emit('closeDialog', isSaved.value)
+      })
+      .catch((error) => {
+        console.error('Error updating PV:', error)
+        isSavingForm.value = false
+      })
   }
 }
 
 function cancelForm() {
   isSaved.value = false
   emit('closeDialog', isSaved.value)
-  if (route.path == '/AddPv') {
+  if (route.path === '/AddPv') {
     router.push('board')
   }
 }
@@ -268,7 +327,7 @@ onMounted(() => {
       affairs.value = response.data
     })
     .catch(function (error) {
-      console.log(error)
+      console.error('Error fetching affairs:', error)
     })
 
   if (props.affairId) {

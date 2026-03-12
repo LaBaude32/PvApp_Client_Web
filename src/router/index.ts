@@ -10,20 +10,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/HomePage.vue')
   },
   {
-    path: routesCONST.about.path,
-    name: routesCONST.about.name,
-    component: () => import('../views/About.vue')
-  },
-  {
     path: routesCONST.login.path,
     name: routesCONST.login.name,
     component: () => import('../views/Login.vue')
-  },
-  {
-    path: routesCONST.users.path,
-    name: routesCONST.users.name,
-    component: () => import('../views/Users.vue'),
-    meta: { requiresAuth: true }
   },
   {
     path: routesCONST.settings.path,
@@ -97,6 +86,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/test-annotation',
+    name: 'TestAnnotation',
+    component: () => import('../views/TestAnnotation.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: routesCONST.myAccount.path,
+    name: routesCONST.myAccount.name,
+    component: () => import('../views/Account.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('../views/HomePage.vue')
@@ -135,6 +136,7 @@ router.beforeEach(async (to) => {
       return '/login'
     }
   }
+  return true
 })
 
 export default router

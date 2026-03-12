@@ -1,5 +1,5 @@
 <template>
-  <v-sheet rounded color="red-darken-1" elevation="2" class="justify-center mx-auto pa-5 mt-5">
+  <v-sheet rounded color="error" elevation="2" class="justify-center mx-auto pa-5 mt-5">
     <h2 class="mb-5">Rouvrir un Pv</h2>
     <v-card class="pa-5">
       <v-data-table
@@ -28,10 +28,17 @@
           {{ $filters.formatDateWithA(item.meetingDate) }}
         </template>
         <template v-slot:item.actionReOpen="{ item }">
-          <v-btn v-if="item.releaseDate" small class="mr-2" color="warning" @click="showReOpen(item)">Débloquer</v-btn>
+          <v-btn
+            v-if="item.releaseDate"
+            size="small"
+            class="mr-2"
+            color="warning"
+            @click="showReOpen(item)"
+            >Débloquer</v-btn
+          >
         </template>
         <template v-slot:item.actionDelete="{ item }">
-          <v-btn small class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
+          <v-btn size="small" class="mr-2" color="error" @click="showDelete(item)">Supprimer</v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -42,7 +49,7 @@
           ?</v-card-title
         >
         <v-card-text>
-          <p v-if="actionType === 'reOpen'" class="text-red-darken-1">
+          <p v-if="actionType === 'reOpen'" class="text-error">
             <b>Attention : La date de diffusion sera supprimé !</b>
           </p>
           <br />
@@ -54,22 +61,24 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="action()"
-            >Supprimer <span v-if="actionType === 'reOpen'">la date de diffusion et rouvrir</span>le
-            Pv</v-btn
-          >
+          <v-btn color="error" @click="action()">
+            <span v-if="actionType === 'reOpen'"
+              >Supprimer la date de diffusion et rouvrir le Pv</span
+            >
+            <span v-else> Supprimer le Pv</span>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-sheet>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAxios } from '@vueuse/integrations/useAxios'
-import { useUserStore } from '../store/user'
-import Axios from 'axios'
-import { useRouter } from 'vue-router'
 import type { Pv } from '@/utilities/types'
+import { useAxios } from '@vueuse/integrations/useAxios'
+import Axios from 'axios'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../store/user'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -127,7 +136,7 @@ function action() {
         console.error(err)
       })
   } else if (actionType.value === 'delete') {
-    Axios.delete('/pvs/pvId', { data: { pvId: pvId } })
+    Axios.delete('/pvs', { data: { pvId: pvId } })
       .then(() => {
         router.push({ name: 'Affair', params: { id: pv.value.affairId } })
       })

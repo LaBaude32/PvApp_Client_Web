@@ -13,12 +13,7 @@
     <v-container>
       <v-row>
         <v-col cols="12" class="text-center">
-          <v-row class="d-flex ga-5 justify-center">
-            <v-btn color="success" x-large @click.prevent="downloadPdf">Télécharger le PDF</v-btn>
-            <v-btn v-if="displaySendPdfButton" color="primary" x-large @click.prevent="sendByEmail"
-              >Diffuser par mail</v-btn
-            >
-          </v-row>
+          <v-btn color="success" x-large @click.prevent="downloadPdf">Telecharger le PDF</v-btn>
         </v-col>
         <v-col cols="12" class="text-center">
           <p class="text-uppercase text-h4">Opération :</p>
@@ -48,7 +43,7 @@
             {{ $filters.formatDateWithA(pvDetails.meetingDate) }}
             <span v-if="pvDetails.meetingPlace">, {{ pvDetails.meetingPlace }}</span>
           </p>
-          <p v-if="pvDetails.meetingNextDate" class="red--text text-h7">
+          <p v-if="pvDetails.meetingNextDate" class="text-red text-subtitle-1">
             Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }},
             {{ pvDetails.meetingNextPlace }}
           </p>
@@ -85,7 +80,7 @@
         <p class="text-uppercase">
           Prochaine réunion : le {{ $filters.formatDateWithA(pvDetails.meetingNextDate) }}
         </p>
-        <p class="font-italic body-2">
+        <p class="font-italic text-body-2">
           Présence vivement souhaitée des intervenants conviés (cf. tableaux). Merci.
         </p>
       </div>

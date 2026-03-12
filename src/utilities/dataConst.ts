@@ -1,3 +1,5 @@
+import type { Participant } from './types'
+
 export const DEFAULT_ITEM = {
   position: null,
   lotsToReturn: [],
@@ -5,7 +7,7 @@ export const DEFAULT_ITEM = {
   note: null,
   followUp: null,
   resources: null,
-  completion: ['A faire', 'Urgent', 'Fait', 'En cours'], //TODO: A mettre en Enum dans la BDD ?
+  completion: ['A faire', 'Urgent', 'Fait', 'En cours', 'Dès que possible'], //TODO: A mettre en Enum dans la BDD ?
   completionDate: null,
   image: null,
   visible: true,
@@ -38,8 +40,29 @@ export const USER_GROUPE_ITEMS = [
   'Personne public associée',
   'COPIL',
   'COTEC',
-  'Divers'
+  'Divers',
+  'Coordonnateur SPS',
+  'BET'
 ]
+
+export const DEFAULT_PARTICIPANT: Participant = {
+  userId: undefined,
+  pvId: undefined,
+  firstName: '',
+  lastName: '',
+  password: '',
+  userGroup: '',
+  userFunction: '',
+  organism: '',
+  organisationId: -1,
+  email: '',
+  phone: '',
+  statusPAE: null,
+  invitedCurrentMeeting: false,
+  invitedNextMeeting: false,
+  distribution: false,
+  position: -1
+}
 
 export const ITEM_HEADERS = [
   {
@@ -52,7 +75,35 @@ export const ITEM_HEADERS = [
   { title: 'Ressource', value: 'resources', sortable: false },
   { title: 'Echeance', value: 'completion', sortable: false },
   { title: "Date d'echéance", value: 'completionDate' },
-  { title: 'Photo', value: 'image' }
+  { title: 'Photo', value: 'image' },
+  { title: 'Rappel', value: 'reminder', sortable: false },
+  { title: 'Visible', value: 'visible' },
+  { title: 'Actions', value: 'actions', sortable: false }
+]
+
+export const PARTICIPANT_HEADERS = [
+  {
+    title: 'Ordre',
+    value: 'position'
+  },
+  {
+    title: 'Prénom Nom',
+    align: 'start',
+    value: 'fullName'
+  },
+  {
+    title: 'Groupe',
+    value: 'userGroup'
+  },
+  { title: 'Fonction', value: 'userFunction' },
+  { title: 'Organisme', value: 'organism' },
+  { title: 'Mail', value: 'email' },
+  { title: 'Téléphone', value: 'phone' },
+  { title: 'Statut', value: 'statusPAE' },
+  { title: 'C1', value: 'invitedCurrentMeeting' },
+  { title: 'C2', value: 'invitedNextMeeting' },
+  { title: 'Diffusion', value: 'distribution' },
+  { title: 'Modifier', value: 'actions' }
 ]
 
 export const PV_DATA = {
@@ -82,7 +133,7 @@ export const EDITED_ITEM = {
   lastName: ''
 }
 
-export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', null]
+export const PARTICIPANT_STATUS_PAE = ['Présent', 'Absent', 'Excusé', 'Représenté', null]
 
 export const LOT_DEFAULT = ['MOA', 'AMO', 'MOE', 'PPA', 'SPS', 'CONCES']
 

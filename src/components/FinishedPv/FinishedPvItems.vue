@@ -1,9 +1,15 @@
 <template>
   <div>
     <v-card max-width="95%" class="mx-auto">
-      <v-data-table :headers="headers" :items="items" :sort-by="sortBy" :items-per-page="-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :sort-by="sortBy"
+        :items-per-page="-1"
+        hide-default-footer
+      >
         <template v-slot:item.lots="{ item }">
-          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" color="orange" dark>
+          <v-chip v-for="lot in item.lots" :key="lot.id" class="ma-1" :color="lot.color">
             {{ lot.name }}
           </v-chip>
         </template>
@@ -11,7 +17,11 @@
           {{ $filters.formatDateShortDayOnly(item.completionDate) }}
         </template>
         <template v-slot:item.image="{ item }">
-          <v-img max-width="150" :src="MyThumbnail(item.image)" @click="OpenImage(item.image)"></v-img>
+          <v-img
+            max-width="150"
+            :src="MyThumbnail(item.image)"
+            @click="OpenImage(item.image)"
+          ></v-img>
         </template>
       </v-data-table>
     </v-card>

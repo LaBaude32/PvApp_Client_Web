@@ -15,6 +15,7 @@ export interface User {
   userGroup?: string
   userFunction?: string
   organism?: string
+  organisationId: number
 }
 
 export interface Lot {
@@ -22,6 +23,7 @@ export interface Lot {
   pvId?: number
   name: string
   affairId?: number
+  color?: string
 }
 
 export interface Affair {
@@ -68,3 +70,31 @@ export interface Progress {
   pvId: number
   lotId: number
 }
+
+export interface Organisation {
+  organisationId: number
+  name: string
+  type: 'entreprise' | 'collectivite'
+  tvaIntra?: string
+  address: {
+    street?: string
+    postcode?: string
+    city?: string
+    country?: string
+  }
+  billingEmail?: string
+  createdAt?: Date
+  updatedAt?: Date
+  assignedLots?: number[]
+}
+
+export interface ParticipantStatus {
+  pvId: number
+  statusPAE: string | null
+  invitedCurrentMeeting: boolean
+  invitedNextMeeting: boolean
+  distribution: boolean
+  position: number
+}
+
+export type Participant = User & ParticipantStatus

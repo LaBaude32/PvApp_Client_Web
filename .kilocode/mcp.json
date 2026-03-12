@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "vuetify": {
+            "type": "streamable-http",
+            "url": "https://mcp.vuetifyjs.com/mcp",
+            "alwaysAllow": [
+                "tool3"
+            ],
+            "disabled": false
+        }
+    }
+}
