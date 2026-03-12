@@ -217,7 +217,13 @@ function formatDateTime(givenDate, time) {
  * @returns {boolean} True if all required fields are valid
  */
 function validateFormData() {
-  const hasMeetingNextDate = pvData.value.meetingNextDateDate && pvData.value.meetingNextDateTime
+  let hasMeetingNextDate = true
+  if (pvData.value.meetingNextDateDate) {
+    hasMeetingNextDate = pvData.value.meetingNextDateDate && pvData.value.meetingNextDateTime
+  }
+  if (pvData.value.meetingNextDateTime) {
+    hasMeetingNextDate = pvData.value.meetingNextDateDate && pvData.value.meetingNextDateTime
+  }
 
   if (!hasMeetingNextDate) {
     useNotification.error('Date de la prochaine réunion incomplète')
